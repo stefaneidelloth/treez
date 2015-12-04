@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.48.4 r9939"
+   version="1.0"
+   sodipodi:docname="plotting_icons.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3490">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop3492" />
+      <stop
+         style="stop-color:#bebebe;stop-opacity:1;"
+         offset="1"
+         id="stop3494" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3490"
+       id="linearGradient3496"
+       x1="8.3337603"
+       y1="8.429863"
+       x2="3.1587982"
+       y2="3.3648069"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0203025,0,0,1.0409558,-0.2260154,-0.2749194)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="14.5625"
+     inkscape:cx="-1.5084887"
+     inkscape:cy="-21.451193"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1221"
+     inkscape:window-height="946"
+     inkscape:window-x="2044"
+     inkscape:window-y="28"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jeremy Sanders</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Copyright (C) Jeremy Sanders</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/GPL/2.0/" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 14.376232,4.7974608 L 11.448608,1.5139934"
+       id="path3486"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\page.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345" />
+    <path
+       style="fill:url(#linearGradient3496);fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 1.7556853,1.6716717 L 11.31739,1.6716717 L 11.317388,4.9065751 L 14.240396,4.9571204 L 14.190853,14.156383 L 1.7556853,14.156383 L 1.7556853,1.6716717 z"
+       id="rect3483"
+       sodipodi:nodetypes="ccccccc"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\page.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345" />
+    <g
+       transform="translate(24.420277,-0.26455004)"
+       id="g3213"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\xy.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3161"
+         d="M 8.0185049,10.967731 3.829327,11.029591"
+         style="fill:none;stroke:#000000;stroke-width:0.48669741;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path2389"
+         d="M 5.923916,8.0852597 5.972473,13.717836"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         transform="matrix(0.7271384,0,0,0.7271384,2.6932858,7.7720199)"
+         d="m 5.9724725,4.3706732 c 0,0.8447392 -0.6847964,1.5295356 -1.5295356,1.5295356 -0.8447392,0 -1.5295357,-0.6847964 -1.5295357,-1.5295356 0,-0.8447392 0.6847965,-1.5295357 1.5295357,-1.5295357 0.8447392,0 1.5295356,0.6847965 1.5295356,1.5295357 z"
+         sodipodi:ry="1.5295357"
+         sodipodi:rx="1.5295357"
+         sodipodi:cy="4.3706732"
+         sodipodi:cx="4.4429369"
+         id="path3526"
+         style="fill:#ebaa81;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         sodipodi:type="arc" />
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 25.537081,0.39153596 0,14.32422404 13.887212,0"
+       id="path3530"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\xy.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345" />
+    <g
+       id="g3218"
+       transform="translate(28.353369,-7.353827)"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\xy.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3220"
+         d="M 8.0185049,10.967731 3.829327,11.029591"
+         style="fill:none;stroke:#000000;stroke-width:0.48669741;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3222"
+         d="M 5.923916,8.0852597 5.972473,13.717836"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         transform="matrix(0.7271384,0,0,0.7271384,2.6932858,7.7720199)"
+         d="m 5.9724725,4.3706732 c 0,0.8447392 -0.6847964,1.5295356 -1.5295356,1.5295356 -0.8447392,0 -1.5295357,-0.6847964 -1.5295357,-1.5295356 0,-0.8447392 0.6847965,-1.5295357 1.5295357,-1.5295357 0.8447392,0 1.5295356,0.6847965 1.5295356,1.5295357 z"
+         sodipodi:ry="1.5295357"
+         sodipodi:rx="1.5295357"
+         sodipodi:cy="4.3706732"
+         sodipodi:cx="4.4429369"
+         id="path3224"
+         style="fill:#ebaa81;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         sodipodi:type="arc" />
+    </g>
+    <g
+       id="g3226"
+       transform="translate(30.732646,-1.721251)"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\xy.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3228"
+         d="M 8.0185049,10.967731 3.829327,11.029591"
+         style="fill:none;stroke:#000000;stroke-width:0.48669741;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3230"
+         d="M 5.923916,8.0852597 5.972473,13.717836"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         transform="matrix(0.7271384,0,0,0.7271384,2.6932858,7.7720199)"
+         d="m 5.9724725,4.3706732 c 0,0.8447392 -0.6847964,1.5295356 -1.5295356,1.5295356 -0.8447392,0 -1.5295357,-0.6847964 -1.5295357,-1.5295356 0,-0.8447392 0.6847965,-1.5295357 1.5295357,-1.5295357 0.8447392,0 1.5295356,0.6847965 1.5295356,1.5295357 z"
+         sodipodi:ry="1.5295357"
+         sodipodi:rx="1.5295357"
+         sodipodi:cy="4.3706732"
+         sodipodi:cx="4.4429369"
+         id="path3232"
+         style="fill:#ebaa81;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         sodipodi:type="arc" />
+    </g>
+    <g
+       id="g3234"
+       transform="translate(23.449143,-6.528363)"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\xy.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3236"
+         d="M 8.0185049,10.967731 3.829327,11.029591"
+         style="fill:none;stroke:#000000;stroke-width:0.48669741;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3238"
+         d="M 5.923916,8.0852597 5.972473,13.717836"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         transform="matrix(0.7271384,0,0,0.7271384,2.6932858,7.7720199)"
+         d="m 5.9724725,4.3706732 c 0,0.8447392 -0.6847964,1.5295356 -1.5295356,1.5295356 -0.8447392,0 -1.5295357,-0.6847964 -1.5295357,-1.5295356 0,-0.8447392 0.6847965,-1.5295357 1.5295357,-1.5295357 0.8447392,0 1.5295356,0.6847965 1.5295356,1.5295357 z"
+         sodipodi:ry="1.5295357"
+         sodipodi:rx="1.5295357"
+         sodipodi:cy="4.3706732"
+         sodipodi:cx="4.4429369"
+         id="path3240"
+         style="fill:#ebaa81;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         sodipodi:type="arc" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 1.4087369,26.992261 13.6632121,0"
+       id="path2383"
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\axis.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 1.6484156,28.330701 0,-0.824034"
+       id="path3177"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\axis.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 5.8276844,28.330701 0,-0.824034"
+       id="path3179"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\axis.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 10.006952,28.330701 0,-0.824034"
+       id="path3181"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\axis.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 14.186219,28.330701 0,-0.824034"
+       id="path3183"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\axis.png"
+       inkscape:export-xdpi="107.35345"
+       inkscape:export-ydpi="107.35345" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 26.706188,20.675021 -0.03434,12.154507 12.635193,0"
+       id="path2383-1"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\graph.png"
+       inkscape:export-xdpi="100.57276"
+       inkscape:export-ydpi="100.57276" />
+    <g
+       id="g3169"
+       transform="translate(24.165415,19.404635)"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\graph.png"
+       inkscape:export-xdpi="100.57276"
+       inkscape:export-ydpi="100.57276">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3159"
+         d="m 2.0629445,13.655179 -0.8240343,0"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3161-7"
+         d="m 2.0629445,9.9291068 -0.8240343,0"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3163"
+         d="m 2.0629445,6.2030348 -0.8240343,0"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3165"
+         d="m 2.0629445,2.4769622 -0.8240343,0"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <g
+       id="g3175"
+       transform="matrix(0,1,-1,0,40.083585,32.035639)"
+       inkscape:export-filename="D:\eclipse\workspace\treezVeusz\icons\graph.png"
+       inkscape:export-xdpi="100.57276"
+       inkscape:export-ydpi="100.57276">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3177-4"
+         d="m 2.0629445,13.655179 -0.8240343,0"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3179-0"
+         d="m 2.0629445,9.9291068 -0.8240343,0"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3181-9"
+         d="m 2.0629445,6.2030348 -0.8240343,0"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3183-4"
+         d="m 2.0629445,2.4769622 -0.8240343,0"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       id="path3481"
+       d="m 1.7185302,47.768256 0,10.08585 12.8779868,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="D:\workspace_treez\treezPlotting\icons\results.png"
+       inkscape:export-xdpi="120"
+       inkscape:export-ydpi="120" />
+    <rect
+       ry="0.30232099"
+       rx="0.19975688"
+       y="52.445213"
+       x="3.3388593"
+       height="3.6278515"
+       width="1.9476293"
+       id="rect4353"
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       inkscape:export-filename="D:\workspace_treez\treezPlotting\icons\results.png"
+       inkscape:export-xdpi="120"
+       inkscape:export-ydpi="120" />
+    <rect
+       ry="0.32199684"
+       rx="0.19271386"
+       y="50.139641"
+       x="6.349422"
+       height="5.876442"
+       width="1.8789598"
+       id="rect4353-1"
+       style="fill:#d8d8d8;fill-opacity:1;stroke:none"
+       inkscape:export-filename="D:\workspace_treez\treezPlotting\icons\results.png"
+       inkscape:export-xdpi="120"
+       inkscape:export-ydpi="120" />
+    <rect
+       ry="0.30566809"
+       rx="0.1574987"
+       y="47.858902"
+       x="9.3599854"
+       height="8.1002045"
+       width="1.5356121"
+       id="rect4353-7"
+       style="fill:#552200;fill-opacity:1;stroke:none"
+       inkscape:export-filename="D:\workspace_treez\treezPlotting\icons\results.png"
+       inkscape:export-xdpi="120"
+       inkscape:export-ydpi="120" />
+    <rect
+       ry="0.227929"
+       rx="0.27018717"
+       y="45.531338"
+       x="11.958531"
+       height="10.370769"
+       width="2.6343246"
+       id="rect4353-4"
+       style="fill:#4c9c17;fill-opacity:1;stroke:none"
+       inkscape:export-filename="D:\workspace_treez\treezPlotting\icons\results.png"
+       inkscape:export-xdpi="120"
+       inkscape:export-ydpi="120" />
+  </g>
+</svg>

@@ -1,0 +1,81 @@
+package org.treez.core.atom.attribute.base.parent;
+
+import java.util.List;
+
+import org.treez.core.adaptable.CodeContainer;
+import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AttributeAtomCodeAdaption;
+import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.base.AtomCodeAdaption;
+
+/**
+ * The CodeAdaption for AttributeParentAtom
+ */
+public class AttributeParentCodeAdaption extends AtomCodeAdaption {
+
+	//#region ATTRIBUTES
+
+	//#end region
+
+	//#region CONSTRUCTORS
+
+	/**
+	 * Constructor
+	 *
+	 * @param atom
+	 */
+	public AttributeParentCodeAdaption(AbstractAttributeParentAtom atom) {
+		super(atom);
+	}
+
+	//#end region
+
+	//#region METHODS
+
+	/**
+	 * Adds the attribute code for the AttributeParentAtom that corresponds to this code adaption to the given parent
+	 * code container. The purpose is to set the attribute values of the parentAtom that uses an underlying model.
+	 *
+	 * @param parentAtom
+	 * @param parentContainer
+	 * @return
+	 */
+	public CodeContainer extendAttributeCodeContainerForModelParent(
+			AbstractAtom parentAtom,
+			CodeContainer parentContainer) {
+
+		CodeContainer extendedContainer = parentContainer;
+
+		List<AbstractAtom> children = atom.getChildAtoms();
+
+		for (AbstractAtom child : children) {
+
+			boolean isAttributeParentAtom = child instanceof AbstractAttributeParentAtom;
+			if (isAttributeParentAtom) {
+				AbstractAttributeParentAtom attributeParentAtom = (AbstractAttributeParentAtom) child;
+				AttributeParentCodeAdaption codeAdaption = attributeParentAtom.createCodeAdaption(scriptType);
+				extendedContainer = codeAdaption
+						.extendAttributeCodeContainerForModelParent(parentAtom, parentContainer);
+
+			} else {
+
+				boolean isAttributeAtom = child instanceof AbstractAttributeAtom;
+				if (isAttributeAtom) {
+					AbstractAttributeAtom<?> attributeAtom = (AbstractAttributeAtom<?>) child;
+					AttributeAtomCodeAdaption<?> codeAdaption = attributeAtom.createCodeAdaption(scriptType);
+					extendedContainer = codeAdaption.extendAttributeCodeContainerForModelParent(parentAtom,
+							parentContainer);
+				} else {
+					String message = "The child atom " + child.getName()
+							+ " has to inherit from AttributeParentAtom or AttributeAtom but it is "
+							+ child.getClass().getSimpleName();
+					throw new IllegalStateException(message);
+				}
+			}
+		}
+
+		return extendedContainer;
+
+	}
+	//#end region
+}

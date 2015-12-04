@@ -1,0 +1,74 @@
+<!DOCTYPE HTML >
+<HTML>
+<head>
+	<link rel="stylesheet" href="../../../PRODUCT_PLUGIN/book.css" type="text/css">
+	<link rel="stylesheet"  type="text/css" href="../treezCore.css">
+	
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+</head>
+
+
+<body>
+
+	<h2>DoubleVariableField</h2>
+	
+	<p>
+		<h3>Purpose</h3>
+		
+		<p>
+		The purpose of the <a class = "doubleVariableField"></a> is to edit a double variable. 
+		It can be used by a <a class = "genericInputModel"></a>. 
+						
+		<h3>Class name</h3>
+		
+		org.treez.core.atom.variablefield.DoubleVariableField
+		
+		<h3>Construction</h3>
+		
+		A new <a class = "doubleVariableField"></a> is created by: 
+		<ul>
+			<li>using the context menu of a <a class="genericInputModel"></a> atom or
+			</li>
+			<li>by calling the corresponding factory method of the <a class="genericInputModel"></a> atom:	
+			<pre class="prettyprint">DoubleVariableField myNumber = genericModel.createDoubleVariableField("myNumber");</pre>	     
+			</li>
+		</ul>
+		
+		<h3>User interaction</h3>
+		
+		Each VariableField provides two controls: 
+		<ul>
+		<li>a so called <b>AttributeAtomControl</b> that is used to <b>edit a variable</b> 
+		(e.g. in the control of a <a class = "genericInputModel"></a>).</li>
+		<li>a control that allows to edit the <b>properties of the VariableField itself</b>
+		(e.g. the label and the tool tip that are used in the <b>AttributeAtomControl</b>.).</li>
+		</ul>
+		
+		<img src="../images/doubleVariableFieldScreenShot.png">
+		
+		<p>
+		The check box of the <b>AttributeAtomControl</b> enables/disables the VariableField. The context menu in the <a class = "treezView"></a> also allows to enable/disable the VariableField and to delete it. 
+		</p>
+				
+		<h3>Attributes</h3>
+		
+		<ul>
+			<li><b>Label</b>: the label that is used in the AttributeAtomControl.</li>
+			<li><b>DefaultValueString</b>: the default value of the variable as String. This value is used if the VariableField is reset.</li>	
+			<li><b>Tooltip</b>: the tool tip that is used in the AttributeAtomControl.</li>			
+		</ul>
+				
+	</p>
+	
+	<!-- add hyper links -->
+	<script>    
+	
+		$('.genericInputModel').attr('href','../../../org.treez.model/help/atoms/GenericInputModel.html'); 
+		
+	 
+	</script>
+	
+</body>
+
+</HTML>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.treez.core/help/TreezCoreHelpTocAnchor.xml#treez" label="Treez_Contribution">
+   <topic label="TreezModel">
+      <anchor id="treezModel"/>
+   </topic>
+</toc>

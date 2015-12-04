@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.treez.results
+Bundle-SymbolicName: org.treez.results;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.treez.results.Activator
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.treez.results,
+ org.treez.results.atom,
+ org.treez.results.atom.axis,
+ org.treez.results.atom.data,
+ org.treez.results.atom.graph,
+ org.treez.results.atom.page,
+ org.treez.results.atom.probe,
+ org.treez.results.atom.results,
+ org.treez.results.atom.xy
+Require-Bundle: org.apache.commons.io,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.forms,
+ org.treez.core,
+ org.treez.data,
+ org.treez.model,
+ org.eclipse.draw2d
+Bundle-Vendor: Stefan Eidelloth

@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.treez.views
+Bundle-SymbolicName: org.treez.views;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.treez.views.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.treez.perspective,
+ org.treez.views,
+ org.treez.views.graphics,
+ org.treez.views.properties,
+ org.treez.views.tree,
+ org.treez.views.tree.rootAtom
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.jface.text,
+ org.treez.core,
+ org.treez.results,
+ org.treez.model,
+ org.treez.study,
+ org.treez.data
+Bundle-Vendor: Stefan Eidelloth
+
+
+

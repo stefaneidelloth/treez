@@ -1,0 +1,8 @@
+ValidatorConfiguration.is_project_specific=true
+eclipse.preferences.version=1
+org.eclipse.xtext.grammar.BidirectionalReference=ignore
+org.eclipse.xtext.grammar.DuplicateEnumLiteral=ignore
+org.eclipse.xtext.grammar.InvalidMetaModelName=ignore
+org.eclipse.xtext.grammar.InvalidPackageReference.external=ignore
+org.eclipse.xtext.grammar.InvalidPackageReference.notOnClasspath=ignore
+org.eclipse.xtext.grammar.InvalidTerminalRuleName=ignore

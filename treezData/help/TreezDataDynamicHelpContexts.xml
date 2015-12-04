@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts>
+   <context id="executable">     
+      <topic href="help/gettingstarted/maintopic.html" label="Executable input arguments"/>
+   </context>
+   <context id="UNDEFINED_HELP_ID">
+      <topic href="help/gettingstarted/maintopic2.html" label="Help_Topic"/>
+   </context>
+</contexts>

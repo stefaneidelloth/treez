@@ -1,0 +1,3 @@
+function outSign = sign(v1)
+
+outSize = size(v1.value);

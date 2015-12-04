@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="GenericInputModel_Contribution" link_to="../org.treez.model/help/atoms/Atoms.xml#genericInputModel">
+  
+   <topic href="help/atoms/variablefield/QuantityVariableField.html" label="QuantityVariableField" icon="quantityVariable">
+   </topic>
+    <topic href="help/atoms/variablefield/DoubleVariableField.html" label="DoubleVariableField" icon="doubleVariable">
+   </topic>
+   <topic href="help/atoms/variablefield/BooleanVariableField.html" label="BooleanVariableField" icon="booleanVariable">
+   </topic>
+   <topic href="help/atoms/variablefield/StringVariableField.html" label="StringVariableField" icon="stringVariable">
+   </topic>
+   <topic href="help/atoms/variablefield/FilePathVariableField.html" label="FilePathVariableField" icon = "filePathVariable">
+   </topic>
+   <topic href="help/atoms/variablefield/DirectoryPathVariableField.html" label="DirectoryPathVariableField" icon="directoryPathVariable">
+   </topic>
+      
+</toc>

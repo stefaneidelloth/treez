@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.treez.feature"
+      label="Treez"
+      version="1.0.0.qualifier"
+      provider-name="Stefan Eidelloth"
+      plugin="org.treez.core">
+
+   <description url="https://sourceforge.net/projects/treez">
+      Treez is a set of Eclipse plugins for the creation of generic
+tree based user interfaces.
+Visit http://sourceforge.net/projects/treez/
+   </description>
+
+   <copyright url="http://sourceforge.net/projects/treez/">
+      Treez
+Treez is a set of Eclipse plugins for the creation of generic tree based user interfaces.
+Visit http://sourceforge.net/projects/treez/
+Copyright (c) 2015 Stefan Eidelloth
+This offering is based on technology from the Eclipse Project.
+Visit http://www.eclipse.org
+This product includes software developed by Apache. 
+Visit https://commons.apache.org/
+This product includes software developed by Spring IO. 
+Visit https://spring.io/
+   </copyright>
+
+   <license url="">
+      Treez Software User Agreement
+
+June, 20, 2015
+
+TREEZ
+
+Treez is licensed under the terms of the Eclipse Public License v1.0. A copy of the EPL is available 
+at http://www.eclipse.org/legal/epl-v10.html.
+   
+APPLICABLE LICENSES
+   
+Treez is built upon a number of other open source technologies and products.  Here is a list
+of those products with links to their licenses:
+
+Apache Commons  (subset)
+
+The plug-in is accompanied by a subset of Apache Commons, developed by the Apache Software Foundation. 
+This plug-in includes the following files which are located in the lib directory of the org.treez.core plug-in:
+commons-exec-1.3.jar
+commons-logging-1.2.jar    
+Your use of Apache Commons is subject to the terms and conditions of the Apache License, Version 2.0 
+(&quot;Apache License&quot;). A copy is available at http://www.apache.org/licenses/LICENSE-2.0.html.
+The source is available at the Apache Commons web site at http://commons.apache.org/dowloads.
+ 
+Apache Log4j
+ 
+The plug-in is accompanied by Log4j, developed by the Apache Software Foundation. 
+This plug-in includes the following files which are located in the lib directory of the org.treez.core plug-in:
+log4j-1.2.5.jar    
+Your use of Apache Commons is subject to the terms and conditions of the Apache License, Version 2.0 
+(&quot;Apache License&quot;). A copy is available at http://www.apache.org/licenses/LICENSE-2.0.html. 
+The source is available at the Apache Log4j web site at http://logging.apache.org/log4j/1.2/download.html.
+
+Spring Expression Language (SpEL)
+ 
+The plug-in is accompanied by the Spring Expression Language (SpEL) developed by Spring IO. 
+This plug-in includes the following files which are located in the lib directory of the org.treez.core plug-in:
+spring-expression-4.1.6.RELEASE.jar
+spring-core-4.1.6.RELEASE.jar     
+Your use of Spring Expression Language is subject to the terms and conditions of the Apache License, Version 2.0 
+(&quot;Apache License&quot;). A copy is available at http://www.apache.org/licenses/LICENSE-2.0.html. 
+The source is available at the maven repository:
+http://mvnrepository.com/artifact/org.springframework/spring-expression/4.1.6.RELEASE
+http://mvnrepository.com/artifact/org.springframework/spring-core/4.1.6.RELEASE
+
+
+Nebula
+ 
+The plug-in is accompanied by a subset of Nebula Widgets, developed by the Eclipse Foundation. 
+This plug-in includes the following files which are located in the lib directory of the org.treez.data plug-in
+org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar
+Your use of Nebula Widgets is subject to the terms and conditions of the the Eclipse Public License v1.0. 
+A copy of the EPL is available at http://www.eclipse.org/legal/epl-v10.html.
+The source is available at the Nebula web site at https://eclipse.org/nebula/downloads.php.
+ 
+
+IT IS YOUR OBLIGATION TO READ AND ACCEPT ALL SUCH TERMS AND CONDITIONS PRIOR TO USE OF THIS CONTENT
+   </license>
+
+   <url>
+      <update label="org.treez" url="https://svn.code.sf.net/p/treez/code/_trunk/treezUpdate/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.apache.commons.lang3"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.rcp"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.wb.core.lib"/>
+      <import plugin="org.apache.commons.io"/>
+      <import plugin="org.eclipse.core.runtime" version="3.10.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.treez.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.treez.views"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.treez.data"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.treez.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.treez.study"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.treez.results"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

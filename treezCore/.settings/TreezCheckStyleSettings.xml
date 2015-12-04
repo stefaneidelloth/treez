@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<!--
+    This configuration file was written by the eclipse-cs plugin configuration editor
+-->
+<!--
+    Checkstyle-Configuration: TreezCheckStyleSettings
+    Description: none
+-->
+<module name="Checker">
+  <property name="severity" value="warning"/>
+  <module name="TreeWalker">
+    <property name="tabWidth" value="4"/>
+    <module name="FileContentsHolder"/>
+    <module name="SuppressWarningsHolder"/>
+    <module name="JavadocMethod">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:javadocmethod"/>
+      <property name="allowMissingParamTags" value="true"/>
+      <property name="allowMissingThrowsTags" value="true"/>
+      <property name="allowMissingReturnTag" value="true"/>
+      <property name="suppressLoadErrors" value="true"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="JavadocType">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:javadoctype"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="JavadocVariable">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:javadocvariable"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="JavadocStyle">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:javadocstyle"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="ConstantName">
+      <property name="id" value="checkstyle:constantname"/>
+    </module>
+    <module name="LocalFinalVariableName">
+      <property name="id" value="checkstyle:localfinalvariablename"/>
+    </module>
+    <module name="LocalVariableName">
+      <property name="id" value="checkstyle:localvariablename"/>
+    </module>
+    <module name="MemberName">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:membername"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="MethodName">
+      <property name="id" value="checkstyle:methodname"/>
+    </module>
+    <module name="PackageName">
+      <property name="id" value="checkstyle:packagename"/>
+    </module>
+    <module name="ParameterName">
+      <property name="id" value="checkstyle:parametername"/>
+    </module>
+    <module name="StaticVariableName">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:staticvariablename"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="TypeName">
+      <property name="id" value="checkstyle:typename"/>
+    </module>
+    <module name="AvoidStarImport">
+      <property name="id" value="checkstyle:avoidstarimport"/>
+    </module>
+    <module name="IllegalImport">
+      <property name="id" value="checkstyle:illegalimport"/>
+    </module>
+    <module name="RedundantImport">
+      <property name="id" value="checkstyle:redundantimport"/>
+    </module>
+    <module name="ParameterNumber">
+      <property name="id" value="checkstyle:parameternumber"/>
+    </module>
+    <module name="EmptyForIteratorPad">
+      <property name="id" value="checkstyle:emptyforiteratorpad"/>
+    </module>
+    <module name="MethodParamPad">
+      <property name="id" value="checkstyle:methodparampad"/>
+    </module>
+    <module name="NoWhitespaceAfter">
+      <property name="id" value="checkstyle:nowhitespaceafter"/>
+      <property name="tokens" value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS"/>
+    </module>
+    <module name="NoWhitespaceBefore">
+      <property name="id" value="checkstyle:nowhitespacebefore"/>
+    </module>
+    <module name="OperatorWrap">
+      <property name="id" value="checkstyle:operatorwrap"/>
+    </module>
+    <module name="ParenPad">
+      <property name="id" value="checkstyle:parenpad"/>
+    </module>
+    <module name="TypecastParenPad">
+      <property name="id" value="checkstyle:typecastparenpad"/>
+    </module>
+    <module name="WhitespaceAfter">
+      <property name="id" value="checkstyle:whitespaceafter"/>
+    </module>
+    <module name="ModifierOrder">
+      <property name="id" value="checkstyle:modifierorder"/>
+    </module>
+    <module name="RedundantModifier">
+      <property name="id" value="checkstyle:redundantmodifier"/>
+    </module>
+    <module name="LeftCurly">
+      <property name="id" value="checkstyle:leftcurly"/>
+    </module>
+    <module name="NeedBraces">
+      <property name="id" value="checkstyle:needbraces"/>
+    </module>
+    <module name="RightCurly">
+      <property name="id" value="checkstyle:rightcurly"/>
+    </module>
+    <module name="AvoidInlineConditionals">
+      <property name="id" value="checkstyle:avoidinlineconditionals"/>
+    </module>
+    <module name="EmptyStatement">
+      <property name="id" value="checkstyle:emptystatement"/>
+    </module>
+    <module name="HiddenField">
+      <property name="id" value="checkstyle:hiddenfield"/>
+      <property name="tokens" value="VARIABLE_DEF"/>
+    </module>
+    <module name="IllegalInstantiation">
+      <property name="id" value="checkstyle:illegalinstantiation"/>
+    </module>
+    <module name="InnerAssignment">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:innerassignment"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="MagicNumber">
+      <property name="id" value="checkstyle:magicnumber"/>
+    </module>
+    <module name="MissingSwitchDefault">
+      <property name="id" value="checkstyle:missingswitchdefault"/>
+    </module>
+    <module name="RedundantThrows">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:redundantthrows"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="SimplifyBooleanExpression">
+      <property name="id" value="checkstyle:simplifybooleanexpression"/>
+    </module>
+    <module name="SimplifyBooleanReturn">
+      <property name="id" value="checkstyle:simplifybooleanreturn"/>
+    </module>
+    <module name="DesignForExtension">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:designforextension"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="FinalClass">
+      <property name="id" value="checkstyle:finalclass"/>
+    </module>
+    <module name="HideUtilityClassConstructor">
+      <property name="id" value="checkstyle:hideutilityclassconstructor"/>
+    </module>
+    <module name="VisibilityModifier">
+      <property name="id" value="checkstyle:visibilitymodifier"/>
+      <property name="protectedAllowed" value="true"/>
+    </module>
+    <module name="ArrayTypeStyle">
+      <property name="id" value="checkstyle:arraytypestyle"/>
+    </module>
+    <module name="UpperEll">
+      <property name="id" value="checkstyle:upperell"/>
+    </module>
+    <module name="AnnotationUseStyle">
+      <property name="id" value="checkstyle:annotationusestyle"/>
+    </module>
+    <module name="MissingDeprecated">
+      <property name="id" value="checkstyle:missingdeprecated"/>
+    </module>
+    <module name="MissingOverride">
+      <property name="id" value="checkstyle:missingoverride"/>
+    </module>
+    <module name="PackageAnnotation">
+      <property name="id" value="checkstyle:packageannotation"/>
+    </module>
+    <module name="AbstractClassName">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:abstractclassname"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="AnonInnerLength">
+      <property name="id" value="checkstyle:anoninnerlength"/>
+      <property name="max" value="30"/>
+    </module>
+    <module name="ExecutableStatementCount">
+      <property name="id" value="checkstyle:executablestatementcount"/>
+      <property name="tokens" value="INSTANCE_INIT,STATIC_INIT,METHOD_DEF,CTOR_DEF"/>
+    </module>
+    <module name="LineLength">
+      <property name="id" value="checkstyle:linelength"/>
+      <property name="max" value="130"/>
+      <property name="tabWidth" value="4"/>
+    </module>
+    <module name="MethodLength">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:methodlength"/>
+      <property name="max" value="20"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="OuterTypeNumber">
+      <property name="id" value="checkstyle:outertypenumber"/>
+    </module>
+    <module name="RegexpSinglelineJava">
+      <metadata name="net.sf.eclipsecs.core.comment" value="Avoids System.out.println"/>
+      <property name="id" value="checkstyle:regexpsinglelinejava"/>
+      <property name="format" value="^.*System.out.println.*$"/>
+      <property name="ignoreComments" value="true"/>
+    </module>
+    <module name="AvoidNestedBlocks">
+      <property name="id" value="checkstyle:avoidnestedblocks"/>
+      <property name="allowInSwitchCase" value="true"/>
+    </module>
+    <module name="CovariantEquals">
+      <property name="id" value="checkstyle:covariantequals"/>
+    </module>
+    <module name="DefaultComesLast">
+      <property name="id" value="checkstyle:defaultcomeslast"/>
+    </module>
+    <module name="DeclarationOrder">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:declarationorder"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="EqualsHashCode">
+      <property name="id" value="checkstyle:equalshashcode"/>
+    </module>
+    <module name="FallThrough">
+      <property name="id" value="checkstyle:fallthrough"/>
+    </module>
+    <module name="IllegalCatch">
+      <property name="id" value="checkstyle:illegalcatch"/>
+    </module>
+    <module name="IllegalThrows">
+      <property name="id" value="checkstyle:illegalthrows"/>
+    </module>
+    <module name="MissingCtor">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:missingctor"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="ModifiedControlVariable">
+      <property name="id" value="checkstyle:modifiedcontrolvariable"/>
+    </module>
+    <module name="MultipleStringLiterals">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:multiplestringliterals"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="MultipleVariableDeclarations">
+      <property name="id" value="checkstyle:multiplevariabledeclarations"/>
+    </module>
+    <module name="NestedForDepth">
+      <property name="id" value="checkstyle:nestedfordepth"/>
+      <property name="max" value="2"/>
+    </module>
+    <module name="NestedIfDepth">
+      <property name="id" value="checkstyle:nestedifdepth"/>
+      <property name="max" value="2"/>
+    </module>
+    <module name="NestedTryDepth">
+      <property name="id" value="checkstyle:nestedtrydepth"/>
+    </module>
+    <module name="NoClone">
+      <property name="id" value="checkstyle:noclone"/>
+    </module>
+    <module name="NoFinalizer">
+      <property name="id" value="checkstyle:nofinalizer"/>
+    </module>
+    <module name="ParameterAssignment">
+      <property name="id" value="checkstyle:parameterassignment"/>
+    </module>
+    <module name="StringLiteralEquality">
+      <property name="id" value="checkstyle:stringliteralequality"/>
+    </module>
+    <module name="OneStatementPerLine">
+      <property name="id" value="checkstyle:onestatementperline"/>
+    </module>
+    <module name="InnerTypeLast">
+      <property name="id" value="checkstyle:innertypelast"/>
+    </module>
+    <module name="InterfaceIsType">
+      <property name="id" value="checkstyle:interfaceistype"/>
+    </module>
+    <module name="MutableException">
+      <property name="id" value="checkstyle:mutableexception"/>
+    </module>
+    <module name="BooleanExpressionComplexity">
+      <property name="id" value="checkstyle:booleanexpressioncomplexity"/>
+    </module>
+    <module name="ClassFanOutComplexity">
+      <property name="id" value="checkstyle:classfanoutcomplexity"/>
+      <property name="max" value="30"/>
+    </module>
+    <module name="JavaNCSS">
+      <property name="id" value="checkstyle:javancss"/>
+      <property name="methodMaximum" value="30"/>
+    </module>
+    <module name="NPathComplexity">
+      <property name="id" value="checkstyle:npathcomplexity"/>
+      <property name="max" value="1200"/>
+    </module>
+    <module name="TrailingComment">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:trailingcomment"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="UncommentedMain">
+      <property name="id" value="checkstyle:uncommentedmain"/>
+    </module>
+    <module name="CyclomaticComplexity">
+      <property name="id" value="checkstyle:cyclomaticcomplexity"/>
+      <property name="max" value="8"/>
+    </module>
+    <module name="StrictDuplicateCode">
+      <property name="severity" value="ignore"/>
+      <property name="id" value="checkstyle:strictduplicatecode"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="SuppressWarnings">
+      <property name="id" value="checkstyle:suppresswarnings"/>
+    </module>
+    <module name="RegexpSinglelineJava">
+      <metadata name="net.sf.eclipsecs.core.comment" value="Avoids System.err.write"/>
+      <property name="id" value="checkstyle:regexpsinglelinejava"/>
+      <property name="format" value="^.*System.err.write.*$"/>
+    </module>
+  </module>
+  <module name="JavadocPackage">
+    <property name="severity" value="ignore"/>
+    <property name="id" value="checkstyle:javadocpackage"/>
+    <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+  </module>
+  <module name="Translation">
+    <property name="id" value="checkstyle:translation"/>
+  </module>
+  <module name="FileLength">
+    <property name="severity" value="ignore"/>
+    <property name="id" value="checkstyle:filelength"/>
+    <property name="max" value="1300"/>
+    <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+  </module>
+  <module name="NewlineAtEndOfFile">
+    <property name="id" value="checkstyle:newlineatendoffile"/>
+    <property name="fileExtensions" value="*.java"/>
+  </module>
+  <module name="SuppressWithNearbyCommentFilter"/>
+  <module name="SuppressWarningsFilter"/>
+  <module name="SuppressionCommentFilter">
+    <metadata name="net.sf.eclipsecs.core.comment" value="Single warning"/>
+    <property name="offCommentFormat" value="CHECKSTYLE\:OFF\: ([\w\|]+)"/>
+    <property name="onCommentFormat" value="CHECKSTYLE\:ON\: ([\w\|]+)"/>
+    <property name="checkFormat" value="$1"/>
+  </module>
+</module>

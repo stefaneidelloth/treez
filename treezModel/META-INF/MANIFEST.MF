@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.treez.model
+Bundle-SymbolicName: org.treez.model;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.treez.model.Activator
+Require-Bundle: org.apache.commons.io,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.jface,
+ org.treez.core,
+ org.treez.data,
+ org.eclipse.help
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.treez.model,
+ org.treez.model.atom,
+ org.treez.model.atom.executable,
+ org.treez.model.atom.genericInput,
+ org.treez.model.input,
+ org.treez.model.interfaces,
+ org.treez.model.output,
+ org.treez.model.tableImport
+Bundle-Vendor: Stefan Eidelloth

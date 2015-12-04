@@ -1,0 +1,471 @@
+package org.treez.core.atom.attribute;
+
+import java.awt.Color;
+import java.util.List;
+import java.util.Objects;
+
+import org.apache.log4j.Logger;
+import org.eclipse.jface.preference.ColorSelector;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.treez.core.Activator;
+import org.treez.core.adaptable.Refreshable;
+import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.base.annotation.IsParameter;
+import org.treez.core.swt.CustomLabel;
+
+/**
+ * Allows the user to choose a value
+ */
+public class ColorChooser extends AbstractAttributeAtom<String> {
+
+	/**
+	 * Logger for this class
+	 */
+	@SuppressWarnings("unused")
+	private static Logger sysLog = Logger.getLogger(ColorChooser.class);
+
+	//#region ATTRIBUTES
+
+	@IsParameter(defaultValue = "My Color:")
+	private String label;
+
+	@IsParameter(defaultValue = "#ffffff")
+	private String defaultValue;
+
+	@IsParameter(defaultValue = "")
+	private String tooltip;
+
+	private ImageCombo colorCombo = null;
+
+	/**
+	 * Predefined value names
+	 */
+	private final List<String> colors = ColorValue.getAllStringValues();
+
+	/**
+	 * Predefined value values
+	 */
+	private final List<String> colorsHex = ColorValue.getAllHexCodes();
+
+	//#end region
+
+	//#region CONSTRUCTORS
+
+	/**
+	 * Constructor
+	 *
+	 * @param name
+	 */
+	public ColorChooser(String name) {
+		super(name);
+		label = name;
+	}
+
+	/**
+	 * Copy constructor
+	 *
+	 * @param colorChooserToCopy
+	 */
+	private ColorChooser(ColorChooser colorChooserToCopy) {
+		super(colorChooserToCopy);
+		label = colorChooserToCopy.label;
+		defaultValue = colorChooserToCopy.defaultValue;
+		tooltip = colorChooserToCopy.tooltip;
+	}
+
+	/**
+	 * Constructor with default value
+	 *
+	 * @param name
+	 * @param defaultColor
+	 */
+	public ColorChooser(String name, String defaultColor) {
+		super(name);
+		label = name;
+		setDefaultValue(defaultColor);
+	}
+
+	//#end region
+
+	//#region METHODS
+
+	//#region COPY
+
+	@Override
+	public ColorChooser copy() {
+		return new ColorChooser(this);
+	}
+
+	//#end region
+
+	/**
+	 * Provides an image to represent this atom
+	 */
+	@Override
+	public Image provideImage() {
+		return Activator.getImage("ColorChooser.png");
+	}
+
+	@Override
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
+
+		//initialize value at the first call
+		if (!isInitialized()) {
+			set(defaultValue);
+		}
+
+		//toolkit
+		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
+
+		//create grid data to use all horizontal space
+		GridData fillHorizontal = new GridData();
+		fillHorizontal.grabExcessHorizontalSpace = true;
+		fillHorizontal.horizontalAlignment = GridData.FILL;
+
+		//create container control for label and text field
+		Composite container = createContainer(parent, toolkit, fillHorizontal);
+
+		//label
+		String currentLabel = getLabel();
+		CustomLabel labelComposite = new CustomLabel(toolkit, container,
+				currentLabel);
+		final int prefferedLabelWidth = 80;
+		labelComposite.setPrefferedWidth(prefferedLabelWidth);
+
+		//button value
+		//chooser-----------------------------------------------------
+		final ColorSelector colorSelector = new ColorSelector(container);
+		Button colorButton = colorSelector.getButton();
+		RGB rgb = getColorRgb();
+		colorSelector.setColorValue(rgb);
+
+		//combo box value
+		//chooser-------------------------------------------------
+		colorCombo = new ImageCombo(container, SWT.DEFAULT);
+		colorCombo.setEnabled(isEnabled());
+		colorCombo.setEditable(false);
+
+		//set predefined colors
+		final List<String> currentColors = getColors();
+
+		final List<String> currentColorsHex = getColorsHex();
+
+		for (String colorString : currentColors) {
+			colorCombo.add(colorString,
+					Activator.getImage(colorString + ".png"));
+		}
+		colorCombo.add("#custom#", null);
+
+		//initialize selected item
+		initializeSelectedItem(currentColors, currentColorsHex);
+
+		//action
+		//listeners----------------------------------------------------------
+		//action listener for combo box
+		SelectionAdapter colorComboListener = createColorComboSelectionListener(
+				colorSelector, currentColors, currentColorsHex);
+		colorCombo.addSelectionListener(colorComboListener);
+
+		//action listener for value button
+		SelectionAdapter colorButtonListener = createColorButtonSelectionListener(
+				colorSelector);
+		colorButton.addSelectionListener(colorButtonListener);
+
+		return this;
+	}
+
+	@SuppressWarnings("checkstyle:magicnumber")
+	private static Composite createContainer(Composite parent,
+			FormToolkit toolkit, GridData fillHorizontal) {
+		Composite container = toolkit.createComposite(parent);
+		GridLayout gridLayout = new GridLayout(3, false);
+		gridLayout.horizontalSpacing = 10;
+		container.setLayout(gridLayout);
+		container.setLayoutData(fillHorizontal);
+		return container;
+	}
+
+	private void initializeSelectedItem(final List<String> currentColors,
+			final List<String> currentColorsHex) {
+		String colorHex = get();
+		boolean colorExists = currentColorsHex.contains(colorHex);
+		if (colorExists) {
+			//select value from existing colors in combo box
+			int index = currentColorsHex.indexOf(colorHex);
+			colorCombo.select(index);
+		} else {
+			//select #selector#
+			int index = currentColors.size();
+			colorCombo.select(index);
+		}
+	}
+
+	/**
+	 * Creates the listener for the color combo box
+	 *
+	 * @param colorSelector
+	 * @param currentColors
+	 * @param currentColorsHex
+	 * @return
+	 */
+	private SelectionAdapter createColorComboSelectionListener(
+			final ColorSelector colorSelector, final List<String> currentColors,
+			final List<String> currentColorsHex) {
+		return new SelectionAdapter() {
+
+			@SuppressWarnings("synthetic-access")
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int index = colorCombo.getSelectionIndex();
+				if (index < currentColors.size()) {
+					//apply value from combo box and update value button
+					String colorHex = currentColorsHex.get(index);
+					set(colorHex);
+					RGB rgb = getColorRgb();
+					colorSelector.setColorValue(rgb);
+				} else {
+					//apply value from button
+					RGB color = colorSelector.getColorValue();
+					setColorRGB(color);
+				}
+
+				//trigger modification listeners
+				triggerModificationListeners();
+			}
+		};
+	}
+
+	/**
+	 * Creates the listener for the color button
+	 *
+	 * @param colorSelector
+	 * @return
+	 */
+	private SelectionAdapter createColorButtonSelectionListener(
+			final ColorSelector colorSelector) {
+		return new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//apply value
+				RGB color = colorSelector.getColorValue();
+				setColorRGB(color);
+
+				refreshAttributeAtomControl();
+			}
+		};
+	}
+
+	@Override
+	public void refreshAttributeAtomControl() {
+		//update combo box
+		if (isAvailable(colorCombo)) {
+			String currentColorHex = get();
+			boolean colorExists = colorsHex.contains(currentColorHex);
+			if (colorExists) {
+				//select value from existing colors in combo box
+				int index = colorsHex.indexOf(currentColorHex);
+				if (colorCombo.getSelectionIndex() != index) {
+					colorCombo.select(index);
+				}
+			} else {
+				//select #selector#
+				int index = colors.size();
+				if (colorCombo.getSelectionIndex() != index) {
+					colorCombo.select(index);
+				}
+			}
+		}
+	}
+
+	//#end region
+
+	//#region ACCESSORS
+
+	/**
+	 * @return
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * @return
+	 */
+	@Override
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
+	/**
+	 * Sets the default color with the given hex color string or color name
+	 *
+	 * @param defaultColor
+	 */
+	public void setDefaultValue(String defaultColor) {
+
+		boolean isHexColor = defaultColor.substring(0, 1).equals("#");
+		if (isHexColor) {
+			attributeValue = defaultColor;
+		} else {
+			if (colors.contains(defaultColor)) {
+				int index = colors.indexOf(defaultColor);
+				attributeValue = colorsHex.get(index);
+			} else {
+				throw new IllegalArgumentException("The specified value '"
+						+ defaultColor + "' is not know.");
+			}
+		}
+
+		this.defaultValue = attributeValue;
+	}
+
+	/**
+	 * Sets the default color
+	 *
+	 * @param colorValue
+	 */
+	public void setDefaultValue(ColorValue colorValue) {
+		setDefaultValue(colorValue.getHexCode());
+	}
+
+	/**
+	 * @return
+	 */
+	public String getTooltip() {
+		return tooltip;
+	}
+
+	/**
+	 * @param tooltip
+	 */
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
+	}
+
+	/**
+	 * Get value as string
+	 *
+	 * @return the value
+	 */
+	public String getColorString() {
+		return attributeValue;
+	}
+
+	/**
+	 * Get value
+	 *
+	 * @return
+	 */
+	public Color getColor() {
+		Objects.requireNonNull(attributeValue, "The value has not been set.");
+		String colorString = get();
+		try {
+			Color color = Color.decode(colorString);
+			return color;
+		} catch (NumberFormatException exception) {
+			throw new IllegalStateException(
+					"Could not decode color value '" + colorString + "'");
+		}
+	}
+
+	/**
+	 * Get value as rgb
+	 *
+	 * @return
+	 */
+	public RGB getColorRgb() {
+		Color colorObj = getColor();
+		int red = colorObj.getRed();
+		int green = colorObj.getGreen();
+		int blue = colorObj.getBlue();
+		return new RGB(red, green, blue);
+	}
+
+	/**
+	 * Sets the value with given rgb
+	 *
+	 * @param rgb
+	 */
+	public void setColorRGB(RGB rgb) {
+		String valueString = String.format("#%02x%02x%02x", rgb.red, rgb.green,
+				rgb.blue);
+		super.set(valueString);
+	}
+
+	/**
+	 * Returns the value as hex-string
+	 *
+	 * @return
+	 */
+	@Override
+	public String get() {
+		return super.get();
+	}
+
+	/**
+	 * @param value
+	 */
+	@Override
+	public void set(String value) {
+		boolean isHexColor = value.substring(0, 1).equals("#");
+		if (isHexColor) {
+			super.set(value);
+		} else {
+			boolean isTextColor = colors.contains(value);
+			if (isTextColor) {
+				String hexColor = ColorValue.getHexCode(value);
+				super.set(hexColor);
+			} else {
+				throw new IllegalArgumentException("The string '" + value
+						+ "' could not be interpreted as color.");
+			}
+		}
+	}
+
+	/**
+	 * Get predefined value names
+	 *
+	 * @return the colors
+	 */
+	public List<String> getColors() {
+		return colors;
+	}
+
+	/**
+	 * Get predefined value hex strings
+	 *
+	 * @return the colorsHex
+	 */
+	public List<String> getColorsHex() {
+		return colorsHex;
+	}
+
+	@Override
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
+		throw new IllegalStateException("Not yet implemented");
+
+	}
+
+	//#end region
+
+}

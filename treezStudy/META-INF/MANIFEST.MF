@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.treez.study
+Bundle-SymbolicName: org.treez.study;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.treez.study.Activator
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.treez.core,
+ org.treez.data,
+ org.treez.model,
+ org.eclipse.wb.core.lib,
+ org.treez.results,
+ javafx-d3
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.treez.study,
+ org.treez.study.atom,
+ org.treez.study.atom.picking,
+ org.treez.study.atom.probability,
+ org.treez.study.atom.range,
+ org.treez.study.atom.sensitivity,
+ org.treez.study.atom.sweep
+Import-Package: org.treez.results.atom.results
+Bundle-Vendor: Stefan Eidelloth

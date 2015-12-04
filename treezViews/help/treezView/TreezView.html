@@ -1,0 +1,52 @@
+<!DOCTYPE HTML >
+<HTML>
+<head>
+<link rel="stylesheet" href="../../../PRODUCT_PLUGIN/book.css" type="text/css">
+<link rel="stylesheet" href="../atoms/treezViews.css" type="text/css">
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+</head>
+
+<body>
+<H2>Treez View</H2>
+
+<H3>Purpose</H3>
+
+<p>
+The <a class="treezView"></a> is the heart of Treez. It <b>displays a tree model</b> of the application and 
+provides <b>actions</b> to edit the tree model. Each node of the tree represents a corresponding Treez <b>atom</b>.
+</p>
+
+<img src="images/treez_view.png" style="width:220px">  
+
+<H3>Tool bar actions of the Treez View</H3>
+
+<ul>
+<li> <img src = "images/createRoot.png" align="top">: <b>Creates a</b> <a class="root"></a> atom and sets it as the content of the <a class="treezView"></a>. 
+The previous content of the <a class="treezView"></a> will be overwritten. </li>
+<li><img src = "images/toTree.png" align="top">: <b>Imports a tree</b> from the currently opened Java file. 
+The previous content of the <a class="treezView"></a> will be overwritten. </li>
+<li><img src = "images/fromTree.png" align="top">: <b>Exports the tree</b> to the currently opened Java file. 
+The previous content of the Java file is overwritten.</li>
+<li><img src = "images/help.png" align="top">: Shows the <b>Treez help</b>.</li>
+</ul>
+
+
+<H3>Tree node mouse actions</H3>
+
+<ul>
+<li> <b>Left-click</b>: Shows the properties of the corresponding Treez atom in the <a class="treezPropertiesView"></a>.</li>
+<li> <b>Right-click</b>: Shows a <b>context menu</b> which provides further actions 
+                         that are specific to the tree node/atom.</li>
+<li> <b>Double-click</b>: Fully <b>expands</b> or <b>collapses</b> the tree node.</li>
+</ul>
+
+</body>
+
+<!-- add hyper links -->
+<script>   		
+	$('.treezPropertiesView').attr('href','../treezPropertiesView/TreezPropertiesView.html'); 	
+	$('.root').attr('href','../atoms/Root.html'); 			 
+</script>
+
+</HTML>

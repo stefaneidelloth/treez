@@ -1,0 +1,3 @@
+function NPoints = length(v1)
+
+vOut.value = v1.value.';

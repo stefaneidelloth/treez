@@ -1,0 +1,97 @@
+/* 
+ * This is a less-css file that needs to be compiled to a css file.
+ * In order to do so you can use WinLess: http://winless.org/
+ * Less is an "extension" of css that allows to use variables,
+ * "inheritance" of css rule-sets and so on, see http://lesscss.org/features/. 
+ */
+
+
+//#region HEADERS 
+
+//h2 HEADER
+h2{
+	color:green;
+}
+
+//h3 HEADER
+h3{
+	color:#552200; //dark brown
+}
+
+//#end region
+
+//#region ATOMS
+
+/* 
+ * generic rule-set for atoms which is referenced by the 
+ * individual atom rule-sets.
+ */
+.atombase (@name, @imagePath) {
+	&:before { 
+		content: @name;
+	}
+	background-image: url(@imagePath);
+	background-repeat: no-repeat;
+	padding-left: 18px; 
+	padding-bottom: 2px; 
+	font-weight: bold;
+}
+
+.root{.atombase("Root","../../../org.treez.views/help/atoms/images/root.png")}
+
+.models{.atombase("Models","../../../org.treez.model/help/atoms/images/models.png")}
+
+.genericInputModel{.atombase("GenericInputModel","../../../org.treez.model/help/atoms/images/genericModel.png")}
+
+.studies{.atombase("Studies","../../../org.treez.study/help/atoms/images/studies.png")}
+
+.results{.atombase("Results","../../../org.treez.results/help/atoms/images/results.png")}
+
+.booleanVariableField{.atombase("BooleanVariableField","../../../org.treez.core/help/atoms/images/booleanVariable.png")}
+
+.doubleVariableField{.atombase("DoubleVariableField","../../../org.treez.core/help/atoms/images/doubleVariable.png")}
+
+.stringVariableField{.atombase("StringVariableField","../../../org.treez.core/help/atoms/images/stringVariable.png")}
+
+.quantityVariableField{.atombase("QuantityVariableField","../../../org.treez.core/help/atoms/images/quantityVariable.png")}
+
+.filePathVariableField{.atombase("FilePathVariableField","../../../org.treez.core/help/atoms/images/filePathVariable.png")}
+
+.directoryPathVariableField{.atombase("DirectoryPathVariableField","../../../org.treez.core/help/atoms/images/directoryPathVariable.png")}
+
+//#end region
+
+//region VIEWS
+
+/* generic rule-set for atoms which is referenced by the 
+ * individual view rule-sets.
+ */
+.viewbase(@name) {
+	&:before{
+		content: @name;
+	}
+	color: green;
+	font-weight: bold;	
+}
+
+.treezView{.viewbase("Treez View")}
+
+.treezPropertiesView{.viewbase("Treez Properties View")}
+
+.treezGraphicsView{.viewbase("Treez Graphics View")}
+
+.textEditor{.viewbase("Text Editor")}
+
+
+
+//#end region
+
+//#region OTHERS
+
+//JAVA CODE STYLE FOR PRETTYPRINT
+.prettyprint {
+	font-size:12px;
+	font-family:consolas;
+}
+
+//#end region

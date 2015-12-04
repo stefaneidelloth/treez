@@ -1,0 +1,48 @@
+<!DOCTYPE HTML >
+<HTML>
+<head>
+<link rel="stylesheet" href="../../../PRODUCT_PLUGIN/book.css" type="text/css">
+<link rel="stylesheet" href="../atoms/treezViews.css" type="text/css">
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+</head>
+
+<body>
+
+<H2>Treez Properties View</H2>
+
+<H3>Purpose</H3>
+
+The <a class="treezPropertiesView"></a> shows the properties of a Treez <b>atom</b>. 
+Treez atoms are also represented by corresponding tree nodes in the <a class="treezView"></a>. 
+The <a class="treezPropertiesView"></a> allows the user to <b>inspect</b> and <b>edit</b> the 
+properties of an <b>atom</b>. Each <b>atom</b> is responsible for providing a corresponding 
+control for the <a class="treezPropertiesView"></a> through its so called <b>AtomControlAdaption</b>.
+In addition to input widgets like text fields and check boxes, some atoms provide actions for the
+<a class="treezPropertiesView"></a> (e.g. a play button that starts a simulation).  
+
+<H3>Hierarchical structure</H3>
+
+The <a class="treezPropertiesView"></a> is organized in an hierarchical structure:
+<ul>
+ <li>The topmost elements are <b>pages</b> that are shown as <b>tabs in a tab folder</b>. </li>
+ <li>A page contains <b>sections</b>. </li>
+ <li>A section contains <b>attribute atoms</b>. A section might also contain sub sections. Each section can 
+    be collapsed and each section has a blue header as well as a tool bar. If you click on the help button 
+    of a section you will get context specific help.</li>
+ <li>An <b>attribute atom</b> provides widgets (e.g. text field, combo box, table view) that can be used 
+	to edit one or several <b>properties</b>.</li>
+</ul>
+
+<img src="images/treez_properties_view.png" style="width:394px" align="left">
+
+
+
+</body>
+
+<!-- add hyper links -->
+<script>   		
+	$('.treezView').attr('href','../treezView/TreezView.html'); 		 
+</script>
+
+</HTML>

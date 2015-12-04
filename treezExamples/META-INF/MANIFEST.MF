@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: TreezExamples
+Bundle-SymbolicName: TreezExamples
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.treez.example
+Require-Bundle: org.treez.core,
+ org.treez.data,
+ org.treez.model,
+ org.treez.results,
+ org.treez.study,
+ org.treez.views
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Stefan Eidelloth

@@ -1,0 +1,670 @@
+package org.treez.model.atom.executable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Image;
+import org.treez.core.adaptable.CodeAdaption;
+import org.treez.core.adaptable.Refreshable;
+import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
+import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
+import org.treez.core.atom.attribute.FileOrDirectoryPath;
+import org.treez.core.atom.attribute.FilePath;
+import org.treez.core.atom.attribute.InfoText;
+import org.treez.core.atom.attribute.Page;
+import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
+import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Wrap;
+import org.treez.core.scripting.ScriptType;
+import org.treez.core.treeview.TreeViewerRefreshable;
+import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
+import org.treez.core.utils.Utils;
+import org.treez.model.Activator;
+import org.treez.model.atom.AbstractModel;
+import org.treez.model.output.ModelOutput;
+
+/**
+ * Represents an external executable that can be executed with additional command line arguments and file paths
+ */
+@SuppressWarnings({ "checkstyle:visibilitymodifier", "checkstyle:classfanoutcomplexity" })
+public class Executable extends AbstractModel implements FilePathProvider {
+
+	/**
+	 * Logger for this class
+	 */
+	private static Logger sysLog = Logger.getLogger(Executable.class);
+
+	//#region ATTRIBUTES
+
+	/**
+	 *
+	 */
+	public final Attribute<String> executablePath = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> inputArguments = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> inputPath = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> outputArguments = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> outputPath = new Wrap<>();
+
+	/**
+	 *
+	 */
+	private String modifiedOutputPath;
+
+	/**
+	 *
+	 */
+	public final Attribute<Boolean> copyInputFile = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<Boolean> includeDateInFile = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<Boolean> includeDateInFolder = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<Boolean> includeDateInSubFolder = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<Boolean> includeStudyIndexInFile = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<Boolean> includeStudyIndexInFolder = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<Boolean> includeStudyIndexInSubFolder = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> logArguments = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> logFilePath = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> commandInfo = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> executionStatusInfo = new Wrap<>();
+
+	/**
+	 *
+	 */
+	public final Attribute<String> studyIndexInfo = new Wrap<>();
+
+	//#region execution status
+
+	@SuppressWarnings("unused")
+	private boolean executionIsRunning = false;
+
+	//#end region
+
+	//#end region
+
+	//#region CONSTRUCTORS
+
+	/**
+	 * Constructor
+	 *
+	 * @param name
+	 */
+	public Executable(String name) {
+		super(name);
+		setRunnable();
+
+		AttributeRoot root = new AttributeRoot("root");
+		Page dataPage = root.createPage("data", "   Data   ");
+
+		//update status listener
+		ModifyListener updateStatusListener = (ModifyEvent e) -> refreshStatus();
+
+		//create sections
+		String executableRelativeHelpContextId = "executable";
+		String executableHelpContextId = Activator.getAbsoluteHelpContextIdStatic(executableRelativeHelpContextId);
+		createExecutableSection(dataPage, updateStatusListener, executableHelpContextId);
+
+		String inputRelativeHelpContextId = "executableInput";
+		String inputHelpContextId = Activator.getAbsoluteHelpContextIdStatic(inputRelativeHelpContextId);
+		createInputSection(dataPage, updateStatusListener, inputHelpContextId);
+
+		String outputRelativeHelpContextId = "executableOutput";
+		String outputHelpContextId = Activator.getAbsoluteHelpContextIdStatic(outputRelativeHelpContextId);
+		createOutputSection(dataPage, updateStatusListener, outputHelpContextId);
+
+		String outputModificationRelativeHelpContextId = "executableOutputModification";
+		String outputModificationHelpContextId = Activator
+				.getAbsoluteHelpContextIdStatic(outputModificationRelativeHelpContextId);
+		createOutputModificationSection(dataPage, updateStatusListener, outputModificationHelpContextId);
+
+		String loggingRelativeHelpContextId = "executableLogging";
+		String loggingHelpContextId = Activator.getAbsoluteHelpContextIdStatic(loggingRelativeHelpContextId);
+		createLoggingSection(dataPage, updateStatusListener, loggingHelpContextId);
+
+		String statusRelativeHelpContextId = "statusLogging";
+		String statusHelpContextId = Activator.getAbsoluteHelpContextIdStatic(statusRelativeHelpContextId);
+		createStatusSection(dataPage, statusHelpContextId);
+
+		//set model
+		setModel(root);
+
+	}
+
+	//#end region
+
+	//#region METHODS
+
+	private void createExecutableSection(
+			Page dataPage,
+			ModifyListener updateStatusListener,
+			String executableHelpContextId) {
+		Section executable = dataPage.createSection("executable", "executable", executableHelpContextId);
+		Image resetImage = Activator.getImage("resetStudyIndex.png");
+		executable.createSectionAction("resetStudyIndex", "Reset the study index to 1", () -> resetStudyIndex(),
+				resetImage);
+		executable.createSectionAction("action", "Run external executable", () -> execute(treeViewRefreshable));
+
+		FilePath filePath = executable.createFilePath(executablePath, "executablePath", "Executable", "notepad.exe");
+		filePath.addModifyListener(updateStatusListener);
+
+	}
+
+	private void createInputSection(
+			Page dataPage,
+			ModifyListener updateStatusListener,
+			String executableHelpContextId) {
+		Section input = dataPage.createSection("input", "input", executableHelpContextId);
+
+		TextField argumentTextField = input.createTextField(inputArguments, "inputArguments", "Input arguments", "");
+		argumentTextField.addModifyListener(updateStatusListener);
+		argumentTextField.setHelpId("org.eclipse.ui.ide.executable");
+
+		FileOrDirectoryPath inputPathChooser = input.createFileOrDirectoryPath(inputPath, "inputPath",
+				"Input file or folder", "");
+		inputPathChooser.addModifyListener(updateStatusListener);
+	}
+
+	private void createOutputSection(
+			Page dataPage,
+			ModifyListener updateStatusListener,
+			String executableHelpContextId) {
+		Section output = dataPage.createSection("output", "output", executableHelpContextId);
+
+		TextField outputArgs = output.createTextField(outputArguments, "outputArguments", "Output arguments", "");
+		outputArgs.addModifyListener(updateStatusListener);
+
+		FileOrDirectoryPath outputPathChooser = output.createFileOrDirectoryPath(outputPath, "outputPath",
+				"Output file or folder", "", false);
+		outputPathChooser.addModifyListener(updateStatusListener);
+
+		output.createCheckBox(copyInputFile, "copyInput", "Copy input file", true);
+	}
+
+	private void createOutputModificationSection(
+			Page dataPage,
+			ModifyListener updateStatusListener,
+			String executableHelpContextId) {
+		Section outputModification = dataPage.createSection("outputModification", "output modification",
+				executableHelpContextId);
+		outputModification.setExpanded(false);
+
+		outputModification.createLabel("includeDate", "Include date in:");
+
+		CheckBox dateInFolderCheck = outputModification.createCheckBox(includeDateInFolder, "includeDateInFolder",
+				"folder name", false);
+		dateInFolderCheck.addModifyListener(updateStatusListener);
+
+		CheckBox dateInSubFolderCheck = outputModification.createCheckBox(includeDateInSubFolder,
+				"includeDateInSubFolder", "extra folder", false);
+		dateInSubFolderCheck.addModifyListener(updateStatusListener);
+
+		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInFile, "includeDate", "file name",
+				false);
+		dateInFileCheck.addModifyListener(updateStatusListener);
+
+		@SuppressWarnings("unused")
+		org.treez.core.atom.attribute.Label studyIndexLabel = outputModification.createLabel("studyIndexLabel",
+				"Include study index in:");
+
+		CheckBox studyIndexInFolderCheck = outputModification.createCheckBox(includeStudyIndexInFolder,
+				"includeStudyIndexInFolder", "folder name", false);
+		studyIndexInFolderCheck.addModifyListener(updateStatusListener);
+
+		CheckBox studyIndexInSubFolderCheck = outputModification.createCheckBox(includeStudyIndexInSubFolder,
+				"includeStudyIndexInSubFolder", "extra folder", false);
+		studyIndexInSubFolderCheck.addModifyListener(updateStatusListener);
+
+		CheckBox studyIndexInFileCheck = outputModification.createCheckBox(includeStudyIndexInFile,
+				"includeStudyIndexInFile", "file name", false);
+		studyIndexInFileCheck.addModifyListener(updateStatusListener);
+	}
+
+	private void createLoggingSection(
+			Page dataPage,
+			ModifyListener updateStatusListener,
+			String executableHelpContextId) {
+		Section logging = dataPage.createSection("logging", "logging", executableHelpContextId);
+		logging.setExpanded(false);
+
+		TextField logArgumentsText = logging.createTextField(logArguments, "logArguments", "Log arguments", "");
+		logArgumentsText.addModifyListener(updateStatusListener);
+
+		FilePath logFilePathChooser = logging.createFilePath(logFilePath, "logFilePath", "Log file", "", false);
+		logFilePathChooser.addModifyListener(updateStatusListener);
+	}
+
+	private void createStatusSection(Page dataPage, String executableHelpContextId) {
+		Section status = dataPage.createSection("status", "status", executableHelpContextId);
+		status.setExpanded(false);
+
+		//resulting command
+		status.createInfoText(commandInfo, "commandInfo", "Resulting command", "");
+
+		//execution status
+		status.createInfoText(executionStatusInfo, "executionStatusInfo", "Execution status", "Not yet executed.");
+
+		//study index
+		status.createInfoText(studyIndexInfo, "studyIndexInfo", "Next study index", "1");
+	}
+
+	@Override
+	protected void afterCreateControlAdaptionHook() {
+		//update info text
+		refreshStatus();
+	}
+
+	/**
+	 * Updates the status text labels with data from other attribute atoms
+	 */
+	private void refreshStatus() {
+		this.runUiJobNonBlocking(() -> {
+			String infoTextMessage = buildCommand();
+			//sysLog.debug("Updating info text: " + infoTextMessage);
+			commandInfo.set(infoTextMessage);
+
+			Wrap<String> infoTextWrap = (Wrap<String>) executionStatusInfo;
+			InfoText executionStatusInfoText = (InfoText) infoTextWrap.getAttribute();
+			executionStatusInfoText.resetError();
+			executionStatusInfoText.set("Not yet executed");
+
+			studyIndexInfo.set("" + getStudyId());
+		});
+
+	}
+
+	@Override
+	public ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor) {
+
+		String startMessage = "Running " + this.getClass().getSimpleName() + " '" + getName() + "'.";
+		sysLog.info(startMessage);
+
+		//initialize progress monitor
+		final int totalWork = 3;
+		monitor.beginTask(startMessage, totalWork);
+
+		//delete old output file and old log file if they exist
+		delteOldOutputAndLogFiles();
+
+		//update progress monitor
+		monitor.subTask("=>Running InputFileGenerator children if exist.");
+
+		//execute input file generator child(s) if exist
+		executeInputFileGenerator(refreshable);
+
+		//update progress monitor
+		monitor.worked(1);
+
+		//update progress monitor
+		monitor.subTask("=>Executiong system command.");
+
+		//create command
+		String command = buildCommand();
+		sysLog.info("Executing " + command);
+
+		//execute command
+		ExecutableExecutor executor = new ExecutableExecutor(this);
+		executor.executeCommand(command);
+
+		//update progress monitor
+		monitor.worked(1);
+
+		//create model output
+		monitor.subTask("=>Post processing model output.");
+		ModelOutput modelOutput = createEmptyModelOutput();
+		//if (successful) {
+		//execute data import child(s) if exist
+		ModelOutput dataImportOutput = runDataImport(refreshable, monitor);
+		modelOutput.addChildOutput(dataImportOutput);
+		//}
+
+		//copy input file to output folder (modifies input file name)
+		if (copyInputFile.get()) {
+			copyInputFileToOutputFolder();
+		}
+
+		//increase study index
+		increaseStudyIndex();
+
+		//inform progress monitor to be done
+		monitor.done();
+
+		return modelOutput;
+	}
+
+	private void increaseStudyIndex() {
+		int currentIndex = 0;
+		try {
+			String studyId = getStudyId();
+			currentIndex = Integer.parseInt(studyId);
+		} catch (NumberFormatException exception) {
+			sysLog.warn("Could not interpret last studyId as Integer. "
+					+ "Starting with 1 for the next study index of the executable.");
+		}
+		int newIndex = currentIndex + 1;
+		setStudyId("" + newIndex);
+		refreshStatus();
+	}
+
+	/**
+	 * Resets the error state of the status info text
+	 */
+	public void resetError() {
+		if (executionStatusInfo != null) {
+			Wrap<String> infoTextWrap = (Wrap<String>) executionStatusInfo;
+			InfoText infoText = (InfoText) infoTextWrap.getAttribute();
+			infoText.resetError();
+		}
+
+	}
+
+	/**
+	 * Shows the info text in error state
+	 */
+	public void highlightError() {
+		if (executionStatusInfo != null) {
+			Wrap<String> infoTextWrap = (Wrap<String>) executionStatusInfo;
+			InfoText infoText = (InfoText) infoTextWrap.getAttribute();
+			infoText.highlightError();
+		}
+
+	}
+
+	/**
+	 * Copies input file to output folder and modifies the file name
+	 */
+	private void copyInputFileToOutputFolder() {
+		String inputFilePath = inputPath.get();
+		File inputFile = new File(inputFilePath);
+		if (inputFile.exists()) {
+			String destinationPath = null;
+			try {
+				destinationPath = getOutputPathToCopyInputFile();
+			} catch (Exception exception) {
+				sysLog.warn("Input file is not copied to output folder since output folder is not known.");
+			}
+			if (destinationPath != null) {
+				copyInputFileToOutputFolder(inputFile, destinationPath);
+			}
+		}
+
+	}
+
+	/**
+	 * Copies the given inputFile to the given destination path
+	 *
+	 * @param inputFile
+	 * @param destinationPath
+	 */
+	private static void copyInputFileToOutputFolder(File inputFile, String destinationPath) {
+		File destinationFile = new File(destinationPath);
+
+		try {
+			FileUtils.copyFile(inputFile, destinationFile);
+		} catch (IOException exception) {
+			String message = "Could not copy input file to output folder";
+			sysLog.error(message, exception);
+
+		}
+	}
+
+	/**
+	 * Returns the destination folder for the input file
+	 *
+	 * @return
+	 */
+	private String getOutputPathToCopyInputFile() {
+
+		String outputPathString = modifiedOutputPath;
+
+		//split path with point to determine file extension if one exists
+
+		boolean isFilePath = Utils.isFilePath(outputPathString);
+		String folderPath = modifiedOutputPath;
+		if (isFilePath) {
+			folderPath = Utils.extractParentFolder(outputPathString);
+		}
+
+		String inputPathString = inputPath.get();
+		boolean inputPathIsFilePath = Utils.isFilePath(inputPathString);
+		if (inputPathIsFilePath) {
+			String inputFileName = Utils.extractFileName(inputPathString);
+			String newInputFileName = Utils.includeNumberInFileName(inputFileName, "#" + getStudyId());
+			String destinationPath = folderPath + "/" + newInputFileName;
+			return destinationPath;
+		} else {
+			return null;
+		}
+
+	}
+
+	/**
+	 * Executes all children that are of type InputFileGenerator
+	 */
+	private void executeInputFileGenerator(Refreshable refreshable) {
+		executeChildren(InputFileGenerator.class, refreshable);
+
+	}
+
+	/**
+	 * Executes all children that are of type DataImport
+	 */
+	private ModelOutput runDataImport(Refreshable refreshable, IProgressMonitor monitor) {
+		boolean hasDataImportChild = hasChildModel(TableImport.class);
+		if (hasDataImportChild) {
+			ModelOutput modelOutput = runChildModel(TableImport.class, refreshable, monitor);
+			return modelOutput;
+		} else {
+			sysLog.info("No data has been imported since there is no DataImport child.");
+			ModelOutput emptyModelOutput = createEmptyModelOutput();
+			return emptyModelOutput;
+		}
+	}
+
+	/**
+	 * Deletes the old output and log files if some exist
+	 */
+	private void delteOldOutputAndLogFiles() {
+		File outputFile = new File(outputPath.get());
+		if (outputFile.exists()) {
+			outputFile.delete();
+		}
+		File logFile = new File(logFilePath.get());
+		if (logFile.exists()) {
+			logFile.delete();
+		}
+	}
+
+	/**
+	 * Builds the execution command from the individual paths and arguments
+	 *
+	 * @return
+	 */
+	private String buildCommand() {
+		String command = "\"" + executablePath.get() + "\"";
+		boolean inputArgsIsEmpty = inputArguments.get().isEmpty();
+		if (!inputArgsIsEmpty) {
+			command += " " + inputArguments;
+		}
+
+		boolean inputPathIsEmpty = inputPath.get().isEmpty();
+		if (!inputPathIsEmpty) {
+			command += " " + inputPath;
+		}
+
+		boolean outputArgsIsEmpty = outputArguments.get().isEmpty();
+		if (!outputArgsIsEmpty) {
+			command += " " + outputArguments;
+		}
+
+		boolean outputPathIsEmpty = outputPath.get().isEmpty();
+		if (!outputPathIsEmpty) {
+			modifiedOutputPath = provideFilePath();
+			command += " " + modifiedOutputPath;
+		}
+
+		boolean logArgsIsEmpty = logArguments.get().isEmpty();
+		if (!logArgsIsEmpty) {
+			command += " " + logArguments;
+		}
+
+		boolean logFilePathIsEmpty = logFilePath.get().isEmpty();
+		if (!logFilePathIsEmpty) {
+			command += " " + logFilePath;
+		}
+
+		return command;
+	}
+
+	/**
+	 * Resets the study index
+	 */
+	public void resetStudyIndex() {
+		setStudyId("1");
+		refreshStatus();
+	}
+
+	/**
+	 * Provides an image to represent this atom
+	 */
+	@Override
+	public Image provideImage() {
+		return Activator.getImage("run.png");
+	}
+
+	/**
+	 * Creates the context menu actions for this atom
+	 */
+	@Override
+	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
+
+		Action addInputFileGenerator = new AddChildAtomTreeViewerAction(
+				InputFileGenerator.class,
+				"inputFileGenerator",
+				Activator.getImage("inputFile.png"),
+				this,
+				treeViewer);
+		actions.add(addInputFileGenerator);
+
+		Action addDataImport = new AddChildAtomTreeViewerAction(
+				TableImport.class,
+				"tableImport",
+				Activator.getImage("tableImport.png"),
+				this,
+				treeViewer);
+		actions.add(addDataImport);
+
+		return actions;
+	}
+
+	/**
+	 * Returns the code adaption
+	 */
+	@Override
+	public CodeAdaption createCodeAdaption(ScriptType scriptType) {
+		return new AdjustableAtomCodeAdaption(this);
+	}
+
+	//#region CREATE CHILD ATOMS
+
+	/**
+	 * Creates a InputFileGenerator child
+	 *
+	 * @param name
+	 * @return
+	 */
+	public InputFileGenerator createInputFileGenerator(String name) {
+		InputFileGenerator child = new InputFileGenerator(name);
+		addChild(child);
+		return child;
+	}
+
+	/**
+	 * Creates a TableImport child
+	 *
+	 * @param name
+	 * @return
+	 */
+	public TableImport createTableImport(String name) {
+		TableImport child = new TableImport(name);
+		addChild(child);
+		return child;
+	}
+
+	//#end region
+
+	//#region FILE PATH PROVIDER
+
+	@Override
+	public String provideFilePath() {
+		ExecutableOutputPathModifier outputPathModifier = new ExecutableOutputPathModifier(this);
+		String filePath = outputPathModifier.getModifiedOutputPath(outputPath.get());
+		return filePath;
+	}
+
+	//#end region
+
+	//#end region
+
+}

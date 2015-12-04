@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.treez.results.preferences"
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.treez.results.PreferencePage"
+            id="org.treez.veusz.preferences.page"
+            name="TreezResults">
+      </page>
+   </extension>
+   
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="help/atoms/Atoms.xml"
+            primary="false">
+      </toc>
+      <tocIcon
+            id="results"
+            openIcon="help/atoms/images/results.png">
+      </tocIcon>
+   </extension> 
+   
+   
+   <extension
+        point="org.eclipse.help.contexts">
+     <contexts
+           file="help/TreezResultsDynamicHelpContexts.xml">
+     </contexts>    
+  </extension>   
+
+</plugin>

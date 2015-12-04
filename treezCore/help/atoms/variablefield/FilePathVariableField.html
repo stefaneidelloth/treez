@@ -1,0 +1,80 @@
+<!DOCTYPE HTML >
+<HTML>
+<head>
+	<link rel="stylesheet" href="../../../PRODUCT_PLUGIN/book.css" type="text/css">
+	<link rel="stylesheet"  type="text/css" href="../treezCore.css">
+	
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+</head>
+
+
+<body>
+
+	<h2>FilePathVariableField</h2>
+	
+	<p>
+		<h3>Purpose</h3>
+		
+		<p>
+		The purpose of the <a class = "filePathVariableField"></a> is to edit a file path. 
+		It can be used by a <a class = "genericInputModel"></a>. 		
+		
+		<h3>Class name</h3>
+		
+		org.treez.core.atom.variablefield.StringVariableField
+		
+		<h3>Construction</h3>
+		
+		A new <a class = "filePathVariableField"></a> is created by: 
+		<ul>
+			<li>using the context menu of a <a class="genericInputModel"></a> atom or
+			</li>
+			<li>by calling the corresponding factory method of the <a class="genericInputModel"></a> atom:	
+			<pre class="prettyprint">FilePathVariableField filePath = genericModel.createFilePathVariableField("filePath");</pre>	     
+			</li>
+		</ul>
+		
+		<h3>User interaction</h3>
+		
+		Each VariableField provides two controls: 
+		<ul>
+		<li>a so called <b>AttributeAtomControl</b> that is used to <b>edit a variable</b> 
+		(e.g. in the control of a <a class = "genericInputModel"></a>).</li>
+		<li>a control that allows to edit the <b>properties of the VariableField itself</b>
+		(e.g. the label and the tool tip that are used in the <b>AttributeAtomControl</b>.).</li>
+		</ul>
+		
+		<img src="../images/filePathVariableFieldScreenShot.png">
+		
+		<p>
+		The check box of the <b>AttributeAtomControl</b> enables/disables the VariableField. The context menu in the <a class = "treezView"></a> also allows to enable/disable the VariableField and to delete it. 
+		</p>
+		
+		
+		
+		<h3>Attributes</h3>
+		
+		<ul>
+			<li><b>Label</b>: the label that is used in the AttributeAtomControl.</li>
+			<li><b>DefaultValue</b>: the default path of the variable. This value is used if the VariableField is reset.</li>	
+			<li><b>Tooltip</b>: the tool tip that is used in the AttributeAtomControl.</li>	
+			<li><b>FileExtensions</b>: the file extensions that are used in the path selection dialog, e.g. <code>*.xlsx, *.xls</code>.</li>	
+			<li><b>FileExtensionNames</b>: the file extension names that are used in the path selection dialog, e.g. <code>Excel file, Excel file 97-2003</code>.</li>		
+			<li><b>Show open button</b>: if this is true, not only the browse button but also the button for opening the file is shown.</li>
+			<li><b>ValidatePath</b>: if this is true, the path is validated and an error decoration is shown if it is not valid.</li>		
+		</ul>
+				
+	</p>
+	
+	<!-- add hyper links -->
+	<script>    
+	
+		$('.genericInputModel').attr('href','../../../org.treez.model/help/atoms/GenericInputModel.html'); 
+		
+	 
+	</script>
+	
+</body>
+
+</HTML>

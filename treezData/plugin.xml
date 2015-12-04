@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.treez.data.preferences"
+         point="org.eclipse.ui.preferencePages">
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="help/TreezDataHelpTocAnchor.xml"
+            primary="false">
+      </toc>     
+   </extension>  
+   
+   <extension
+        point="org.eclipse.help.contexts">
+     <contexts
+           file="help/TreezDataDynamicHelpContexts.xml">
+     </contexts>    
+    </extension>  
+
+</plugin>

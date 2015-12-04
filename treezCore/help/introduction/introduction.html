@@ -1,0 +1,114 @@
+<!DOCTYPE HTML >
+<HTML>
+<head>
+<link rel="stylesheet" href="../../../PRODUCT_PLUGIN/book.css" type="text/css">
+<link rel="stylesheet" href="../atoms/treezCore.css" type="text/css">
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+</head>
+
+<body>
+<H2>Introduction</H2>
+
+<h3>Purpose</h3>
+
+<b>Treez</b> is an <b>open source project</b> located at 
+<a href="http://sourceforge.net/projects/treez/">http://sourceforge.net/projects/treez/</a>. 
+that provides a set of <b>Eclipse plugins</b>. The concept of Treez allows you to create 
+custom tree based Graphical User Interfaces (<b>GUI</b>s) for many kinds of scientific applications. 
+
+<h3>Views & Editors</h3>
+
+The heart of Treez is the so called <a class="treezView"></a> which displays
+a <b>tree model</b> of the application. The context menus of the tree nodes provide
+mouse actions for <b>editing the tree model</b>: if you <b>right-click</b> on a tree node, 
+you will see a context menu that is specific to that tree node. The context menu shows a 
+list of <b>tree node operations</b> you can choose from, e.g. to add a new child node. 
+If you <b>left-click</b> on a node of the tree, the <b>properties</b> of that tree node are 
+shown in the so called <a class="treezPropertiesView"></a>. 
+  
+<p>
+The <b>tree model</b> can be exported to a corresponding <b>java code file</b> which has to be opened
+in an Eclipse <a class = "textEditor"></a> (e.g. Java Editor). Existing java code in a 
+<a class = "textEditor"></a> can be compiled and imported to the <a class="treezView"></a>, too. 
+
+<p>
+In addition to the <a class="treezView"></a>, the <a class="treezPropertiesView"></a> and the 
+<a class="textEditor"></a>, further views might be expedient to complete a custom application.
+The purpose of the so called <a class="treezGraphicsView"></a> (not included in he screen shot below) 
+is to show an additional <b>graphical representation</b> for the <b>tree model</b> or for specific
+tree nodes. The content of the <a class="treezGraphicsView"></a> might be for example a chart or a block diagrams.
+</p>
+
+<img src="images/treez_views.png" style="width:500px">	
+
+<h3>User interaction</h3>
+
+<p>
+In order to <b>edit complex tree models</b>, the Treez concept <b>focuses on context menus for tree nodes</b> 
+in the <a class="treezView"></a> and on operations in the <a class="treezPropertiesView"></a> instead
+of building up a complex main menu on the top of the application window. As already explained, a distinct 
+context menu in the <a class="treezView"></a> will <b>show exactly those actions which are relevant</b> to 
+the corresponding tree node. This is not a new idea. Nevertheless, the decision to have small 
+main menus/tool bars and to concentrate on the tree nodes actually has a <b>deep impact</b> on the work flows 
+and the <b>way you think about your application</b> in Treez.       
+</p>
+
+The <b>Treez concept</b> allows you to <b>edit a tree model</b> with 
+<ul>   
+<li><b>tree node operations</b> in the <a class="treezView"></a> and controls in the 
+<a class="treezPropertiesView"></a> or to use</li> 
+<li>an <a class="textEditor"></a> of Eclipse to edit java code, utilizing Eclipse features like code highlighting and completion.</li>   
+</ul>
+
+The graphical option with mouse clicks in the <a class="treezView"></a> is <b>easy to learn</b> for
+<b>new users</b> and the source code option provides an <b>efficient work flow</b> 
+for <b>advanced users</b>.
+</p>
+
+<h3>Managing complexity</h3>
+
+<p>
+The Treez concept could be applied to create GUIs for applications from very different
+domains, e.g. for a simulation tool for solar cells or for a vector drawing tool. <b>Tree structures are 
+very well suited to manage complexity</b> and therefore it does not surprise that trees are a common 
+element in complex applications. Tree structures are not the one and only way to organize the underlying 
+elements of an application. In some cases it would for example be better to use a circular structure 
+than a tree structure. Lets nevertheless assume that trees can be applied to model the majority of 
+applications. The file system on your computer has a tree structure. And you might already use the tree 
+in the Package Explorer of Eclipse to manage the source files of huge software projects. 
+</p>
+
+<h3>Atoms</h3>
+
+<p>
+The idea that an application can be build from underlying elements is useful to organize the application. 
+In Treez those <b>underlying elements are called atoms</b> and <a>atoms have several representations</a> or "adaptations":
+<ul>  
+<li>The <b>TreeNodeAdaption</b> of an atom creates the tree node that is shown in the <a class="treezView"></a>.</li>
+<li>The <b>ControlAdaption</b> of the atom creates the atom control that is shown in the <a class="treezPropertyView"></a>.
+<li>The <b>CodeAdaption</b> of an atom creates the corresponding piece of code that is shown in the <a class="textEditor"></a>.
+<li>The <b>GraphicsAdaption</b> of an atom creates the composite that is shown in the <a class="treezCadView"></a>.
+</ul>   
+</p>
+
+<p> 
+The exemplary <b>atoms</b> that come with Treez are thought to model a common <b>simulation work flow</b>. 
+You can use the atoms to control an external executable and perform parameter variations. If you want to apply the 
+Treez concept for a completely different application, you are welcome to do so. Please feel free to create 
+your custom atoms. An aim of Treez is to make the creation of new atoms as easy as possible. Treez provides
+a set of so called <b>attribute atoms</b> that can be used as building block for the creation of new custom atoms.
+If users of Treez create new atoms and feed them back to the Treez project, a large atom library will arise with time. 
+The extensible <b>plugin structure of Eclipse</b> is perfectly suited for this purpose. 
+</p>
+
+</body>
+
+<!-- add hyper links -->
+<script>   		
+	$('.treezView').attr('href','../../../org.treez.views/help/treezView/TreezView.html'); 	
+	$('.treezPropertiesView').attr('href','../../../org.treez.views/help/treezPropertiesView/TreezPropertiesView.html'); 
+	$('.treezGraphicsView').attr('href','../../../org.treez.views/help/treezCadView/TreezCadView.html'); 	 
+</script>
+
+</HTML>

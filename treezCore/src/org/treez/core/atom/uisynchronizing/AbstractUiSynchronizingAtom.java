@@ -1,0 +1,173 @@
+package org.treez.core.atom.uisynchronizing;
+
+import java.util.Objects;
+
+import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.treez.core.adaptable.AbstractControlAdaption;
+import org.treez.core.adaptable.Refreshable;
+import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.base.AtomControlAdaption;
+
+/**
+ * Provides methods to easily run long tasks without blocking UI
+ */
+public abstract class AbstractUiSynchronizingAtom extends AbstractAtom implements Refreshable {
+
+	/**
+	 * Logger for this class
+	 */
+	@SuppressWarnings("unused")
+	private static Logger sysLog = Logger.getLogger(AbstractUiSynchronizingAtom.class);
+
+	//#region ATTRIBUTES
+
+	/**
+	 * The refreshable tree view
+	 */
+	protected Refreshable treeViewRefreshable = null;
+
+	//#end region
+
+	//#region CONSTRUCTORS
+
+	/**
+	 * Constructor
+	 *
+	 * @param name
+	 */
+	public AbstractUiSynchronizingAtom(String name) {
+		super(name);
+	}
+
+	/**
+	 * Copy Constructor
+	 *
+	 * @param atomToCopy
+	 */
+	public AbstractUiSynchronizingAtom(AbstractUiSynchronizingAtom atomToCopy) {
+		super(atomToCopy);
+		this.treeViewRefreshable = atomToCopy.treeViewRefreshable;
+	}
+
+	//#end region
+
+	//#region METHODS
+
+	@Override
+	public AbstractControlAdaption createControlAdaption(Composite parent, Refreshable treeViewRefreshable) {
+
+		//store refreshable tree view
+		this.treeViewRefreshable = treeViewRefreshable;
+
+		//create control adaption in UI thread
+		final ResultWrapper<AtomControlAdaption> controlAdaptionWrapper = new ResultWrapper<AtomControlAdaption>(null);
+		Runnable createControlAdaptionRunnable = () -> {
+
+			//remove old content and reset parent layout
+			resetContentAndLayoutOfParentComposite(parent);
+
+			//create the control adaption and return it
+			AtomControlAdaption newControlAdaption = new AtomControlAdaption(parent, this);
+			controlAdaptionWrapper.setValue(newControlAdaption);
+		};
+		runUiJobBlocking(createControlAdaptionRunnable);
+		AtomControlAdaption controlAdaption = controlAdaptionWrapper.getValue();
+
+		return controlAdaption;
+	}
+
+	/**
+	 * Removes old content from the given parent composite and updates its layout
+	 *
+	 * @param parent
+	 */
+	protected static void resetContentAndLayoutOfParentComposite(Composite parent) {
+		for (Control child : parent.getChildren()) {
+			child.dispose();
+		}
+		parent.setLayout(new FillLayout());
+		parent.layout();
+	}
+
+	/**
+	 * Executes a (long running job) without blocking the UI. The calling method will "immediately" continue.
+	 *
+	 * @param jobName
+	 * @param nonUiJobRunnable
+	 */
+	public synchronized void runNonUiJob(String jobName, NonUiJob nonUiJobRunnable) {
+		Objects.requireNonNull(nonUiJobRunnable, "Runnable must not be null.");
+		Job job = new Job(jobName) {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				nonUiJobRunnable.run(monitor);
+				return Status.OK_STATUS;
+			}
+		};
+
+		//start the Job
+		job.schedule();
+	}
+
+	/**
+	 * Can be used from within non-UI jobs (see method runNonUiJob) to execute a runnable in the UI thread. The calling
+	 * method will "immediately" continue.
+	 *
+	 * @param uiJobRunnable
+	 */
+	public synchronized void runUiJobNonBlocking(Runnable uiJobRunnable) {
+		Objects.requireNonNull(uiJobRunnable, "Runnable must not be null.");
+
+		Display display = Display.getDefault();
+		if (display == null || display.isDisposed()) {
+			return;
+		}
+
+		display.asyncExec(uiJobRunnable);
+
+	}
+
+	/**
+	 * Can be used from within non-UI jobs (see method runNonUiJob) to execute a runnable in the UI thread. The calling
+	 * method will wait until this method is finished before it continues.
+	 *
+	 * @param uiJobRunnable
+	 */
+	public synchronized void runUiJobBlocking(Runnable uiJobRunnable) {
+		Objects.requireNonNull(uiJobRunnable, "Runnable must not be null.");
+
+		Display display = Display.getDefault();
+		if (display == null || display.isDisposed()) {
+			return;
+		}
+
+		display.syncExec(uiJobRunnable);
+
+	}
+
+	/**
+	 * Refreshes the treeViewRefreshable
+	 */
+	@Override
+	public synchronized void refresh() {
+
+		runUiJobNonBlocking(() -> {
+			if (treeViewRefreshable != null) {
+				treeViewRefreshable.refresh();
+			}
+		});
+
+	}
+
+	//#end region
+
+}

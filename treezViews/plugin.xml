@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.treez.views"
+         point="org.eclipse.ui.views"
+   >
+         
+      <view
+            name="Treez"
+            category="org.treez"
+            class="org.treez.views.tree.TreeViewPart"
+            icon="icons/tree.png"
+            id="org.treez.views.tree"
+      />
+     
+      
+      <view
+            name="Treez Properties"
+            category="org.treez"
+            class="org.treez.views.properties.PropertyViewPart"
+            icon="icons/tree.png"
+            id="org.treez.views.properties"
+      />
+     
+      <view
+            name="Treez Graphics"
+            category="org.treez"
+            class="org.treez.views.graphics.GraphicsViewPart"
+            icon="icons/tree.png"
+            id="org.treez.views.graphics"            
+            restorable="true"
+      />
+     
+      <category
+            id="org.treez"
+            name="Treez"
+      />
+      
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.treez.perspective.PerspectiveFactory"
+            fixed="false"
+            icon="icons/tree.png"
+            id="org.treez.perspective.TreezPerspective"
+            name="Treez">
+      </perspective>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.help.toc"
+   >
+      <toc
+            file="help/TreezViews.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="help/atoms/Atoms.xml"
+            primary="false">
+      </toc>
+      <tocIcon
+            id="root"
+            openIcon="help/atoms/images/root.png">
+      </tocIcon>           
+   </extension>  
+
+   <extension
+        point="org.eclipse.help.contexts"
+   >
+     <contexts
+           file="help/TreezViewsDynamicHelpContexts.xml"
+     />         
+   </extension>
+   
+</plugin>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Atoms_Contribution" link_to="../org.treez.core/help/TreezHelpToc.xml#studies">
+   <topic href="help/atoms/Studies.html" label="Studies" icon="studies">
+      <topic href="help/atoms/Sweep.html" label="Sweep" icon="sweep">
+         <topic href="help/atoms/range/QuantityVariableRange.html" label="QuantityVariableRange" icon="quantityVariableRange">
+         </topic>
+          <topic href="help/atoms/range/DoubleVariableRange.html" label="DoubleVariableRange" icon="doubleVariableRange">
+         </topic>         
+         <topic href="help/atoms/range/BooleanVariableRange.html" label="BooleanVariableRange" icon="booleanVariableRange">
+         </topic>
+          <topic href="help/atoms/range/StringVariableRange.html" label="StringVariableRange" icon="stringVariableRange">
+         </topic>
+         <topic href="help/atoms/range/FilePathVariableRange.html" label="FilePathVariableRange" icon="filePathVariableRange">
+         </topic>
+         <topic href="help/atoms/range/DirectoryPathVariableRange.html" label="DirectoryPathVariableRange" icon="directoryPathVariableRange">
+         </topic>
+        
+	     </topic>
+	     <topic href="help/atoms/Sensitivity.html" label="Sensitivity" icon="sensitivity">
+      </topic>
+   </topic>
+</toc>

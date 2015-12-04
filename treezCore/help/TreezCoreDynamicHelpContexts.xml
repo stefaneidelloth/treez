@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts>
+   <context id="treez">     
+      <topic href="../org.treez.core/help/treez/treez.html" label="Treez help"/>
+   </context>
+   <context id="emptySectionHelp">
+      <topic href="help/atoms/section/EmptySectionHelp.html" label="EmptySectionHelp"/>
+   </context>   
+</contexts>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.treez.model.preferences"
+         point="org.eclipse.ui.preferencePages">
+   </extension>
+   
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="help/atoms/Atoms.xml"
+            primary="false">
+      </toc>
+      <tocIcon
+            id="studies"
+            openIcon="help/atoms/images/studies.png">
+      </tocIcon>
+      <tocIcon
+            id="sweep"
+            openIcon="help/atoms/images/sweep.png">
+      </tocIcon>
+      <tocIcon
+            id="sensitivity"
+            openIcon="help/atoms/images/sensitivity.png">
+      </tocIcon>
+      <tocIcon
+            id="quantityVariableRange"
+            openIcon="help/atoms/images/quantityVariableRange.png">
+      </tocIcon>
+      <tocIcon
+            id="doubleVariableRange"
+            openIcon="help/atoms/images/doubleVariableRange.png">
+      </tocIcon>
+      <tocIcon
+            id="booleanVariableRange"
+            openIcon="help/atoms/images/booleanVariableRange.png">
+      </tocIcon>
+      <tocIcon
+            id="stringVariableRange"
+            openIcon="help/atoms/images/stringVariableRange.png">
+      </tocIcon>
+      <tocIcon
+            id="filePathVariableRange"
+            openIcon="help/atoms/images/filePathVariableRange.png">
+      </tocIcon>
+      <tocIcon
+            id="directoryPathVariableRange"
+            openIcon="help/atoms/images/directoryPathVariableRange.png">
+      </tocIcon>     
+   </extension>
+   
+   <extension
+        point="org.eclipse.help.contexts">
+     <contexts
+           file="help/TreezStudyDynamicHelpContexts.xml">
+     </contexts>    
+  </extension>   
+
+</plugin>

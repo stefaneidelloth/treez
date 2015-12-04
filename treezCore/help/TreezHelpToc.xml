@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Treez" topic="help/treez/treez.html" icon="tree">
+   <topic href="help/introduction/introduction.html" label="Introduction">
+   </topic>
+   <anchor id="treezViews"/>
+   <topic href="help/atoms/Atoms.html" label="Atoms">
+      <anchor id="root"/>
+      <anchor id="models"/>
+      <anchor id="studies"/>
+      <anchor id="results"/>
+   </topic>
+   <topic href="help/developer/DeveloperGuide.html" label="DeveloperGuide">
+   </topic>
+</toc>

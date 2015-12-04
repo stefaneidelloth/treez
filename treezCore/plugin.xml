@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.treez.core.preferences"
+         point="org.eclipse.ui.preferencePages">
+      <page           
+            class="org.treez.core.atom.adjustable.preferencePage.PreferencePage"
+            id="org.treez.core.preferences.page"
+            name="TreezAdjustableAtom">
+      </page>
+   </extension>
+   
+   <extension
+         id="org.treez.core.defaultValues"
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.treez.core.atom.adjustable.preferencePage.DefaultValues">
+      </initializer>
+   </extension>
+   
+   <extension   		
+         point="org.eclipse.help.toc">
+      <toc      		
+            file="help/TreezHelpToc.xml"
+            primary="true">
+      </toc>
+      <toc
+            file="help/atoms/variablefield/VariableFields.xml"
+            primary="false">
+      </toc>
+      <tocIcon
+            id="tree"
+            openIcon="help/atoms/images/tree.png">
+      </tocIcon>
+      <tocIcon
+            id="quantityVariable"
+            openIcon="help/atoms/images/quantityVariable.png">
+      </tocIcon>
+      <tocIcon
+            id="doubleVariable"
+            openIcon="help/atoms/images/doubleVariable.png">
+      </tocIcon>
+      <tocIcon
+            id="booleanVariable"
+            openIcon="help/atoms/images/booleanVariable.png">
+      </tocIcon>
+      <tocIcon
+            id="stringVariable"
+            openIcon="help/atoms/images/stringVariable.png">
+      </tocIcon>
+      <tocIcon
+            id="filePathVariable"
+            openIcon="help/atoms/images/filePathVariable.png">
+      </tocIcon>
+      <tocIcon
+            id="directoryPathVariable"
+            openIcon="help/atoms/images/directoryPathVariable.png">
+      </tocIcon>
+   </extension>
+   
+   <extension
+        point="org.eclipse.help.contexts">
+     <contexts
+           file="help/TreezCoreDynamicHelpContexts.xml">
+     </contexts>    
+    </extension>  
+      
+
+</plugin>

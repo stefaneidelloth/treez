@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.treez.model.preferences"
+         point="org.eclipse.ui.preferencePages">
+   </extension>
+  <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="help/TreezModelHelpTocAnchor.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="help/atoms/Atoms.xml"
+            primary="false">
+      </toc>
+      <tocIcon
+            id="models"
+            openIcon="help/atoms/images/models.png">
+      </tocIcon>
+      <tocIcon
+            id="genericInputModel"
+            openIcon="help/atoms/images/genericModel.png">
+      </tocIcon>
+      <tocIcon
+            id="executable"
+            openIcon="help/atoms/images/executable.png">
+      </tocIcon>
+      <tocIcon
+            id="inputFile"
+            openIcon="help/atoms/images/inputFile.png">
+      </tocIcon>
+      <tocIcon
+            id="tableImport"
+            openIcon="help/atoms/images/tableImport.png">
+      </tocIcon>      
+   </extension>
+  <extension
+        point="org.eclipse.help.contexts">
+     <contexts
+           file="help/TreezModelDynamicHelpContexts.xml">
+     </contexts>    
+  </extension>   
+
+</plugin>
