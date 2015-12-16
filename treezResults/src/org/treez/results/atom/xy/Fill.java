@@ -6,13 +6,15 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.veuszpage.VeuszPageModel;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
  * XY fill settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Fill implements VeuszPageModel {
+public class Fill implements GraphicsPageModel {
 
 	//#region ATTRIBUTES
 
@@ -104,6 +106,14 @@ public class Fill implements VeuszPageModel {
 		fillAbove.createTextField(aboveTransparency, "transparency", "0");
 
 		fillAbove.createCheckBox(aboveHideErrorFill, "hideErrorFill", "Hide error fill");
+	}
+
+	@Override
+	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+
+		//parent.bindStringAttribute(selection, "x", leftMargin);
+
+		return graphSelection;
 	}
 
 	@Override

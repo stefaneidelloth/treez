@@ -6,13 +6,15 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.veuszpage.VeuszPageModel;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
  * XY label settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Label implements VeuszPageModel {
+public class Label implements GraphicsPageModel {
 
 	//#region ATTRIBUTES
 
@@ -77,9 +79,8 @@ public class Label implements VeuszPageModel {
 
 		Section label = labelPage.createSection("label");
 
-		label
-				.createComboBox(horizontalPosition, "horizontalPosition", "Horz position", "right, centre, left",
-						"centre");
+		label.createComboBox(horizontalPosition, "horizontalPosition", "Horz position", "right, centre, left",
+				"centre");
 
 		label.createComboBox(verticalPosition, "verticalPosition", "Vert position", "top, centre, bottom", "centre");
 
@@ -98,6 +99,14 @@ public class Label implements VeuszPageModel {
 		label.createCheckBox(underline, "underline");
 
 		label.createCheckBox(hide, "hide");
+	}
+
+	@Override
+	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+
+		//parent.bindStringAttribute(selection, "x", leftMargin);
+
+		return graphSelection;
 	}
 
 	@Override

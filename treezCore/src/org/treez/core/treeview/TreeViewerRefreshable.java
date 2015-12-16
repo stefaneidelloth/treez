@@ -1,9 +1,11 @@
 package org.treez.core.treeview;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.Refreshable;
+import org.treez.core.atom.base.AbstractAtom;
 
 /**
  * Custom TreeView that implements Refreshable
@@ -19,7 +21,8 @@ public class TreeViewerRefreshable extends TreeViewer implements Refreshable {
 	//#region ATTRIBUTES
 
 	/**
-	 * A refreshable that is used to refresh dependent Refreshables, e.g. to update the Property view
+	 * A refreshable that is used to refresh dependent Refreshables, e.g. to
+	 * update the Property view
 	 */
 	private Refreshable actionRefreshable;
 
@@ -32,7 +35,8 @@ public class TreeViewerRefreshable extends TreeViewer implements Refreshable {
 	 *
 	 * @param parent
 	 */
-	public TreeViewerRefreshable(Composite parent, Refreshable actionRefreshable) {
+	public TreeViewerRefreshable(Composite parent,
+			Refreshable actionRefreshable) {
 		super(parent);
 		this.actionRefreshable = actionRefreshable;
 	}
@@ -43,7 +47,8 @@ public class TreeViewerRefreshable extends TreeViewer implements Refreshable {
 	 * @param parent
 	 * @param style
 	 */
-	public TreeViewerRefreshable(Composite parent, Refreshable actionRefreshable, int style) {
+	public TreeViewerRefreshable(Composite parent,
+			Refreshable actionRefreshable, int style) {
 		super(parent, style);
 		this.actionRefreshable = actionRefreshable;
 	}
@@ -69,9 +74,11 @@ public class TreeViewerRefreshable extends TreeViewer implements Refreshable {
 
 	}
 
-	//#end region
-
-	//#region ACCESSORS
+	@Override
+	public void setFocus(AbstractAtom atomToFocus) {
+		StructuredSelection selection = new StructuredSelection(atomToFocus);
+		this.setSelection(selection);
+	}
 
 	//#end region
 

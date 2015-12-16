@@ -3,6 +3,7 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
@@ -189,6 +190,13 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 			}
 			treezList.setRows(rows);
 		}
+	}
+
+	@Override
+	public void addModificationConsumer(Consumer<List<String>> consumer) {
+
+		throw new IllegalStateException("not yet implemented");
+		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	/**

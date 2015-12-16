@@ -6,13 +6,16 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.veuszpage.VeuszPageModel;
+import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
+
+import org.treez.javafxd3.d3.core.Selection;
 
 /**
  * XY marker settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Marker implements VeuszPageModel {
+public class Marker implements GraphicsPageModel {
 
 	//#region ATTRIBUTES
 
@@ -154,6 +157,14 @@ public class Marker implements VeuszPageModel {
 		markerFill.createCheckBox(invertMap, "invertMap", "Invert map");
 
 		// #end region
+	}
+
+	@Override
+	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+
+		//parent.bindStringAttribute(selection, "x", leftMargin);
+
+		return graphSelection;
 	}
 
 	@Override

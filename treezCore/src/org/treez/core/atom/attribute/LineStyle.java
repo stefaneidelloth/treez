@@ -1,6 +1,7 @@
 package org.treez.core.atom.attribute;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -98,7 +99,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 		if (isLineStyle) {
 			attributeValue = defaultStyle;
 		} else {
-			throw new IllegalArgumentException("The specified line style '" + defaultStyle + "' is not known.");
+			throw new IllegalArgumentException("The specified line style '"
+					+ defaultStyle + "' is not known.");
 		}
 	}
 
@@ -129,7 +131,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	 * @param parent
 	 */
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -143,7 +146,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container,
+				currentLabel);
 		final int preferredLabelWidth = 80;
 		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
@@ -158,7 +162,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 		//set predefined colors
 		List<String> styles = getLineStyles();
 		for (String styleString : styles) {
-			styleCombo.add(styleString, Activator.getImage(styleString + ".png"));
+			styleCombo.add(styleString,
+					Activator.getImage(styleString + ".png"));
 		}
 
 		//initialize selected item
@@ -185,7 +190,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent, FormToolkit toolkit) {
+	private static Composite createContainer(Composite parent,
+			FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -214,9 +220,17 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
+	}
+
+	@Override
+	public void addModificationConsumer(Consumer<String> consumer) {
+
+		throw new IllegalStateException("not yet implemented");
+		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region

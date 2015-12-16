@@ -8,13 +8,15 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.veuszpage.VeuszPageModel;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
  * XY data settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Data implements VeuszPageModel {
+public class Data implements GraphicsPageModel {
 
 	//#region ATTRIBUTES
 
@@ -100,6 +102,14 @@ public class Data implements VeuszPageModel {
 
 		data.createTextField(colorMarkers, "colorMarkers", "Color markers", "");
 
+	}
+
+	@Override
+	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+
+		//parent.bindStringAttribute(selection, "x", leftMargin);
+
+		return graphSelection;
 	}
 
 	@Override

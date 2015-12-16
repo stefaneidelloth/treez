@@ -8,12 +8,12 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.results.Activator;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.veuszpage.VeuszPropertiesPage;
+import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
 
 /**
  * Represents a veusz graph
  */
-public class XY extends VeuszPropertiesPage {
+public class XY extends GraphicsPropertiesPage {
 
 	/**
 	 * Logger for this class

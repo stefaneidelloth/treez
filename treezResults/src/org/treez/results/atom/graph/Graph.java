@@ -10,23 +10,30 @@ import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
+import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
-import org.treez.results.atom.veuszpage.VeuszPropertiesPage;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
 import org.treez.results.atom.xy.XY;
 
 /**
  * Represents a veusz graph
  */
-public class Graph extends VeuszPropertiesPage {
-
-	//#region ATTRIBUTES
+public class Graph extends GraphicsPropertiesPage {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
 	private static Logger sysLog = Logger.getLogger(Graph.class);
+
+	//#region ATTRIBUTES
+
+	private Selection graphSelection;
+
+	Selection rectSelection;
 
 	//#end region
 
@@ -89,6 +96,52 @@ public class Graph extends VeuszPropertiesPage {
 		page.execute(refreshable);
 	}
 
+	//#region D3
+
+	/**
+	 * @param d3
+	 * @param pageSelection
+	 * @return
+	 */
+	public Selection plotWidthD3(D3 d3, Selection pageSelection) {
+		Objects.requireNonNull(d3);
+
+		plotPageWithD3AndCreateGraphSelection(pageSelection);
+
+		for (Adaptable child : children) {
+			Boolean isAxis = child.getClass().equals(Axis.class);
+			if (isAxis) {
+				Axis axis = (Axis) child;
+				axis.plotWidthD3(d3, graphSelection, rectSelection);
+			}
+		}
+
+		return graphSelection;
+
+	}
+
+	private void plotPageWithD3AndCreateGraphSelection(Selection pageSelection) {
+
+		graphSelection = pageSelection //
+				.append("g") //
+				.attr("id", "" + name);
+
+		rectSelection = graphSelection //
+				.append("rect") //
+				.attr("fill", "red");
+
+		for (GraphicsPageModel pageModel : veuszPageModels) {
+			graphSelection = pageModel.plotWithD3(graphSelection, rectSelection, this);
+		}
+
+		//handle mouse click
+		rectSelection.onMouseClick(this);
+	}
+
+	//#end region
+
+	//#region VEUSZ TEXT
+
 	/**
 	 * Creates start of veusz text
 	 *
@@ -139,6 +192,8 @@ public class Graph extends VeuszPropertiesPage {
 
 		return veuszString;
 	}
+
+	//#end region
 
 	//#region CREATE CHILD ATOMS
 

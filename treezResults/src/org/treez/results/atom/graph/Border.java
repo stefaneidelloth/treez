@@ -6,13 +6,15 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.veuszpage.VeuszPageModel;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
  * The border settings for a graph
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Border implements VeuszPageModel {
+public class Border implements GraphicsPageModel {
 
 	//#region ATTRIBUTES
 
@@ -61,6 +63,14 @@ public class Border implements VeuszPageModel {
 		border.createTextField(transparency, "transparency", "0");
 
 		border.createCheckBox(hide, "hide");
+	}
+
+	@Override
+	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+
+		//parent.bindStringAttribute(selection, "x", leftMargin);
+
+		return graphSelection;
 	}
 
 	@Override

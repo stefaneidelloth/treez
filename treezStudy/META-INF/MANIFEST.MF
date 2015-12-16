@@ -11,8 +11,7 @@ Require-Bundle: org.eclipse.swt,
  org.treez.data,
  org.treez.model,
  org.eclipse.wb.core.lib,
- org.treez.results,
- javafx-d3
+ org.treez.results
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

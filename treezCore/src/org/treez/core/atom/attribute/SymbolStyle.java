@@ -1,11 +1,13 @@
 package org.treez.core.atom.attribute;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -59,7 +61,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 	/**
 	 * Predefined symbol styles
 	 */
-	private final List<String> symbolStyles = SymbolStyleValue.getAllStringValues();
+	private final List<String> symbolStyles = SymbolStyleValue
+			.getAllStringValues();
 
 	//#end region
 
@@ -89,7 +92,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 		if (isLineStyle) {
 			attributeValue = defaultStyle;
 		} else {
-			throw new IllegalArgumentException("The specified symbol style '" + defaultStyle + "' is not known.");
+			throw new IllegalArgumentException("The specified symbol style '"
+					+ defaultStyle + "' is not known.");
 		}
 	}
 
@@ -132,7 +136,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 	 * @param parent
 	 */
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -146,7 +151,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container,
+				currentLabel);
 		final int preferredLabelWidth = 80;
 		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
@@ -161,7 +167,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 		//set predefined styles
 		List<String> styles = getSymbolStyles();
 		for (String styleString : styles) {
-			styleCombo.add(styleString, Activator.getImage(imagePrefix + styleString + ".png"));
+			styleCombo.add(styleString,
+					Activator.getImage(imagePrefix + styleString + ".png"));
 		}
 
 		//initialize selected item
@@ -176,7 +183,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 				int index = styleCombo.getSelectionIndex();
 				String currentStyle = styles.get(index);
 				set(currentStyle);
-				imageLabel.setImage(Activator.getImage(imagePrefix + currentStyle + ".png"));
+				imageLabel.setImage(Activator
+						.getImage(imagePrefix + currentStyle + ".png"));
 
 				//trigger modification listeners
 				triggerModificationListeners();
@@ -188,7 +196,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite crateContainer(Composite parent, FormToolkit toolkit) {
+	private static Composite crateContainer(Composite parent,
+			FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -211,14 +220,39 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 			int index = styles.indexOf(style);
 			if (styleCombo.getSelectionIndex() != index) {
 				styleCombo.select(index);
-				imageLabel.setImage(Activator.getImage(imagePrefix + style + ".png"));
+				imageLabel.setImage(
+						Activator.getImage(imagePrefix + style + ".png"));
 			}
 		}
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
+
+	}
+
+	@Override
+	public void addModificationConsumer(Consumer<String> consumer) {
+
+		SelectionListener selectionListener = new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				String value = event.data.toString();
+				consumer.accept(value);
+
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				//not used here
+			}
+
+		};
+
+		styleCombo.addSelectionListener(selectionListener);
 
 	}
 

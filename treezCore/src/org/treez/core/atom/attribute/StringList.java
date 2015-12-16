@@ -3,6 +3,7 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
@@ -115,7 +116,8 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<List<String>> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<List<String>> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -136,7 +138,8 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 
 		//create parent composite for treez list
 		listContainerComposite = toolkit.createComposite(contentContainer);
-		GridData fillData = new GridData(GridData.FILL, GridData.FILL, true, true);
+		GridData fillData = new GridData(GridData.FILL, GridData.FILL, true,
+				true);
 		listContainerComposite.setLayoutData(fillData);
 
 		//create treez list control
@@ -146,15 +149,18 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	/**
-	 * Creates the control for the treezList by calling the corresponding method of the wrapped TreezListAtom
+	 * Creates the control for the treezList by calling the corresponding method
+	 * of the wrapped TreezListAtom
 	 */
 	private void createTreezListControl() {
-		treezListControlAdaption = (TreezListAtomControlAdaption) treezList.createControlAdaption(
-				listContainerComposite, treeViewRefreshable);
+		treezListControlAdaption = (TreezListAtomControlAdaption) treezList
+				.createControlAdaption(listContainerComposite,
+						treeViewRefreshable);
 	}
 
 	/**
-	 * Creates a container layout where the label and the check box are put in individual lines
+	 * Creates a container layout where the label and the check box are put in
+	 * individual lines
 	 *
 	 * @param contentContainer
 	 */
@@ -196,8 +202,16 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 		}
 	}
 
+	@Override
+	public void addModificationConsumer(Consumer<List<String>> consumer) {
+
+		throw new IllegalStateException("not yet implemented");
+		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
+	}
+
 	/**
-	 * Splits the given valueString with "," and returns the individual values as a String list
+	 * Splits the given valueString with "," and returns the individual values
+	 * as a String list
 	 *
 	 * @param valueString
 	 * @return
@@ -209,7 +223,8 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}

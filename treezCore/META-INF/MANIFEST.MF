@@ -79,7 +79,8 @@ Export-Package: org.apache.commons.exec,
    org.treez.core.treeview,
    org.eclipse.swt.graphics,
    org.eclipse.swt.widgets"
-Require-Bundle: org.apache.commons.lang3,
+Require-Bundle: org.treez.javafxd3,
+ org.apache.commons.lang3,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.swt,
@@ -93,6 +94,5 @@ Require-Bundle: org.apache.commons.lang3,
  org.junit,
  org.eclipse.rcp,
  org.eclipse.help,
- org.eclipse.core.resources,
- javafx-d3
+ org.eclipse.core.resources
 Bundle-Vendor: Stefan Eidelloth

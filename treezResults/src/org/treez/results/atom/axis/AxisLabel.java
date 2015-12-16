@@ -6,13 +6,15 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.veuszpage.VeuszPageModel;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
  * Represents the label for an axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class AxisLabel implements VeuszPageModel {
+public class AxisLabel implements GraphicsPageModel {
 
 	//#region ATTRIBUTES
 
@@ -104,6 +106,14 @@ public class AxisLabel implements VeuszPageModel {
 
 		axisLabel.createComboBox(position, "position", "at-minimum,centre,at-maximum", "centre");
 
+	}
+
+	@Override
+	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+
+		//parent.bindStringAttribute(selection, "x", leftMargin);
+
+		return graphSelection;
 	}
 
 	@Override

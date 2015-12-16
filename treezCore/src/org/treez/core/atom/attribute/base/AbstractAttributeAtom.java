@@ -2,6 +2,7 @@ package org.treez.core.atom.attribute.base;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.events.ModifyEvent;
@@ -330,6 +331,13 @@ public abstract class AbstractAttributeAtom<T>
 			throw new IllegalArgumentException(message, exception);
 		}
 
+	}
+
+	@Override
+	public void addModificationConsumer(Consumer<T> consumer) {
+
+		throw new IllegalStateException("not yet implemented");
+		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region

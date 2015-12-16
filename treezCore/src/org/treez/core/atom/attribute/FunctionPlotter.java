@@ -1,5 +1,7 @@
 package org.treez.core.atom.attribute;
 
+import java.util.function.Consumer;
+
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -35,7 +37,7 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 	 */
 	protected Composite attributeAtomParent = null;
 
-	private com.github.javafxd3.javafx.FunctionPlotter plotter;
+	private org.treez.javafxd3.javafx.FunctionPlotter plotter;
 
 	//#end region
 
@@ -112,7 +114,7 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 		double height = 400;
 		final JavaFxWrapperForSwt javaFxWrapper = new JavaFxWrapperForSwt(
 				parent);
-		plotter = new com.github.javafxd3.javafx.FunctionPlotter(width, height);
+		plotter = new org.treez.javafxd3.javafx.FunctionPlotter(width, height);
 		javaFxWrapper.setContent(plotter);
 		plotter.setXDomain(-2, 2);
 		plotter.setYDomain(-0.01, 0);
@@ -168,6 +170,13 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 	@Override
 	public void refreshAttributeAtomControl() {
 
+	}
+
+	@Override
+	public void addModificationConsumer(Consumer<String> consumer) {
+
+		throw new IllegalStateException("not yet implemented");
+		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region

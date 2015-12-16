@@ -1,5 +1,7 @@
 package org.treez.core.atom.attribute;
 
+import java.util.function.Consumer;
+
 import org.apache.log4j.Logger;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
@@ -310,6 +312,16 @@ public class TextField extends AbstractAttributeAtom<String> {
 			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
+	}
+
+	@Override
+	public void addModificationConsumer(Consumer<String> consumer) {
+		if (isAvailable(textField)) {
+			textField.addModifyListener((event) -> {
+				String value = textField.getText();
+				consumer.accept(value);
+			});
+		}
 	}
 
 	//#end region

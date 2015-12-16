@@ -3,6 +3,7 @@ package org.treez.core.atom.attribute;
 import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -92,7 +93,8 @@ public class Font extends AbstractAttributeAtom<String> {
 		if (isFont) {
 			attributeValue = defaultFont;
 		} else {
-			throw new IllegalArgumentException("The specified font '" + defaultFont + "' is not known.");
+			throw new IllegalArgumentException(
+					"The specified font '" + defaultFont + "' is not known.");
 		}
 	}
 
@@ -123,7 +125,8 @@ public class Font extends AbstractAttributeAtom<String> {
 	 * @param parent
 	 */
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -137,7 +140,8 @@ public class Font extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container,
+				currentLabel);
 		final int preferredLabelWidth = 80;
 		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
@@ -172,7 +176,8 @@ public class Font extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent, FormToolkit toolkit) {
+	private static Composite createContainer(Composite parent,
+			FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -199,9 +204,17 @@ public class Font extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
+	}
+
+	@Override
+	public void addModificationConsumer(Consumer<String> consumer) {
+
+		throw new IllegalStateException("not yet implemented");
+		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region
@@ -216,8 +229,10 @@ public class Font extends AbstractAttributeAtom<String> {
 	public List<String> getFonts() {
 
 		if (fonts == null) {
-			GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			String[] fontNames = graphicsEnvironment.getAvailableFontFamilyNames();
+			GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment
+					.getLocalGraphicsEnvironment();
+			String[] fontNames = graphicsEnvironment
+					.getAvailableFontFamilyNames();
 			fonts = Arrays.asList(fontNames);
 		}
 		return fonts;

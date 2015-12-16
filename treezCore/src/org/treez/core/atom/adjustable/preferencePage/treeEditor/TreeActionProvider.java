@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TreeItem;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.Refreshable;
+import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.treeview.TreeViewerRefreshable;
 
 /**
@@ -38,7 +39,8 @@ public class TreeActionProvider implements Refreshable {
 	private TreeViewerRefreshable treeViewer;
 
 	/**
-	 * Represent the last mouse button that has been pressed (1: left, 2: middle, 3: right)
+	 * Represent the last mouse button that has been pressed (1: left, 2:
+	 * middle, 3: right)
 	 */
 	private int lastMouseButton;
 
@@ -174,7 +176,8 @@ public class TreeActionProvider implements Refreshable {
 
 					//sysLog.debug("context menu item:" + item.getId());
 
-					if (item != null && item.getId() != null && item.getId().startsWith("org.treez")) {
+					if (item != null && item.getId() != null
+							&& item.getId().startsWith("org.treez")) {
 
 						filteredItems.add(item);
 					}
@@ -197,7 +200,8 @@ public class TreeActionProvider implements Refreshable {
 				Adaptable adaptable = (Adaptable) treeItem.getData();
 
 				//let the tree node of the adaptable fill the context menu
-				adaptable.createTreeNodeAdaption().fillContextMenu(treeViewer, manager);
+				adaptable.createTreeNodeAdaption().fillContextMenu(treeViewer,
+						manager);
 			}
 		});
 
@@ -210,6 +214,11 @@ public class TreeActionProvider implements Refreshable {
 	public void refresh() {
 		updatePropertyView();
 
+	}
+
+	@Override
+	public void setFocus(AbstractAtom atomToFocus) {
+		treeViewer.setFocus(atomToFocus);
 	}
 
 	//#end region

@@ -1,5 +1,7 @@
 package org.treez.core.atom.attribute;
 
+import java.util.function.Consumer;
+
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -84,7 +86,8 @@ public class Label extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -116,6 +119,14 @@ public class Label extends AbstractAttributeAtom<String> {
 		}
 	}
 
+	@Override
+	public void addModificationConsumer(Consumer<String> consumer) {
+
+		throw new IllegalStateException(
+				"Labels to not support modification listeners");
+		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
+	}
+
 	//#end region
 
 	//#region ACCESSORS
@@ -135,7 +146,8 @@ public class Label extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Returns the object that represents the property value. Might be overridden by implementing classes.
+	 * Returns the object that represents the property value. Might be
+	 * overridden by implementing classes.
 	 *
 	 * @return
 	 */

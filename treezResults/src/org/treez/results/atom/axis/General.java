@@ -6,13 +6,15 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.veuszpage.VeuszPageModel;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
  * Represents the general settings of an axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class General implements VeuszPageModel {
+public class General implements GraphicsPageModel {
 
 	//#region ATTRIBUTES
 
@@ -61,6 +63,14 @@ public class General implements VeuszPageModel {
 		general.createCheckBox(reflect, "reflect");
 
 		general.createCheckBox(outerTicks, "outerTicks", "Outer ticks");
+	}
+
+	@Override
+	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+
+		//parent.bindStringAttribute(selection, "x", leftMargin);
+
+		return graphSelection;
 	}
 
 	@Override

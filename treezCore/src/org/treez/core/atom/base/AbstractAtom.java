@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.IAction;
@@ -777,6 +778,21 @@ public abstract class AbstractAtom
 		Wrap<T> wrap = (Wrap<T>) wrappingAttribute;
 		Attribute<T> attribute = wrap.getAttribute();
 		return attribute;
+	}
+
+	/**
+	 * Adds a modification listener to the attribute that is wrapped by the
+	 * given wrapping attribute.
+	 *
+	 * @param <T>
+	 *
+	 * @param wrappingAttribute
+	 * @param consumer
+	 */
+	protected static <T> void addModificationConsumer(
+			Attribute<T> wrappingAttribute, Consumer<T> consumer) {
+		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
+		wrappedAttribute.addModificationConsumer(consumer);
 	}
 
 	//#end region

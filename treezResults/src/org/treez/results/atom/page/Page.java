@@ -15,25 +15,28 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.Refreshable;
-import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.swt.JavaFxWrapperForSwt;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.TreezView;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
+import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.treez.results.Activator;
 import org.treez.results.atom.graph.Graph;
+import org.treez.results.atom.graphics.GraphicsAtom;
 import org.treez.results.veusz.VeuszToImage;
 
-import com.github.javafxd3.javafx.JavaFxD3Browser;
+import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.Selection;
 
 /**
  * Represents a veusz page
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Page extends AdjustableAtom {
+public class Page extends GraphicsAtom {
 
 	/**
 	 * Logger for this class
@@ -43,6 +46,10 @@ public class Page extends AdjustableAtom {
 	//#region ATTRIBUTES
 
 	private static PlotOption plotOption = PlotOption.D3;
+
+	private JavaFxD3Browser browser;
+
+	private Selection pageSelection;
 
 	private static String VEUSZ_PATH = "C:/Program Files (x86)/Veusz/veusz.exe";
 
@@ -168,10 +175,53 @@ public class Page extends AdjustableAtom {
 
 	}
 
-	private void plotWidthD3() {
+	private void plotWithD3() {
 
-		//create new browser and get d3 handle
+		Runnable executeRunnable = () -> {
+			D3 d3 = browser.getD3();
+			plotWithD3(d3);
+		};
+		browser = createD3BrowserInCadView(executeRunnable);
 
+	}
+
+	private void plotWithD3(D3 d3) {
+
+		Objects.requireNonNull(d3);
+
+		plotPageWithD3AndCreatePageSelection(d3);
+
+		for (Adaptable child : children) {
+			Boolean isGraph = child.getClass().equals(Graph.class);
+			if (isGraph) {
+				Graph graph = (Graph) child;
+				graph.plotWidthD3(d3, pageSelection);
+			}
+		}
+	}
+
+	private void plotPageWithD3AndCreatePageSelection(D3 d3) {
+
+		Selection svgSelection = d3 //
+				.select("#svg");
+
+		bindStringAttribute(svgSelection, "width", pageWidth);
+		bindStringAttribute(svgSelection, "height", pageHeight);
+
+		pageSelection = svgSelection //
+				.append("g") //
+				.attr("id", "" + name);
+
+		bindDisplayToBooleanAttribute(pageSelection, hide);
+
+		Selection rect = pageSelection //
+				.append("rect") //
+				.attr("fill", "lightblue");
+
+		bindStringAttribute(rect, "width", pageWidth);
+		bindStringAttribute(rect, "height", pageHeight);
+
+		rect.onMouseClick(this);
 	}
 
 	/**
@@ -179,9 +229,9 @@ public class Page extends AdjustableAtom {
 	 *
 	 * @param image
 	 */
-	private JavaFxD3Browser createD3BrowserInCadView(Image image) {
+	private static JavaFxD3Browser createD3BrowserInCadView(Runnable postLoadingHook) {
 		//get CadAdaption view
-		TreezView cadView = (TreezView) getView("org.treez.views.cadView.CadViewPart");
+		TreezView cadView = (TreezView) getView("org.treez.views.graphics");
 
 		//get content composite from CadView
 		if (cadView != null) {
@@ -193,14 +243,17 @@ public class Page extends AdjustableAtom {
 			}
 
 			//create new D3 browser
-			JavaFxD3Browser browser = new JavaFxD3Browser(postLoadingHook, false);
-
-			contentComposite.
+			JavaFxWrapperForSwt wrapper = new JavaFxWrapperForSwt(contentComposite);
+			JavaFxD3Browser browser = new JavaFxD3Browser(postLoadingHook, true);
+			wrapper.setContent(browser);
 
 			//update content composite
 			contentComposite.layout();
+
+			return browser;
+
 		} else {
-			throw new IllegalStateException("Could not get CadAdaption view");
+			throw new IllegalStateException("Could not get treez graphics view");
 		}
 
 	}
@@ -275,7 +328,7 @@ public class Page extends AdjustableAtom {
 	 */
 	private static void showImageInCadView(Image image) {
 		//get CadAdaption view
-		TreezView cadView = (TreezView) getView("org.treez.views.cadView.CadViewPart");
+		TreezView cadView = (TreezView) getView("org.treez.views.graphics");
 
 		//get content composite from CadView
 		if (cadView != null) {
@@ -293,7 +346,7 @@ public class Page extends AdjustableAtom {
 			//update content composite
 			contentComposite.layout();
 		} else {
-			throw new IllegalStateException("Could not get CadAdaption view");
+			throw new IllegalStateException("Could not get treez graphics view");
 		}
 
 	}

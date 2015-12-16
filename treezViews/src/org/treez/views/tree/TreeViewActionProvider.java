@@ -554,12 +554,18 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 
 	//#end region
 
-	//#region REFRESH
+	//#region REFRESH & FOCUS
 
 	@Override
 	public void refresh() {
 		//update the property view
 		displayLastLeftSelectedTreeNodeInPropertyView();
+	}
+
+	@Override
+	public void setFocus(AbstractAtom atomToFocus) {
+		treeViewer.setFocus(atomToFocus);
+
 	}
 
 	//#end region

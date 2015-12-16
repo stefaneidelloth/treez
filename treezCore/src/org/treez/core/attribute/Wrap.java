@@ -1,6 +1,7 @@
 package org.treez.core.attribute;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Default implementation of the AttributeWrapper interface
@@ -18,7 +19,8 @@ public class Wrap<T> implements AttributeWrapper<T> {
 	/**
 	 * Constructor
 	 */
-	public Wrap() {}
+	public Wrap() {
+	}
 
 	/**
 	 * Constructor with wrapped attribute
@@ -35,20 +37,23 @@ public class Wrap<T> implements AttributeWrapper<T> {
 
 	@Override
 	public T get() {
-		Objects.requireNonNull(wrappedAttribute, "Wrapped attribute must be set before calling this method.");
+		Objects.requireNonNull(wrappedAttribute,
+				"Wrapped attribute must be set before calling this method.");
 		T value = wrappedAttribute.get();
 		return value;
 	}
 
 	@Override
 	public void set(T value) {
-		Objects.requireNonNull(wrappedAttribute, "Wrapped attribute must be set before calling this method.");
+		Objects.requireNonNull(wrappedAttribute,
+				"Wrapped attribute must be set before calling this method.");
 		wrappedAttribute.set(value);
 	}
 
 	@Override
 	public String toString() {
-		Objects.requireNonNull(wrappedAttribute, "Wrapped attribute must be set before calling this method.");
+		Objects.requireNonNull(wrappedAttribute,
+				"Wrapped attribute must be set before calling this method.");
 		String valueString = wrappedAttribute.toString();
 		return valueString;
 	}
@@ -61,6 +66,11 @@ public class Wrap<T> implements AttributeWrapper<T> {
 	@Override
 	public void setAttribute(Attribute<T> wrappedAttribute) {
 		this.wrappedAttribute = wrappedAttribute;
+	}
+
+	@Override
+	public void addModificationConsumer(Consumer<T> consumer) {
+		wrappedAttribute.addModificationConsumer(consumer);
 	}
 
 	//#end region

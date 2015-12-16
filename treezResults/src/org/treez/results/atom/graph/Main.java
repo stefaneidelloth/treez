@@ -6,17 +6,18 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.veuszpage.VeuszPageModel;
+import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
+
+import org.treez.javafxd3.d3.core.Selection;
 
 /**
  * The main settings for a graph
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Main implements VeuszPageModel {
+public class Main implements GraphicsPageModel {
 
 	//#region ATTRIBUTES
-
-	//#region MARGINS
 
 	/**
 	 * Left margin
@@ -24,26 +25,19 @@ public class Main implements VeuszPageModel {
 	public final Attribute<String> leftMargin = new Wrap<>();
 
 	/**
-	 * Right margin
-	 */
-	public final Attribute<String> rightMargin = new Wrap<>();
-
-	/**
 	 * Top margin
 	 */
 	public final Attribute<String> topMargin = new Wrap<>();
 
 	/**
-	 * Bottom margin
+	 * Width
 	 */
-	public final Attribute<String> bottomMargin = new Wrap<>();
-
-	//#end region
+	public final Attribute<String> width = new Wrap<>();
 
 	/**
-	 * Aspect ratio
+	 * Height
 	 */
-	public final Attribute<String> aspectRatio = new Wrap<>();
+	public final Attribute<String> height = new Wrap<>();
 
 	/**
 	 * Hide
@@ -63,15 +57,25 @@ public class Main implements VeuszPageModel {
 
 		main.createTextField(leftMargin, "leftMargin", "Left margin", "1 cm");
 
-		main.createTextField(rightMargin, "rightMargin", "Right margin", "1 cm");
-
 		main.createTextField(topMargin, "topMargin", "Top margin", "1 cm");
 
-		main.createTextField(bottomMargin, "bottomMargin", "Bottom margin", "1 cm");
+		main.createTextField(width, "width", "Width", "8 cm");
 
-		main.createTextField(aspectRatio, "aspectRatio", "Aspect ratio", "Auto");
+		main.createTextField(height, "height", "Height", "8 cm");
 
 		main.createCheckBox(hide, "hide");
+	}
+
+	@Override
+	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+
+		parent.bindTranslationAttribute(graphSelection, leftMargin, topMargin);
+
+		parent.bindStringAttribute(rectSelection, "width", width);
+		parent.bindStringAttribute(rectSelection, "height", height);
+		parent.bindDisplayToBooleanAttribute(graphSelection, hide);
+
+		return graphSelection;
 	}
 
 	@Override
@@ -83,10 +87,10 @@ public class Main implements VeuszPageModel {
 			veuszString = veuszString + "Set('hide', True)";
 		}
 		veuszString = veuszString + "Set('leftMargin', u'" + leftMargin + "')\n";
-		veuszString = veuszString + "Set('rightMargin', u'" + rightMargin + "')\n";
 		veuszString = veuszString + "Set('topMargin', u'" + topMargin + "')\n";
-		veuszString = veuszString + "Set('bottomMargin', u'" + bottomMargin + "')\n";
-		veuszString = veuszString + "Set('aspect', u'" + aspectRatio + "')\n";
+		//veuszString = veuszString + "Set('rightMargin', u'" + width + "')\n";
+		//veuszString = veuszString + "Set('bottomMargin', u'" + height + "')\n";
+		//veuszString = veuszString + "Set('aspect', u'" + aspectRatio + "')\n";
 
 		return veuszString;
 	}
