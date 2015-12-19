@@ -4,12 +4,12 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.results.atom.graphics.GraphicsAtom;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
-
+import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
  * The main settings for a graph
@@ -67,7 +67,7 @@ public class Main implements GraphicsPageModel {
 	}
 
 	@Override
-	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
 
 		parent.bindTranslationAttribute(graphSelection, leftMargin, topMargin);
 

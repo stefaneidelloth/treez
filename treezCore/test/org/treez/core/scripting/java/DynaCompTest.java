@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.scripting.ModelProvider;
+import org.treez.core.scripting.java.file.JavaFileToBeCompiledInMemory;
 
 /**
  * Tests the in memory compilation
@@ -64,7 +65,7 @@ public class DynaCompTest {
 			//this is a list containing one "file" which is in our case
 			//our own implementation (see details below)
 			List<JavaFileObject> jfiles = new ArrayList<JavaFileObject>();
-			jfiles.add(new InMemoryJavaFileObject(javaCode));
+			jfiles.add(new JavaFileToBeCompiledInMemory(javaCode));
 
 			//We specify a task to the compiler. Compiler should use our file
 			//manager and our list of "files".

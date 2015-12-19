@@ -1,23 +1,25 @@
-package org.treez.core.scripting.java;
+package org.treez.core.scripting.java.classloader;
 
 import java.util.Objects;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.treez.core.scripting.java.file.CompiledJavaFileContainer;
 
 /**
- * Class loader for the in memory compilation
+ * Class loader for the in memory compilation. If the parent BundleClassLoader
+ * can not find a class, this class loader will try to find it.
  */
-public class MemoryClassLoader extends ClassLoader {
+public class InMemoryClassLoader extends ClassLoader {
 
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(MemoryClassLoader.class);
+	private static Logger sysLog = Logger.getLogger(InMemoryClassLoader.class);
 
 	//#region ATTRIBUTES
 
-	private JavaClassObject classObject;
+	private CompiledJavaFileContainer classObject;
 
 	//#end region
 
@@ -29,7 +31,8 @@ public class MemoryClassLoader extends ClassLoader {
 	 * @param parent
 	 * @param classObject
 	 */
-	public MemoryClassLoader(ClassLoader parent, JavaClassObject classObject) {
+	public InMemoryClassLoader(BundleClassLoader parent,
+			CompiledJavaFileContainer classObject) {
 		super(parent);
 		Objects.requireNonNull(classObject, "classObject must not be null");
 		this.classObject = classObject;
@@ -45,24 +48,29 @@ public class MemoryClassLoader extends ClassLoader {
 		//sysLog.debug("Finding class " + name);
 
 		byte[] b = classObject.getBytes();
-		Class<?> clazz = super.defineClass(name, classObject.getBytes(), 0, b.length);
+		Class<?> clazz = super.defineClass(name, classObject.getBytes(), 0,
+				b.length);
 
 		if (clazz == null) {
-			String message = "Could not find class with MemoryClassLoader: '" + name + "'";
+			String message = "Could not find class with MemoryClassLoader: '"
+					+ name + "'";
 			sysLog.error(message);
 			sysLog.debug("Classes of parent class loader:");
 			ClassLoader parentClassLoader = this.getParent();
 			java.lang.reflect.Field field;
 			try {
-				field = parentClassLoader.getClass().getDeclaredField("classes");
+				field = parentClassLoader.getClass()
+						.getDeclaredField("classes");
 				field.setAccessible(true);
 				@SuppressWarnings("unchecked")
-				Vector<Class<?>> classes = (Vector<Class<?>>) field.get(parentClassLoader);
+				Vector<Class<?>> classes = (Vector<Class<?>>) field
+						.get(parentClassLoader);
 				for (Class<?> clazzz : classes) {
 					sysLog.debug(clazzz.getName());
 				}
 			} catch (Exception e) {
-				throw new IllegalStateException("Could not get classes from parent class loader.");
+				throw new IllegalStateException(
+						"Could not get classes from parent class loader.");
 			}
 
 			throw new IllegalStateException(message);

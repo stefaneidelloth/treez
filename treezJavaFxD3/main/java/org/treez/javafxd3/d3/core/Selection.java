@@ -13,7 +13,6 @@ import org.treez.javafxd3.d3.arrays.ArrayUtils;
 import org.treez.javafxd3.d3.svg.PathDataGenerator;
 import org.treez.javafxd3.d3.wrapper.Element;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
-
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.functions.DatumFunction;
 import org.treez.javafxd3.d3.functions.KeyFunction;

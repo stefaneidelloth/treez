@@ -8,11 +8,9 @@ import org.eclipse.swt.graphics.Image;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.results.Activator;
 import org.treez.results.atom.veuszpage.GraphicsPageModel;
 import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
-import org.treez.results.length.Length;
 
 /**
  * Represents a veusz axis
@@ -93,43 +91,17 @@ public class Axis extends GraphicsPropertiesPage {
 	public Selection plotWidthD3(D3 d3, Selection graphSelection, Selection rectSelection) {
 		Objects.requireNonNull(d3);
 
-		String graphWidthString = rectSelection.attr("width");
-		Double graphWidthInPx = Length.toPx(graphWidthString);
-
-		LinearScale scale = d3 //
-				.scale() //
-				.linear() //
-				.domain(0.0, 1.0)
-				.range(0.0, graphWidthInPx);
-
-		org.treez.javafxd3.d3.svg.Axis axis = d3 //
-				.svg() //
-				.axis() //
-				.scale(scale)
-				.tickPadding(8.0)
-				.innerTickSize(-10.0);
-
 		axisSelection = graphSelection //
 				.append("g")
 				.attr("id", "" + name)
-				.attr("class", "x axis");
-
-		axis.apply(axisSelection);
-
-		axisSelection //
-				.selectAll("path, line") //
-				.style("fill", "none") //
-				.style("stroke", "#000")
-				.style("stroke-width", "3px") //
-				.style("shape-rendering", "geometricPrecision");
+				.attr("class", "axis");
 
 		for (GraphicsPageModel pageModel : veuszPageModels) {
-			axisSelection = pageModel.plotWithD3(axisSelection, null, this);
+			axisSelection = pageModel.plotWithD3(d3, axisSelection, rectSelection, this);
 		}
 
 		//handle mouse click
-
-		//rectSelection.onMouseClick(this);
+		axisSelection.onMouseClick(this);
 
 		return graphSelection;
 

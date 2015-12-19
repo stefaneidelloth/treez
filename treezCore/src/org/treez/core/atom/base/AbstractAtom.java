@@ -478,6 +478,9 @@ public abstract class AbstractAtom
 		//sysLog.debug("add child to " + getName());
 		AbstractAtom oldParent = child.getParentAtom();
 		child.setParentAtom(this);
+
+		//sysLog.debug("parent set");
+
 		children.add(child);
 		if (oldParent != null) {
 			//remove child from old parent

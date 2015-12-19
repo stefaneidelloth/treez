@@ -12,6 +12,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.functions.MouseClickFunction;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.veuszpage.GraphicsPageModel;
@@ -47,6 +48,7 @@ public class Graph extends GraphicsPropertiesPage {
 	public Graph(String name) {
 		super(name);
 		setRunnable();
+		MouseClickFunction dummy;
 	}
 
 	//#end region
@@ -106,7 +108,7 @@ public class Graph extends GraphicsPropertiesPage {
 	public Selection plotWidthD3(D3 d3, Selection pageSelection) {
 		Objects.requireNonNull(d3);
 
-		plotPageWithD3AndCreateGraphSelection(pageSelection);
+		plotPageWithD3AndCreateGraphSelection(d3, pageSelection);
 
 		for (Adaptable child : children) {
 			Boolean isAxis = child.getClass().equals(Axis.class);
@@ -120,7 +122,7 @@ public class Graph extends GraphicsPropertiesPage {
 
 	}
 
-	private void plotPageWithD3AndCreateGraphSelection(Selection pageSelection) {
+	private void plotPageWithD3AndCreateGraphSelection(D3 d3, Selection pageSelection) {
 
 		graphSelection = pageSelection //
 				.append("g") //
@@ -131,7 +133,7 @@ public class Graph extends GraphicsPropertiesPage {
 				.attr("fill", "red");
 
 		for (GraphicsPageModel pageModel : veuszPageModels) {
-			graphSelection = pageModel.plotWithD3(graphSelection, rectSelection, this);
+			graphSelection = pageModel.plotWithD3(d3, graphSelection, rectSelection, this);
 		}
 
 		//handle mouse click

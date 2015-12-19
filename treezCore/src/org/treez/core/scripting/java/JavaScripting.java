@@ -1,7 +1,6 @@
 package org.treez.core.scripting.java;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,13 +70,16 @@ public class JavaScripting extends AbstractScripting {
 						+ "(specify path to JDK with -vm option in eclipse.ini).");
 
 		//get the class loader from this class to use it as
-		//the parent class loader in the InMemoryClassFileManager
+		//the parent class loader for the class loaders that are
+		//created by the InMemoryClassFileManager
 		ClassLoader parentClassLoader = this.getClass().getClassLoader();
 		Objects.requireNonNull(parentClassLoader,
 				"The parent class loader must not be null.");
 
-		//compile the class in memory and create a
-		//new class loader containing it
+		//Create the InMemoryClassFileManager and use it to
+		//compile the class in memory.
+		//Also get the full class name and create a new class loader that
+		//contains the compiled class.
 		ClassLoader memoryClassLoader;
 		String fullClassName;
 		try (StandardJavaFileManager standardFileManager = compiler
@@ -88,24 +90,10 @@ public class JavaScripting extends AbstractScripting {
 			//get full class name
 			fullClassName = initialFileManager.getFullClassName();
 
-			//create new file manager that contains the compiled class and
-			//retrieve the new class loader from it
-			try (JavaFileManager memoryFileManager = compileClass(
-					initialFileManager, compiler);) {
-
-				//get final class loader from our fileManager (the argument
-				//null is not used here;
-				//it is just required to implement the
-				//file manager interface)
-				memoryClassLoader = memoryFileManager.getClassLoader(null);
-				Objects.requireNonNull(memoryClassLoader,
-						"Could not create memory class loader. Please check if an import is missing in your Treez java file.");
-
-			} catch (Exception exception) {
-				String message = "Could not create memory file manager and memory class loader.";
-				sysLog.error(message, exception);
-				throw new IllegalArgumentException(message, exception);
-			}
+			//compile class and create an in memory class loader that
+			//contains the compiled class
+			memoryClassLoader = compileClassAndCreateInMemoryClassLoader(
+					compiler, initialFileManager);
 
 		} catch (Exception exception) {
 			String message = "Could not create InMemoryClassFileManager.";
@@ -113,11 +101,44 @@ public class JavaScripting extends AbstractScripting {
 			throw new IllegalArgumentException(message, exception);
 		}
 
-		//Create an object instance using our in memory class loader
+		//Create an object instance using the in memory class loader
 		instance = createObjectInstanceFromCompiledClass(fullClassName,
 				memoryClassLoader);
 		Objects.requireNonNull(instance, "Instance must not be null.");
 
+	}
+
+	/**
+	 * Compile the class and create a new file manager that contains the
+	 * compiled class and a corresponding in memory class loader. Finaly return
+	 * the new class loader.
+	 *
+	 * @param compiler
+	 * @param initialFileManager
+	 * @return
+	 */
+	private static ClassLoader compileClassAndCreateInMemoryClassLoader(
+			JavaCompiler compiler,
+			InMemoryClassFileManager initialFileManager) {
+
+		ClassLoader memoryClassLoader;
+		try (JavaFileManager memoryFileManager = compileClass(
+				initialFileManager, compiler);) {
+
+			//Get final class loader from our fileManager (the argument
+			//null is not used here; it is just required to implement the
+			//file manager interface)
+			memoryClassLoader = memoryFileManager.getClassLoader(null);
+			Objects.requireNonNull(memoryClassLoader,
+					"Could not create memory class loader. Please check if an import is missing in your Treez java file.");
+
+		} catch (SecurityException | IllegalStateException
+				| IOException exception) {
+			String message = "Could not create memory file manager and memory class loader.";
+			sysLog.error(message, exception);
+			throw new IllegalArgumentException(message, exception);
+		}
+		return memoryClassLoader;
 	}
 
 	/**
@@ -143,7 +164,10 @@ public class JavaScripting extends AbstractScripting {
 	}
 
 	/**
-	 * Compiles the given javaCode to a
+	 * Compiles the javaCode that is contained in the given file manager and
+	 * updates the file manager with the result. The updated file manger
+	 * provides a new class loader that can be used to obtain the compiled class
+	 * (use the method "getClassLoader").
 	 *
 	 * @param compiler
 	 * @param fileManager
@@ -162,7 +186,7 @@ public class JavaScripting extends AbstractScripting {
 
 		//create a "list of java file objects" to be dynamically compiled in
 		//memory. In
-		//our case this will only contain a single in memory java file object.
+		//our case this will only contain a single in memory java file.
 		List<JavaFileObject> javaFileObjects = fileManager.getJavaFileObjects();
 
 		//create CompilationTask
@@ -175,7 +199,7 @@ public class JavaScripting extends AbstractScripting {
 		Objects.requireNonNull(compilationTask,
 				"Compilation task must not be null.");
 
-		//run CompilationTask (this will modify file manager)
+		//run CompilationTask (this will update the wrapped file manager)
 		try {
 			compilationTask.call();
 		} catch (Exception exception) {
@@ -189,8 +213,10 @@ public class JavaScripting extends AbstractScripting {
 		boolean compileErrorsExist = compileLogger.hasData();
 		if (compileErrorsExist) {
 			String message = "Could not compile class '"
-					+ fileManager.getFullClassName()
-					+ "'. Please see console output about JavaScripting for more information. "
+					+ fileManager.getFullClassName() + "\n"
+					+ "------------------\n" //
+					+ compileLogger.getDataAsString() //
+					+ "------------------\n"
 					+ "This issue might be due to missing import statements. If so, please add "
 					+ "the missing imports to the Treez java file. Please do so even if the imports"
 					+ " are not direcly used in your code and you get an Eclipse warning "
@@ -204,37 +230,6 @@ public class JavaScripting extends AbstractScripting {
 
 		//return modified file manager
 		return fileManager;
-	}
-
-	/**
-	 * Creates a writer that logs the written messages
-	 *
-	 * @return
-	 */
-	private static Writer createLoggingWriter() {
-		Writer out = new Writer() {
-
-			@Override
-			public void write(char[] cbuf, int off, int len)
-					throws IOException {
-				//TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void flush() throws IOException {
-				//TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void close() throws IOException {
-				//TODO Auto-generated method stub
-
-			}
-
-		};
-		return out;
 	}
 
 	/**

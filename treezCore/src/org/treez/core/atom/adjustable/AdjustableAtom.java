@@ -26,15 +26,12 @@ import org.treez.core.scripting.java.JavaScripting;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.ActionSeparator;
 import org.treez.core.treeview.action.TreeViewerAction;
-import org.treez.javafxd3.d3.functions.MouseClickFunction;
 
 /**
  * An implementation of the AbstractAtom which is defined by an underlying model
  * tree. See the package description for more information.
  */
-public class AdjustableAtom extends AbstractUiSynchronizingAtom
-		implements
-			MouseClickFunction {
+public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 
 	/**
 	 * Logger for this class
@@ -386,14 +383,6 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom
 		Composite dummyParent = new Composite(
 				Display.getCurrent().getActiveShell(), SWT.NULL);
 		this.createControlAdaption(dummyParent, null);
-	}
-
-	/**
-	 * Handles JavaScript mouse click on Page rect
-	 */
-	@Override
-	public void handleMouseClick(Object context) {
-		setFocus(this);
 	}
 
 	//#end region

@@ -1,4 +1,4 @@
-package org.treez.results.length;
+package org.treez.core.atom.graphics.length;
 
 import java.util.Objects;
 

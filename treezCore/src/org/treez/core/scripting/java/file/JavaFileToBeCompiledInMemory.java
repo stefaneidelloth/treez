@@ -1,14 +1,16 @@
-package org.treez.core.scripting.java;
+package org.treez.core.scripting.java.file;
 
 import java.net.URI;
 import java.util.Set;
 
 import javax.tools.SimpleJavaFileObject;
 
+import org.treez.core.scripting.java.ScriptingPropertyExtractor;
+
 /**
- * Represents a java file object for the in memory compilation
+ * Represents a java file that should be compiled in memory
  */
-public class InMemoryJavaFileObject extends SimpleJavaFileObject {
+public class JavaFileToBeCompiledInMemory extends SimpleJavaFileObject {
 
 	//#region ATTRIBUTES
 
@@ -23,7 +25,7 @@ public class InMemoryJavaFileObject extends SimpleJavaFileObject {
 	private String fullClassName;
 
 	/**
-	 * A set of ids of the bundles this java file object depends on
+	 * A set of ids of the bundles this java file depends on
 	 */
 	private Set<String> bundleIds = null;
 
@@ -38,7 +40,7 @@ public class InMemoryJavaFileObject extends SimpleJavaFileObject {
 	 * @param content
 	 *            source code to compile
 	 */
-	public InMemoryJavaFileObject(CharSequence content) {
+	public JavaFileToBeCompiledInMemory(CharSequence content) {
 		super(createUri(content), Kind.SOURCE);
 		this.content = content;
 		String javaCode = content.toString();

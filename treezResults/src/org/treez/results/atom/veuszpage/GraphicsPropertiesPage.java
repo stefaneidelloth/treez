@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.scripting.ScriptType;
-import org.treez.results.atom.graphics.GraphicsAtom;
 
 /**
  * Represents a veusz properties page

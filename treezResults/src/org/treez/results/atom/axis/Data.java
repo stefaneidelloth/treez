@@ -4,10 +4,13 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphics.GraphicsAtom;
+import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
@@ -110,11 +113,40 @@ public class Data implements GraphicsPageModel {
 	}
 
 	@Override
-	public Selection plotWithD3(Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		//parent.bindStringAttribute(selection, "x", leftMargin);
+		String graphWidthString = rectSelection.attr("width");
+		Double graphWidthInPx = Length.toPx(graphWidthString);
 
-		return graphSelection;
+		String graphHeightString = rectSelection.attr("height");
+		Double graphHeightInPx = Length.toPx(graphHeightString);
+
+		LinearScale scale = d3 //
+				.scale() //
+				.linear() //
+				.domain(0.0, 1.0)
+				.range(0.0, graphWidthInPx);
+
+		org.treez.javafxd3.d3.svg.Axis axis = d3 //
+				.svg() //
+				.axis() //
+				.scale(scale)
+				.tickPadding(8.0)
+				.tickSize(-10.0, 2);
+
+		Selection newAxisSelection = axisSelection //
+				.attr("transform", "translate(0," + graphHeightInPx + ")");
+
+		axis.apply(newAxisSelection);
+
+		newAxisSelection //
+				.selectAll("path, line") //
+				.style("fill", "none") //
+				.style("stroke", "#000")
+				.style("stroke-width", "3px") //
+				.style("shape-rendering", "geometricPrecision");
+
+		return axisSelection;
 	}
 
 	@Override

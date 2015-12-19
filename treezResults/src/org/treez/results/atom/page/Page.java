@@ -17,20 +17,19 @@ import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.swt.JavaFxWrapperForSwt;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.TreezView;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
+import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.treez.results.Activator;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphics.GraphicsAtom;
 import org.treez.results.veusz.VeuszToImage;
-
-import org.treez.javafxd3.d3.D3;
-import org.treez.javafxd3.d3.core.Selection;
 
 /**
  * Represents a veusz page

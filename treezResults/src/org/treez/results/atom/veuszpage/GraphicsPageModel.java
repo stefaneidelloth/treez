@@ -2,8 +2,9 @@ package org.treez.results.atom.veuszpage;
 
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphics.GraphicsAtom;
 
 /**
  * Creates a veusz properties page, its corresponding veusz text and its corresponding code container
@@ -31,6 +32,6 @@ public interface GraphicsPageModel {
 	 * @param selection
 	 * @return
 	 */
-	Selection plotWithD3(Selection parentSelection, Selection contentSelection, GraphicsAtom parent);
+	Selection plotWithD3(D3 d3, Selection parentSelection, Selection contentSelection, GraphicsAtom parent);
 
 }
