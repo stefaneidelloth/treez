@@ -28,8 +28,6 @@ public class TextField extends AbstractAttributeAtom<String> {
 
 	//#region ATTRIBUTES
 
-	private static final int MAX_LABEL_WIDTH = 30;
-
 	@IsParameter(defaultValue = "My TextField:")
 	private String label;
 
@@ -316,12 +314,12 @@ public class TextField extends AbstractAttributeAtom<String> {
 
 	@Override
 	public void addModificationConsumer(Consumer<String> consumer) {
-		if (isAvailable(textField)) {
-			textField.addModifyListener((event) -> {
+		addModifyListener((event) -> {
+			if (isAvailable(textField)) {
 				String value = textField.getText();
 				consumer.accept(value);
-			});
-		}
+			}
+		});
 	}
 
 	//#end region

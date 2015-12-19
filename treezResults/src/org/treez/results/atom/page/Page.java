@@ -170,26 +170,23 @@ public class Page extends GraphicsAtom {
 		case Veusz:
 			plotWithVeusz();
 			break;
+		default:
+			throw new IllegalStateException("Plot option " + plotOption + " is not yet implemented.");
 		}
 
 	}
 
 	private void plotWithD3() {
-
 		Runnable executeRunnable = () -> {
 			D3 d3 = browser.getD3();
 			plotWithD3(d3);
 		};
 		browser = createD3BrowserInCadView(executeRunnable);
-
 	}
 
 	private void plotWithD3(D3 d3) {
-
 		Objects.requireNonNull(d3);
-
 		plotPageWithD3AndCreatePageSelection(d3);
-
 		for (Adaptable child : children) {
 			Boolean isGraph = child.getClass().equals(Graph.class);
 			if (isGraph) {

@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
@@ -247,29 +246,12 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 
 	@Override
 	public void addModificationConsumer(Consumer<Boolean> consumer) {
-
-		SelectionListener selectionListener = new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-
+		addModifyListener((event) -> {
+			if (isAvailable(checkBox)) {
 				Boolean value = checkBox.getSelection();
 				consumer.accept(value);
-
 			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				//not used here
-
-			}
-
-		};
-
-		if (isAvailable(checkBox)) {
-			checkBox.addSelectionListener(selectionListener);
-		}
-
+		});
 	}
 
 	//#end region

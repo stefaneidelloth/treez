@@ -3,6 +3,7 @@ package org.treez.javafxd3.d3.wrapper;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.treez.javafxd3.d3.core.Value;
 
@@ -648,6 +649,7 @@ public class JavaScriptObject {
 	}
 	
 	protected void assertObjectIsNotAnonymous(final Object callback) {
+		Objects.requireNonNull(callback, "Callback must not be null");
 		Class<?> callbackClass = callback.getClass();
 		boolean isAnonymeous = callbackClass.isAnonymousClass();
 		if (isAnonymeous) {

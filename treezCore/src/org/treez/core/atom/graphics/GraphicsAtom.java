@@ -48,8 +48,9 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 		selection.attr(selectionAttributeName, trim(wrappingAttribute.get()));
 
 		//create one way binding
-		addModificationConsumer(wrappingAttribute, (newValue) -> selection
-				.attr(selectionAttributeName, trim(newValue)));
+		addModificationConsumer(wrappingAttribute, (newValue) -> {
+			selection.attr(selectionAttributeName, trim(newValue));
+		});
 	}
 
 	/**

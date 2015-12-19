@@ -121,10 +121,8 @@ public class Label extends AbstractAttributeAtom<String> {
 
 	@Override
 	public void addModificationConsumer(Consumer<String> consumer) {
-
 		throw new IllegalStateException(
 				"Labels to not support modification listeners");
-		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region

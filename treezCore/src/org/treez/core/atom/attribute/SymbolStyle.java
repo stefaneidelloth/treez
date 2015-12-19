@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -235,25 +234,10 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 
 	@Override
 	public void addModificationConsumer(Consumer<String> consumer) {
-
-		SelectionListener selectionListener = new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				String value = event.data.toString();
-				consumer.accept(value);
-
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				//not used here
-			}
-
-		};
-
-		styleCombo.addSelectionListener(selectionListener);
-
+		addModifyListener((event) -> {
+			String value = event.data.toString();
+			consumer.accept(value);
+		});
 	}
 
 	//#end region

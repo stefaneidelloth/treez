@@ -220,7 +220,8 @@ public abstract class AbstractAttributeAtom<T>
 		if (this.modifyListenersEnabled) {
 			ModifyEvent modifyEvent = new AttributeAtomEvent(this)
 					.createModifyEvent();
-			for (ModifyListener listener : getModifyListeners()) {
+			List<ModifyListener> listeners = getModifyListeners();
+			for (ModifyListener listener : listeners) {
 				listener.modifyText(modifyEvent);
 			}
 		}
@@ -337,7 +338,7 @@ public abstract class AbstractAttributeAtom<T>
 	public void addModificationConsumer(Consumer<T> consumer) {
 
 		throw new IllegalStateException("not yet implemented");
-		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
+		//addModifyListener(	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region

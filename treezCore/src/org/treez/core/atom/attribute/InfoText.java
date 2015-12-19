@@ -1,7 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import java.util.function.Consumer;
-
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -182,13 +180,6 @@ public class InfoText extends AbstractAttributeAtom<String> {
 					250);
 			labelField.setBackground(normalColor);
 		}
-	}
-
-	@Override
-	public void addModificationConsumer(Consumer<String> consumer) {
-
-		throw new IllegalStateException(
-				"InfoText does not support modification listeners");
 	}
 
 	//#end region

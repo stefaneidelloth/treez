@@ -1,7 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import java.util.function.Consumer;
-
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -170,13 +168,6 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 	@Override
 	public void refreshAttributeAtomControl() {
 
-	}
-
-	@Override
-	public void addModificationConsumer(Consumer<String> consumer) {
-
-		throw new IllegalStateException("not yet implemented");
-		//treezList.addModifyListener(	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region
