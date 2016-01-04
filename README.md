@@ -8,6 +8,8 @@ Use following [**Eclipse Update Side**](http://www.vogella.com/tutorials/Eclipse
 
 https://github.com/stefaneidelloth/treez/raw/master/treezUpdate/
 
+If you have trouble getting Treez up and running, please create an issue ticket. 
+
 ##Getting started#
 
 * Switch to the **Treez Perspective**.
