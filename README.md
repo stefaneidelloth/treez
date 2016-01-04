@@ -62,5 +62,7 @@ The idea that an application is build from **underlying reusable building blocks
 
 The **exemplary atoms** that come with Treez are thought to model a common simulation work flow: you can use the atoms to control an external executable and perform **parameter variations**. If you want to apply the Treez concept for a completely different application, you are welcome to do so. Please **feel free to create your custom atoms**. An aim of Treez is to make the creation of new atoms as easy as possible. Treez provides a set of so called **attribute atoms** that can be used as building blocks for the creation of new atoms. 
 
-If users of Treez create new atoms and feed them back to the Treez project, a large open source **atom library** will arise with time. The **extensible plugin structure** of Eclipse is perfectly suited for this purpose. 
+## Contribute
+
+If every user of Treez creates a new atom and feeds it back to the Treez project, a large open source **atom library** will arise with time. The **extensible plugin structure** of Eclipse is perfectly suited for this purpose. If you want to contribute to Treez please start with creating a new issue ticket and describe your atom suggestions. Bug reports and ideas on how to improve the already existing atoms are also very welcome.  
 
