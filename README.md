@@ -1,6 +1,6 @@
 # treez
 
-Eclipse plugins for the creation of graphical user interfaces based on tree models.
+Eclipse plugins for the creation of graphical user interfaces that are based on trees.
 
 **Installation**
 
