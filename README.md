@@ -2,6 +2,10 @@
 
 **Eclipse plugins** for the creation of **graphical user interfaces** that are **based on trees**.
 
+Tags that are related to Treez:
+
+GUI, tree based, tree structure, hierarchical structure, scientific plotting, d3.js, SVG export, batch, sweep, parallel, iteration, evaluation, execution, simulation, generic, java, plugin
+
 ##Installation
 
 Use following [**Eclipse Update Side**](http://www.vogella.com/tutorials/Eclipse/article.html#plugin_installation) and disable the option "Group items by category" to see the treez feature:
