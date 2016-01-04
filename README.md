@@ -1,4 +1,4 @@
-# treez
+# ![alt tag](https://github.com/stefaneidelloth/treez/blob/master/treez.png) Treez
 
 Eclipse plugins for the creation of graphical user interfaces that are based on trees.
 
