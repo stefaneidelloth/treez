@@ -6,7 +6,7 @@
 
 Use following [**Eclipse Update Side**](http://www.vogella.com/tutorials/Eclipse/article.html#plugin_installation) and disable the option "Group items by category":
 
-https://github.com/stefaneidelloth/treez/tree/master/treezUpdate
+https://github.com/stefaneidelloth/treez/raw/master/treezUpdate/
 
 ##Getting started#
 
