@@ -3,6 +3,7 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -207,7 +208,8 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 		//add listener to update relative root if value of parent ModelPath
 		//changes
-		parentModelPath.addModifyListener((event) -> updateRelativeRootAtom());
+		parentModelPath.addModifyListener("updateRelativeRootAtom",
+				(event) -> updateRelativeRootAtom());
 
 	}
 
@@ -742,6 +744,12 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 			}
 		}
+	}
+
+	@Override
+	public void addModificationConsumer(String key, Consumer<String> consumer) {
+		addModifyListener(key,
+				(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region

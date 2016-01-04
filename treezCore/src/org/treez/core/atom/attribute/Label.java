@@ -120,7 +120,7 @@ public class Label extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void addModificationConsumer(Consumer<String> consumer) {
+	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		throw new IllegalStateException(
 				"Labels to not support modification listeners");
 	}

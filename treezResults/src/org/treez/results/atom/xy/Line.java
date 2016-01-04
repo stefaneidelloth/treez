@@ -1,6 +1,7 @@
 package org.treez.results.atom.xy;
 
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.LineStyleValue;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
@@ -9,6 +10,9 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
+import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
+import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
@@ -22,12 +26,12 @@ public class Line implements GraphicsPageModel {
 	/**
 	 *
 	 */
-	public final Attribute<String> steps = new Wrap<>();
+	public final Attribute<String> interpolationMode = new Wrap<>();
 
 	/**
 	 *
 	 */
-	public final Attribute<Boolean> bezierJoin = new Wrap<>();
+	//public final Attribute<Boolean> bezierJoin = new Wrap<>();
 
 	/**
 	 *
@@ -63,29 +67,122 @@ public class Line implements GraphicsPageModel {
 
 		Page linePage = root.createPage("line", "   Line    ");
 
-		Section line = linePage.createSection("line");
+		Section line = linePage.createSection("line", "Line");
 
-		line.createComboBox(steps, "steps", "off, left, centre, left-shift-points, right-shift-points, vcentre", "off");
+		line.createEnumComboBox(interpolationMode, "interpolationMode", "Interpolation", InterpolationMode.LINEAR);
 
-		line.createCheckBox(bezierJoin, "bezierJoin", "Bezier join");
+		//line.createCheckBox(bezierJoin, "bezierJoin", "Bezier join");
 
-		line.createColorChooser(color, "color", "black");
+		line.createColorChooser(color, "color", "Color", "black");
 
-		line.createSize(width, "width", "0.5pt");
+		line.createTextField(width, "width", "Width", "1");
 
-		line.createLineStyle(style, "style");
+		line.createLineStyle(style, "style", "Style");
 
-		line.createTextField(transparency, "transparency", "0");
+		line.createTextField(transparency, "transparency", "Transparency", "0");
 
-		line.createCheckBox(hide, "hide");
+		line.createCheckBox(hide, "hide", "Hide");
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
+		//see method replotWithD3
+		return xySelection;
+	}
 
-		//parent.bindStringAttribute(selection, "x", leftMargin);
+	/**
+	 * @param d3
+	 * @param xySelection
+	 * @param parent
+	 * @param xyDataString
+	 * @param xScale
+	 * @param yScale
+	 */
+	public void replotWithD3(
+			D3 d3,
+			Selection xySelection,
+			GraphicsAtom parent,
+			String xyDataString,
+			QuantitativeScale<?> xScale,
+			QuantitativeScale<?> yScale) {
 
-		return graphSelection;
+		Xy xy = (Xy) parent;
+		interpolationMode.addModificationConsumer("replot", (data) -> {
+			xy.area.replotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
+			doReplotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
+		});
+
+		doReplotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
+
+	}
+
+	private void doReplotWithD3(
+			D3 d3,
+			Selection xySelection,
+			GraphicsAtom parent,
+			String xyDataString,
+			QuantitativeScale<?> xScale,
+			QuantitativeScale<?> yScale) {
+
+		replotLinesWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
+
+		Xy xy = (Xy) parent;
+		xy.symbol.replotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
+	}
+
+	private void replotLinesWithD3(
+			D3 d3,
+			Selection xySelection,
+			GraphicsAtom parent,
+			String xyDataString,
+			QuantitativeScale<?> xScale,
+			QuantitativeScale<?> yScale) {
+		xySelection //
+				.selectAll("#lines") //
+				.remove();
+
+		Selection linesSelection = xySelection //
+				.append("g") //
+				.attr("id", "lines") //
+				.attr("class", "lines");
+
+		String modeString = interpolationMode.get();
+		org.treez.javafxd3.d3.svg.InterpolationMode mode = org.treez.javafxd3.d3.svg.InterpolationMode
+				.fromValue(modeString);
+
+		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
+				.svg()//
+				.line()
+				.x(new AxisScaleFirstDatumFunction(xScale))
+				.y(new AxisScaleSecondDatumFunction(yScale))//
+				.interpolate(mode);
+
+		//plot new lines
+		Selection lines = linesSelection //
+				.append("path") //
+				.attr("d", linePathGenerator.generate(xyDataString))
+				.attr("fill", "none");
+
+		parent.bindDisplayToBooleanAttribute("hideLine", lines, hide);
+		parent.bindStringAttribute(lines, "stroke", color);
+		parent.bindStringAttribute(lines, "stroke-width", width);
+
+		transparency.addModificationConsumer("updateLineTransparency", (data) -> {
+			try {
+				double lineTransparency = Double.parseDouble(transparency.get());
+				double opacity = 1 - lineTransparency;
+				lines.attr("stroke-opacity", "" + opacity);
+			} catch (NumberFormatException exception) {
+
+			}
+		});
+
+		style.addModificationConsumer("updateLineStyle", (data) -> {
+			String lineStyleString = style.get();
+			LineStyleValue lineStyle = LineStyleValue.fromString(lineStyleString);
+			String dashArray = lineStyle.getDashArray();
+			lines.attr("stroke-dasharray", dashArray);
+		});
 	}
 
 	@Override

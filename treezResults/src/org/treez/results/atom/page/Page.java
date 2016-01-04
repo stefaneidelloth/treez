@@ -208,7 +208,7 @@ public class Page extends GraphicsAtom {
 				.append("g") //
 				.attr("id", "" + name);
 
-		bindDisplayToBooleanAttribute(pageSelection, hide);
+		bindDisplayToBooleanAttribute("hidePage", pageSelection, hide);
 
 		Selection rect = pageSelection //
 				.append("rect") //

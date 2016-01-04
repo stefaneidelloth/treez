@@ -6,13 +6,13 @@ import org.junit.Before;
 /**
  * Tests the SymbolStyle
  */
-public class SymbolStyleTest extends AbstractAttributeAtomConstructionTest<String> {
+public class SymbolTypeTest extends AbstractAttributeAtomConstructionTest<String> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SymbolStyleTest.class);
+	private static Logger sysLog = Logger.getLogger(SymbolTypeTest.class);
 
 	//#region ATTRIBUTES
 
@@ -23,7 +23,7 @@ public class SymbolStyleTest extends AbstractAttributeAtomConstructionTest<Strin
 	public void createTestAtom() {
 
 		//create test atom
-		SymbolStyle symbolStyle = new SymbolStyle(atomName);
+		SymbolType symbolStyle = new SymbolType(atomName);
 		symbolStyle.setLabel("My symbol style:");
 		symbolStyle.setTooltip("My symbol style tooltip");
 		symbolStyle.setDefaultValue(SymbolStyleValue.DIAMOND);

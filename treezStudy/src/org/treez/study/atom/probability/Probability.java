@@ -89,7 +89,7 @@ public class Probability extends AbstractParameterVariation {
 		FilePath filePath = pickingSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
-		filePath.addModifyListener(new ModifyListener() {
+		filePath.addModifyListener("updateEnabledState", new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {

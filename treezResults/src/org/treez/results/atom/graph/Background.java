@@ -50,9 +50,9 @@ public class Background implements GraphicsPageModel {
 
 		Section background = backgroundPage.createSection("background");
 
-		background.createColorChooser(color, "color");
+		background.createColorChooser(color, "color", "Color");
 
-		background.createFillStyle(fillStyle, "style");
+		background.createFillStyle(fillStyle, "style", "Style");
 
 		background.createTextField(transparency, "transparency", "0");
 

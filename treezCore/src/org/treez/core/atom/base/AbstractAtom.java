@@ -792,10 +792,10 @@ public abstract class AbstractAtom
 	 * @param wrappingAttribute
 	 * @param consumer
 	 */
-	protected static <T> void addModificationConsumer(
+	protected static <T> void addModificationConsumer(String key,
 			Attribute<T> wrappingAttribute, Consumer<T> consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
-		wrappedAttribute.addModificationConsumer(consumer);
+		wrappedAttribute.addModificationConsumer(key, consumer);
 	}
 
 	//#end region

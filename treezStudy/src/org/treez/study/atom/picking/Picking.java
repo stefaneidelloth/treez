@@ -113,7 +113,7 @@ public class Picking extends AbstractParameterVariation {
 		variableList = pickingSection.createVariableList(variables, "variables", "Picking variables");
 
 		//add listener to update variable list for new source model path and do initial update
-		modelPath.addModifyListener((modifyEvent) -> updateAvailableVariablesForVariableList());
+		modelPath.addModifyListener("updateVariableList", (modifyEvent) -> updateAvailableVariablesForVariableList());
 
 		//export study info check box
 		pickingSection.createCheckBox(exportStudyInfo, "exportStudyInfo", "Export study information", true);
@@ -122,7 +122,7 @@ public class Picking extends AbstractParameterVariation {
 		FilePath filePath = pickingSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
-		filePath.addModifyListener(new ModifyListener() {
+		filePath.addModifyListener("updateEnabledState", new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {

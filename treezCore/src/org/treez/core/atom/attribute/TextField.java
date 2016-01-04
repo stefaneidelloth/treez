@@ -313,8 +313,8 @@ public class TextField extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void addModificationConsumer(Consumer<String> consumer) {
-		addModifyListener((event) -> {
+	public void addModificationConsumer(String key, Consumer<String> consumer) {
+		addModifyListener(key, (event) -> {
 			if (isAvailable(textField)) {
 				String value = textField.getText();
 				consumer.accept(value);

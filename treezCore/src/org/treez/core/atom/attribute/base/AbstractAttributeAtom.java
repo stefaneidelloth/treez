@@ -1,7 +1,11 @@
 package org.treez.core.atom.attribute.base;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
@@ -69,12 +73,13 @@ public abstract class AbstractAttributeAtom<T>
 	private Boolean isInitialized = false;
 
 	/**
-	 * List of listener that will react on modifications of the the attribute
-	 * value. (The binding of that listener has to be considered in the
+	 * Listener that will react on modifications of the the attribute value.
+	 * (The bindings of that listeners have to be considered in the
 	 * implementations of the AttributeAtom, e.g. by calling
-	 * triggerModificationListeners)
+	 * triggerModificationListeners) In order to avoid duplicate lambda
+	 * expressions, the listeners are managed as a map.
 	 */
-	private List<ModifyListener> modifyListeners = null;
+	private Map<String, ModifyListener> modifyListeners = null;
 
 	/**
 	 * If this is true, the modifyListeners are informed when the method
@@ -100,7 +105,7 @@ public abstract class AbstractAttributeAtom<T>
 	 */
 	public AbstractAttributeAtom(String name) {
 		super(name);
-		modifyListeners = new ArrayList<ModifyListener>();
+		modifyListeners = new HashMap<>();
 	}
 
 	/**
@@ -111,7 +116,7 @@ public abstract class AbstractAttributeAtom<T>
 	public AbstractAttributeAtom(AbstractAttributeAtom<T> attributeAtomToCopy) {
 		super(attributeAtomToCopy);
 		//modify listeners are not copied
-		modifyListeners = new ArrayList<ModifyListener>();
+		modifyListeners = new HashMap<>();
 		attributeValue = CopyHelper
 				.copyAttributeValue(attributeAtomToCopy.attributeValue);
 		isInitialized = new Boolean(attributeAtomToCopy.isInitialized);
@@ -209,18 +214,18 @@ public abstract class AbstractAttributeAtom<T>
 	 *
 	 * @param listener
 	 */
-	public void addModifyListener(ModifyListener listener) {
-		modifyListeners.add(listener);
+	public void addModifyListener(String key, ModifyListener listener) {
+		modifyListeners.put(key, listener);
 	}
 
 	/**
 	 * Informs the modification listeners about changes
 	 */
-	public void triggerModificationListeners() {
+	public synchronized void triggerModificationListeners() {
 		if (this.modifyListenersEnabled) {
 			ModifyEvent modifyEvent = new AttributeAtomEvent(this)
 					.createModifyEvent();
-			List<ModifyListener> listeners = getModifyListeners();
+			Set<ModifyListener> listeners = getModifyListeners();
 			for (ModifyListener listener : listeners) {
 				listener.modifyText(modifyEvent);
 			}
@@ -335,10 +340,10 @@ public abstract class AbstractAttributeAtom<T>
 	}
 
 	@Override
-	public void addModificationConsumer(Consumer<T> consumer) {
+	public void addModificationConsumer(String key, Consumer<T> consumer) {
 
 		throw new IllegalStateException("not yet implemented");
-		//addModifyListener(	(event) -> consumer.accept(event.data.toString()));
+		//addModifyListener(key,	(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region
@@ -461,8 +466,12 @@ public abstract class AbstractAttributeAtom<T>
 	 *
 	 * @return
 	 */
-	public List<ModifyListener> getModifyListeners() {
-		return modifyListeners;
+	public Set<ModifyListener> getModifyListeners() {
+		Set<ModifyListener> listeners = new HashSet<>();
+		for (ModifyListener listener : modifyListeners.values()) {
+			listeners.add(listener);
+		}
+		return listeners;
 	}
 
 	/**

@@ -10,6 +10,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -21,22 +22,24 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 
 /**
- * Allows the user to choose a fill style
+ * Allows the user to choose a line style
  */
-public class FillStyle extends AbstractAttributeAtom<String> {
+public class EnumComboBox<T extends EnumValueProvider<?>>
+		extends
+			AbstractAttributeAtom<String> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FillStyle.class);
+	private static Logger sysLog = Logger.getLogger(EnumComboBox.class);
 
 	//#region ATTRIBUTES
 
-	@IsParameter(defaultValue = "My Symbol Style:")
+	@IsParameter(defaultValue = "My Line Style:")
 	private String label;
 
-	@IsParameter(defaultValue = "cross")
+	@IsParameter(defaultValue = "solid")
 	private String defaultValue;
 
 	@IsParameter(defaultValue = "")
@@ -45,23 +48,17 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	/**
 	 * The combo box
 	 */
-	private ImageCombo styleCombo = null;
+	private Combo comboBox;
 
 	/**
 	 * The image label
 	 */
-	private Label imageLabel = null;
+	private Label imageLabel;
 
 	/**
-	 * Prefix for the image file names
+	 * The enum that provides the available values
 	 */
-	private static final String IMAGE_PREFIX = "fill_";
-
-	/**
-	 * Predefined symbol styles
-	 */
-	private static final List<String> FILL_STYLES = FillStyleValue
-			.getAllStringValues();
+	private final T enumInstance;
 
 	//#end region
 
@@ -72,9 +69,11 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	 *
 	 * @param name
 	 */
-	public FillStyle(String name) {
+	public EnumComboBox(T enumInstance, String name) {
 		super(name);
 		label = name;
+		this.enumInstance = enumInstance;
+		setDefaultValue(enumInstance);
 	}
 
 	/**
@@ -82,46 +81,26 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	 *
 	 * @param name
 	 */
-	public FillStyle(String name, String label) {
+	public EnumComboBox(T enumInstance, String name, String label) {
 		super(name);
 		this.label = label;
-	}
-
-	/**
-	 * Constructor with default value
-	 *
-	 * @param name
-	 * @param defaultStyle
-	 */
-	public FillStyle(String name, String label, String defaultStyle) {
-		super(name);
-		this.label = label;
-
-		boolean isFillStyle = FILL_STYLES.contains(defaultStyle);
-		if (isFillStyle) {
-			attributeValue = defaultStyle;
-		} else {
-			throw new IllegalArgumentException("The specified fill style '"
-					+ defaultStyle + "' is not known.");
-		}
+		this.enumInstance = enumInstance;
+		setDefaultValue(enumInstance);
 	}
 
 	/**
 	 * Copy constructor
 	 *
-	 * @param fillStyleToCopy
+	 * @param lineStyleToCopy
 	 */
-	private FillStyle(FillStyle fillStyleToCopy) {
-		super(fillStyleToCopy);
-		label = fillStyleToCopy.label;
-		defaultValue = fillStyleToCopy.defaultValue;
-		tooltip = fillStyleToCopy.tooltip;
-	}
-
-	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key,
-				(event) -> consumer.accept(event.data.toString()));
+	private EnumComboBox(EnumComboBox<T> lineStyleToCopy) {
+		super(lineStyleToCopy);
+		enumInstance = lineStyleToCopy.enumInstance;
+		label = lineStyleToCopy.label;
+		defaultValue = lineStyleToCopy.defaultValue;
+		tooltip = lineStyleToCopy.tooltip;
+		comboBox = lineStyleToCopy.comboBox;
+		imageLabel = lineStyleToCopy.imageLabel;
 	}
 
 	//#end region
@@ -131,8 +110,8 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	//#region COPY
 
 	@Override
-	public FillStyle copy() {
-		return new FillStyle(this);
+	public EnumComboBox<T> copy() {
+		return new EnumComboBox<T>(this);
 	}
 
 	//#end region
@@ -142,7 +121,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	 */
 	@Override
 	public Image provideImage() {
-		return Activator.getImage("fill_cross.png");
+		return Activator.getImage("combobox.png");
 	}
 
 	/**
@@ -168,41 +147,34 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 		String currentLabel = getLabel();
 		CustomLabel labelComposite = new CustomLabel(toolkit, container,
 				currentLabel);
-		final int prefferredLabelWidth = 85;
-		labelComposite.setPrefferedWidth(prefferredLabelWidth);
-
-		//image label
-		imageLabel = toolkit.createLabel(container, "");
+		final int preferredLabelWidth = 85;
+		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
 		//separator
 		toolkit.createLabel(container, "  ");
 
 		//combo box
-		styleCombo = new ImageCombo(container, SWT.DEFAULT);
-		styleCombo.setEnabled(isEnabled());
-		styleCombo.setEditable(false);
+		comboBox = new Combo(container, SWT.DEFAULT);
+		comboBox.setEnabled(isEnabled());
 
-		//set predefined styles
-		final List<String> styles = getFillStyles();
-		for (String styleString : styles) {
-			styleCombo.add(styleString,
-					Activator.getImage(IMAGE_PREFIX + styleString + ".png"));
+		//set available values
+		List<String> values = enumInstance.getValues();
+		for (String value : values) {
+			comboBox.add(value);
 		}
 
 		//initialize selected item
 		refreshAttributeAtomControl();
 
 		//action listener for combo box
-		styleCombo.addSelectionListener(new SelectionAdapter() {
+		comboBox.addSelectionListener(new SelectionAdapter() {
 
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				int index = styleCombo.getSelectionIndex();
-				String currentStyle = styles.get(index);
-				set(currentStyle);
-				imageLabel.setImage(Activator
-						.getImage(IMAGE_PREFIX + currentStyle + ".png"));
+				int index = comboBox.getSelectionIndex();
+				String currentValue = enumInstance.getValues().get(index);
+				set(currentValue);
 
 				//trigger modification listeners
 				triggerModificationListeners();
@@ -221,7 +193,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 		fillHorizontal.grabExcessHorizontalSpace = true;
 		fillHorizontal.horizontalAlignment = GridData.FILL;
 
-		//create container control for labels and file style
+		//create container control for labels and line style
 		Composite container = toolkit.createComposite(parent);
 		GridLayout gridLayout = new GridLayout(5, false);
 		gridLayout.horizontalSpacing = 0;
@@ -232,14 +204,12 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 
 	@Override
 	public void refreshAttributeAtomControl() {
-		if (isAvailable(styleCombo)) {
-			String style = get();
-			final List<String> styles = getFillStyles();
-			int index = styles.indexOf(style);
-			if (styleCombo.getSelectionIndex() != index) {
-				styleCombo.select(index);
-				imageLabel.setImage(
-						Activator.getImage(IMAGE_PREFIX + style + ".png"));
+		if (isAvailable(comboBox)) {
+			List<String> values = enumInstance.getValues();
+			String vale = get();
+			int index = values.indexOf(vale);
+			if (comboBox.getSelectionIndex() != index) {
+				comboBox.select(index);
 			}
 		}
 	}
@@ -248,7 +218,12 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	public void setBackgroundColor(
 			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
+	}
 
+	@Override
+	public void addModificationConsumer(String key, Consumer<String> consumer) {
+		addModifyListener(key,
+				(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region
@@ -281,16 +256,24 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	 * @param defaultValue
 	 */
 	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
+		boolean isAllowedValue = enumInstance.getValues()
+				.contains(defaultValue);
+		if (isAllowedValue) {
+			this.defaultValue = defaultValue;
+		} else {
+			throw new IllegalArgumentException(
+					"The specified value '" + defaultValue + "' is not known.");
+		}
+
 	}
 
 	/**
-	 * Sets the default fill style
+	 * Sets the default line style
 	 *
-	 * @param style
+	 * @param enumValue
 	 */
-	public void setDefaultValue(FillStyleValue style) {
-		setDefaultValue(style.toString());
+	public void setDefaultValue(T enumValue) {
+		setDefaultValue(enumValue.toString());
 	}
 
 	/**
@@ -308,7 +291,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Get fill style as string
+	 * Get value as string
 	 *
 	 * @return the value
 	 */
@@ -318,23 +301,24 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Set fill style
-	 *
-	 * @param style
-	 *            the value to set
+	 * @return
 	 */
-	@Override
-	public void set(String style) {
-		super.set(style);
+	public T getEnumValue() {
+		String value = get();
+		@SuppressWarnings("unchecked")
+		T enumValue = (T) enumInstance.fromString(value);
+		return enumValue;
 	}
 
 	/**
-	 * Get predefined fill styles
+	 * Set value
 	 *
-	 * @return the fill styles
+	 * @param value
+	 *            the filePath to set
 	 */
-	public List<String> getFillStyles() {
-		return FILL_STYLES;
+	@Override
+	public void set(String value) {
+		super.set(value);
 	}
 
 	//#end region

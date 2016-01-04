@@ -78,7 +78,7 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @param scale
 	 * @return the current axis
 	 */
-	public <S extends Scale<S>> Axis scale(S scale) {
+	public <S extends Scale<?>> Axis scale(S scale) {
 		
 		this.associatedScale = scale;
 		JSObject jsScale = scale.getJsObject();			

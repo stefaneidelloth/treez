@@ -290,12 +290,12 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * Create a new value chooser with a default value
 	 *
 	 * @param name
-	 * @param defaultValue
+	 * @param label
 	 * @return
 	 */
 	public ColorChooser createColorChooser(Attribute<String> wrap, String name,
-			String defaultValue) {
-		ColorChooser colorChooser = new ColorChooser(name, defaultValue);
+			String label) {
+		ColorChooser colorChooser = new ColorChooser(name, label);
 		addChild(colorChooser);
 		colorChooser.wrap(wrap);
 		return colorChooser;
@@ -311,9 +311,8 @@ public class Section extends AbstractAttributeContainerAtom {
 	 */
 	public ColorChooser createColorChooser(Attribute<String> wrap, String name,
 			String label, String defaultValue) {
-		ColorChooser colorChooser = createColorChooser(wrap, name,
-				defaultValue);
-		colorChooser.setLabel(label);
+		ColorChooser colorChooser = createColorChooser(wrap, name, label);
+		colorChooser.setDefaultValue(defaultValue);
 		return colorChooser;
 	}
 
@@ -397,7 +396,8 @@ public class Section extends AbstractAttributeContainerAtom {
 	}
 
 	/**
-	 * Creates a new combo box with enum values
+	 * Creates a new combo box with a given enum that provides the available
+	 * values
 	 *
 	 * @param name
 	 * @param label
@@ -406,10 +406,31 @@ public class Section extends AbstractAttributeContainerAtom {
 	 */
 	public ComboBox createComboBox(Attribute<String> wrap, String name,
 			String label, Enum<?> defaultEnumValue) {
+		@SuppressWarnings({"unchecked", "rawtypes"})
 		ComboBox comboBox = new ComboBox(name);
 		comboBox.setLabel(label);
-		comboBox.setItems(defaultEnumValue);
 		comboBox.setDefaultValue(defaultEnumValue);
+		addChild(comboBox);
+		comboBox.wrap(wrap);
+		return comboBox;
+	}
+
+	/**
+	 * Creates a new combo box with enum values
+	 *
+	 * @param <T>
+	 *
+	 * @param name
+	 * @param label
+	 * @param defaultEnumValue
+	 * @return
+	 */
+	public <T extends EnumValueProvider<?>> EnumComboBox<T> createEnumComboBox(
+			Attribute<String> wrap, String name, String label,
+			EnumValueProvider<?> defaultEnumValue) {
+		@SuppressWarnings({"unchecked", "rawtypes"})
+		EnumComboBox<T> comboBox = new EnumComboBox(defaultEnumValue, name);
+		comboBox.setLabel(label);
 		addChild(comboBox);
 		comboBox.wrap(wrap);
 		return comboBox;
@@ -1148,8 +1169,8 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * @return
 	 */
 	public AbstractAttributeAtom<String> createFillStyle(Attribute<String> wrap,
-			String name) {
-		FillStyle fillStyle = new FillStyle(name);
+			String name, String label) {
+		FillStyle fillStyle = new FillStyle(name, label);
 		addChild(fillStyle);
 		fillStyle.wrap(wrap);
 		return fillStyle;
@@ -1194,17 +1215,18 @@ public class Section extends AbstractAttributeContainerAtom {
 	}
 
 	/**
-	 * Creates a symbol style
+	 * Creates a symbol type selection combo box
 	 *
 	 * @param name
 	 * @return
 	 */
-	public AbstractAttributeAtom<String> createSymbolStyle(
-			Attribute<String> wrap, String name) {
-		SymbolStyle style = new SymbolStyle(name);
-		addChild(style);
-		style.wrap(wrap);
-		return style;
+	public AbstractAttributeAtom<String> createSymbolType(
+			Attribute<String> wrap, String name, String label,
+			String defaultValue) {
+		SymbolType symbolType = new SymbolType(name, label, defaultValue);
+		addChild(symbolType);
+		symbolType.wrap(wrap);
+		return symbolType;
 	}
 
 	/**

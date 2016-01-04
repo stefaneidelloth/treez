@@ -3,6 +3,7 @@ package org.treez.core.atom.attribute;
 import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.ColorSelector;
@@ -72,6 +73,28 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	}
 
 	/**
+	 * Constructor
+	 *
+	 * @param name
+	 */
+	public ColorChooser(String name, String label) {
+		super(name);
+		this.label = label;
+	}
+
+	/**
+	 * Constructor with default value
+	 *
+	 * @param name
+	 * @param defaultColor
+	 */
+	public ColorChooser(String name, String label, String defaultColor) {
+		super(name);
+		this.label = label;
+		setDefaultValue(defaultColor);
+	}
+
+	/**
 	 * Copy constructor
 	 *
 	 * @param colorChooserToCopy
@@ -81,18 +104,6 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		label = colorChooserToCopy.label;
 		defaultValue = colorChooserToCopy.defaultValue;
 		tooltip = colorChooserToCopy.tooltip;
-	}
-
-	/**
-	 * Constructor with default value
-	 *
-	 * @param name
-	 * @param defaultColor
-	 */
-	public ColorChooser(String name, String defaultColor) {
-		super(name);
-		label = name;
-		setDefaultValue(defaultColor);
 	}
 
 	//#end region
@@ -140,7 +151,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		String currentLabel = getLabel();
 		CustomLabel labelComposite = new CustomLabel(toolkit, container,
 				currentLabel);
-		final int prefferedLabelWidth = 80;
+		final int prefferedLabelWidth = 85;
 		labelComposite.setPrefferedWidth(prefferedLabelWidth);
 
 		//button value
@@ -149,6 +160,9 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		Button colorButton = colorSelector.getButton();
 		RGB rgb = getColorRgb();
 		colorSelector.setColorValue(rgb);
+
+		//separator
+		toolkit.createLabel(container, "  ");
 
 		//combo box value
 		//chooser-------------------------------------------------
@@ -189,8 +203,8 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	private static Composite createContainer(Composite parent,
 			FormToolkit toolkit, GridData fillHorizontal) {
 		Composite container = toolkit.createComposite(parent);
-		GridLayout gridLayout = new GridLayout(3, false);
-		gridLayout.horizontalSpacing = 10;
+		GridLayout gridLayout = new GridLayout(5, false);
+		gridLayout.horizontalSpacing = 0;
 		container.setLayout(gridLayout);
 		container.setLayoutData(fillHorizontal);
 		return container;
@@ -287,6 +301,12 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void addModificationConsumer(String key, Consumer<String> consumer) {
+		addModifyListener(key,
+				(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region

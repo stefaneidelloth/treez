@@ -13,7 +13,7 @@ import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.page.Page;
 import org.treez.results.atom.results.Results;
-import org.treez.results.atom.xy.XY;
+import org.treez.results.atom.xy.Xy;
 import org.treez.study.atom.Studies;
 import org.treez.study.atom.range.QuantityVariableRange;
 import org.treez.study.atom.sensitivity.Sensitivity;
@@ -129,7 +129,7 @@ public class ModelDemo extends ModelProvider {
 		Axis yAxis = new Axis("y", Direction.VERTICAL);
 		graph.addChild(yAxis);
 
-		XY xy = new XY("xy plot");
+		Xy xy = new Xy("xy plot");
 		graph.addChild(xy);
 
 		return root;

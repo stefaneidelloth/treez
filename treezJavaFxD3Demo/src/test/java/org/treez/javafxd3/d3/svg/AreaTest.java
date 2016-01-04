@@ -7,14 +7,13 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.svg.Area;
 import org.treez.javafxd3.d3.svg.Area.InterpolationMode;
-
-import org.treez.javafxd3.d3.AbstractTestCase;
 import org.treez.javafxd3.d3.svg.datumfunction.IndexSwitchDatumFunction;
 import org.treez.javafxd3.d3.svg.datumfunction.XCaptureDatumFunction;
 import org.treez.javafxd3.d3.svg.datumfunction.XDatumFunction;
 import org.treez.javafxd3.d3.svg.datumfunction.YCaptureDatumFunction;
 import org.treez.javafxd3.d3.svg.datumfunction.YCoordsCounterDatumFunction;
 import org.treez.javafxd3.d3.svg.datumfunction.YDatumFunction;
+import org.treez.javafxd3.d3.AbstractTestCase;
 
 @SuppressWarnings("javadoc")
 public class AreaTest extends AbstractTestCase {

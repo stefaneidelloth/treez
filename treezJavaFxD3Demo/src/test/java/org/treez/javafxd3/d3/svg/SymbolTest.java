@@ -4,9 +4,8 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.functions.ConstantDatumFunction;
 import org.treez.javafxd3.d3.svg.Symbol;
 import org.treez.javafxd3.d3.svg.Symbol.Type;
-
-import org.treez.javafxd3.d3.AbstractTestCase;
 import org.treez.javafxd3.d3.svg.datumfunction.IndexDatumFunction;
+import org.treez.javafxd3.d3.AbstractTestCase;
 
 @SuppressWarnings("javadoc")
 public class SymbolTest extends AbstractTestCase {

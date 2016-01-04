@@ -69,8 +69,8 @@ public class Wrap<T> implements AttributeWrapper<T> {
 	}
 
 	@Override
-	public void addModificationConsumer(Consumer<T> consumer) {
-		wrappedAttribute.addModificationConsumer(consumer);
+	public void addModificationConsumer(String key, Consumer<T> consumer) {
+		wrappedAttribute.addModificationConsumer(key, consumer);
 	}
 
 	//#end region

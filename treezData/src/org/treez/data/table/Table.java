@@ -1,6 +1,7 @@
 package org.treez.data.table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -229,7 +230,7 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 	/**
 	 * Adds the given row to the table
-	 * 
+	 *
 	 * @param row
 	 */
 	public void addRow(Row row) {
@@ -237,6 +238,16 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 			rows = new ArrayList<Row>();
 		}
 		rows.add(row);
+	}
+
+	/**
+	 * Adds a new row with a given object entries
+	 *
+	 * @param entries
+	 */
+	public void addRow(Object... entries) {
+		List<Object> entryList = Arrays.asList(entries);
+		addRow(entryList);
 	}
 
 	/**

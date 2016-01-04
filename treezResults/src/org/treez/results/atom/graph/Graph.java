@@ -17,7 +17,7 @@ import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.veuszpage.GraphicsPageModel;
 import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
-import org.treez.results.atom.xy.XY;
+import org.treez.results.atom.xy.Xy;
 
 /**
  * Represents a veusz graph
@@ -84,7 +84,7 @@ public class Graph extends GraphicsPropertiesPage {
 				treeViewer);
 		actions.add(addData);
 
-		Action addXY = new AddChildAtomTreeViewerAction(XY.class, "xy", Activator.getImage("xy.png"), this, treeViewer);
+		Action addXY = new AddChildAtomTreeViewerAction(Xy.class, "xy", Activator.getImage("xy.png"), this, treeViewer);
 		actions.add(addXY);
 
 		return actions;
@@ -110,11 +110,30 @@ public class Graph extends GraphicsPropertiesPage {
 
 		plotPageWithD3AndCreateGraphSelection(d3, pageSelection);
 
+		//initialize axis scales at the beginning, so that they can be used
+		//by other plot components
 		for (Adaptable child : children) {
 			Boolean isAxis = child.getClass().equals(Axis.class);
 			if (isAxis) {
 				Axis axis = (Axis) child;
-				axis.plotWidthD3(d3, graphSelection, rectSelection);
+				axis.initializeScalesWithD3(d3, rectSelection);
+			}
+		}
+
+		for (Adaptable child : children) {
+			Boolean isXY = child.getClass().equals(Xy.class);
+			if (isXY) {
+				Xy xy = (Xy) child;
+				xy.plotWithD3(d3, graphSelection, rectSelection);
+			}
+		}
+
+		//plot axis at the end to show them on top
+		for (Adaptable child : children) {
+			Boolean isAxis = child.getClass().equals(Axis.class);
+			if (isAxis) {
+				Axis axis = (Axis) child;
+				axis.plotWithD3(d3, graphSelection, rectSelection);
 			}
 		}
 
@@ -130,7 +149,7 @@ public class Graph extends GraphicsPropertiesPage {
 
 		rectSelection = graphSelection //
 				.append("rect") //
-				.attr("fill", "red");
+				.attr("fill", "lightblue");
 
 		for (GraphicsPageModel pageModel : veuszPageModels) {
 			graphSelection = pageModel.plotWithD3(d3, graphSelection, rectSelection, this);
@@ -183,7 +202,7 @@ public class Graph extends GraphicsPropertiesPage {
 
 			Boolean isXY = child.getClass().getSimpleName().equals("XY");
 			if (isXY) {
-				String xyText = ((XY) child).getVeuszText();
+				String xyText = ((Xy) child).getVeuszText();
 				Objects.requireNonNull(xyText);
 				veuszString = veuszString + xyText;
 				veuszString = veuszString + "To('..')\n";
@@ -217,8 +236,8 @@ public class Graph extends GraphicsPropertiesPage {
 	 * @param name
 	 * @return
 	 */
-	public XY createXY(String name) {
-		XY child = new XY(name);
+	public Xy createXy(String name) {
+		Xy child = new Xy(name);
 		addChild(child);
 		return child;
 	}

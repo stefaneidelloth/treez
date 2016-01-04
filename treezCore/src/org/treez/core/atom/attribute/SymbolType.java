@@ -21,15 +21,15 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 
 /**
- * Allows the user to choose a line style
+ * Allows the user to choose a symbol type
  */
-public class SymbolStyle extends AbstractAttributeAtom<String> {
+public class SymbolType extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SymbolStyle.class);
+	private static Logger sysLog = Logger.getLogger(SymbolType.class);
 
 	//#region ATTRIBUTES
 
@@ -72,20 +72,20 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 	 *
 	 * @param name
 	 */
-	public SymbolStyle(String name) {
+	public SymbolType(String name) {
 		super(name);
 		label = name;
 	}
 
 	/**
-	 * Constructor with default value
+	 * Constructor
 	 *
 	 * @param name
 	 * @param defaultStyle
 	 */
-	public SymbolStyle(String name, String defaultStyle) {
+	public SymbolType(String name, String label, String defaultStyle) {
 		super(name);
-		label = name;
+		this.label = label;
 
 		boolean isLineStyle = symbolStyles.contains(defaultStyle);
 		if (isLineStyle) {
@@ -101,7 +101,7 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 	 *
 	 * @param symbolStyleToCopy
 	 */
-	private SymbolStyle(SymbolStyle symbolStyleToCopy) {
+	private SymbolType(SymbolType symbolStyleToCopy) {
 		super(symbolStyleToCopy);
 		label = symbolStyleToCopy.label;
 		defaultValue = symbolStyleToCopy.defaultValue;
@@ -115,8 +115,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 	//#region COPY
 
 	@Override
-	public SymbolStyle copy() {
-		return new SymbolStyle(this);
+	public SymbolType copy() {
+		return new SymbolType(this);
 	}
 
 	//#end region
@@ -146,17 +146,24 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 		//toolkit
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
-		Composite container = crateContainer(parent, toolkit);
+		Composite container = createContainer(parent, toolkit);
 
 		//label
 		String currentLabel = getLabel();
 		CustomLabel labelComposite = new CustomLabel(toolkit, container,
 				currentLabel);
-		final int preferredLabelWidth = 80;
+		GridData layoutData = new GridData();
+		layoutData.horizontalAlignment = GridData.BEGINNING;
+		labelComposite.setLayoutData(layoutData);
+
+		final int preferredLabelWidth = 85;
 		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
 		//image label
 		imageLabel = toolkit.createLabel(container, "");
+
+		//spacer
+		toolkit.createLabel(container, "  ");
 
 		//combo box
 		styleCombo = new ImageCombo(container, SWT.DEFAULT);
@@ -195,18 +202,20 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite crateContainer(Composite parent,
+	private static Composite createContainer(Composite parent,
 			FormToolkit toolkit) {
+
+		//create container control for labels and line style
+		Composite container = toolkit.createComposite(parent);
+		GridLayout gridLayout = new GridLayout(5, false);
+		gridLayout.horizontalSpacing = 0;
+		container.setLayout(gridLayout);
+
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
 		fillHorizontal.horizontalAlignment = GridData.FILL;
 
-		//create container control for labels and line style
-		Composite container = toolkit.createComposite(parent);
-		GridLayout gridLayout = new GridLayout(3, false);
-		gridLayout.horizontalSpacing = 10;
-		container.setLayout(gridLayout);
 		container.setLayoutData(fillHorizontal);
 		return container;
 	}
@@ -233,8 +242,8 @@ public class SymbolStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void addModificationConsumer(Consumer<String> consumer) {
-		addModifyListener((event) -> {
+	public void addModificationConsumer(String key, Consumer<String> consumer) {
+		addModifyListener(key, (event) -> {
 			String value = event.data.toString();
 			consumer.accept(value);
 		});

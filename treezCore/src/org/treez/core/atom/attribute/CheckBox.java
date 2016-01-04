@@ -245,8 +245,9 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	}
 
 	@Override
-	public void addModificationConsumer(Consumer<Boolean> consumer) {
-		addModifyListener((event) -> {
+	public void addModificationConsumer(String key,
+			Consumer<Boolean> consumer) {
+		addModifyListener(key, (event) -> {
 			if (isAvailable(checkBox)) {
 				Boolean value = checkBox.getSelection();
 				consumer.accept(value);

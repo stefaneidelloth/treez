@@ -157,7 +157,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		//source type
 		ComboBox sourceTypeCheck = sourceTypeSection.createComboBox(sourceType, "sourceType", "Source type",
 				TableSourceType.CSV);
-		sourceTypeCheck.addModifyListener((event) -> enableAndDisableDependentComponents());
+		sourceTypeCheck.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
 
 		//if true, the target table is linked to the original source
 		//pro: for huge tables only the first few rows need to be initialized and the
@@ -174,7 +174,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		//inherit source file path : take (modified) parent output path
 		CheckBox inheritSourcePath = sourceDataSection.createCheckBox(inheritSourceFilePath, "inheritSourceFilePath",
 				"Inherit source file", true);
-		inheritSourcePath.addModifyListener((event) -> enableAndDisableDependentComponents());
+		inheritSourcePath.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
 
 		//path to data file (enabled if source is file based)
 		sourceDataSection.createFilePath(sourceFilePath, "importFilePath", "Source file", "C:\\data.txt");

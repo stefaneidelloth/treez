@@ -1,6 +1,7 @@
 package org.treez.core.atom.attribute;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -71,6 +72,35 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	}
 
 	/**
+	 * Constructor
+	 *
+	 * @param name
+	 */
+	public LineStyle(String name, String label) {
+		super(name);
+		this.label = label;
+	}
+
+	/**
+	 * Constructor with default value
+	 *
+	 * @param name
+	 * @param defaultStyle
+	 */
+	public LineStyle(String name, String label, String defaultStyle) {
+		super(name);
+		this.label = label;
+
+		boolean isLineStyle = lineStyles.contains(defaultStyle);
+		if (isLineStyle) {
+			attributeValue = defaultStyle;
+		} else {
+			throw new IllegalArgumentException("The specified line style '"
+					+ defaultStyle + "' is not known.");
+		}
+	}
+
+	/**
 	 * Copy constructor
 	 *
 	 * @param lineStyleToCopy
@@ -82,25 +112,6 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 		tooltip = lineStyleToCopy.tooltip;
 		styleCombo = lineStyleToCopy.styleCombo;
 		imageLabel = lineStyleToCopy.imageLabel;
-	}
-
-	/**
-	 * Constructor with default value
-	 *
-	 * @param name
-	 * @param defaultStyle
-	 */
-	public LineStyle(String name, String defaultStyle) {
-		super(name);
-		label = name;
-
-		boolean isLineStyle = lineStyles.contains(defaultStyle);
-		if (isLineStyle) {
-			attributeValue = defaultStyle;
-		} else {
-			throw new IllegalArgumentException("The specified line style '"
-					+ defaultStyle + "' is not known.");
-		}
 	}
 
 	//#end region
@@ -147,11 +158,14 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 		String currentLabel = getLabel();
 		CustomLabel labelComposite = new CustomLabel(toolkit, container,
 				currentLabel);
-		final int preferredLabelWidth = 80;
+		final int preferredLabelWidth = 85;
 		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
 		//image label
 		imageLabel = toolkit.createLabel(container, "");
+
+		//separator
+		toolkit.createLabel(container, "  ");
 
 		//combo box
 		styleCombo = new ImageCombo(container, SWT.DEFAULT);
@@ -198,8 +212,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 		//create container control for labels and line style
 		Composite container = toolkit.createComposite(parent);
-		GridLayout gridLayout = new GridLayout(3, false);
-		gridLayout.horizontalSpacing = 10;
+		GridLayout gridLayout = new GridLayout(5, false);
+		gridLayout.horizontalSpacing = 0;
 		container.setLayout(gridLayout);
 		container.setLayoutData(fillHorizontal);
 		return container;
@@ -223,6 +237,12 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
+	}
+
+	@Override
+	public void addModificationConsumer(String key, Consumer<String> consumer) {
+		addModifyListener(key,
+				(event) -> consumer.accept(event.data.toString()));
 	}
 
 	//#end region

@@ -48,9 +48,10 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 		selection.attr(selectionAttributeName, trim(wrappingAttribute.get()));
 
 		//create one way binding
-		addModificationConsumer(wrappingAttribute, (newValue) -> {
-			selection.attr(selectionAttributeName, trim(newValue));
-		});
+		addModificationConsumer(selectionAttributeName, wrappingAttribute,
+				(newValue) -> {
+					selection.attr(selectionAttributeName, trim(newValue));
+				});
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param wrappingAttribute
 	 * @param selection
 	 */
-	public void bindDisplayToBooleanAttribute(Selection selection,
+	public void bindDisplayToBooleanAttribute(String key, Selection selection,
 			Attribute<Boolean> wrappingAttribute) {
 
 		//set initial value
@@ -79,7 +80,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 		}
 
 		//create one way binding
-		addModificationConsumer(wrappingAttribute, (newValue) -> {
+		addModificationConsumer(key, wrappingAttribute, (newValue) -> {
 			if (newValue) {
 				selection.attr("display", "none");
 			} else {
@@ -93,16 +94,16 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param leftMargin
 	 * @param topMargin
 	 */
-	public void bindTranslationAttribute(Selection selection,
+	public void bindTranslationAttribute(String key, Selection selection,
 			Attribute<String> leftMargin, Attribute<String> topMargin) {
 
 		updateTranslation(selection, leftMargin, topMargin);
 
-		addModificationConsumer(leftMargin, (newValue) -> {
+		addModificationConsumer(key, leftMargin, (newValue) -> {
 			updateTranslation(selection, leftMargin, topMargin);
 		});
 
-		addModificationConsumer(topMargin, (newValue) -> {
+		addModificationConsumer(key, topMargin, (newValue) -> {
 			updateTranslation(selection, leftMargin, topMargin);
 		});
 

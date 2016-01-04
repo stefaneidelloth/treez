@@ -176,7 +176,7 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	protected void createEnabledCheckBox() {
 		// enabled state
 		CheckBox enabledCheck = data.createCheckBox(enabled, "enabled", "Enabled", enabled.get());
-		enabledCheck.addModifyListener((event) -> {
+		enabledCheck.addModifyListener("updateEnabledState", (event) -> {
 			boolean enabledState = enabled.get();
 			setEnabled(enabledState);
 		});

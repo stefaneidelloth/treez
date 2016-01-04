@@ -1037,11 +1037,22 @@ public class Selection extends EnteringSelection {
 	 *            the data array to map to the selection
 	 * @return the update selection
 	 */
-	public final UpdateSelection data(int[][] array) {
-
+	public final UpdateSelection data(Double[][] array) {
 		String arrayString = ArrayUtils.createArrayString(array);
+		return data(arrayString);
+	}
 
-		String command = "this.data(" + arrayString + ")";
+	/**
+	 * Joins the specified array of data with the current selection using the
+	 * default by-index key mapping.
+	 * <p>
+	 *
+	 * @param array
+	 *            the data array to map to the selection
+	 * @return the update selection
+	 */
+	public UpdateSelection data(String dataArrayString) {
+		String command = "this.data(" + dataArrayString + ")";
 		JSObject result = evalForJsObject(command);
 		return new UpdateSelection(webEngine, result);
 	}
@@ -1203,9 +1214,7 @@ public class Selection extends EnteringSelection {
 
 		String arrayString = ArrayUtils.createArrayString(array);
 
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1221,9 +1230,7 @@ public class Selection extends EnteringSelection {
 
 		String arrayString = ArrayUtils.createArrayString(array);
 
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1239,9 +1246,7 @@ public class Selection extends EnteringSelection {
 
 		String arrayString = ArrayUtils.createArrayString(array);
 
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1305,9 +1310,7 @@ public class Selection extends EnteringSelection {
 	public final UpdateSelection data(final byte[] array) {
 
 		String arrayString = ArrayUtils.createArrayString(array);
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1349,9 +1352,7 @@ public class Selection extends EnteringSelection {
 	public final UpdateSelection data(final double[] array) {
 
 		String arrayString = ArrayUtils.createArrayString(array);
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1392,9 +1393,7 @@ public class Selection extends EnteringSelection {
 	public final UpdateSelection data(final float[] array) {
 
 		String arrayString = ArrayUtils.createArrayString(array);
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1435,9 +1434,7 @@ public class Selection extends EnteringSelection {
 	public final UpdateSelection data(final int[] array) {
 
 		String arrayString = ArrayUtils.createArrayString(array);
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1478,9 +1475,7 @@ public class Selection extends EnteringSelection {
 	public final UpdateSelection data(final long[] array) {
 
 		String arrayString = ArrayUtils.createArrayString(array);
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1521,9 +1516,7 @@ public class Selection extends EnteringSelection {
 	public final UpdateSelection data(final short[] array) {
 
 		String arrayString = ArrayUtils.createArrayString(array);
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**
@@ -1562,9 +1555,7 @@ public class Selection extends EnteringSelection {
 	public final UpdateSelection data(final char[] array) {
 
 		String arrayString = ArrayUtils.createArrayString(array);
-		String command = "this.data(" + arrayString + ")";
-		JSObject result = evalForJsObject(command);
-		return new UpdateSelection(webEngine, result);
+		return data(arrayString);
 	}
 
 	/**

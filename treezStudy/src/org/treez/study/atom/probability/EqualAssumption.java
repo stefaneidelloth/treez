@@ -93,13 +93,13 @@ public class EqualAssumption extends AbstractAssumption {
 
 		//min
 		TextField minField = data.createTextField(min, "min", "Min value", "0");
-		minField.addModifyListener((event) -> {
+		minField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(min.get(), max.get());
 		});
 
 		//max
 		TextField maxField = data.createTextField(max, "max", "Max value", "1");
-		maxField.addModifyListener((event) -> {
+		maxField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(min.get(), max.get());
 		});
 

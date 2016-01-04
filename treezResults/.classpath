@@ -8,10 +8,10 @@
 	<classpathentry kind="output" path="bin"/>
 	
 	 <accessrules>
- <accessrule kind="accessible" pattern="netscape/**"/>
- <accessrule kind="accessible" pattern="javafx/**"/>
- <accessrule kind="accessible" pattern="com/sun/javafx/**"/>
- <accessrule kind="accessible" pattern="org/treez/**"/>
-</accessrules>	
+		 <accessrule kind="accessible" pattern="netscape/**"/>
+		 <accessrule kind="accessible" pattern="javafx/**"/>
+		 <accessrule kind="accessible" pattern="com/sun/javafx/**"/>
+		 <accessrule kind="accessible" pattern="org/treez/**"/>
+	 </accessrules>
 
 </classpath>

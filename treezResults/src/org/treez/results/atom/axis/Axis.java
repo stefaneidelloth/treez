@@ -8,6 +8,7 @@ import org.eclipse.swt.graphics.Image;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
 import org.treez.results.atom.veuszpage.GraphicsPageModel;
 import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
@@ -15,6 +16,7 @@ import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
 /**
  * Represents a veusz axis
  */
+@SuppressWarnings("checkstyle:visibilitymodifier")
 public class Axis extends GraphicsPropertiesPage {
 
 	/**
@@ -26,6 +28,26 @@ public class Axis extends GraphicsPropertiesPage {
 	//#region ATTRIBUTES
 
 	private Selection axisSelection;
+
+	/**
+	 * The data properties of the axis
+	 */
+	public Data data;
+
+	/**
+	 * The general properties of the axis
+	 */
+	public General general;
+
+	/**
+	 * The line properties of the axis
+	 */
+	public AxisLine axisLine;
+
+	/**
+	 * The label properties of the axis
+	 */
+	public AxisLabel axisLabel;
 
 	//#end region
 
@@ -66,10 +88,17 @@ public class Axis extends GraphicsPropertiesPage {
 
 	@Override
 	protected void fillVeuszPageModels() {
-		veuszPageModels.add(new Data());
-		veuszPageModels.add(new General());
-		veuszPageModels.add(new AxisLine());
-		veuszPageModels.add(new AxisLabel());
+		data = new Data();
+		veuszPageModels.add(data);
+
+		general = new General();
+		veuszPageModels.add(general);
+
+		axisLine = new AxisLine();
+		veuszPageModels.add(axisLine);
+
+		axisLabel = new AxisLabel();
+		veuszPageModels.add(axisLabel);
 	}
 
 	/**
@@ -85,10 +114,18 @@ public class Axis extends GraphicsPropertiesPage {
 
 	/**
 	 * @param d3
+	 */
+	public void initializeScalesWithD3(D3 d3, Selection rectSelection) {
+		Objects.requireNonNull(d3);
+		data.initializeScaleWithD3(d3, rectSelection);
+	}
+
+	/**
+	 * @param d3
 	 * @param graphSelection
 	 * @return
 	 */
-	public Selection plotWidthD3(D3 d3, Selection graphSelection, Selection rectSelection) {
+	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection) {
 		Objects.requireNonNull(d3);
 
 		axisSelection = graphSelection //
@@ -118,6 +155,39 @@ public class Axis extends GraphicsPropertiesPage {
 	@Override
 	protected String createVeuszEndText() {
 		return "";
+	}
+
+	//#end region
+
+	//#region ACCESSORS
+
+	/**
+	 * Returns true if the scale of this axis is quantitative. Throws an IllegalStateException if the scale has not yet
+	 * been defined.
+	 *
+	 * @return
+	 */
+	public Boolean hasQuantitativeScale() {
+		if (data != null) {
+			boolean hasQuantitativeScale = this.data.hasQuantitativeScale();
+			return hasQuantitativeScale;
+		} else {
+			throw new IllegalStateException("The scale has not yet been defined");
+		}
+	}
+
+	/**
+	 * Returns the scale of the axis. Throws an IllegalStateException if the scale has not yet been defined.
+	 *
+	 * @return
+	 */
+	public Scale<?> getScale() {
+		if (data != null) {
+			Scale<?> scale = this.data.getScale();
+			return scale;
+		} else {
+			throw new IllegalStateException("The scale has not yet been defined");
+		}
 	}
 
 	//#end region

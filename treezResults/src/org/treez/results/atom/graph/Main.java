@@ -69,11 +69,11 @@ public class Main implements GraphicsPageModel {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		parent.bindTranslationAttribute(graphSelection, leftMargin, topMargin);
+		parent.bindTranslationAttribute("graphTranslation", graphSelection, leftMargin, topMargin);
 
 		parent.bindStringAttribute(rectSelection, "width", width);
 		parent.bindStringAttribute(rectSelection, "height", height);
-		parent.bindDisplayToBooleanAttribute(graphSelection, hide);
+		parent.bindDisplayToBooleanAttribute("hideGraph", graphSelection, hide);
 
 		return graphSelection;
 	}

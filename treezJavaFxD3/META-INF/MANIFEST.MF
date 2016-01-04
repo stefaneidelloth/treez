@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: javafx-d3
-Bundle-SymbolicName: org.treez.javafxd3
+Bundle-Name: org.treez.javafxd3
+Bundle-SymbolicName: org.treez.javafxd3;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.treez.javafxd3.d3,
  org.treez.javafxd3.d3.arrays,
  org.treez.javafxd3.d3.behaviour,
