@@ -2,7 +2,7 @@
 
 **Eclipse plugins** for the creation of **graphical user interfaces** that are **based on trees**.
 
-Tags that are related to Treez:
+Some tags that are related to Treez:
 
 GUI, tree based, tree structure, hierarchical structure, scientific plotting, d3.js, SVG export, batch, sweep, parallel, iteration, evaluation, execution, simulation, generic, java, plugin
 
