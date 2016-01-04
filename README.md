@@ -14,3 +14,5 @@ https://github.com/stefaneidelloth/treez/tree/master/treezUpdate
 * Click the root symbol in the Treez View. This will create a new Root Atom in the Treez View.
 * Use the context menu of the Root Atom to add further tree elements. 
 * Read the Eclipse help of Treez. 
+* 
+![alt tag](https://github.com/stefaneidelloth/treez/blob/master/Treez_Screenshot.png)
