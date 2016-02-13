@@ -12,7 +12,6 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.MouseClickFunction;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.veuszpage.GraphicsPageModel;
@@ -32,9 +31,24 @@ public class Graph extends GraphicsPropertiesPage {
 
 	//#region ATTRIBUTES
 
+	/**
+	 * Main properties, e.g. width & height
+	 */
+	public Main main;
+
+	/**
+	 * The properties of the background
+	 */
+	public Background background;
+
+	/**
+	 * The properties of the border
+	 */
+	public Border border;
+
 	private Selection graphSelection;
 
-	Selection rectSelection;
+	private Selection rectSelection;
 
 	//#end region
 
@@ -48,7 +62,6 @@ public class Graph extends GraphicsPropertiesPage {
 	public Graph(String name) {
 		super(name);
 		setRunnable();
-		MouseClickFunction dummy;
 	}
 
 	//#end region
@@ -57,9 +70,14 @@ public class Graph extends GraphicsPropertiesPage {
 
 	@Override
 	protected void fillVeuszPageModels() {
-		veuszPageModels.add(new Main());
-		veuszPageModels.add(new Background());
-		veuszPageModels.add(new Border());
+		main = new Main();
+		pageModels.add(main);
+
+		background = new Background();
+		pageModels.add(background);
+
+		border = new Border();
+		pageModels.add(border);
 	}
 
 	/**
@@ -108,7 +126,7 @@ public class Graph extends GraphicsPropertiesPage {
 	public Selection plotWidthD3(D3 d3, Selection pageSelection) {
 		Objects.requireNonNull(d3);
 
-		plotPageWithD3AndCreateGraphSelection(d3, pageSelection);
+		plotGraphWithD3AndCreateGraphSelection(d3, pageSelection);
 
 		//initialize axis scales at the beginning, so that they can be used
 		//by other plot components
@@ -116,7 +134,7 @@ public class Graph extends GraphicsPropertiesPage {
 			Boolean isAxis = child.getClass().equals(Axis.class);
 			if (isAxis) {
 				Axis axis = (Axis) child;
-				axis.initializeScalesWithD3(d3, rectSelection);
+				axis.plotWithD3(d3, graphSelection, rectSelection);
 			}
 		}
 
@@ -128,30 +146,20 @@ public class Graph extends GraphicsPropertiesPage {
 			}
 		}
 
-		//plot axis at the end to show them on top
-		for (Adaptable child : children) {
-			Boolean isAxis = child.getClass().equals(Axis.class);
-			if (isAxis) {
-				Axis axis = (Axis) child;
-				axis.plotWithD3(d3, graphSelection, rectSelection);
-			}
-		}
-
 		return graphSelection;
 
 	}
 
-	private void plotPageWithD3AndCreateGraphSelection(D3 d3, Selection pageSelection) {
+	private void plotGraphWithD3AndCreateGraphSelection(D3 d3, Selection pageSelection) {
 
 		graphSelection = pageSelection //
 				.append("g") //
 				.attr("id", "" + name);
 
 		rectSelection = graphSelection //
-				.append("rect") //
-				.attr("fill", "lightblue");
+				.append("rect");
 
-		for (GraphicsPageModel pageModel : veuszPageModels) {
+		for (GraphicsPageModel pageModel : pageModels) {
 			graphSelection = pageModel.plotWithD3(d3, graphSelection, rectSelection, this);
 		}
 

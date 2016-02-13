@@ -27,7 +27,7 @@ public class Background implements GraphicsPageModel {
 	/**
 	 * Background fill style
 	 */
-	public final Attribute<String> fillStyle = new Wrap<>();
+	//public final Attribute<String> fillStyle = new Wrap<>();
 
 	/**
 	 * Background transparency
@@ -46,13 +46,13 @@ public class Background implements GraphicsPageModel {
 	@Override
 	public void createPage(AttributeRoot root, AbstractAtom parent) {
 
-		Page backgroundPage = root.createPage("background");
+		Page backgroundPage = root.createPage("background", "Background");
 
-		Section background = backgroundPage.createSection("background");
+		Section background = backgroundPage.createSection("background", "Background");
 
-		background.createColorChooser(color, "color", "Color");
+		background.createColorChooser(color, "color", "white");
 
-		background.createFillStyle(fillStyle, "style", "Style");
+		//background.createFillStyle(fillStyle, "style", "Style");
 
 		background.createTextField(transparency, "transparency", "0");
 
@@ -62,7 +62,30 @@ public class Background implements GraphicsPageModel {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		//parent.bindStringAttribute(selection, "x", leftMargin);
+		GraphicsAtom.bindStringAttribute(rectSelection, "fill", color);
+
+		transparency.addModificationConsumerAndRun("updateTransparency", (data) -> {
+			try {
+				double fillTransparency = Double.parseDouble(transparency.get());
+				double opacity = 1 - fillTransparency;
+				rectSelection.attr("fill-opacity", "" + opacity);
+			} catch (NumberFormatException exception) {}
+		});
+
+		hide.addModificationConsumerAndRun("hideFill", (data) -> {
+			try {
+				boolean doHide = hide.get();
+				if (doHide) {
+					rectSelection.attr("fill-opacity", "0");
+				} else {
+					double fillTransparency = Double.parseDouble(transparency.get());
+					double opacity = 1 - fillTransparency;
+					rectSelection.attr("fill-opacity", "" + opacity);
+				}
+			} catch (NumberFormatException exception) {
+
+			}
+		});
 
 		return graphSelection;
 	}
@@ -72,7 +95,7 @@ public class Background implements GraphicsPageModel {
 		String veuszString = "\n";
 
 		veuszString = veuszString + "Set('Background/color', u'" + color + "')\n";
-		veuszString = veuszString + "Set('Background/style', u'" + fillStyle + "')\n";
+		//veuszString = veuszString + "Set('Background/style', u'" + fillStyle + "')\n";
 		if (hide.get()) {
 			veuszString = veuszString + "Set('Background/hide', True)";
 		}

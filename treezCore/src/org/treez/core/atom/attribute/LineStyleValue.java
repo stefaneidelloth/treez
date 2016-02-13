@@ -13,12 +13,12 @@ public enum LineStyleValue {
 	/**
 	 *
 	 */
-	NONE("none", null),
+	NONE("none", "0,9999999999"),
 
 	/**
 	 *
 	 */
-	SOLID("solid", "1,0"),
+	SOLID("solid", "none"),
 
 	/**
 	 *

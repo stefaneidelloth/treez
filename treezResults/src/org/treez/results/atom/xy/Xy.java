@@ -27,8 +27,6 @@ public class Xy extends GraphicsPropertiesPage {
 
 	//#region ATTRIBUTES
 
-	private Selection xySelection;
-
 	/**
 	 * The data properties of the xy plot
 	 */
@@ -59,6 +57,8 @@ public class Xy extends GraphicsPropertiesPage {
 	 */
 	//public Label label;
 
+	private Selection xySelection;
+
 	//#end region
 
 	// #region CONSTRUCTORS
@@ -80,19 +80,19 @@ public class Xy extends GraphicsPropertiesPage {
 	@Override
 	protected void fillVeuszPageModels() {
 		data = new Data();
-		veuszPageModels.add(data);
+		pageModels.add(data);
 
 		symbol = new Symbol();
-		veuszPageModels.add(symbol);
+		pageModels.add(symbol);
 
 		line = new Line();
-		veuszPageModels.add(line);
+		pageModels.add(line);
 
 		//errorBar = new ErrorBar();
 		//veuszPageModels.add(errorBar);
 
 		area = new Area();
-		veuszPageModels.add(area);
+		pageModels.add(area);
 
 		//label = new Label();
 		//veuszPageModels.add(label);
@@ -124,9 +124,7 @@ public class Xy extends GraphicsPropertiesPage {
 	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
-
 		// no actions available right now
-
 		return actions;
 	}
 
@@ -145,17 +143,15 @@ public class Xy extends GraphicsPropertiesPage {
 		Objects.requireNonNull(d3);
 
 		xySelection = graphSelection //
-				.append("g") //
+				.insert("g", ".axis") //
 				.attr("id", "" + name) //TODO: listener for name changes to update id
 				.attr("class", "xy");
 
 		xySelection = data.plotWithD3(d3, xySelection, rectSelection, this);
 
-		//handle mouse click
 		xySelection.onMouseClick(this);
 
 		return graphSelection;
-
 	}
 
 	// #end region

@@ -77,29 +77,31 @@ public class NormalAssumption extends AbstractAssumption {
 		String relativeHelpContextId = "normal";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 
-		data = dataPage.createSection("normal", "normal", absoluteHelpContextId);
+		data = dataPage.createSection("normal", absoluteHelpContextId);
 
 		//source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
-		data.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", "Double variable", defaultValue,
-				DoubleVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled);
+		data
+				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
+						DoubleVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.setLabel("Double variable");
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
 		if (assignRelativeRoot) {
 			assignRealtiveRootToSourceVariablePath();
 		}
 
 		//mean
-		TextField meanField = data.createTextField(mean, "mean", "Mean value", "0");
+		TextField meanField = data.createTextField(mean, "mean", "0");
+		meanField.setLabel("Mean value");
 		meanField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(mean.get(), standardDeviation.get());
 		});
 
 		//standard deviation
-		TextField standardDeviationField = data.createTextField(standardDeviation, "standardDeviation",
-				"Standard deviation", "1");
+		TextField standardDeviationField = data.createTextField(standardDeviation, "Standard deviation", "1");
 		standardDeviationField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(mean.get(), standardDeviation.get());
 		});

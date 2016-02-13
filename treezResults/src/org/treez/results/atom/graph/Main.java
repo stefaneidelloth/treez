@@ -3,6 +3,7 @@ package org.treez.results.atom.graph;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
@@ -53,15 +54,17 @@ public class Main implements GraphicsPageModel {
 
 		Page mainPage = root.createPage("main", "   Main   ");
 
-		Section main = mainPage.createSection("main");
+		Section main = mainPage.createSection("main", "Main");
 
-		main.createTextField(leftMargin, "leftMargin", "Left margin", "1 cm");
+		TextField leftMarginField = main.createTextField(leftMargin, "leftMargin", "2.5 cm");
+		leftMarginField.setLabel("Left margin");
 
-		main.createTextField(topMargin, "topMargin", "Top margin", "1 cm");
+		TextField topMarginField = main.createTextField(topMargin, "topMargin", "0.5 cm");
+		topMarginField.setLabel("Top margin");
 
-		main.createTextField(width, "width", "Width", "8 cm");
+		main.createTextField(width, "width", "12 cm");
 
-		main.createTextField(height, "height", "Height", "8 cm");
+		main.createTextField(height, "height", "12 cm");
 
 		main.createCheckBox(hide, "hide");
 	}
@@ -69,11 +72,10 @@ public class Main implements GraphicsPageModel {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		parent.bindTranslationAttribute("graphTranslation", graphSelection, leftMargin, topMargin);
-
-		parent.bindStringAttribute(rectSelection, "width", width);
-		parent.bindStringAttribute(rectSelection, "height", height);
-		parent.bindDisplayToBooleanAttribute("hideGraph", graphSelection, hide);
+		GraphicsAtom.bindTranslationAttribute("graphTranslation", graphSelection, leftMargin, topMargin);
+		GraphicsAtom.bindStringAttribute(rectSelection, "width", width);
+		GraphicsAtom.bindStringAttribute(rectSelection, "height", height);
+		GraphicsAtom.bindDisplayToBooleanAttribute("hideGraph", graphSelection, hide);
 
 		return graphSelection;
 	}

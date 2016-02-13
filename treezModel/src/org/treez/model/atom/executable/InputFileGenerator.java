@@ -19,6 +19,8 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
+import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
@@ -115,7 +117,8 @@ public class InputFileGenerator extends AdjustableAtom {
 		String relativeHelpContextId = "inputFileGenerator";
 		String helpContextId = Activator.getAbsoluteHelpContextIdStatic(relativeHelpContextId);
 
-		Section data = dataPage.createSection("data", "", helpContextId);
+		Section data = dataPage.createSection("data", helpContextId);
+		data.setTitle("");
 		data.createSectionAction("action", "Generate input file", () -> execute(treeViewRefreshable));
 		//template
 		data.createFilePath(templateFilePath, "templateFilePath",
@@ -124,22 +127,24 @@ public class InputFileGenerator extends AdjustableAtom {
 		//variable source model
 		String defaultValue = "root.models.genericModel";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		String label = "Variable source model (provides variables)";
-		data.createModelPath(sourceModel, "sourceModel", label, defaultValue, GenericInputModel.class, selectionType,
-				this, false);
+		ModelPath sourceModelPath = data.createModelPath(sourceModel, "sourceModel", defaultValue,
+				GenericInputModel.class, selectionType, this, false);
+		sourceModelPath.setLabel("Variable source model (provides variables)");
 
 		//label width
 		final int prefferedLabelWidth = 180;
 
 		//name expression
 		TextField nameExpressionTextField = data.createTextField(nameExpression, "nameExpression",
-				"Style for variable place holder", "{$" + LABEL_TAG + "$}");
+				"{$" + LABEL_TAG + "$}");
+		nameExpressionTextField.setLabel("Style for variable place holder");
 		nameExpressionTextField.setPrefferedLabelWidth(prefferedLabelWidth);
 
 		//value & unit expression
 		String defaultValueExpression = "" + VALUE_TAG + " [" + UNIT_TAG + "]";
 		TextField valueExpressionTextField = data.createTextField(valueExpression, "valueExpression",
-				"Style for value and unit injection", defaultValueExpression);
+				defaultValueExpression);
+		valueExpressionTextField.setLabel("Style for value and unit injection");
 		valueExpressionTextField.setPrefferedLabelWidth(prefferedLabelWidth);
 
 		//path to input file (=the output of this atom)
@@ -147,8 +152,8 @@ public class InputFileGenerator extends AdjustableAtom {
 				false);
 
 		//enable deletion of template rows with unassigned variable place holders
-		data.createCheckBox(deleteUnassignedRows, "deleteUnassignedRows",
-				"Delete template rows with unassigned variable place holders.", true);
+		CheckBox deleteUnassigned = data.createCheckBox(deleteUnassignedRows, "deleteUnassignedRows", true);
+		deleteUnassigned.setLabel("Delete template rows with unassigned variable place holders.");
 
 		setModel(root);
 	}

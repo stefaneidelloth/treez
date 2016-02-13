@@ -56,7 +56,8 @@ public class Models extends AbstractModel {
 		Page dataPage = root.createPage("");
 		String relativeHelpContextId = "models";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
-		Section models = dataPage.createSection("models", "", absoluteHelpContextId);
+		Section models = dataPage.createSection("models", absoluteHelpContextId);
+		models.setTitle("");
 		models.createLabel("label", "This atom represents models.");
 		setModel(root);
 

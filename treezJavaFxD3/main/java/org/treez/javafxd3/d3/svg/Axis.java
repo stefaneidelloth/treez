@@ -424,6 +424,12 @@ public class Axis extends JavaScriptObject implements JsFunction {
 		return new Axis(webEngine, result);
 
 	}
+	
+	public Axis tickFormatExpression(String formatFunctionExpression) {		
+		String command = "this.tickFormat("+formatFunctionExpression+");";
+		JSObject result = evalForJsObject(command);
+		return new Axis(webEngine, result);
+	}
 
 	/**
 	 * Returns the current format function, which defaults to null. A null

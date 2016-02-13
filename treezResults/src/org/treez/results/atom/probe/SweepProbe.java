@@ -9,6 +9,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -132,48 +133,59 @@ public class SweepProbe extends AbstractProbe {
 		Section xSection = page.createSection("xSection", "X");
 		xSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
-		xSection.createTextField(xLabel, "xLabel", "Label for x-Axis", "x");
-		ModelPath xRangePath = xSection.createModelPath(xRange, "xRange", "Range for x-Axis", "", VariableRange.class,
-				this);
+		TextField xLabelField = xSection.createTextField(xLabel, "xLabel", "x");
+		xLabelField.setLabel("Label for x-Axis");
+		ModelPath xRangePath = xSection.createModelPath(xRange, "xRange", "", VariableRange.class, this);
+		xRangePath.setLabel("Range for x-Axis");
 		xRangePath.setSelectionType(ModelPathSelectionType.FLAT);
 		xRangePath.set("root.studies.sweep.threshold");
 
 		//y section
 		Section ySection = page.createSection("ySection", "Y");
 
-		ySection.createTextField(yLabel, "yLabel", "Label for y-Axis", "y");
+		TextField yLabelField = ySection.createTextField(yLabel, "yLabel", "y");
+		yLabelField.setLabel("Label for y-Axis");
 
 		//first family section
 		Section firstFamilySection = page.createSection("firstFamily", "First family");
 		firstFamilySection.setExpanded(false);
 
-		firstFamilySection.createTextField(firstFamilyLabel, "firstFamilyLabel", "Label for first family", "family1");
-		firstFamilySection.createModelPath(firstFamilyRange, "firstFamilyRange", "Range for first family", "",
+		TextField firstFamilyField = firstFamilySection.createTextField(firstFamilyLabel, "firstFamilyLabel",
+				"family1");
+		firstFamilyField.setLabel("Label for first family");
+		ModelPath firstFamilyRangePath = firstFamilySection.createModelPath(firstFamilyRange, "firstFamilyRange", "",
 				VariableRange.class, this);
+		firstFamilyRangePath.setLabel("Range for first family");
 
 		//second family section
 		Section secondFamilySection = page.createSection("secondFamily", "Second family");
 		secondFamilySection.setExpanded(false);
 
-		secondFamilySection.createTextField(secondFamilyLabel, "secondFamilyLabel", "Label for second family",
+		TextField secondFamilyField = secondFamilySection.createTextField(secondFamilyLabel, "secondFamilyLabel",
 				"family2");
-		secondFamilySection.createModelPath(secondFamilyRange, "secondFamilyRange", "Range for second family", "",
-				VariableRange.class, this);
+		secondFamilyField.setLabel("Label for second family");
+		ModelPath secondFamilyRangePath = secondFamilySection.createModelPath(secondFamilyRange, "secondFamilyRange",
+				"", VariableRange.class, this);
+		secondFamilyRangePath.setLabel("Range for second family");
 
 		//probe section
 		Section probeSection = page.createSection("probe", "Probe");
 
-		probeSection.createTextField(probeName, "propeName", "Name", "MyProbe");
-		ModelPath sweepOutputModelPath = probeSection.createModelPath(sweepOutput, "sweepOutput", "SweepOutput", "",
-				OutputAtom.class, this);
+		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
+		probeNameField.setLabel("Name");
+		ModelPath sweepOutputModelPath = probeSection.createModelPath(sweepOutput, "sweepOutput", "", OutputAtom.class,
+				this);
+		sweepOutputModelPath.setLabel("Sweep output");
 
 		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, "firstProbeTable",
 				sweepOutputModelPath, Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
-		probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "Column index", "0");
+		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");
+		columnIndex.setLabel("Column index");
 
-		probeSection.createTextField(probeRowIndex, "probeRowIndex", "Row index", "0");
+		TextField rowIndex = probeSection.createTextField(probeRowIndex, "probeRowIndex", "0");
+		rowIndex.setLabel("Row index");
 
 		setModel(root);
 

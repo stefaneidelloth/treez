@@ -1,7 +1,6 @@
 package org.treez.results.atom.xy;
 
 import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.LineStyleValue;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
@@ -24,9 +23,9 @@ public class Line implements GraphicsPageModel {
 	//#region ATTRIBUTES
 
 	/**
-	 *
+	 * Interpolation mode
 	 */
-	public final Attribute<String> interpolationMode = new Wrap<>();
+	public final Attribute<String> interpolation = new Wrap<>();
 
 	/**
 	 *
@@ -34,27 +33,27 @@ public class Line implements GraphicsPageModel {
 	//public final Attribute<Boolean> bezierJoin = new Wrap<>();
 
 	/**
-	 *
+	 * Color
 	 */
 	public final Attribute<String> color = new Wrap<>();
 
 	/**
-	 *
+	 * Width
 	 */
 	public final Attribute<String> width = new Wrap<>();
 
 	/**
-	 *
+	 * Style
 	 */
 	public final Attribute<String> style = new Wrap<>();
 
 	/**
-	 *
+	 * Transparency
 	 */
 	public final Attribute<String> transparency = new Wrap<>();
 
 	/**
-	 *
+	 * Hide
 	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -69,19 +68,19 @@ public class Line implements GraphicsPageModel {
 
 		Section line = linePage.createSection("line", "Line");
 
-		line.createEnumComboBox(interpolationMode, "interpolationMode", "Interpolation", InterpolationMode.LINEAR);
+		line.createEnumComboBox(interpolation, "interpolation", InterpolationMode.LINEAR);
 
 		//line.createCheckBox(bezierJoin, "bezierJoin", "Bezier join");
 
-		line.createColorChooser(color, "color", "Color", "black");
+		line.createColorChooser(color, "color", "black");
 
-		line.createTextField(width, "width", "Width", "1");
+		line.createTextField(width, "width", "3");
 
-		line.createLineStyle(style, "style", "Style");
+		line.createLineStyle(style, "style", "solid");
 
-		line.createTextField(transparency, "transparency", "Transparency", "0");
+		line.createTextField(transparency, "transparency", "0");
 
-		line.createCheckBox(hide, "hide", "Hide");
+		line.createCheckBox(hide, "hide");
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public class Line implements GraphicsPageModel {
 			QuantitativeScale<?> yScale) {
 
 		Xy xy = (Xy) parent;
-		interpolationMode.addModificationConsumer("replot", (data) -> {
+		interpolation.addModificationConsumer("replot", (data) -> {
 			xy.area.replotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
 			doReplotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
 		});
@@ -124,16 +123,15 @@ public class Line implements GraphicsPageModel {
 			QuantitativeScale<?> xScale,
 			QuantitativeScale<?> yScale) {
 
-		replotLinesWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
+		replotLinesWithD3(d3, xySelection, xyDataString, xScale, yScale);
 
 		Xy xy = (Xy) parent;
-		xy.symbol.replotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
+		xy.symbol.replotWithD3(d3, xySelection, xyDataString, xScale, yScale, parent);
 	}
 
 	private void replotLinesWithD3(
 			D3 d3,
 			Selection xySelection,
-			GraphicsAtom parent,
 			String xyDataString,
 			QuantitativeScale<?> xScale,
 			QuantitativeScale<?> yScale) {
@@ -146,7 +144,7 @@ public class Line implements GraphicsPageModel {
 				.attr("id", "lines") //
 				.attr("class", "lines");
 
-		String modeString = interpolationMode.get();
+		String modeString = interpolation.get();
 		org.treez.javafxd3.d3.svg.InterpolationMode mode = org.treez.javafxd3.d3.svg.InterpolationMode
 				.fromValue(modeString);
 
@@ -163,33 +161,16 @@ public class Line implements GraphicsPageModel {
 				.attr("d", linePathGenerator.generate(xyDataString))
 				.attr("fill", "none");
 
-		parent.bindDisplayToBooleanAttribute("hideLine", lines, hide);
-		parent.bindStringAttribute(lines, "stroke", color);
-		parent.bindStringAttribute(lines, "stroke-width", width);
-
-		transparency.addModificationConsumer("updateLineTransparency", (data) -> {
-			try {
-				double lineTransparency = Double.parseDouble(transparency.get());
-				double opacity = 1 - lineTransparency;
-				lines.attr("stroke-opacity", "" + opacity);
-			} catch (NumberFormatException exception) {
-
-			}
-		});
-
-		style.addModificationConsumer("updateLineStyle", (data) -> {
-			String lineStyleString = style.get();
-			LineStyleValue lineStyle = LineStyleValue.fromString(lineStyleString);
-			String dashArray = lineStyle.getDashArray();
-			lines.attr("stroke-dasharray", dashArray);
-		});
+		GraphicsAtom.bindDisplayToBooleanAttribute("hideLine", lines, hide);
+		GraphicsAtom.bindStringAttribute(lines, "stroke", color);
+		GraphicsAtom.bindStringAttribute(lines, "stroke-width", width);
+		GraphicsAtom.bindLineTransparency(lines, transparency);
+		GraphicsAtom.bindLineStyle(lines, style);
 	}
 
 	@Override
 	public String createVeuszText(AbstractAtom parent) {
-
 		String veuszString = "";
-
 		return veuszString;
 	}
 

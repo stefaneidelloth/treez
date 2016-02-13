@@ -55,9 +55,10 @@ public abstract class AbstractAtom
 
 	/**
 	 * The name of this AbstractAtom. This name will for example be used by the
-	 * TreeNodeAdaption. (In order to be able to identify an AbstractAtom by its
+	 * TreeNodeAdaption. In order to be able to identify an AbstractAtom by its
 	 * tree path, this name should only be used once for all children of the
-	 * parent AbstractAtom.)
+	 * parent AbstractAtom. The name might also be used in Java code for saving
+	 * the tree structure. It is recommended to use lower case names.
 	 */
 	protected String name;
 
@@ -796,6 +797,21 @@ public abstract class AbstractAtom
 			Attribute<T> wrappingAttribute, Consumer<T> consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
 		wrappedAttribute.addModificationConsumer(key, consumer);
+	}
+
+	/**
+	 * Adds a modification listener to the attribute that is wrapped by the
+	 * given wrapping attribute and executes it once
+	 *
+	 * @param <T>
+	 *
+	 * @param wrappingAttribute
+	 * @param consumer
+	 */
+	protected static <T> void addModificationConsumerAndRun(String key,
+			Attribute<T> wrappingAttribute, Consumer<T> consumer) {
+		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
+		wrappedAttribute.addModificationConsumerAndRun(key, consumer);
 	}
 
 	//#end region

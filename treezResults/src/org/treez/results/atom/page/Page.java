@@ -123,8 +123,14 @@ public class Page extends GraphicsAtom {
 		veuszSection.createDirectoryPath(directoryPath, "directoryPath", "Directory for temporary files", TEMP_PATH);
 
 		//page settings
-		veuszSection.createTextField(pageWidth, "pageWidth", "Page width", "10 cm");
-		veuszSection.createTextField(pageHeight, "pageHeight", "Page Height", "10 cm");
+		veuszSection
+				.createTextField(pageWidth, "pageWidth", "15 cm") //
+				.setLabel("Page width");
+
+		veuszSection
+				.createTextField(pageHeight, "pageHeight", "15 cm") //
+				.setLabel("Page Height");
+
 		veuszSection.createCheckBox(hide, "hide");
 
 		setModel(root);
@@ -254,6 +260,7 @@ public class Page extends GraphicsAtom {
 
 	}
 
+	@SuppressWarnings("checkstyle:illegalcatch")
 	private void plotWithVeusz() {
 		//create veusz text
 		sysLog.debug("Building Veusz text...");

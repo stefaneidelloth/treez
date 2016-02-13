@@ -64,8 +64,10 @@ public class QuantityVariableRange extends AbstractVariableRange<Quantity> {
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
-		data.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", "Quantity variable", defaultValue,
-				QuantityVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled);
+		data
+				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
+						QuantityVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.setLabel("Quantity variable");
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
 		if (assignRelativeRoot) {
 			assignRealtiveRootToSourceVariablePath();

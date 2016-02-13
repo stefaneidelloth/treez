@@ -1,8 +1,9 @@
 package org.treez.results.atom.axis;
 
-import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
@@ -15,6 +16,7 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.scales.Scales;
+import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.veuszpage.GraphicsPageModel;
 
 /**
@@ -80,6 +82,31 @@ public class Data implements GraphicsPageModel {
 	 */
 	//public final Attribute<String> match = new Wrap<>();
 
+	/**
+	 * Hides the axis
+	 */
+	public Attribute<Boolean> hide = new Wrap<>();
+
+	/**
+	 *
+	 */
+	//private Attribute<String> autoRange = new Wrap<>();
+
+	/**
+	 * If true, the axis is mirrored to the other side of the graph: a second axis is shown.
+	 */
+	public Attribute<Boolean> autoMirror = new Wrap<>();
+
+	/**
+	 *
+	 */
+	//private Attribute<Boolean> reflect = new Wrap<>();
+
+	/**
+	 *
+	 */
+	//private Attribute<Boolean> outerTicks = new Wrap<>();
+
 	private QuantitativeScale<?> scale;
 
 	//#end region
@@ -94,7 +121,7 @@ public class Data implements GraphicsPageModel {
 
 		Section data = dataPage.createSection("data");
 
-		data.createTextField(label, "label");
+		data.createTextField(label, "Label");
 
 		data.createTextField(min, "min", "0");
 
@@ -116,103 +143,228 @@ public class Data implements GraphicsPageModel {
 
 		//data.createTextField(match, "match");
 
-	}
+		data.createCheckBox(hide, "hide");
 
-	/**
-	 * @param d3
-	 * @param rectSelection
-	 */
-	public void initializeScaleWithD3(D3 d3, Selection rectSelection) {
+		//general.createComboBox(autoRange, "autoRange", "next-tick,+2%,+5%,+10%,+15%", "next-tick");
 
-		String graphWidthString = rectSelection.attr("width");
-		Double graphWidthInPx = Length.toPx(graphWidthString);
+		CheckBox autoMirrorCheck = data.createCheckBox(autoMirror, "autoMirror", true);
+		autoMirrorCheck.setLabel("Auto mirror");
 
-		String graphHeightString = rectSelection.attr("height");
-		Double graphHeightInPx = Length.toPx(graphHeightString);
+		//general.createCheckBox(reflect, "reflect");
 
-		boolean isHorizontal = direction.get().equals("" + Direction.HORIZONTAL);
-
-		boolean isLog = log.get();
-
-		String minString = min.get();
-		boolean minIsAuto = minString.equals("Auto");
-
-		String maxString = max.get();
-		boolean maxIsAuto = maxString.equals("Auto");
-
-		Scales scales = d3 //
-				.scale();
-
-		//lin/log
-		if (isLog) {
-			scale = scales.log();
-		} else {
-			scale = scales.linear();
-		}
-
-		//range & translate
-		if (isHorizontal) {
-			scale.range(0.0, graphWidthInPx);
-		} else {
-			scale.range(graphHeightInPx, 0.0);
-		}
-
-		//domain
-		boolean autoIsUsed = minIsAuto || maxIsAuto;
-		if (!autoIsUsed) {
-			double minValue = Double.parseDouble(minString);
-			double maxValue = Double.parseDouble(maxString);
-			scale.domain(minValue, maxValue);
-		} else {
-			throw new IllegalStateException("Auto scale is not yet implemented");
-		}
+		//general.createCheckBox(outerTicks, "outerTicks", "Outer ticks");
 
 	}
 
 	@Override
 	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
-		Objects.requireNonNull(scale, "Scale has to be initialized bevore calling this method.");
 
-		String graphHeightString = rectSelection.attr("height");
+		Axis parentAxis = (Axis) parent;
+
+		//hint: the auto mirror option will be considered by the other plot pages
+		autoMirror.addModificationConsumer("replotAxis", (data) -> parentAxis.plotPageModels(d3, rectSelection));
+
+		GraphicsAtom.bindDisplayToBooleanAttribute("hideAxis", axisSelection, hide);
+
+		Graph graph = (Graph) parentAxis.getParentAtom();
+		Attribute<String> height = graph.main.height;
+		Attribute<String> width = graph.main.width;
+
+		Consumer<String> replotAxisConsumer = (data) -> {
+			initializeScale(d3, width, height);
+			plotAxisWithD3(d3, axisSelection, parentAxis, width, height);
+		};
+
+		width.addModificationConsumer("replotAxis", replotAxisConsumer);
+		height.addModificationConsumer("replotAxis", replotAxisConsumer);
+		direction.addModificationConsumer("replotAxis", replotAxisConsumer);
+		log.addModificationConsumer("replotAxis", (data) -> replotAxisConsumer.accept(null));
+		min.addModificationConsumer("replotAxis", replotAxisConsumer);
+		max.addModificationConsumer("replotAxis", replotAxisConsumer);
+
+		replotAxisConsumer.accept(null);
+
+		return axisSelection;
+	}
+
+	private void initializeScale(D3 d3, Attribute<String> width, Attribute<String> height) {
+		String graphWidthString = width.get();
+		Double graphWidthInPx = Length.toPx(graphWidthString);
+
+		String graphHeightString = height.get();
 		Double graphHeightInPx = Length.toPx(graphHeightString);
 
-		boolean isHorizontal = direction.get().equals("" + Direction.HORIZONTAL);
+		boolean isHorizontal = isHorizontal();
 
-		//range & translate
-		Selection newAxisSelection;
-		if (isHorizontal) {
-			newAxisSelection = axisSelection //
-					.attr("transform", "translate(0," + graphHeightInPx + ")");
+		boolean isLog = log.get();
+
+		String minString = min.get();
+		boolean minIsAuto = minString.equals("Auto");
+		Double minValue = Double.parseDouble(minString);
+
+		String maxString = max.get();
+		boolean maxIsAuto = maxString.equals("Auto");
+		Double maxValue = null;
+		if (!maxIsAuto) {
+			maxValue = Double.parseDouble(maxString);
+		}
+
+		if (isLog) {
+			if (minValue.compareTo(0.0) == 0) {
+				final double smallValueNextToZero = 1e-10;
+				minValue = smallValueNextToZero;
+			}
+		}
+
+		Scales scales = d3 //
+				.scale();
+
+		createLinOrLogScale(isLog, scales);
+		createScaleRange(graphWidthInPx, graphHeightInPx, isHorizontal);
+
+		//domain
+		boolean autoIsUsed = minIsAuto || maxIsAuto;
+		if (!autoIsUsed) {
+			scale.domain(minValue, maxValue);
 		} else {
-			newAxisSelection = axisSelection;
+			throw new IllegalStateException("Auto scale is not yet implemented");
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isHorizontal() {
+		boolean isHorizontal = direction.get().equals("" + Direction.HORIZONTAL);
+		return isHorizontal;
+	}
+
+	private void createLinOrLogScale(boolean isLog, Scales scales) {
+		if (isLog) {
+			scale = scales //
+					.log() //
+					.clamp(true);
+		} else {
+			scale = scales //
+					.linear() //
+					.clamp(true);
+		}
+	}
+
+	private void createScaleRange(Double graphWidthInPx, Double graphHeightInPx, boolean isHorizontal) {
+		if (isHorizontal) {
+			scale.range(0.0, graphWidthInPx);
+		} else {
+			scale.range(graphHeightInPx, 0.0);
+		}
+	}
+
+	private Selection plotAxisWithD3(
+			D3 d3,
+			Selection axisSelection,
+			Axis axis,
+			Attribute<String> width,
+			Attribute<String> height) {
+
+		String graphWidthString = width.get();
+		Double graphWidthInPx = Length.toPx(graphWidthString);
+
+		String graphHeightString = height.get();
+		Double graphHeightInPx = Length.toPx(graphHeightString);
+
+		int numberOfTicksAimedFor = Integer.parseInt(axis.majorTicks.number.get());
+
+		boolean isHorizontal = isHorizontal();
+		boolean isMirrored = autoMirror.get();
+
+		//primary axis
+		axisSelection.selectAll(".primary").remove();
+
+		Selection primary = axisSelection //
+				.append("g") //
+				.attr("id", "primary")
+				.attr("class", "primary");
+		plotPrimaryAxis(d3, primary, graphHeightInPx, isHorizontal, numberOfTicksAimedFor);
+
+		//secondary axis
+		axisSelection.selectAll(".secondary").remove();
+		if (isMirrored) {
+
+			Selection secondary = axisSelection //
+					.append("g") //
+					.attr("id", "secondary")
+					.attr("class", "secondary");
+			plotSecondaryAxis(d3, secondary, graphWidthInPx, isHorizontal, numberOfTicksAimedFor);
+		}
+
+		return axisSelection;
+	}
+
+	@SuppressWarnings("checkstyle:magicnumber")
+	private Selection plotPrimaryAxis(
+			D3 d3,
+			Selection axisSelection,
+			Double graphHeightInPx,
+			boolean isHorizontal,
+			int numberOfTicksAimedFor) {
+
+		//set translation and tick padding
+		double tickPadding;
+		if (isHorizontal) {
+			axisSelection.attr("transform", "translate(0," + graphHeightInPx + ")");
+			tickPadding = -6.0;
+		} else {
+			tickPadding = -12.0;
+
+		}
+
+		//create d3 axis
+		org.treez.javafxd3.d3.svg.Axis axis = d3 //
+				.svg() //
+				.axis() //
+				.scale(scale)
+				.outerTickSize(0.0)
+				.tickPadding(tickPadding)
+				.ticks(numberOfTicksAimedFor); //for log axis only the tick labels will be influenced
+
+		setAxisDirection(axis, isHorizontal);
+
+		axis.apply(axisSelection);
+
+		return axisSelection;
+	}
+
+	private static void setAxisDirection(org.treez.javafxd3.d3.svg.Axis axis, boolean isHorizontal) {
+		if (isHorizontal) {
+			axis.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.BOTTOM);
+		} else {
+			axis.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.LEFT);
+		}
+	}
+
+	private Selection plotSecondaryAxis(
+			D3 d3,
+			Selection axisSelection,
+			Double graphWidthInPx,
+			boolean isHorizontal,
+			int numberOfTicksAimedFor) {
+
+		if (!isHorizontal) {
+			axisSelection.attr("transform", "translate(" + graphWidthInPx + ",0)");
 		}
 
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(scale)
-				.tickPadding(8.0);
+				.scale(scale) //
+				.outerTickSize(0.0) //
+				.ticks(numberOfTicksAimedFor) //for log axis only the tick labels will be influenced
+				.tickFormatExpression("function (d) { return ''; }"); //hides the tick labels
 
-		//		.tickSize(-10.0, 2);
+		setAxisDirection(axis, isHorizontal);
 
-		//direction
-		org.treez.javafxd3.d3.svg.Axis orientedAxis;
-		if (isHorizontal) {
-			orientedAxis = axis.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.BOTTOM);
-		} else {
-			orientedAxis = axis.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.LEFT);
-		}
-
-		orientedAxis.apply(newAxisSelection);
-
-		newAxisSelection //
-				.selectAll("path, line") //
-				.style("fill", "none") //
-				.style("stroke", "#000")
-				.style("stroke-width", "3px") //
-				.style("shape-rendering", "geometricPrecision");
-
-		return newAxisSelection;
+		axis.apply(axisSelection);
+		return axisSelection;
 	}
 
 	@Override

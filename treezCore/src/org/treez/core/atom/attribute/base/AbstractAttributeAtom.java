@@ -346,6 +346,13 @@ public abstract class AbstractAttributeAtom<T>
 		//addModifyListener(key,	(event) -> consumer.accept(event.data.toString()));
 	}
 
+	@Override
+	public void addModificationConsumerAndRun(String key,
+			Consumer<T> consumer) {
+		addModificationConsumer(key, consumer);
+		consumer.accept(null);
+	}
+
 	//#end region
 
 	//#region ACCESSORS

@@ -147,7 +147,7 @@ public class Column extends AdjustableAtom {
 
 		section.createTextField(description, "description", "");
 
-		section.createColumnTypeComboBox(columnType, "columnType", "Type", ColumnType.TEXT);
+		section.createColumnTypeComboBox(columnType, "Type", ColumnType.TEXT);
 
 		section.createTextField(enumValues, "enumValues", "item1,item2");
 

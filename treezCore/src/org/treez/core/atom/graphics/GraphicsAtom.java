@@ -1,6 +1,11 @@
 package org.treez.core.atom.graphics;
 
+import java.awt.Font;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
+
 import org.treez.core.atom.adjustable.AdjustableAtom;
+import org.treez.core.atom.attribute.LineStyleValue;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
 import org.treez.javafxd3.d3.core.Selection;
@@ -32,6 +37,25 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	//#region METHODS
 
 	/**
+	 * Calculates an approximate text size using AWT. (The getBBox method for
+	 * SVG elements does not seem to be reliable.)
+	 * 
+	 * @param fontName
+	 * @param fontSize
+	 * @return
+	 */
+	public static double estimateTextHeight(String fontName, int fontSize) {
+		String text = "Hello World";
+		AffineTransform affinetransform = new AffineTransform();
+		FontRenderContext frc = new FontRenderContext(affinetransform, true,
+				true);
+
+		Font font = new Font(fontName, Font.PLAIN, fontSize);
+		int textheight = (int) (font.getStringBounds(text, frc).getHeight());
+		return textheight;
+	}
+
+	/**
 	 * Binds the given Attribute to the JavaScript attribute with the given
 	 * data. A change of the attribute will change the JavaScript attribute. The
 	 * original value is trimmed and spaces are removed, e.g. " 1 cm " => "1cm".
@@ -40,18 +64,86 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param selection
 	 * @param selectionAttributeName
 	 */
-	public void bindStringAttribute(Selection selection,
+	public static void bindStringAttribute(Selection selection,
 			String selectionAttributeName,
 			Attribute<String> wrappingAttribute) {
 
-		//set initial value
-		selection.attr(selectionAttributeName, trim(wrappingAttribute.get()));
-
-		//create one way binding
-		addModificationConsumer(selectionAttributeName, wrappingAttribute,
-				(newValue) -> {
-					selection.attr(selectionAttributeName, trim(newValue));
+		addModificationConsumerAndRun(selectionAttributeName, wrappingAttribute,
+				(data) -> {
+					String newValue = trim(wrappingAttribute.get());
+					selection.attr(selectionAttributeName, newValue);
 				});
+	}
+
+	/**
+	 * @param text
+	 * @param textAttribute
+	 */
+	public static void bindText(Selection text,
+			Attribute<String> textAttribute) {
+		addModificationConsumerAndRun("text", textAttribute, (data) -> {
+			String newValue = textAttribute.get();
+			text.text(newValue);
+		});
+	}
+
+	/**
+	 * @param selection
+	 * @param aboveTransparency
+	 */
+	public static void bindTransparency(Selection selection,
+			Attribute<String> aboveTransparency) {
+		aboveTransparency.addModificationConsumer("updateTransparency",
+				(data) -> {
+					try {
+						double transparency = Double
+								.parseDouble(aboveTransparency.get());
+						double opacity = 1 - transparency;
+						selection.attr("fill-opacity", "" + opacity);
+					} catch (NumberFormatException exception) {
+
+					}
+				});
+	}
+
+	/**
+	 * @param selection
+	 * @param hide
+	 * @param transparency
+	 */
+	public static void bindTransparencyToBooleanAttribute(Selection selection,
+			Attribute<Boolean> hide, Attribute<String> transparency) {
+		hide.addModificationConsumerAndRun("hideFill", (data) -> {
+			try {
+				boolean doHide = hide.get();
+				if (doHide) {
+					selection.attr("fill-opacity", "0");
+				} else {
+					double transparencyValue = Double
+							.parseDouble(transparency.get());
+					double opacity = 1 - transparencyValue;
+					selection.attr("fill-opacity", "" + opacity);
+				}
+			} catch (NumberFormatException exception) {
+			}
+		});
+	}
+
+	/**
+	 * @param selection
+	 * @param hide
+	 */
+	public static void bindTransparencyToBooleanAttribute(Selection selection,
+			Attribute<Boolean> hide) {
+		hide.addModificationConsumerAndRun("hideFill", (data) -> {
+			boolean doHide = hide.get();
+			if (doHide) {
+				selection.attr("fill-opacity", "0");
+			} else {
+				selection.attr("fill-opacity", "1");
+			}
+		});
+
 	}
 
 	/**
@@ -68,20 +160,12 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param wrappingAttribute
 	 * @param selection
 	 */
-	public void bindDisplayToBooleanAttribute(String key, Selection selection,
-			Attribute<Boolean> wrappingAttribute) {
+	public static void bindDisplayToBooleanAttribute(String key,
+			Selection selection, Attribute<Boolean> wrappingAttribute) {
 
-		//set initial value
-		Boolean state = wrappingAttribute.get();
-		if (state) {
-			selection.attr("display", "none");
-		} else {
-			selection.attr("display", "inline");
-		}
-
-		//create one way binding
-		addModificationConsumer(key, wrappingAttribute, (newValue) -> {
-			if (newValue) {
+		addModificationConsumerAndRun(key, wrappingAttribute, (data) -> {
+			Boolean state = wrappingAttribute.get();
+			if (state) {
 				selection.attr("display", "none");
 			} else {
 				selection.attr("display", "inline");
@@ -94,7 +178,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param leftMargin
 	 * @param topMargin
 	 */
-	public void bindTranslationAttribute(String key, Selection selection,
+	public static void bindTranslationAttribute(String key, Selection selection,
 			Attribute<String> leftMargin, Attribute<String> topMargin) {
 
 		updateTranslation(selection, leftMargin, topMargin);
@@ -125,13 +209,148 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	}
 
 	/**
+	 * @param selection
+	 * @param style
+	 */
+	public static void bindLineStyle(Selection selection,
+			Attribute<String> style) {
+		style.addModificationConsumerAndRun("updateLineStyle", (data) -> {
+			String lineStyleString = style.get();
+			LineStyleValue lineStyle = LineStyleValue
+					.fromString(lineStyleString);
+			String dashArray = lineStyle.getDashArray();
+			selection.style("stroke-dasharray", dashArray);
+		});
+	}
+
+	/**
+	 * @param selection
+	 * @param transparency
+	 */
+	public static void bindLineTransparency(Selection selection,
+			Attribute<String> transparency) {
+		transparency.addModificationConsumerAndRun("updateLineTransparency",
+				(data) -> {
+					try {
+						double lineTransparency = Double
+								.parseDouble(transparency.get());
+						double opacity = 1 - lineTransparency;
+						selection.attr("stroke-opacity", "" + opacity);
+					} catch (NumberFormatException exception) {
+
+					}
+				});
+	}
+
+	/**
+	 * @param selection
+	 * @param hide
+	 * @param transparency
+	 */
+	public static void bindLineTransparencyToBooleanAttribute(
+			Selection selection, Attribute<Boolean> hide,
+			Attribute<String> transparency) {
+		hide.addModificationConsumerAndRun("hideLine", (data) -> {
+			try {
+				boolean doHide = hide.get();
+				if (doHide) {
+					selection.attr("stroke-opacity", "0");
+				} else {
+					double lineTransparency = Double
+							.parseDouble(transparency.get());
+					double opacity = 1 - lineTransparency;
+					selection.attr("stroke-opacity", "" + opacity);
+				}
+			} catch (NumberFormatException exception) {
+
+			}
+		});
+
+	}
+
+	/**
+	 * @param selection
+	 * @param rotate
+	 * @param isHorizontal
+	 */
+	public static void bindTransformRotate(Selection selection,
+			Attribute<String> rotate, boolean isHorizontal) {
+		rotate.addModificationConsumerAndRun("transformRotate", (data) -> {
+			String angleString = rotate.get();
+			double rotation = 0;
+			try {
+				rotation = Double.parseDouble(angleString);
+			} catch (NumberFormatException exception) {
+			}
+			if (!isHorizontal) {
+				final int extraVerticalRotation = 90;
+				rotation += extraVerticalRotation;
+			}
+			String transform = "rotate(" + rotation + ")";
+			selection.attr("transform", transform);
+		});
+
+	}
+
+	/**
+	 * @param text
+	 * @param italic
+	 */
+	public static void bindFontItalicStyle(Selection text,
+			Attribute<Boolean> italic) {
+
+		italic.addModificationConsumerAndRun("italic", (data) -> {
+			boolean isActive = italic.get();
+			if (isActive) {
+				text.attr("font-style", "italic");
+			} else {
+				text.attr("font-style", "normal");
+			}
+		});
+	}
+
+	/**
+	 * @param text
+	 * @param bold
+	 */
+	public static void bindFontBoldStyle(Selection text,
+			Attribute<Boolean> bold) {
+
+		bold.addModificationConsumerAndRun("bold", (data) -> {
+			boolean isActive = bold.get();
+			if (isActive) {
+				text.attr("font-weight", "bold");
+			} else {
+				text.attr("font-weight", "normal");
+			}
+		});
+	}
+
+	/**
+	 * @param text
+	 * @param underline
+	 */
+	public static void bindFontUnderline(Selection text,
+			Attribute<Boolean> underline) {
+		underline.addModificationConsumerAndRun("underline", (data) -> {
+			boolean isActive = underline.get();
+			if (isActive) {
+				text.attr("text-decoration", "underline");
+			} else {
+				text.attr("text-decoration", "none");
+			}
+		});
+
+	}
+
+	/**
 	 * Applies toString() to the given object, trims the result and removes
 	 * spaces
 	 *
 	 * @param value
 	 * @return
 	 */
-	protected String trim(Object value) {
+	protected static String trim(Object value) {
 		String result = value.toString().trim().replace(" ", "");
 		return result;
 	}

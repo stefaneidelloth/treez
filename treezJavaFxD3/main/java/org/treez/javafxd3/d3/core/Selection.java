@@ -1114,19 +1114,20 @@ public class Selection extends EnteringSelection {
 
 	/**
 	 * Same as #data(JSObject) but let the user control how to map data to the
-	 * selection.
+	 * selection. The specified "values" is an array of data values (e.g. numbers or objects), 
+	 * or a function that returns an array of values.
 	 * <p>
 	 * See {@link KeyFunction}'s documentation.
 	 * <p>
 	 *
-	 * @param array
+	 * @param values
 	 *            the data array to map to the selection
 	 * @param keyFunction
 	 *            the function to control how data is mapped to the selection
 	 *            elements
 	 * @return the {@link UpdateSelection}
 	 */
-	public UpdateSelection data(JavaScriptObject array, KeyFunction<?> keyFunction) {
+	public UpdateSelection data(JavaScriptObject values, KeyFunction<?> keyFunction) {
 
 		JSObject d3JsObject = getD3();
 
@@ -1134,7 +1135,7 @@ public class Selection extends EnteringSelection {
 		d3JsObject.setMember(methodName, keyFunction);
 
 		String arrayName = createNewTemporaryInstanceName();
-		JSObject arrayJsObject = array.getJsObject();
+		JSObject arrayJsObject = values.getJsObject();
 		d3JsObject.setMember(arrayName, arrayJsObject);
 
 		String command = "this.data( d3." + arrayName + ", " + "function(d, i) {" //
@@ -1154,6 +1155,36 @@ public class Selection extends EnteringSelection {
 
 		return new UpdateSelection(webEngine, result);
 
+	}
+	
+	/**
+	 * Same as #data(JSObject) but let the user control how to map data to the
+	 * selection. The specified "values" is an array of data values (e.g. numbers or objects), 
+	 * or a function that returns an array of values.
+	 * <p>
+	 * See {@link KeyFunction}'s documentation.
+	 * <p>
+	 *
+	 * @param values
+	 *            the data array to map to the selection
+	 * @param keyFunction
+	 *            the function to control how data is mapped to the selection
+	 *            elements
+	 * @return the {@link UpdateSelection}
+	 */
+	public UpdateSelection dataExpression(JavaScriptObject values, String keyFunctionExpression) {
+
+		JSObject d3JsObject = getD3();
+		
+		String valuesName = createNewTemporaryInstanceName();
+		JSObject valuesJsObject = values.getJsObject();
+		d3JsObject.setMember(valuesName, valuesJsObject);
+
+		String command = "this.data( d3." + valuesName + ", " + keyFunctionExpression + ");";
+
+		JSObject result = evalForJsObject(command);		
+		d3JsObject.removeMember(valuesName);
+		return new UpdateSelection(webEngine, result);
 	}
 
 	/**

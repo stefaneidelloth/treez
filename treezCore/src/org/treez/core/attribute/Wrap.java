@@ -73,6 +73,12 @@ public class Wrap<T> implements AttributeWrapper<T> {
 		wrappedAttribute.addModificationConsumer(key, consumer);
 	}
 
+	public void addModificationConsumerAndRun(String key,
+			Consumer<T> consumer) {
+		wrappedAttribute.addModificationConsumer(key, consumer);
+		consumer.accept(null);
+	}
+
 	//#end region
 
 }

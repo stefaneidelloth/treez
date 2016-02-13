@@ -22,7 +22,7 @@ public class AxisLine implements GraphicsPageModel {
 	/**
 	 * Line type
 	 */
-	public final Attribute<String> axisLine = new Wrap<>();
+	public final Attribute<String> color = new Wrap<>();
 
 	/**
 	 * Line width
@@ -55,11 +55,11 @@ public class AxisLine implements GraphicsPageModel {
 
 		Section axisLineSection = axisLinePage.createSection("axisLine", "Axis line");
 
-		axisLineSection.createColorChooser(axisLine, "color", "black");
+		axisLineSection.createColorChooser(color, "color", "black");
 
-		axisLineSection.createSize(width, "width", "0.5pt");
+		axisLineSection.createTextField(width, "width", "2");
 
-		axisLineSection.createLineStyle(style, "style");
+		axisLineSection.createLineStyle(style, "style", "solid");
 
 		axisLineSection.createTextField(transparency, "transparency", "0");
 
@@ -68,18 +68,26 @@ public class AxisLine implements GraphicsPageModel {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		//parent.bindStringAttribute(selection, "x", leftMargin);
+		Selection axisDomainLine = axisSelection //
+				.selectAll(".domain") //
+				.style("fill", "none") //
+				.style("stroke-linecap", "square")
+				.style("shape-rendering", "geometricPrecision");
 
-		return graphSelection;
+		GraphicsAtom.bindStringAttribute(axisDomainLine, "stroke", color);
+		GraphicsAtom.bindStringAttribute(axisDomainLine, "stroke-width", width);
+		GraphicsAtom.bindLineStyle(axisDomainLine, style);
+		GraphicsAtom.bindLineTransparency(axisDomainLine, transparency);
+		GraphicsAtom.bindLineTransparencyToBooleanAttribute(axisDomainLine, hide, transparency);
+
+		return axisSelection;
 	}
 
 	@Override
 	public String createVeuszText(AbstractAtom parent) {
-
 		String veuszString = "\n";
-
 		return veuszString;
 	}
 

@@ -99,7 +99,7 @@ public class GenericInputModel extends AbstractModel {
 		String relativeHelpContextId = "genericInputModel";
 		String helpContextId = Activator.getAbsoluteHelpContextIdStatic(relativeHelpContextId);
 
-		Section data = dataPage.createSection("data", "data", helpContextId);
+		Section data = dataPage.createSection("data", helpContextId);
 
 		// build variable fields from children
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();

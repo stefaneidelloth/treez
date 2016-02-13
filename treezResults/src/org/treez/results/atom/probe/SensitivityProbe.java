@@ -9,6 +9,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -120,16 +121,18 @@ public class SensitivityProbe extends AbstractProbe {
 		Section timeSection = page.createSection("timeSection", "Time");
 		timeSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
-		timeSection.createTextField(timeLabel, "timeLabel", "Label for time axis", "Year");
-		ModelPath timeRangePath = timeSection.createModelPath(timeRange, "timeRange", "Range for time axis", "",
-				VariableRange.class, this);
+		TextField timeAxisLabel = timeSection.createTextField(timeLabel, "timeLabel", "Year");
+		timeAxisLabel.setLabel("Label for time axis");
+		ModelPath timeRangePath = timeSection.createModelPath(timeRange, "timeRange", "", VariableRange.class, this);
+		timeRangePath.setLabel("Range for time axis");
 		timeRangePath.setSelectionType(ModelPathSelectionType.FLAT);
 		//timeRangePath.set("root.studies.picker.time");
 
 		//y section
 		Section ySection = page.createSection("ySection", "Y");
 
-		ySection.createTextField(yLabel, "yLabel", "Label for y-Axis", "y");
+		TextField yLabelField = ySection.createTextField(yLabel, "yLabel", "y");
+		yLabelField.setLabel("Label for y-Axis");
 
 		//tuple list section
 		Section tupleListSection = page.createSection("tupleList", "Tuple list");
@@ -142,17 +145,21 @@ public class SensitivityProbe extends AbstractProbe {
 		//probe section
 		Section probeSection = page.createSection("probe", "Probe");
 
-		probeSection.createTextField(probeName, "propeName", "Name", "MyProbe");
-		ModelPath sweepOutputModelPath = probeSection.createModelPath(pickerOutput, "pickerOutput", "PickerOutput", "",
+		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
+		probeNameField.setLabel("Name");
+		ModelPath sweepOutputModelPath = probeSection.createModelPath(pickerOutput, "pickerOutput", "",
 				OutputAtom.class, this);
+		sweepOutputModelPath.setLabel("Picker output");
 
 		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, "firstProbeTable",
 				sweepOutputModelPath, Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
-		probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "Column index", "0");
+		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");
+		columnIndex.setLabel("Column index");
 
-		probeSection.createTextField(probeRowIndex, "probeRowIndex", "Row index", "0");
+		TextField rowIndex = probeSection.createTextField(probeRowIndex, "probeRowIndex", "0");
+		rowIndex.setLabel("Column index");
 
 		setModel(root);
 

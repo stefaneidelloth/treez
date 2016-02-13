@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.FilePath;
 import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
@@ -91,7 +92,7 @@ public class Picking extends AbstractParameterVariation {
 		String relativeHelpContextId = "picking";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 
-		Section pickingSection = dataPage.createSection("picking", "picking", absoluteHelpContextId);
+		Section pickingSection = dataPage.createSection("picking", absoluteHelpContextId);
 		pickingSection.createSectionAction("action", "Run picking", () -> execute(treeViewRefreshable));
 
 		//choose selection type and entry atom
@@ -100,14 +101,16 @@ public class Picking extends AbstractParameterVariation {
 
 		//model to run
 		String modelToRunDefaultValue = "";
-		pickingSection.createModelPath(modelToRunModelPath, "modelToRunModelPath", "Model to run",
-				modelToRunDefaultValue, Model.class, selectionType, modelEntryPoint, false);
+		pickingSection
+				.createModelPath(modelToRunModelPath, "modelToRunModelPath", modelToRunDefaultValue, Model.class,
+						selectionType, modelEntryPoint, false)
+				.setLabel("Model to run");
 
 		//variable source model
 		String sourceModelDefaultValue = "";
 		ModelPath modelPath = pickingSection.createModelPath(sourceModelPath, "sourceModelPath",
-				"Variable source model (provides variables)", sourceModelDefaultValue, Model.class, selectionType,
-				modelEntryPoint, false);
+				sourceModelDefaultValue, Model.class, selectionType, modelEntryPoint, false);
+		modelPath.setLabel("Variable source model (provides variables)");
 
 		//variable list
 		variableList = pickingSection.createVariableList(variables, "variables", "Picking variables");
@@ -116,7 +119,8 @@ public class Picking extends AbstractParameterVariation {
 		modelPath.addModifyListener("updateVariableList", (modifyEvent) -> updateAvailableVariablesForVariableList());
 
 		//export study info check box
-		pickingSection.createCheckBox(exportStudyInfo, "exportStudyInfo", "Export study information", true);
+		CheckBox export = pickingSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);
+		export.setLabel("Export study information");
 
 		//export study info path
 		FilePath filePath = pickingSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",

@@ -3,6 +3,7 @@ package org.treez.core.atom.attribute;
 import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -207,6 +208,16 @@ public class Font extends AbstractAttributeAtom<String> {
 			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
+	}
+
+	@Override
+	public void addModificationConsumer(String key, Consumer<String> consumer) {
+		addModifyListener(key, (event) -> {
+			if (isAvailable(fontCombo)) {
+				String value = fontCombo.getText();
+				consumer.accept(value);
+			}
+		});
 	}
 
 	//#end region

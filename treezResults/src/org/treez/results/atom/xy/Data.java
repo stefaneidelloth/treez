@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
@@ -77,14 +78,18 @@ public class Data implements GraphicsPageModel {
 
 		Class<?> targetClass = org.treez.data.column.Column.class;
 		String value = "root.data.table.columns.x";
-		data.createModelPath(xData, "xdata", "X data", value, targetClass, parent);
+		data
+				.createModelPath(xData, "xdata", value, targetClass, parent) //
+				.setLabel("X data");
 
 		targetClass = org.treez.data.column.Column.class;
 		value = "root.data.table.columns.y";
-		data.createModelPath(yData, "ydata", "Y data", value, targetClass, parent);
+		data
+				.createModelPath(yData, "ydata", value, targetClass, parent) //
+				.setLabel("Y data");
 
-		data.createTextField(legendText, "legendText", "Legend text", "");
-
+		TextField legendTextField = data.createTextField(legendText, "legendText", "");
+		legendTextField.setLabel("Legend text");
 		//data.createTextField(labels, "labels", "Labels", "");
 
 		//targetClass = org.treez.data.column.Column.class;
@@ -93,11 +98,15 @@ public class Data implements GraphicsPageModel {
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
 		value = "";
-		data.createModelPath(xAxis, "xaxis", "X axis", value, targetClass, parent);
+		data
+				.createModelPath(xAxis, "xaxis", value, targetClass, parent) //
+				.setLabel("X axis");
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
 		value = "";
-		data.createModelPath(yAxis, "yaxis", "Y axis", value, targetClass, parent);
+		data
+				.createModelPath(yAxis, "yaxis", value, targetClass, parent) //
+				.setLabel("Y axis");
 
 		//data.createTextField(colorMarkers, "colorMarkers", "Color markers", "");
 
@@ -226,7 +235,6 @@ public class Data implements GraphicsPageModel {
 		}
 		veuszString = veuszString + "''')\n";
 		return veuszString;
-
 	}
 
 	//#end region

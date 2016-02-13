@@ -19,6 +19,7 @@ import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
+import org.treez.core.utils.Utils;
 
 /**
  * An item example
@@ -74,7 +75,7 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	 */
 	public CheckBox(String name) {
 		super(name);
-		label = name;
+		label = Utils.firstToUpperCase(name); //this default label might be overridden by explicitly setting the label
 	}
 
 	/**

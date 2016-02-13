@@ -22,7 +22,7 @@ public abstract class GraphicsPropertiesPage extends GraphicsAtom {
 
 	//#region ATTRIBUTES
 
-	protected List<GraphicsPageModel> veuszPageModels;
+	protected List<GraphicsPageModel> pageModels;
 
 	//#end region
 
@@ -51,11 +51,11 @@ public abstract class GraphicsPropertiesPage extends GraphicsAtom {
 		AttributeRoot root = new AttributeRoot("root");
 
 		//fill list with page models
-		veuszPageModels = new ArrayList<GraphicsPageModel>();
+		pageModels = new ArrayList<GraphicsPageModel>();
 		fillVeuszPageModels();
 
 		//create pages
-		for (GraphicsPageModel pageFactory : veuszPageModels) {
+		for (GraphicsPageModel pageFactory : pageModels) {
 			pageFactory.createPage(root, this);
 		}
 
@@ -79,7 +79,7 @@ public abstract class GraphicsPropertiesPage extends GraphicsAtom {
 		String veuszString = createVeuszStartText();
 
 		//add text for pages
-		for (GraphicsPageModel pageFactory : veuszPageModels) {
+		for (GraphicsPageModel pageFactory : pageModels) {
 			veuszString = veuszString + pageFactory.createVeuszText(this);
 		}
 

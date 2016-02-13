@@ -44,14 +44,15 @@ public class Length {
 	//#region METHODS
 
 	/**
-	 * Tries to parse the given String (e.g. "1cm") to a Length. If the given String can not be parsed, and
-	 * IllegalArgumentException is thrown.
+	 * Tries to parse the given String (e.g. "1cm") to a Length. If the given
+	 * String can not be parsed, and IllegalArgumentException is thrown.
 	 *
 	 * @param lengthExpression
 	 * @return
 	 */
 	public static Length parse(String lengthExpression) {
-		Objects.requireNonNull(lengthExpression, "Length expression must not be null");
+		Objects.requireNonNull(lengthExpression,
+				"Length expression must not be null");
 		try {
 			double value = Double.parseDouble(lengthExpression);
 			return new Length(value, LengthUnit.PX);
@@ -68,23 +69,30 @@ public class Length {
 		String[] subStrings = expression.split(unitRegularExpression);
 
 		if (subStrings.length != 1) {
-			throw new IllegalArgumentException("Could not parse the length expression '" + lengthExpression + "'");
+			throw new IllegalArgumentException(
+					"Could not parse the length expression '" + lengthExpression
+							+ "'");
 		}
 
 		String valueString = subStrings[0];
 		String unitString = expression.substring(valueString.length());
+		if (valueString == "") {
+			return new Length(0.0, unitString);
+		}
 		try {
 			Double value = Double.parseDouble(valueString);
 			LengthUnit unit = LengthUnit.get(unitString);
 			return new Length(value, unit);
 		} catch (NumberFormatException exception) {
-			throw new IllegalArgumentException("Could not parse the length expression '" + lengthExpression + "'");
+			throw new IllegalArgumentException(
+					"Could not parse the length expression '" + lengthExpression
+							+ "'");
 		}
 	}
 
 	/**
-	 * Parses the given length expression as Length and returns its value in px (assuming a default resolution of 96
-	 * dpi)
+	 * Parses the given length expression as Length and returns its value in px
+	 * (assuming a default resolution of 96 dpi)
 	 *
 	 * @return
 	 */
@@ -95,7 +103,8 @@ public class Length {
 	}
 
 	/**
-	 * Returns the value of the Length in px (assuming a default resolution of 96 dpi)
+	 * Returns the value of the Length in px (assuming a default resolution of
+	 * 96 dpi)
 	 *
 	 * @return
 	 */
@@ -105,7 +114,8 @@ public class Length {
 	}
 
 	/**
-	 * Returns the value of the Length in the given LengthUnit (assuming a default resolution of 96 dpi)
+	 * Returns the value of the Length in the given LengthUnit (assuming a
+	 * default resolution of 96 dpi)
 	 *
 	 * @return
 	 */

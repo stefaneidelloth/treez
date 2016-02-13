@@ -109,6 +109,9 @@ public final class Utils {
 	 * @return
 	 */
 	public static String firstToUpperCase(String name) {
+		if (name.isEmpty()) {
+			return name;
+		}
 		String firstLetter = name.substring(0, 1);
 		return firstLetter.toUpperCase() + name.substring(1, name.length());
 	}

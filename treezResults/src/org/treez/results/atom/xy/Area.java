@@ -23,7 +23,7 @@ public class Area implements GraphicsPageModel {
 	//#region ATTRIBUTES
 
 	/**
-	 *
+	 * Color of the "below area" (= area below the plot line)
 	 */
 	public final Attribute<String> belowColor = new Wrap<>();
 
@@ -33,12 +33,12 @@ public class Area implements GraphicsPageModel {
 	//public final Attribute<String> belowFillStyle = new Wrap<>();
 
 	/**
-	 *
+	 * Transparency of the "below area"
 	 */
 	public final Attribute<String> belowTransparency = new Wrap<>();
 
 	/**
-	 *
+	 * Hides the "below area"
 	 */
 	public final Attribute<Boolean> belowHide = new Wrap<>();
 
@@ -48,7 +48,7 @@ public class Area implements GraphicsPageModel {
 	//public final Attribute<Boolean> belowHideErrorFill = new Wrap<>();
 
 	/**
-	 *
+	 * Color of the "above area" (=area above the plot line)
 	 */
 	public final Attribute<String> aboveColor = new Wrap<>();
 
@@ -58,12 +58,12 @@ public class Area implements GraphicsPageModel {
 	//public final Attribute<String> aboveFillStyle = new Wrap<>();
 
 	/**
-	 *
+	 * Transparency of the "above area"
 	 */
 	public final Attribute<String> aboveTransparency = new Wrap<>();
 
 	/**
-	 *
+	 * Hides the "above area"
 	 */
 	public final Attribute<Boolean> aboveHide = new Wrap<>();
 
@@ -83,15 +83,16 @@ public class Area implements GraphicsPageModel {
 
 		//#region fill above section
 
-		Section fillAbove = fillPage.createSection("fillAbove", "Fill above", false);
+		Section fillAbove = fillPage.createSection("fillAbove", false);
+		fillAbove.setTitle("Fill above");
 
-		fillAbove.createColorChooser(aboveColor, "color", "Color", "black");
+		fillAbove.createColorChooser(aboveColor, "color", "black");
 
 		//fillAbove.createFillStyle(aboveFillStyle, "style", "Style");
 
 		fillAbove.createTextField(aboveTransparency, "transparency", "0");
 
-		fillAbove.createCheckBox(aboveHide, "hide", "Hide", true);
+		fillAbove.createCheckBox(aboveHide, "hide", true);
 
 		//fillAbove.createCheckBox(aboveHideErrorFill, "hideErrorFill", "Hide error fill");
 
@@ -99,13 +100,13 @@ public class Area implements GraphicsPageModel {
 
 		Section fillBelow = fillPage.createSection("fillBelow", "Fill below");
 
-		fillBelow.createColorChooser(belowColor, "color", "Color", "black");
+		fillBelow.createColorChooser(belowColor, "color", "black");
 
 		//fillBelow.createFillStyle(belowFillStyle, "style", "Style");
 
-		fillBelow.createTextField(belowTransparency, "transparency", "Transparency", "0");
+		fillBelow.createTextField(belowTransparency, "transparency", "0");
 
-		fillBelow.createCheckBox(belowHide, "hide", "Hide", true);
+		fillBelow.createCheckBox(belowHide, "hide", true);
 
 		//fillBelow.createCheckBox(belowHideErrorFill, "hideErrorFill", "Hide error fill");
 
@@ -135,12 +136,12 @@ public class Area implements GraphicsPageModel {
 			QuantitativeScale<?> yScale) {
 
 		Xy xy = (Xy) parent;
-		String modeString = xy.line.interpolationMode.get();
+		String modeString = xy.line.interpolation.get();
 		org.treez.javafxd3.d3.svg.InterpolationMode mode = org.treez.javafxd3.d3.svg.InterpolationMode
 				.fromValue(modeString);
 
-		plotAboveAreaWithD3(d3, xySelection, parent, xyDataString, xScale, yScale, mode);
-		plotBelowAreaWithD3(d3, xySelection, parent, xyDataString, xScale, yScale, mode);
+		plotAboveAreaWithD3(d3, xySelection, xyDataString, xScale, yScale, mode);
+		plotBelowAreaWithD3(d3, xySelection, xyDataString, xScale, yScale, mode);
 
 		xy.line.replotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
 
@@ -149,11 +150,11 @@ public class Area implements GraphicsPageModel {
 	private void plotAboveAreaWithD3(
 			D3 d3,
 			Selection xySelection,
-			GraphicsAtom parent,
 			String xyDataString,
 			QuantitativeScale<?> xScale,
 			QuantitativeScale<?> yScale,
 			org.treez.javafxd3.d3.svg.InterpolationMode mode) {
+
 		xySelection
 				.selectAll("#area-above") //
 				.remove();
@@ -174,25 +175,14 @@ public class Area implements GraphicsPageModel {
 				.append("path") //
 				.attr("d", areaAbovePathGenerator.generate(xyDataString));
 
-		parent.bindStringAttribute(aboveArea, "fill", aboveColor);
-
-		aboveTransparency.addModificationConsumer("updateTransparency", (data) -> {
-			try {
-				double transparency = Double.parseDouble(aboveTransparency.get());
-				double opacity = 1 - transparency;
-				aboveArea.attr("fill-opacity", "" + opacity);
-			} catch (NumberFormatException exception) {
-
-			}
-		});
-
-		parent.bindDisplayToBooleanAttribute("hideAboveArea", aboveArea, aboveHide);
+		GraphicsAtom.bindStringAttribute(aboveArea, "fill", aboveColor);
+		GraphicsAtom.bindTransparency(aboveArea, aboveTransparency);
+		GraphicsAtom.bindDisplayToBooleanAttribute("hideAboveArea", aboveArea, aboveHide);
 	}
 
 	private void plotBelowAreaWithD3(
 			D3 d3,
 			Selection xySelection,
-			GraphicsAtom parent,
 			String xyDataString,
 			QuantitativeScale<?> xScale,
 			QuantitativeScale<?> yScale,
@@ -221,26 +211,14 @@ public class Area implements GraphicsPageModel {
 				.append("path") //
 				.attr("d", areaBelowPathGenerator.generate(xyDataString));
 
-		parent.bindStringAttribute(belowArea, "fill", belowColor);
-
-		belowTransparency.addModificationConsumer("updateTransparency", (data) -> {
-			try {
-				double transparency = Double.parseDouble(belowTransparency.get());
-				double opacity = 1 - transparency;
-				belowArea.attr("fill-opacity", "" + opacity);
-			} catch (NumberFormatException exception) {
-
-			}
-		});
-
-		parent.bindDisplayToBooleanAttribute("hideBelowArea", belowArea, belowHide);
+		GraphicsAtom.bindStringAttribute(belowArea, "fill", belowColor);
+		GraphicsAtom.bindTransparency(belowArea, aboveTransparency);
+		GraphicsAtom.bindDisplayToBooleanAttribute("hideBelowArea", belowArea, belowHide);
 	}
 
 	@Override
 	public String createVeuszText(AbstractAtom parent) {
-
 		String veuszString = "";
-
 		return veuszString;
 	}
 

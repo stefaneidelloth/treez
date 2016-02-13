@@ -1,6 +1,7 @@
 package org.treez.results.atom.xy;
 
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.ComboBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
@@ -80,10 +81,13 @@ public class Label implements GraphicsPageModel {
 
 		Section label = labelPage.createSection("label");
 
-		label.createComboBox(horizontalPosition, "horizontalPosition", "Horz position", "right, centre, left",
+		ComboBox horzPosComboBox = label.createComboBox(horizontalPosition, "horizontalPosition", "right, centre, left",
 				"centre");
+		horzPosComboBox.setLabel("Horz position");
 
-		label.createComboBox(verticalPosition, "verticalPosition", "Vert position", "top, centre, bottom", "centre");
+		ComboBox vertPosComboBox = label.createComboBox(verticalPosition, "verticalPosition", "top, centre, bottom",
+				"centre");
+		vertPosComboBox.setLabel("Vert position");
 
 		label.createTextField(angle, "angle", "0");
 

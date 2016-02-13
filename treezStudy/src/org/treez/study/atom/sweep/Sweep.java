@@ -16,6 +16,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.FilePath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
@@ -79,7 +80,7 @@ public class Sweep extends AbstractParameterVariation {
 		String relativeHelpContextId = "sweep";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 
-		Section sweepSection = dataPage.createSection("sweep", "sweep", absoluteHelpContextId);
+		Section sweepSection = dataPage.createSection("sweep", absoluteHelpContextId);
 		sweepSection.createSectionAction("action", "Run sweep", () -> execute(treeViewRefreshable));
 
 		//choose selection type and entry atom
@@ -88,16 +89,21 @@ public class Sweep extends AbstractParameterVariation {
 
 		//model to run
 		String modelToRunDefaultValue = "";
-		sweepSection.createModelPath(modelToRunModelPath, "modelToRunModelPath", "Model to run", modelToRunDefaultValue,
-				Model.class, selectionType, modelEntryPoint, false);
+		sweepSection
+				.createModelPath(modelToRunModelPath, "modelToRunModelPath", modelToRunDefaultValue, Model.class,
+						selectionType, modelEntryPoint, false)
+				.setLabel("Model to run");
 
 		//source model
 		String sourceModelDefaultValue = "";
-		sweepSection.createModelPath(sourceModelPath, "sourceModelPath", "Variable source model (provides variables)",
-				sourceModelDefaultValue, Model.class, selectionType, modelEntryPoint, false);
+		sweepSection
+				.createModelPath(sourceModelPath, "sourceModelPath", sourceModelDefaultValue, Model.class,
+						selectionType, modelEntryPoint, false)
+				.setLabel("Variable source model (provides variables)");
 
 		//export sweep info check box
-		sweepSection.createCheckBox(exportStudyInfo, "exportStudyInfo", "Export study information", true);
+		CheckBox exportStudy = sweepSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);
+		exportStudy.setLabel("Export study information");
 
 		//export sweep info path
 		FilePath filePath = sweepSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",

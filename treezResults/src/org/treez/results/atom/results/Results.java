@@ -50,7 +50,8 @@ public class Results extends AdjustableAtom {
 		org.treez.core.atom.attribute.Page dataPage = root.createPage("");
 		String relativeHelpContextId = "results";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
-		Section results = dataPage.createSection("results", "", absoluteHelpContextId);
+		Section results = dataPage.createSection("results", absoluteHelpContextId);
+		results.setTitle("");
 		results.createLabel("label", "This atom represents results.");
 		setModel(root);
 	}

@@ -9,6 +9,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -76,7 +77,7 @@ public class ProbabilityProbe extends AbstractProbe {
 	/**
 	 * picker output model path
 	 */
-	public final Attribute<String> pickerOutput = new Wrap<>();
+	public final Attribute<String> propabilityOutput = new Wrap<>();
 
 	/**
 	 * first probe table model path
@@ -120,16 +121,18 @@ public class ProbabilityProbe extends AbstractProbe {
 		Section timeSection = page.createSection("timeSection", "Time");
 		timeSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
-		timeSection.createTextField(timeLabel, "timeLabel", "Label for time axis", "Year");
-		ModelPath timeRangePath = timeSection.createModelPath(timeRange, "timeRange", "Range for time axis", "",
-				VariableRange.class, this);
+		TextField timeLabelField = timeSection.createTextField(timeLabel, "timeLabel", "Year");
+		timeLabelField.setLabel("Label for time axis");
+		ModelPath timeRangePath = timeSection.createModelPath(timeRange, "timeRange", "", VariableRange.class, this);
+		timeRangePath.setLabel("Range for time axis");
 		timeRangePath.setSelectionType(ModelPathSelectionType.FLAT);
 		//timeRangePath.set("root.studies.picker.time");
 
 		//y section
 		Section ySection = page.createSection("ySection", "Y");
 
-		ySection.createTextField(yLabel, "yLabel", "Label for y-Axis", "y");
+		TextField yLabelField = ySection.createTextField(yLabel, "yLabel", "y");
+		yLabelField.setLabel("Label for y-Axis");
 
 		//tuple list section
 		Section tupleListSection = page.createSection("tupleList", "Tuple list");
@@ -142,17 +145,20 @@ public class ProbabilityProbe extends AbstractProbe {
 		//probe section
 		Section probeSection = page.createSection("probe", "Probe");
 
-		probeSection.createTextField(probeName, "propeName", "Name", "MyProbe");
-		ModelPath sweepOutputModelPath = probeSection.createModelPath(pickerOutput, "pickerOutput", "PickerOutput", "",
+		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
+		probeNameField.setLabel("Name");
+		ModelPath sweepOutputModelPath = probeSection.createModelPath(propabilityOutput, "probabilityOutput", "",
 				OutputAtom.class, this);
+		sweepOutputModelPath.setLabel("Probability output");
 
 		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, "firstProbeTable",
 				sweepOutputModelPath, Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
-		probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "Column index", "0");
-
-		probeSection.createTextField(probeRowIndex, "probeRowIndex", "Row index", "0");
+		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");
+		columnIndex.setLabel("Column index");
+		TextField rowIndex = probeSection.createTextField(probeRowIndex, "probeRowIndex", "0");
+		rowIndex.setLabel("Row index");
 
 		setModel(root);
 
@@ -308,7 +314,7 @@ public class ProbabilityProbe extends AbstractProbe {
 		List<String> columnNames = createColumnNames(timeLabelString, yLabelString, tupleListValues);
 
 		//get sweep output path
-		String sweepOutputPath = pickerOutput.get();
+		String sweepOutputPath = propabilityOutput.get();
 
 		//get probe table relative path
 		String firstProbeTableRelativePath = getFirstProbeRelativePath();

@@ -54,8 +54,8 @@ public class JavaFxD3Browser extends Region {
 
 	private Boolean enableDebugMode = false;
 	
-	private double browserWidth = 750;
-	private double browserHeight = 500;
+	private double browserWidth = 900;
+	private double browserHeight = 1000;
 
 	//#end region
 
@@ -94,7 +94,7 @@ public class JavaFxD3Browser extends Region {
 
 	private void initialize() {
 
-		this.setPrefSize(browserWidth, browserWidth);
+		this.setPrefSize(browserWidth, browserHeight);
 		
 		//create web view
 		webView = new WebView();		

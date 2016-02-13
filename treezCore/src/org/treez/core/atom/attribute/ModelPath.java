@@ -252,15 +252,14 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	 * Constructor
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultPath
 	 * @param atomType
 	 * @param selectionType
 	 * @param modelEntryAtom
 	 */
-	public ModelPath(String name, String label, String defaultPath,
-			Class<?> atomType, ModelPathSelectionType selectionType,
-			AbstractAtom modelEntryAtom, boolean hasToBeEnabled) {
+	public ModelPath(String name, String defaultPath, Class<?> atomType,
+			ModelPathSelectionType selectionType, AbstractAtom modelEntryAtom,
+			boolean hasToBeEnabled) {
 		super(name);
 		setLabel(label);
 		setDefaultValue(defaultPath);

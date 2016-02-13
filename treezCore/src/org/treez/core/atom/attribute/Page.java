@@ -27,6 +27,7 @@ import org.treez.core.atom.base.AtomTreeNodeAdaption;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.TreeViewerAction;
+import org.treez.core.utils.Utils;
 
 /**
  * An item example
@@ -59,7 +60,7 @@ public class Page extends AbstractAttributeContainerAtom {
 	 */
 	public Page(String name) {
 		super(name);
-		title = name;
+		title = Utils.firstToUpperCase(name); //this default title might be overridden by explicitly setting the label
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class Page extends AbstractAttributeContainerAtom {
 		CTabFolder tabFolder = (CTabFolder) tabFolderComposite;
 
 		//create new tabItem that corresponds to the pageNode
-		CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
+		CTabItem tabItem = new CTabItem(tabFolder, SWT.NONE);
 
 		//set the title of the tab item
 		String currentTitle = getTitle();
@@ -166,7 +167,7 @@ public class Page extends AbstractAttributeContainerAtom {
 			}
 		});
 
-		//comment this for lazy creation
+		//(comment this out for lazy creation)
 		createPageContent(contentForm.getBody(), treeViewerRefreshable);
 
 	}
@@ -253,29 +254,13 @@ public class Page extends AbstractAttributeContainerAtom {
 	}
 
 	/**
-	 * Create a new section with given title
-	 *
-	 * @param name
-	 * @param title
-	 * @return
-	 */
-	public Section createSection(String name, String title) {
-		Section section = createSection(name);
-		section.setTitle(title);
-		return section;
-	}
-
-	/**
 	 * Create a new section with given title and helpId
 	 *
 	 * @param name
-	 * @param title
 	 * @return
 	 */
-	public Section createSection(String name, String title,
-			String absoluteHelpId) {
+	public Section createSection(String name, String absoluteHelpId) {
 		Section section = createSection(name);
-		section.setTitle(title);
 		section.setAbsoluteHelpId(absoluteHelpId);
 		return section;
 	}
@@ -284,13 +269,11 @@ public class Page extends AbstractAttributeContainerAtom {
 	 * Creates a new section with given title and expansion state
 	 *
 	 * @param name
-	 * @param title
 	 * @param expanded
 	 * @return
 	 */
-	public Section createSection(String name, String title, boolean expanded) {
+	public Section createSection(String name, boolean expanded) {
 		Section section = createSection(name);
-		section.setTitle(title);
 		section.setExpanded(expanded);
 		return section;
 	}

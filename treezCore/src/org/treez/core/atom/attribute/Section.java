@@ -24,6 +24,7 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.TreeViewerAction;
+import org.treez.core.utils.Utils;
 
 /**
  * An item example
@@ -64,7 +65,7 @@ public class Section extends AbstractAttributeContainerAtom {
 	 */
 	public Section(String name) {
 		super(name);
-		title = name;
+		title = Utils.firstToUpperCase(name); //this default title might be overridden by explicitly setting the label
 	}
 
 	/**
@@ -221,30 +222,14 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * Creates a check box
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultValue
 	 * @return
 	 */
 	public CheckBox createCheckBox(Attribute<Boolean> wrap, String name,
-			String label, boolean defaultValue) {
-		CheckBox checkBox = createCheckBox(wrap, name, label);
+			boolean defaultValue) {
+		CheckBox checkBox = createCheckBox(wrap, name);
 		checkBox.setDefaultValue(defaultValue);
 		checkBox.set(defaultValue);
-		return checkBox;
-	}
-
-	/**
-	 * Creates a check
-	 *
-	 * @param name
-	 * @param label
-	 * @return
-	 */
-	public CheckBox createCheckBox(Attribute<Boolean> wrap, String name,
-			String label) {
-		CheckBox checkBox = createCheckBox(name);
-		checkBox.setLabel(label);
-		checkBox.wrap(wrap);
 		return checkBox;
 	}
 
@@ -287,31 +272,15 @@ public class Section extends AbstractAttributeContainerAtom {
 	}
 
 	/**
-	 * Create a new value chooser with a default value
-	 *
-	 * @param name
-	 * @param label
-	 * @return
-	 */
-	public ColorChooser createColorChooser(Attribute<String> wrap, String name,
-			String label) {
-		ColorChooser colorChooser = new ColorChooser(name, label);
-		addChild(colorChooser);
-		colorChooser.wrap(wrap);
-		return colorChooser;
-	}
-
-	/**
 	 * Create a new value chooser with given name, label and default value
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultValue
 	 * @return
 	 */
 	public ColorChooser createColorChooser(Attribute<String> wrap, String name,
-			String label, String defaultValue) {
-		ColorChooser colorChooser = createColorChooser(wrap, name, label);
+			String defaultValue) {
+		ColorChooser colorChooser = createColorChooser(wrap, name);
 		colorChooser.setDefaultValue(defaultValue);
 		return colorChooser;
 	}
@@ -320,13 +289,11 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * Creates a color map
 	 *
 	 * @param name
-	 * @param label
 	 * @return
 	 */
 	public AbstractAttributeAtom<String> createColorMap(Attribute<String> wrap,
-			String name, String label) {
+			String name) {
 		ColorMap colorMap = new ColorMap(name);
-		colorMap.setLabel(label);
 		addChild(colorMap);
 		colorMap.wrap(wrap);
 		return colorMap;
@@ -376,39 +343,17 @@ public class Section extends AbstractAttributeContainerAtom {
 	}
 
 	/**
-	 * Creates a new combo box
-	 *
-	 * @param name
-	 * @param label
-	 * @param items
-	 * @param defaultValue
-	 * @return
-	 */
-	public ComboBox createComboBox(Attribute<String> wrap, String name,
-			String label, String items, String defaultValue) {
-		ComboBox comboBox = new ComboBox(name);
-		comboBox.setLabel(label);
-		comboBox.setItems(items);
-		comboBox.setDefaultValue(defaultValue);
-		addChild(comboBox);
-		comboBox.wrap(wrap);
-		return comboBox;
-	}
-
-	/**
 	 * Creates a new combo box with a given enum that provides the available
 	 * values
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultEnumValue
 	 * @return
 	 */
 	public ComboBox createComboBox(Attribute<String> wrap, String name,
-			String label, Enum<?> defaultEnumValue) {
+			Enum<?> defaultEnumValue) {
 		@SuppressWarnings({"unchecked", "rawtypes"})
 		ComboBox comboBox = new ComboBox(name);
-		comboBox.setLabel(label);
 		comboBox.setDefaultValue(defaultEnumValue);
 		addChild(comboBox);
 		comboBox.wrap(wrap);
@@ -421,16 +366,14 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * @param <T>
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultEnumValue
 	 * @return
 	 */
 	public <T extends EnumValueProvider<?>> EnumComboBox<T> createEnumComboBox(
-			Attribute<String> wrap, String name, String label,
+			Attribute<String> wrap, String name,
 			EnumValueProvider<?> defaultEnumValue) {
 		@SuppressWarnings({"unchecked", "rawtypes"})
 		EnumComboBox<T> comboBox = new EnumComboBox(defaultEnumValue, name);
-		comboBox.setLabel(label);
 		addChild(comboBox);
 		comboBox.wrap(wrap);
 		return comboBox;
@@ -457,14 +400,12 @@ public class Section extends AbstractAttributeContainerAtom {
 	 *
 	 * @param wrap
 	 * @param name
-	 * @param label
 	 * @param defaultValue
 	 * @return
 	 */
 	public ColumnTypeComboBox createColumnTypeComboBox(Attribute<String> wrap,
-			String name, String label, ColumnType defaultValue) {
+			String name, ColumnType defaultValue) {
 		ColumnTypeComboBox combo = new ColumnTypeComboBox(name);
-		combo.setLabel(label);
 		combo.setDefaultValue(defaultValue.getValue());
 		combo.wrap(wrap);
 		return combo;
@@ -577,15 +518,14 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * Creates a model path chooser
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultPath
 	 * @param atomType
 	 * @return
 	 */
 	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			String label, String defaultPath, Class<?> atomType) {
+			String defaultPath, Class<?> atomType) {
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		ModelPath modelPath = new ModelPath(name, label, defaultPath, atomType,
+		ModelPath modelPath = new ModelPath(name, defaultPath, atomType,
 				selectionType, null, false);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
@@ -612,16 +552,15 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * Creates a model path chooser
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultPath
 	 * @param atomType
 	 * @param selectionType
 	 * @return
 	 */
 	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			String label, String defaultPath, Class<?> atomType,
+			String defaultPath, Class<?> atomType,
 			ModelPathSelectionType selectionType) {
-		ModelPath modelPath = new ModelPath(name, label, defaultPath, atomType,
+		ModelPath modelPath = new ModelPath(name, defaultPath, atomType,
 				selectionType, null, false);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
@@ -632,17 +571,16 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * Creates a model path chooser
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultPath
 	 * @param atomType
 	 * @param modelEntryAtom
 	 * @return
 	 */
 	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			String label, String defaultPath, Class<?> atomType,
+			String defaultPath, Class<?> atomType,
 			AbstractAtom modelEntryAtom) {
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		ModelPath modelPath = new ModelPath(name, label, defaultPath, atomType,
+		ModelPath modelPath = new ModelPath(name, defaultPath, atomType,
 				selectionType, modelEntryAtom, false);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
@@ -662,10 +600,10 @@ public class Section extends AbstractAttributeContainerAtom {
 	 */
 	@SuppressWarnings("checkstyle:parameternumber")
 	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			String label, String defaultPath, Class<?> atomType,
+			String defaultPath, Class<?> atomType,
 			ModelPathSelectionType selectionType, AbstractAtom modelEntryPoint,
 			boolean hasToBeEnabled) {
-		ModelPath modelPath = new ModelPath(name, label, defaultPath, atomType,
+		ModelPath modelPath = new ModelPath(name, defaultPath, atomType,
 				selectionType, modelEntryPoint, hasToBeEnabled);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
@@ -739,21 +677,6 @@ public class Section extends AbstractAttributeContainerAtom {
 		textField.set(defaultValue);
 		addChild(textField);
 		textField.wrap(wrap);
-		return textField;
-	}
-
-	/**
-	 * Creates a new text field with given name, label and default value
-	 *
-	 * @param name
-	 * @param label
-	 * @param defaultValue
-	 * @return
-	 */
-	public TextField createTextField(Attribute<String> wrap, String name,
-			String label, String defaultValue) {
-		TextField textField = createTextField(wrap, name, defaultValue);
-		textField.setLabel(label);
 		return textField;
 	}
 
@@ -1185,6 +1108,7 @@ public class Section extends AbstractAttributeContainerAtom {
 	public AbstractAttributeAtom<String> createFont(Attribute<String> wrap,
 			String name) {
 		Font font = new Font(name);
+		font.set("Arial");
 		addChild(font);
 		font.wrap(wrap);
 		return font;

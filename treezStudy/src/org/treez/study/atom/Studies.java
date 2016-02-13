@@ -56,7 +56,8 @@ public class Studies extends AdjustableAtom {
 		org.treez.core.atom.attribute.Page dataPage = root.createPage("");
 		String relativeHelpContextId = "studies";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
-		Section studies = dataPage.createSection("studies", "", absoluteHelpContextId);
+		Section studies = dataPage.createSection("studies", absoluteHelpContextId);
+		studies.setTitle("");
 		studies.createLabel("label", "This atom represents studies.");
 		setModel(root);
 	}

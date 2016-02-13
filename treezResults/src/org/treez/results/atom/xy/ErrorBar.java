@@ -1,8 +1,10 @@
 package org.treez.results.atom.xy;
 
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
@@ -80,11 +82,13 @@ public class ErrorBar implements GraphicsPageModel {
 
 		errorBarLine.createCheckBox(hide, "hide");
 
-		errorBarLine.createTextField(endSize, "endSize", "End size", "1");
+		TextField endSizeField = errorBarLine.createTextField(endSize, "endSize", "1");
+		endSizeField.setLabel("End size");
 
-		errorBarLine.createCheckBox(hideHorizontal, "hideHorizontal", "Hide horz.");
-
-		errorBarLine.createCheckBox(hideVertical, "hideVertical", "Hide vert.");
+		CheckBox hideHorz = errorBarLine.createCheckBox(hideHorizontal, "hideHorizontal");
+		hideHorz.setLabel("Hide horz.");
+		CheckBox hideVert = errorBarLine.createCheckBox(hideVertical, "hideVertical");
+		hideVert.setLabel("Hide vert.");
 	}
 
 	@Override

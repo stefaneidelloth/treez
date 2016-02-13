@@ -77,28 +77,30 @@ public class EqualAssumption extends AbstractAssumption {
 		String relativeHelpContextId = "normal";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 
-		data = dataPage.createSection("normal", "normal", absoluteHelpContextId);
+		data = dataPage.createSection("normal", absoluteHelpContextId);
 
 		//source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
-		data.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", "Double variable", defaultValue,
-				DoubleVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled);
+		data
+				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
+						DoubleVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.setLabel("Double variable");
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
 		if (assignRelativeRoot) {
 			assignRealtiveRootToSourceVariablePath();
 		}
 
 		//min
-		TextField minField = data.createTextField(min, "min", "Min value", "0");
+		TextField minField = data.createTextField(min, "min", "0");
 		minField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(min.get(), max.get());
 		});
 
 		//max
-		TextField maxField = data.createTextField(max, "max", "Max value", "1");
+		TextField maxField = data.createTextField(max, "max", "1");
 		maxField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(min.get(), max.get());
 		});

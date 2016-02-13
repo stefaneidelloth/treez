@@ -27,27 +27,37 @@ public class Axis extends GraphicsPropertiesPage {
 
 	//#region ATTRIBUTES
 
-	private Selection axisSelection;
-
 	/**
 	 * The data properties of the axis
 	 */
 	public Data data;
 
 	/**
-	 * The general properties of the axis
-	 */
-	public General general;
-
-	/**
-	 * The line properties of the axis
+	 * The properties of the axis line
 	 */
 	public AxisLine axisLine;
 
 	/**
-	 * The label properties of the axis
+	 * The properties of the major ticks
+	 */
+	public MajorTicks majorTicks;
+
+	/**
+	 * The properties of the minor ticks
+	 */
+	public MinorTicks minorTicks;
+
+	/**
+	 * The properties of the tick labels
+	 */
+	public TickLabels tickLabels;
+
+	/**
+	 * The properties of the axis label
 	 */
 	public AxisLabel axisLabel;
+
+	private Selection axisSelection;
 
 	//#end region
 
@@ -88,17 +98,25 @@ public class Axis extends GraphicsPropertiesPage {
 
 	@Override
 	protected void fillVeuszPageModels() {
-		data = new Data();
-		veuszPageModels.add(data);
 
-		general = new General();
-		veuszPageModels.add(general);
+		data = new Data();
+		pageModels.add(data);
 
 		axisLine = new AxisLine();
-		veuszPageModels.add(axisLine);
+		pageModels.add(axisLine);
+
+		majorTicks = new MajorTicks();
+		pageModels.add(majorTicks);
+
+		minorTicks = new MinorTicks();
+		pageModels.add(minorTicks);
+
+		tickLabels = new TickLabels();
+		pageModels.add(tickLabels);
 
 		axisLabel = new AxisLabel();
-		veuszPageModels.add(axisLabel);
+		pageModels.add(axisLabel);
+
 	}
 
 	/**
@@ -108,16 +126,7 @@ public class Axis extends GraphicsPropertiesPage {
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
 
 		//no actions available right now
-
 		return actions;
-	}
-
-	/**
-	 * @param d3
-	 */
-	public void initializeScalesWithD3(D3 d3, Selection rectSelection) {
-		Objects.requireNonNull(d3);
-		data.initializeScaleWithD3(d3, rectSelection);
 	}
 
 	/**
@@ -133,15 +142,23 @@ public class Axis extends GraphicsPropertiesPage {
 				.attr("id", "" + name)
 				.attr("class", "axis");
 
-		for (GraphicsPageModel pageModel : veuszPageModels) {
-			axisSelection = pageModel.plotWithD3(d3, axisSelection, rectSelection, this);
-		}
+		plotPageModels(d3, rectSelection);
 
 		//handle mouse click
 		axisSelection.onMouseClick(this);
 
 		return graphSelection;
 
+	}
+
+	/**
+	 * @param d3
+	 * @param rectSelection
+	 */
+	public void plotPageModels(D3 d3, Selection rectSelection) {
+		for (GraphicsPageModel pageModel : pageModels) {
+			axisSelection = pageModel.plotWithD3(d3, axisSelection, rectSelection, this);
+		}
 	}
 
 	@Override

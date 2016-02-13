@@ -75,7 +75,7 @@ public class Sample extends AdjustableAtom {
 		String relativeHelpContextId = "pickingSample";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 
-		Section pickingSection = dataPage.createSection("sample", "sample", absoluteHelpContextId);
+		Section pickingSection = dataPage.createSection("sample", absoluteHelpContextId);
 
 		//create / update variable fields
 		createOrUpdateVariableFields(pickingSection);

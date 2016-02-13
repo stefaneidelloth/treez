@@ -32,8 +32,13 @@ public interface Attribute<T> {
 	String toString();
 
 	/**
-	 * Adds an modify listener
+	 * Adds a modify listener
 	 */
 	void addModificationConsumer(String key, Consumer<T> listener);
+
+	/**
+	 * Adds a modify listener and runs it once with null as argument
+	 */
+	void addModificationConsumerAndRun(String key, Consumer<T> listener);
 
 }

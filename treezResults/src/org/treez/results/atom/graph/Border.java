@@ -51,13 +51,13 @@ public class Border implements GraphicsPageModel {
 	@Override
 	public void createPage(AttributeRoot root, AbstractAtom parent) {
 
-		Page borderPage = root.createPage("border");
+		Page borderPage = root.createPage("border", "Border");
 
 		Section border = borderPage.createSection("border");
 
 		border.createColorChooser(color, "color", "black");
 
-		border.createSize(width, "width");
+		border.createTextField(width, "width", "2");
 
 		border.createLineStyle(style, "style", "solid");
 
@@ -69,7 +69,11 @@ public class Border implements GraphicsPageModel {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		//parent.bindStringAttribute(selection, "x", leftMargin);
+		GraphicsAtom.bindStringAttribute(rectSelection, "stroke", color);
+		GraphicsAtom.bindStringAttribute(rectSelection, "stroke-width", width);
+		GraphicsAtom.bindLineStyle(rectSelection, style);
+		GraphicsAtom.bindLineTransparency(rectSelection, transparency);
+		GraphicsAtom.bindLineTransparencyToBooleanAttribute(rectSelection, hide, transparency);
 
 		return graphSelection;
 	}
@@ -80,7 +84,7 @@ public class Border implements GraphicsPageModel {
 
 		veuszString = veuszString + "Set('Border/color', u'" + color + "')\n";
 		veuszString = veuszString + "Set('Border/width', u'" + width + "')\n";
-		veuszString = veuszString + "Set('Border/style', u'" + style + "')\n";
+		//veuszString = veuszString + "Set('Border/style', u'" + style + "')\n";
 		veuszString = veuszString + "Set('Border/transparency', " + transparency + ")\n";
 		if (hide.get()) {
 			veuszString = veuszString + "Set('Border/hide', True)";

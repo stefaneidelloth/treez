@@ -82,15 +82,18 @@ public class AbstractAssumption extends AdjustableAtom {
 		String relativeHelpContextId = "normal";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 
-		data = dataPage.createSection("normal", "normal", absoluteHelpContextId);
+		data = dataPage.createSection("normal", absoluteHelpContextId);
 
 		//source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
-		data.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", "Double variable", defaultValue,
-				DoubleVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled);
+		data
+				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
+						DoubleVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.setLabel("Double variable");
+
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
 		if (assignRelativeRoot) {
 			assignRealtiveRootToSourceVariablePath();

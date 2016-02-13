@@ -11,6 +11,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.FilePath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
@@ -65,7 +66,7 @@ public class Probability extends AbstractParameterVariation {
 		String relativeHelpContextId = "probability";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 
-		Section pickingSection = dataPage.createSection("probability", "probability", absoluteHelpContextId);
+		Section pickingSection = dataPage.createSection("probability", absoluteHelpContextId);
 		pickingSection.createSectionAction("action", "Run probability", () -> execute(treeViewRefreshable));
 
 		//choose selection type and entry atom
@@ -74,16 +75,21 @@ public class Probability extends AbstractParameterVariation {
 
 		//model to run
 		String modelToRunDefaultValue = "";
-		pickingSection.createModelPath(modelToRunModelPath, "modelToRunModelPath", "Model to run",
-				modelToRunDefaultValue, Model.class, selectionType, modelEntryPoint, false);
+		pickingSection
+				.createModelPath(modelToRunModelPath, "modelToRunModelPath", modelToRunDefaultValue, Model.class,
+						selectionType, modelEntryPoint, false)
+				.setLabel("Model to run");
 
 		//variable source model
 		String sourceModelDefaultValue = "";
-		pickingSection.createModelPath(sourceModelPath, "sourceModelPath", "Variable source model (provides variables)",
-				sourceModelDefaultValue, Model.class, selectionType, modelEntryPoint, false);
+		pickingSection
+				.createModelPath(sourceModelPath, "sourceModelPath", sourceModelDefaultValue, Model.class,
+						selectionType, modelEntryPoint, false)
+				.setLabel("Variable source model (provides variables)");
 
 		//export study info check box
-		pickingSection.createCheckBox(exportStudyInfo, "exportStudyInfo", "Export study information", true);
+		CheckBox exportStudy = pickingSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);
+		exportStudy.setLabel("Export study information");
 
 		//export study info path
 		FilePath filePath = pickingSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",

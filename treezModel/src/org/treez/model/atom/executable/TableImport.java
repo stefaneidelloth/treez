@@ -12,9 +12,11 @@ import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.ComboBox;
+import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
@@ -151,12 +153,13 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		String absoluteHelpContextId = Activator.getAbsoluteHelpContextIdStatic(relativeHelpContextId);
 
 		//source type section -----------------------------------------
-		Section sourceTypeSection = dataPage.createSection("sourceTypeSection", "Source type", absoluteHelpContextId);
+		Section sourceTypeSection = dataPage.createSection("sourceTypeSection", absoluteHelpContextId);
+		sourceTypeSection.setTitle("Source type");
 		sourceTypeSection.createSectionAction("action", "Import data", () -> execute(treeViewRefreshable));
 
 		//source type
-		ComboBox sourceTypeCheck = sourceTypeSection.createComboBox(sourceType, "sourceType", "Source type",
-				TableSourceType.CSV);
+		ComboBox sourceTypeCheck = sourceTypeSection.createComboBox(sourceType, "sourceType", TableSourceType.CSV);
+		sourceTypeCheck.setLabel("Source type");
 		sourceTypeCheck.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
 
 		//if true, the target table is linked to the original source
@@ -164,52 +167,59 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		//remaining data can be loaded lazily.
 		//con: if the source is replaced/changed/deleted, e.g. in a sweep, the
 		//link might not give meaningful data.
-		sourceTypeSection.createCheckBox(linkSource, "linkSource", "Link source", false);
-
-		sourceTypeSection.createTextField(rowLimit, "rowLimit", "Row limit", "1000");
+		CheckBox linkSourceCheck = sourceTypeSection.createCheckBox(linkSource, "linkSource", false);
+		linkSourceCheck.setLabel("Link source");
+		TextField rowLimitField = sourceTypeSection.createTextField(rowLimit, "rowLimit", "1000");
+		rowLimitField.setLabel("Row limit");
 
 		//source data section -------------------------------------------
-		Section sourceDataSection = dataPage.createSection("sourceDataSection", "Source data", absoluteHelpContextId);
+		Section sourceDataSection = dataPage.createSection("sourceDataSection", absoluteHelpContextId);
+		sourceDataSection.setTitle("Source data");
 
 		//inherit source file path : take (modified) parent output path
 		CheckBox inheritSourcePath = sourceDataSection.createCheckBox(inheritSourceFilePath, "inheritSourceFilePath",
-				"Inherit source file", true);
+				true);
+		inheritSourcePath.setLabel("Inherit source file");
 		inheritSourcePath.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
 
 		//path to data file (enabled if source is file based)
 		sourceDataSection.createFilePath(sourceFilePath, "importFilePath", "Source file", "C:\\data.txt");
 
-		sourceDataSection.createTextField(columnSeparator, "columnSeparator", "Column separator", ";");
-
+		TextField columnSeparatorField = sourceDataSection.createTextField(columnSeparator, "columnSeparator", ";");
+		columnSeparatorField.setLabel("Column separator");
 		//host
-		sourceDataSection.createTextField(host, "host", "Host name/IP address", "localhost");
+		TextField hostField = sourceDataSection.createTextField(host, "host", "localhost");
+		hostField.setLabel("Host name/IP address");
 
 		//port
-		sourceDataSection.createTextField(port, "port", "Port", "3306");
+		sourceDataSection.createTextField(port, "port", "3306");
 
 		//user
-		sourceDataSection.createTextField(user, "user", "User", "root");
+		sourceDataSection.createTextField(user, "user", "root");
 
 		//password
-		sourceDataSection.createTextField(password, "password", "Password", "");
+		sourceDataSection.createTextField(password, "password", "");
 
 		//database name (e.g. for SqLite or MySql sources)
-		sourceDataSection.createTextField(schema, "schema", "Schema name", "my_schema");
+		TextField schemaField = sourceDataSection.createTextField(schema, "schema", "my_schema");
+		schemaField.setLabel("Schema name");
 
 		//table name (e.g. name of Excel sheet or SqLite table )
-		sourceDataSection.createTextField(table, "table", "Table name", "Sheet1");
+		TextField tableField = sourceDataSection.createTextField(table, "table", "Sheet1");
+		tableField.setLabel("Table name");
 
 		//target section -----------------------------------------
-		Section targetSection = dataPage.createSection("targetSection", "Target", absoluteHelpContextId);
+		Section targetSection = dataPage.createSection("target", absoluteHelpContextId);
 
 		//target result table (must already exist for manual execution of the TableImport)
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		targetSection.createModelPath(resultTableModelPath, "resultTableModelPath", "Result table", null, Table.class,
-				selectionType, this, false);
+		ModelPath resultTable = targetSection.createModelPath(resultTableModelPath, "resultTableModelPath", null,
+				Table.class, selectionType, this, false);
+		resultTable.setLabel("Result table");
 
 		//append check box (if true, existing data is not deleted and new data is appended)
-		targetSection.createCheckBox(appendData, "appendData", "Append data", false);
-
+		CheckBox appendDataCheck = targetSection.createCheckBox(appendData, "appendData", false);
+		appendDataCheck.setLabel("Append data");
 		setModel(root);
 	}
 

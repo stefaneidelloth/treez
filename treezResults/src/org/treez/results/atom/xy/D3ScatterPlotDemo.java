@@ -7,6 +7,7 @@ import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
 import org.treez.javafxd3.d3.scales.LinearScale;
+import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.Area;
 import org.treez.javafxd3.d3.svg.Symbol;
 import org.treez.javafxd3.d3.svg.SymbolType;
@@ -40,6 +41,7 @@ public class D3ScatterPlotDemo extends Application {
 	 *
 	 * @param args
 	 */
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -63,7 +65,7 @@ public class D3ScatterPlotDemo extends Application {
 		browser = new JavaFxD3Browser(postLoadingHook, true);
 
 		//create the scene
-		scene = new Scene(browser, 750, 500, Color.web("#666970"));
+		scene = new Scene(browser, 800, 800, Color.web("#666970"));
 		stage.setScene(scene);
 		stage.show();
 
@@ -73,7 +75,7 @@ public class D3ScatterPlotDemo extends Application {
 
 		D3 d3 = browser.getD3();
 
-		Double[][] dataArray = { { 0.0, 0.0 }, { 0.5, 0.2 }, { 0.8, 0.8 } };
+		Double[][] dataArray = { { 1.0, 0.0 }, { 100.0, 0.2 }, { 1000.0, 0.8 } };
 
 		String pageWidth = "10cm";
 		String pageHeight = "10cm";
@@ -84,9 +86,14 @@ public class D3ScatterPlotDemo extends Application {
 		String graphWidth = "8cm";
 		String graphHeight = "8cm";
 
+		boolean logXScale = true;
+
+		double xmin = 1;
+		double xmax = 700;
+
 		String graphBackground = "lightblue";
 
-		final double tickPadding = 8.0;
+		final double tickPadding = 0.0;
 
 		final int symbolSquareSize = 64;
 		String symbolStyle = "fill:red; stroke:blue; stroke-width:2";
@@ -128,16 +135,31 @@ public class D3ScatterPlotDemo extends Application {
 				.attr("class", "axis") //
 				.attr("transform", "translate(0," + Length.toPx(graphHeight) + ")");
 
-		LinearScale xScale = d3 //
-				.scale()//
-				.linear()//
-				.range(0.0, Length.toPx(graphWidth));
+		QuantitativeScale<?> xScale;
+
+		if (logXScale) {
+			xScale = d3 //
+					.scale()//
+					.log() //
+					.clamp(true);
+
+		} else {
+			xScale = d3 //
+					.scale()//
+					.linear() //
+					.clamp(true);
+		}
+
+		xScale
+				.range(0, Length.toPx(graphWidth)) //
+				.domain(xmin, xmax);
 
 		org.treez.javafxd3.d3.svg.Axis xAxis = d3 //
 				.svg() //
 				.axis() //
 				.scale(xScale)
 				.tickPadding(tickPadding)
+				.outerTickSize(0.0)
 				.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.BOTTOM);
 
 		xAxis.apply(xAxisSelection);
@@ -148,6 +170,34 @@ public class D3ScatterPlotDemo extends Application {
 				.style("stroke", "#000")
 				.style("stroke-width", "3px") //
 				.style("shape-rendering", "geometricPrecision");
+
+		if (logXScale) {
+			//major ticks
+			xAxisSelection //
+					.selectAll(".tick:nth-child(1)") //
+					.classed("major", true);
+
+			xAxisSelection //
+					.selectAll(".tick:nth-child(9n+1)") //
+					.classed("major", true);
+
+			Selection majorTickLines = xAxisSelection //
+					.selectAll(".major") //
+					.selectAll("line");
+
+			Selection minorTickLines = xAxisSelection //
+					.selectAll(".tick:not(.major)") //
+					.selectAll("line");
+
+			majorTickLines //
+					.style("stroke", "blue") //
+					.attr("y2", "+" + 20);
+
+			minorTickLines //
+					.style("stroke", "red")
+					.attr("y2", "+" + 10);
+
+		}
 
 		//y axis
 		Selection yAxisSelection = graphSelection //
@@ -187,8 +237,8 @@ public class D3ScatterPlotDemo extends Application {
 				.svg()//
 				.line()
 				.x(new AxisScaleFirstDatumFunction(xScale))
-				.y(new AxisScaleSecondDatumFunction(yScale))
-				.interpolate(org.treez.javafxd3.d3.svg.InterpolationMode.STEP);
+				.y(new AxisScaleSecondDatumFunction(yScale));
+		//.interpolate(org.treez.javafxd3.d3.svg.InterpolationMode.STEP);
 
 		@SuppressWarnings("unused")
 		Selection line = xySelection //

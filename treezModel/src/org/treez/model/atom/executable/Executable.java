@@ -200,7 +200,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			Page dataPage,
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
-		Section executable = dataPage.createSection("executable", "executable", executableHelpContextId);
+		Section executable = dataPage.createSection("executable", executableHelpContextId);
 		Image resetImage = Activator.getImage("resetStudyIndex.png");
 		executable.createSectionAction("resetStudyIndex", "Reset the study index to 1", () -> resetStudyIndex(),
 				resetImage);
@@ -215,9 +215,10 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			Page dataPage,
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
-		Section input = dataPage.createSection("input", "input", executableHelpContextId);
+		Section input = dataPage.createSection("input", executableHelpContextId);
 
-		TextField argumentTextField = input.createTextField(inputArguments, "inputArguments", "Input arguments", "");
+		TextField argumentTextField = input.createTextField(inputArguments, "inputArguments", "");
+		argumentTextField.setLabel("Input arguments");
 		argumentTextField.addModifyListener("updateStatus", updateStatusListener);
 		argumentTextField.setHelpId("org.eclipse.ui.ide.executable");
 
@@ -230,38 +231,42 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			Page dataPage,
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
-		Section output = dataPage.createSection("output", "output", executableHelpContextId);
+		Section output = dataPage.createSection("output", executableHelpContextId);
 
-		TextField outputArgs = output.createTextField(outputArguments, "outputArguments", "Output arguments", "");
+		TextField outputArgs = output.createTextField(outputArguments, "outputArguments", "");
+		outputArgs.setLabel("Output arguments");
 		outputArgs.addModifyListener("updateStatus", updateStatusListener);
 
 		FileOrDirectoryPath outputPathChooser = output.createFileOrDirectoryPath(outputPath, "outputPath",
 				"Output file or folder", "", false);
 		outputPathChooser.addModifyListener("updateStatus", updateStatusListener);
 
-		output.createCheckBox(copyInputFile, "copyInput", "Copy input file", true);
+		CheckBox copyInputField = output.createCheckBox(copyInputFile, "copyInput", true);
+		copyInputField.setLabel("Copy input file");
 	}
 
 	private void createOutputModificationSection(
 			Page dataPage,
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
-		Section outputModification = dataPage.createSection("outputModification", "output modification",
-				executableHelpContextId);
+		Section outputModification = dataPage.createSection("outputModification", executableHelpContextId);
+		outputModification.setTitle("Output modification");
 		outputModification.setExpanded(false);
 
 		outputModification.createLabel("includeDate", "Include date in:");
 
 		CheckBox dateInFolderCheck = outputModification.createCheckBox(includeDateInFolder, "includeDateInFolder",
-				"folder name", false);
+				false);
+		dateInFolderCheck.setLabel("Folder name");
 		dateInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
 		CheckBox dateInSubFolderCheck = outputModification.createCheckBox(includeDateInSubFolder,
-				"includeDateInSubFolder", "extra folder", false);
+				"includeDateInSubFolder", false);
+		dateInFolderCheck.setLabel("Extra folder");
 		dateInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
-		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInFile, "includeDate", "file name",
-				false);
+		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInFile, "includeDate", false);
+		dateInFileCheck.setLabel("File name");
 		dateInFileCheck.addModifyListener("updateStatus", updateStatusListener);
 
 		@SuppressWarnings("unused")
@@ -269,15 +274,18 @@ public class Executable extends AbstractModel implements FilePathProvider {
 				"Include study index in:");
 
 		CheckBox studyIndexInFolderCheck = outputModification.createCheckBox(includeStudyIndexInFolder,
-				"includeStudyIndexInFolder", "folder name", false);
+				"includeStudyIndexInFolder", false);
+		studyIndexInFolderCheck.setLabel("Folder name");
 		studyIndexInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
 		CheckBox studyIndexInSubFolderCheck = outputModification.createCheckBox(includeStudyIndexInSubFolder,
-				"includeStudyIndexInSubFolder", "extra folder", false);
+				"includeStudyIndexInSubFolder", false);
+		studyIndexInSubFolderCheck.setLabel("Extra folder");
 		studyIndexInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
 		CheckBox studyIndexInFileCheck = outputModification.createCheckBox(includeStudyIndexInFile,
-				"includeStudyIndexInFile", "file name", false);
+				"includeStudyIndexInFile", false);
+		studyIndexInFileCheck.setLabel("File name");
 		studyIndexInFileCheck.addModifyListener("updateStatus", updateStatusListener);
 	}
 
@@ -285,10 +293,11 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			Page dataPage,
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
-		Section logging = dataPage.createSection("logging", "logging", executableHelpContextId);
+		Section logging = dataPage.createSection("logging", executableHelpContextId);
 		logging.setExpanded(false);
 
-		TextField logArgumentsText = logging.createTextField(logArguments, "logArguments", "Log arguments", "");
+		TextField logArgumentsText = logging.createTextField(logArguments, "logArguments", "");
+		logArgumentsText.setLabel("Log arguments");
 		logArgumentsText.addModifyListener("updateStatus", updateStatusListener);
 
 		FilePath logFilePathChooser = logging.createFilePath(logFilePath, "logFilePath", "Log file", "", false);
@@ -296,7 +305,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	}
 
 	private void createStatusSection(Page dataPage, String executableHelpContextId) {
-		Section status = dataPage.createSection("status", "status", executableHelpContextId);
+		Section status = dataPage.createSection("status", executableHelpContextId);
 		status.setExpanded(false);
 
 		//resulting command

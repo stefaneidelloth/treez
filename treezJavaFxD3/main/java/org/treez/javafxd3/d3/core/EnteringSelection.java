@@ -252,6 +252,9 @@ public class EnteringSelection extends JavaScriptObject {
 	 */
 	public Element parentNode(int i) {
 		JSObject result = call("[i].parentNode");
+		if(result==null){
+			return null;
+		}
 		return new Element(webEngine, result);
 	}
 
