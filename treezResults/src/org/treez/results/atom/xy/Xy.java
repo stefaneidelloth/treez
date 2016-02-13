@@ -11,7 +11,7 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 
 /**
  * Represents an xy scatter plot
@@ -78,7 +78,7 @@ public class Xy extends GraphicsPropertiesPage {
 	// #region METHODS
 
 	@Override
-	protected void fillVeuszPageModels() {
+	protected void fillPageModelList() {
 		data = new Data();
 		pageModels.add(data);
 
@@ -89,26 +89,13 @@ public class Xy extends GraphicsPropertiesPage {
 		pageModels.add(line);
 
 		//errorBar = new ErrorBar();
-		//veuszPageModels.add(errorBar);
+		//pageModels.add(errorBar);
 
 		area = new Area();
 		pageModels.add(area);
 
 		//label = new Label();
-		//veuszPageModels.add(label);
-	}
-
-	@Override
-	protected String createVeuszStartText() {
-		String veuszString = "";
-		veuszString = veuszString + "Add('xy', name='" + name + "', autoadd=False)\n";
-		veuszString = veuszString + "To('" + name + "')\n";
-		return veuszString;
-	}
-
-	@Override
-	protected String createVeuszEndText() {
-		return "";
+		//pageModels.add(label);
 	}
 
 	/**

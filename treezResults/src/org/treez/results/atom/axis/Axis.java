@@ -10,11 +10,11 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
-import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
- * Represents a veusz axis
+ * Represents a plot axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Axis extends GraphicsPropertiesPage {
@@ -97,7 +97,7 @@ public class Axis extends GraphicsPropertiesPage {
 	}
 
 	@Override
-	protected void fillVeuszPageModels() {
+	protected void fillPageModelList() {
 
 		data = new Data();
 		pageModels.add(data);
@@ -156,22 +156,9 @@ public class Axis extends GraphicsPropertiesPage {
 	 * @param rectSelection
 	 */
 	public void plotPageModels(D3 d3, Selection rectSelection) {
-		for (GraphicsPageModel pageModel : pageModels) {
+		for (GraphicsPropertiesPageModel pageModel : pageModels) {
 			axisSelection = pageModel.plotWithD3(d3, axisSelection, rectSelection, this);
 		}
-	}
-
-	@Override
-	protected String createVeuszStartText() {
-		String veuszString = "";
-		veuszString = veuszString + "Add('axis', name='" + name + "', autoadd=False)\n";
-		veuszString = veuszString + "To('" + name + "')\n";
-		return veuszString;
-	}
-
-	@Override
-	protected String createVeuszEndText() {
-		return "";
 	}
 
 	//#end region

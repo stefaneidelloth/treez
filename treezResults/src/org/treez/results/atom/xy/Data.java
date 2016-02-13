@@ -15,13 +15,13 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.results.atom.axis.Axis;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * XY data settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Data implements GraphicsPageModel {
+public class Data implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -187,25 +187,6 @@ public class Data implements GraphicsPageModel {
 		return xyDataString;
 	}
 
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-
-		String veuszString = "";
-
-		//add x data
-		List<Object> xDataValues = getXData(parent);
-		veuszString = veuszString + getVeuszTextNumericalData(xData, xDataValues);
-
-		//add y data
-		List<Object> yDataValues = getYData(parent);
-		veuszString = veuszString + getVeuszTextNumericalData(yData, yDataValues);
-
-		veuszString = veuszString + "Set('xData', u'" + xData + "')\n";
-		veuszString = veuszString + "Set('yData', u'" + yData + "')\n";
-
-		return veuszString;
-	}
-
 	private List<Object> getXData(AbstractAtom parent) {
 		org.treez.data.column.Column xDataColumn = (org.treez.data.column.Column) parent
 				.getChildFromRoot(xData.toString());
@@ -218,23 +199,6 @@ public class Data implements GraphicsPageModel {
 				.getChildFromRoot(yData.toString());
 		List<Object> yDataValues = yDataColumn.getValues();
 		return yDataValues;
-	}
-
-	/**
-	 * Creates the veusz text for adding the numerical data of a single column
-	 *
-	 * @return
-	 */
-	private static String getVeuszTextNumericalData(Attribute<String> dataAtom, List<Object> dataValues) {
-		String veuszString = "\n";
-
-		veuszString = veuszString + "ImportString(u'" + dataAtom + "(numeric)','''\n";
-
-		for (Object value : dataValues) {
-			veuszString = veuszString + value.toString() + "\n";
-		}
-		veuszString = veuszString + "''')\n";
-		return veuszString;
 	}
 
 	//#end region

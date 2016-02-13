@@ -11,13 +11,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * XY error bar settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class ErrorBar implements GraphicsPageModel {
+public class ErrorBar implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -97,14 +97,6 @@ public class ErrorBar implements GraphicsPageModel {
 		//parent.bindStringAttribute(selection, "x", leftMargin);
 
 		return graphSelection;
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-
-		String veuszString = "";
-
-		return veuszString;
 	}
 
 	//#end region

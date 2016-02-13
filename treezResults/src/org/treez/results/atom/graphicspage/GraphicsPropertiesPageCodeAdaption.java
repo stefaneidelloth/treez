@@ -1,4 +1,4 @@
-package org.treez.results.atom.veuszpage;
+package org.treez.results.atom.graphicspage;
 
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
@@ -31,9 +31,6 @@ public class GraphicsPropertiesPageCodeAdaption extends AdjustableAtomCodeAdapti
 	 */
 	@Override
 	protected CodeContainer buildCodeContainerForAttributes() {
-
-		// Initialize the model if required
-		//VeuszPropertiesPage veuszPropertiesPage = (VeuszPropertiesPage) atom;
 
 		CodeContainer codeContainer = new CodeContainer(ScriptType.JAVA);
 		return codeContainer;

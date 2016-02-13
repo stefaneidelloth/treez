@@ -9,13 +9,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * The border settings for a graph
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Border implements GraphicsPageModel {
+public class Border implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -76,22 +76,6 @@ public class Border implements GraphicsPageModel {
 		GraphicsAtom.bindLineTransparencyToBooleanAttribute(rectSelection, hide, transparency);
 
 		return graphSelection;
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-		String veuszString = "\n";
-
-		veuszString = veuszString + "Set('Border/color', u'" + color + "')\n";
-		veuszString = veuszString + "Set('Border/width', u'" + width + "')\n";
-		//veuszString = veuszString + "Set('Border/style', u'" + style + "')\n";
-		veuszString = veuszString + "Set('Border/transparency', " + transparency + ")\n";
-		if (hide.get()) {
-			veuszString = veuszString + "Set('Border/hide', True)";
-		}
-		veuszString = veuszString + "\n";
-
-		return veuszString;
 	}
 
 	//#end region

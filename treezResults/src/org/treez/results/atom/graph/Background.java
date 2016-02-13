@@ -9,13 +9,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * The background settings for a graph
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Background implements GraphicsPageModel {
+public class Background implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -88,20 +88,6 @@ public class Background implements GraphicsPageModel {
 		});
 
 		return graphSelection;
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-		String veuszString = "\n";
-
-		veuszString = veuszString + "Set('Background/color', u'" + color + "')\n";
-		//veuszString = veuszString + "Set('Background/style', u'" + fillStyle + "')\n";
-		if (hide.get()) {
-			veuszString = veuszString + "Set('Background/hide', True)";
-		}
-		veuszString = veuszString + "Set('Background/transparency', " + transparency + ")\n";
-
-		return veuszString;
 	}
 
 	//#end region

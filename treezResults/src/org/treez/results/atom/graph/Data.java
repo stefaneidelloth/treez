@@ -10,13 +10,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * The main settings for a graph
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Main implements GraphicsPageModel {
+public class Data implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -52,9 +52,9 @@ public class Main implements GraphicsPageModel {
 	@Override
 	public void createPage(AttributeRoot root, AbstractAtom parent) {
 
-		Page mainPage = root.createPage("main", "   Main   ");
+		Page mainPage = root.createPage("data", "   Data   ");
 
-		Section main = mainPage.createSection("main", "Main");
+		Section main = mainPage.createSection("data");
 
 		TextField leftMarginField = main.createTextField(leftMargin, "leftMargin", "2.5 cm");
 		leftMarginField.setLabel("Left margin");
@@ -78,23 +78,6 @@ public class Main implements GraphicsPageModel {
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideGraph", graphSelection, hide);
 
 		return graphSelection;
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-
-		String veuszString = "";
-
-		if (hide.get()) {
-			veuszString = veuszString + "Set('hide', True)";
-		}
-		veuszString = veuszString + "Set('leftMargin', u'" + leftMargin + "')\n";
-		veuszString = veuszString + "Set('topMargin', u'" + topMargin + "')\n";
-		//veuszString = veuszString + "Set('rightMargin', u'" + width + "')\n";
-		//veuszString = veuszString + "Set('bottomMargin', u'" + height + "')\n";
-		//veuszString = veuszString + "Set('aspect', u'" + aspectRatio + "')\n";
-
-		return veuszString;
 	}
 
 	//#end region

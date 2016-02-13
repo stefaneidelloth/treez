@@ -49,7 +49,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		Display display = parent.getDisplay();
 		toolkit = new FormToolkit(display);
 
-		toolkit.createLabel(parent, "Preference Page for TreezVeusz");
+		toolkit.createLabel(parent, "Preference Page for Treez");
 
 	}
 

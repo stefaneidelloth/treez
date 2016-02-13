@@ -4,7 +4,10 @@ import org.treez.core.scripting.ModelProvider;
 import org.treez.results.atom.results.Results;
 import org.treez.views.tree.rootAtom.Root;
 
-public class VeuszPlottingDemo extends ModelProvider {
+/**
+ * Demo for a single plotting page
+ */
+public class PlottingPageDemo extends ModelProvider {
 
 	@Override
 	public Root createModel() {

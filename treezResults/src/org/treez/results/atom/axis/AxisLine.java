@@ -9,13 +9,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * Represents the line of an axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class AxisLine implements GraphicsPageModel {
+public class AxisLine implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -83,12 +83,6 @@ public class AxisLine implements GraphicsPageModel {
 		GraphicsAtom.bindLineTransparencyToBooleanAttribute(axisDomainLine, hide, transparency);
 
 		return axisSelection;
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-		String veuszString = "\n";
-		return veuszString;
 	}
 
 	//#end region

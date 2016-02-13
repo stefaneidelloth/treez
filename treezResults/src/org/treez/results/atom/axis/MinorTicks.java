@@ -12,13 +12,13 @@ import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.Scale;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * Represents the minor tick lines
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class MinorTicks implements GraphicsPageModel {
+public class MinorTicks implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -219,12 +219,6 @@ public class MinorTicks implements GraphicsPageModel {
 			//do nothing
 		}
 		return numberOfTicks;
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-		String veuszString = "\n";
-		return veuszString;
 	}
 
 	//#end region

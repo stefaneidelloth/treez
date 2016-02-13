@@ -78,13 +78,13 @@ public class Results extends AdjustableAtom {
 				treeViewer);
 		actions.add(addData);
 
-		Action addVeuszPage = new AddChildAtomTreeViewerAction(
+		Action addPage = new AddChildAtomTreeViewerAction(
 				Page.class,
 				"page",
 				Activator.getImage("page.png"),
 				this,
 				treeViewer);
-		actions.add(addVeuszPage);
+		actions.add(addPage);
 
 		return actions;
 	}

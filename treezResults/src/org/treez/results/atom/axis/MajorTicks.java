@@ -9,13 +9,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * Represents the major tick lines
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class MajorTicks implements GraphicsPageModel {
+public class MajorTicks implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -158,12 +158,6 @@ public class MajorTicks implements GraphicsPageModel {
 					.selectAll(".tick") //
 					.classed("major", true);
 		}
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-		String veuszString = "\n";
-		return veuszString;
 	}
 
 	//#end region

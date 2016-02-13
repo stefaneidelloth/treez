@@ -12,13 +12,13 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * XY line settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Line implements GraphicsPageModel {
+public class Line implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -166,12 +166,6 @@ public class Line implements GraphicsPageModel {
 		GraphicsAtom.bindStringAttribute(lines, "stroke-width", width);
 		GraphicsAtom.bindLineTransparency(lines, transparency);
 		GraphicsAtom.bindLineStyle(lines, style);
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-		String veuszString = "";
-		return veuszString;
 	}
 
 	//#end region

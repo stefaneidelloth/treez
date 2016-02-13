@@ -17,13 +17,13 @@ import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.scales.Scales;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
- * Represents Veusz data
+ * Represents the main settings of an axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Data implements GraphicsPageModel {
+public class Data implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -365,38 +365,6 @@ public class Data implements GraphicsPageModel {
 
 		axis.apply(axisSelection);
 		return axisSelection;
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-
-		String veuszString = "\n";
-		veuszString = veuszString + "Set('label', u'" + label + "')\n";
-
-		if (min.get().equals("Auto")) {
-			veuszString = veuszString + "Set('min', u'" + min + "')\n";
-		} else {
-			veuszString = veuszString + "Set('min', " + min + ")\n";
-		}
-
-		if (max.get().equals("Auto")) {
-			veuszString = veuszString + "Set('max', u'" + max + "')\n";
-		} else {
-			veuszString = veuszString + "Set('max', " + max + ")\n";
-		}
-
-		if (log.get()) {
-			veuszString = veuszString + "Set('log', True)\n";
-		}
-		//veuszString = veuszString + "Set('mode', u'" + mode + "')\n";
-		//veuszString = veuszString + "Set('datascale', " + datascale + ")\n";
-		veuszString = veuszString + "Set('direction', u'" + direction + "')\n";
-		//veuszString = veuszString + "Set('lowerPosition', " + lowerPosition + ")\n";
-		//veuszString = veuszString + "Set('upperPosition', " + upperPosition + ")\n";
-		//veuszString = veuszString + "Set('otherPosition', " + otherPosition + ")\n";
-		//veuszString = veuszString + "Set('match', u'" + match + "')\n";
-
-		return veuszString;
 	}
 
 	//#end region

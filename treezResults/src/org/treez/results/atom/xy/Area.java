@@ -12,13 +12,13 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * XY area settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Area implements GraphicsPageModel {
+public class Area implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -214,12 +214,6 @@ public class Area implements GraphicsPageModel {
 		GraphicsAtom.bindStringAttribute(belowArea, "fill", belowColor);
 		GraphicsAtom.bindTransparency(belowArea, aboveTransparency);
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideBelowArea", belowArea, belowHide);
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-		String veuszString = "";
-		return veuszString;
 	}
 
 	//#end region

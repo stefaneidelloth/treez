@@ -15,7 +15,7 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.wrapper.Element;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 import javafx.geometry.BoundingBox;
 
@@ -23,7 +23,7 @@ import javafx.geometry.BoundingBox;
  * Represents the label for an axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class AxisLabel implements GraphicsPageModel {
+public class AxisLabel implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -249,11 +249,6 @@ public class AxisLabel implements GraphicsPageModel {
 		String stringValue = attribute.get();
 		Double doubleValue = Length.toPx(stringValue);
 		return doubleValue;
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-		return "";
 	}
 
 	//#end region

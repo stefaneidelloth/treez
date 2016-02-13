@@ -14,13 +14,14 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
-import org.treez.results.atom.veuszpage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 import org.treez.results.atom.xy.Xy;
 
 /**
- * Represents a veusz graph
+ * Represents a graph on a page. A graph may contain several xy plots
  */
+@SuppressWarnings("checkstyle:visibilitymodifier")
 public class Graph extends GraphicsPropertiesPage {
 
 	/**
@@ -34,7 +35,7 @@ public class Graph extends GraphicsPropertiesPage {
 	/**
 	 * Main properties, e.g. width & height
 	 */
-	public Main main;
+	public Data main;
 
 	/**
 	 * The properties of the background
@@ -69,8 +70,8 @@ public class Graph extends GraphicsPropertiesPage {
 	//#region METHODS
 
 	@Override
-	protected void fillVeuszPageModels() {
-		main = new Main();
+	protected void fillPageModelList() {
+		main = new Data();
 		pageModels.add(main);
 
 		background = new Background();
@@ -159,67 +160,12 @@ public class Graph extends GraphicsPropertiesPage {
 		rectSelection = graphSelection //
 				.append("rect");
 
-		for (GraphicsPageModel pageModel : pageModels) {
+		for (GraphicsPropertiesPageModel pageModel : pageModels) {
 			graphSelection = pageModel.plotWithD3(d3, graphSelection, rectSelection, this);
 		}
 
 		//handle mouse click
 		rectSelection.onMouseClick(this);
-	}
-
-	//#end region
-
-	//#region VEUSZ TEXT
-
-	/**
-	 * Creates start of veusz text
-	 *
-	 * @return
-	 */
-	@Override
-	public String createVeuszStartText() {
-
-		String veuszString = "\n";
-		veuszString = veuszString + "Add('graph', name='" + name + "', autoadd=False)\n";
-		veuszString = veuszString + "To('" + name + "')\n";
-
-		return veuszString;
-	}
-
-	/**
-	 * Creates end of veusz text
-	 *
-	 * @return
-	 */
-	@Override
-	public String createVeuszEndText() {
-
-		String veuszString = "";
-
-		//add veusz text of children
-		for (Adaptable child : children) {
-
-			Boolean isAxis = child.getClass().getSimpleName().equals("Axis");
-			if (isAxis) {
-				String axisText = ((Axis) child).getVeuszText();
-				veuszString = veuszString + axisText;
-				Objects.requireNonNull(axisText);
-				veuszString = veuszString + "To('..')\n";
-				veuszString = veuszString + "\n";
-			}
-
-			Boolean isXY = child.getClass().getSimpleName().equals("XY");
-			if (isXY) {
-				String xyText = ((Xy) child).getVeuszText();
-				Objects.requireNonNull(xyText);
-				veuszString = veuszString + xyText;
-				veuszString = veuszString + "To('..')\n";
-				veuszString = veuszString + "\n";
-			}
-
-		}
-
-		return veuszString;
 	}
 
 	//#end region

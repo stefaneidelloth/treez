@@ -17,13 +17,13 @@ import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.veuszpage.GraphicsPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 
 /**
  * XY symbol settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Symbol implements GraphicsPageModel {
+public class Symbol implements GraphicsPropertiesPageModel {
 
 	//#region ATTRIBUTES
 
@@ -277,14 +277,6 @@ public class Symbol implements GraphicsPageModel {
 		GraphicsAtom.bindLineStyle(symbolsSelection, lineStyle);
 
 		GraphicsAtom.bindStringAttribute(symbolsSelection, "stroke-width", lineWidth);
-	}
-
-	@Override
-	public String createVeuszText(AbstractAtom parent) {
-
-		String veuszString = "";
-
-		return veuszString;
 	}
 
 	//#end region

@@ -12,7 +12,9 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.MouseClickFunction;
 
 /**
- *
+ * Parent class for the atoms that are used for plotting with javafx-d3. It
+ * contains some helper methods that make it easier to bind atom attributes to
+ * d3 properties.
  */
 public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 
@@ -39,7 +41,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	/**
 	 * Calculates an approximate text size using AWT. (The getBBox method for
 	 * SVG elements does not seem to be reliable.)
-	 * 
+	 *
 	 * @param fontName
 	 * @param fontSize
 	 * @return

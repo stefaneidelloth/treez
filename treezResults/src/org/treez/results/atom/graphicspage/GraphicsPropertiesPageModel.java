@@ -1,4 +1,4 @@
-package org.treez.results.atom.veuszpage;
+package org.treez.results.atom.graphicspage;
 
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.base.AbstractAtom;
@@ -7,12 +7,12 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 
 /**
- * Creates a veusz properties page, its corresponding veusz text and its corresponding code container
+ * Serves as a factory for a properties page and "plots" the corresponding d3 representation
  */
-public interface GraphicsPageModel {
+public interface GraphicsPropertiesPageModel {
 
 	/**
-	 * Creates the veusz page as child of the given root
+	 * Creates the properties page as child of the given root
 	 *
 	 * @param root
 	 * @param parent
@@ -20,14 +20,7 @@ public interface GraphicsPageModel {
 	void createPage(AttributeRoot root, AbstractAtom parent);
 
 	/**
-	 * Creates the veusz text for the page
-	 *
-	 * @return
-	 */
-	String createVeuszText(AbstractAtom parent);
-
-	/**
-	 * Applies the setting of the page model to the given selection
+	 * Performs the plot with javafx-d3 / applies the setting of the page model to the given selections
 	 *
 	 * @param selection
 	 * @return
