@@ -235,7 +235,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 	 * AdjustableAtom are created. This method might be overridden by inheriting
 	 * classes.
 	 */
-	public void createModel() {
+	public void createAjustableAtomModel() {
 
 		//get property string
 		String modelDefinition = createModelScript();

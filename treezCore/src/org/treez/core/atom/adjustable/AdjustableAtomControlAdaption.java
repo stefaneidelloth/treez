@@ -46,7 +46,7 @@ public class AdjustableAtomControlAdaption extends AbstractControlAdaption {
 		AbstractAtom model = adjustableAtom.getModel();
 		boolean modelIsInitialized = model != null;
 		if (!modelIsInitialized) {
-			adjustableAtom.createModel();
+			adjustableAtom.createAjustableAtomModel();
 		}
 
 		model = adjustableAtom.getModel();

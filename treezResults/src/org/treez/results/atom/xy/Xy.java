@@ -126,8 +126,9 @@ public class Xy extends GraphicsPropertiesPage {
 	 * @param graphSelection
 	 * @param rectSelection
 	 */
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection) {
+	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, Refreshable refreshable) {
 		Objects.requireNonNull(d3);
+		this.treeViewRefreshable = refreshable;
 
 		xySelection = graphSelection //
 				.insert("g", ".axis") //

@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
+import org.treez.core.adaptable.Refreshable;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
@@ -134,8 +135,9 @@ public class Axis extends GraphicsPropertiesPage {
 	 * @param graphSelection
 	 * @return
 	 */
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection) {
+	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, Refreshable refreshable) {
 		Objects.requireNonNull(d3);
+		this.treeViewRefreshable = refreshable;
 
 		axisSelection = graphSelection //
 				.append("g")

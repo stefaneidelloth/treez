@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 
+import org.apache.log4j.Logger;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.LineStyleValue;
 import org.treez.core.atom.graphics.length.Length;
@@ -17,6 +18,11 @@ import org.treez.javafxd3.d3.functions.MouseClickFunction;
  * d3 properties.
  */
 public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
+
+	/**
+	 * Logger for this class
+	 */
+	private static Logger sysLog = Logger.getLogger(GraphicsAtom.class);
 
 	//#region ATTRIBUTES
 
@@ -358,10 +364,11 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	}
 
 	/**
-	 * Handles JavaScript mouse click on Page rect
+	 * Handles JavaScript mouse click
 	 */
 	@Override
 	public void handleMouseClick(Object context) {
+		sysLog.debug("Setting focus");
 		setFocus(this);
 	}
 

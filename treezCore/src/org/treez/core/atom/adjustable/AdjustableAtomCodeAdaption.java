@@ -53,7 +53,7 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 		boolean modelIsInitialized = model != null;
 		if (!modelIsInitialized) {
 			try {
-				adjustableAtom.createModel();
+				adjustableAtom.createAjustableAtomModel();
 			} catch (Exception exception) {
 				String message = "Could not create attribute code because the underlying model could not be initialized.";
 				throw new IllegalStateException(message, exception);

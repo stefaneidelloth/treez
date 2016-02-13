@@ -43,14 +43,19 @@ public class Page extends GraphicsAtom {
 	//#region ATTRIBUTES
 
 	/**
-	 * Width of the page
+	 * Width
 	 */
 	public final Attribute<String> pageWidth = new Wrap<>();
 
 	/**
-	 * Height of the page
+	 * Height
 	 */
 	public final Attribute<String> pageHeight = new Wrap<>();
+
+	/**
+	 * Color
+	 */
+	public final Attribute<String> pageColor = new Wrap<>();
 
 	/**
 	 * If this is true the page is hidden.
@@ -73,7 +78,7 @@ public class Page extends GraphicsAtom {
 	public Page(String name) {
 		super(name);
 		setRunnable();
-		createPageModel();
+		createModel();
 	}
 
 	//#end region
@@ -81,9 +86,9 @@ public class Page extends GraphicsAtom {
 	//#region METHODS
 
 	/**
-	 * Creates the model for this atom
+	 * Creates the treez model for this atom
 	 */
-	private void createPageModel() {
+	private void createModel() {
 
 		//root
 		AttributeRoot root = new AttributeRoot("root");
@@ -106,6 +111,8 @@ public class Page extends GraphicsAtom {
 		section
 				.createTextField(pageHeight, "pageHeight", "15 cm") //
 				.setLabel("Page Height");
+
+		section.createColorChooser(pageColor, "color", "white");
 
 		section.createCheckBox(hide, "hide");
 
@@ -143,11 +150,13 @@ public class Page extends GraphicsAtom {
 	 */
 	@Override
 	public void execute(Refreshable refreshable) {
+		this.treeViewRefreshable = refreshable;
+
 		Runnable plotPageRunnable = () -> {
 			D3 d3 = browser.getD3();
 			Objects.requireNonNull(d3);
 			plotPageWithD3AndCreatePageSelection(d3);
-			plotChildGraphs(d3);
+			plotChildGraphs(d3, refreshable);
 		};
 		browser = createD3BrowserInCadView(plotPageRunnable);
 	}
@@ -167,8 +176,9 @@ public class Page extends GraphicsAtom {
 		bindDisplayToBooleanAttribute("hidePage", pageSelection, hide);
 
 		Selection rectSelection = pageSelection //
-				.append("rect") //
-				.attr("fill", "lightblue");
+				.append("rect");
+
+		bindStringAttribute(rectSelection, "fill", pageColor);
 
 		bindStringAttribute(rectSelection, "width", pageWidth);
 		bindStringAttribute(rectSelection, "height", pageHeight);
@@ -176,12 +186,12 @@ public class Page extends GraphicsAtom {
 		rectSelection.onMouseClick(this);
 	}
 
-	private void plotChildGraphs(D3 d3) {
+	private void plotChildGraphs(D3 d3, Refreshable refreshable) {
 		for (Adaptable child : children) {
 			Boolean isGraph = child.getClass().equals(Graph.class);
 			if (isGraph) {
 				Graph graph = (Graph) child;
-				graph.plotWidthD3(d3, pageSelection);
+				graph.plotWidthD3(d3, pageSelection, refreshable);
 			}
 		}
 	}

@@ -14,8 +14,8 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
 import org.treez.results.atom.xy.Xy;
 
 /**
@@ -124,31 +124,36 @@ public class Graph extends GraphicsPropertiesPage {
 	 * @param pageSelection
 	 * @return
 	 */
-	public Selection plotWidthD3(D3 d3, Selection pageSelection) {
+	public Selection plotWidthD3(D3 d3, Selection pageSelection, Refreshable refreshable) {
 		Objects.requireNonNull(d3);
+		this.treeViewRefreshable = refreshable;
 
 		plotGraphWithD3AndCreateGraphSelection(d3, pageSelection);
+		plotAxis(d3);
+		plotXy(d3);
 
-		//initialize axis scales at the beginning, so that they can be used
-		//by other plot components
-		for (Adaptable child : children) {
-			Boolean isAxis = child.getClass().equals(Axis.class);
-			if (isAxis) {
-				Axis axis = (Axis) child;
-				axis.plotWithD3(d3, graphSelection, rectSelection);
-			}
-		}
+		return graphSelection;
 
+	}
+
+	private void plotXy(D3 d3) {
 		for (Adaptable child : children) {
 			Boolean isXY = child.getClass().equals(Xy.class);
 			if (isXY) {
 				Xy xy = (Xy) child;
-				xy.plotWithD3(d3, graphSelection, rectSelection);
+				xy.plotWithD3(d3, graphSelection, rectSelection, this.treeViewRefreshable);
 			}
 		}
+	}
 
-		return graphSelection;
-
+	private void plotAxis(D3 d3) {
+		for (Adaptable child : children) {
+			Boolean isAxis = child.getClass().equals(Axis.class);
+			if (isAxis) {
+				Axis axis = (Axis) child;
+				axis.plotWithD3(d3, graphSelection, rectSelection, this.treeViewRefreshable);
+			}
+		}
 	}
 
 	private void plotGraphWithD3AndCreateGraphSelection(D3 d3, Selection pageSelection) {
