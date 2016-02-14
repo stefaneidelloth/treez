@@ -17,13 +17,13 @@ import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.scales.Scales;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents the main settings of an axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Data implements GraphicsPropertiesPageModel {
+public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -160,9 +160,17 @@ public class Data implements GraphicsPropertiesPageModel {
 	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
 
 		Axis parentAxis = (Axis) parent;
+		Consumer<String> replotAxis = (data) -> {
+			parentAxis.updatePlotWithD3(d3);
+		};
+
+		direction.addModificationConsumer("replotAxis", replotAxis);
+		min.addModificationConsumer("replotAxis", replotAxis);
+		max.addModificationConsumer("replotAxis", replotAxis);
+		log.addModificationConsumer("replotAxis", (data) -> replotAxis.accept(null));
 
 		//hint: the auto mirror option will be considered by the other plot pages
-		autoMirror.addModificationConsumer("replotAxis", (data) -> parentAxis.plotPageModels(d3, rectSelection));
+		autoMirror.addModificationConsumer("replotAxis", (data) -> replotAxis.accept(null));
 
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideAxis", axisSelection, hide);
 
@@ -170,19 +178,8 @@ public class Data implements GraphicsPropertiesPageModel {
 		Attribute<String> height = graph.main.height;
 		Attribute<String> width = graph.main.width;
 
-		Consumer<String> replotAxisConsumer = (data) -> {
-			initializeScale(d3, width, height);
-			plotAxisWithD3(d3, axisSelection, parentAxis, width, height);
-		};
-
-		width.addModificationConsumer("replotAxis", replotAxisConsumer);
-		height.addModificationConsumer("replotAxis", replotAxisConsumer);
-		direction.addModificationConsumer("replotAxis", replotAxisConsumer);
-		log.addModificationConsumer("replotAxis", (data) -> replotAxisConsumer.accept(null));
-		min.addModificationConsumer("replotAxis", replotAxisConsumer);
-		max.addModificationConsumer("replotAxis", replotAxisConsumer);
-
-		replotAxisConsumer.accept(null);
+		initializeScale(d3, width, height);
+		plotAxisWithD3(d3, axisSelection, parentAxis, width, height);
 
 		return axisSelection;
 	}
@@ -273,6 +270,7 @@ public class Data implements GraphicsPropertiesPageModel {
 		Double graphHeightInPx = Length.toPx(graphHeightString);
 
 		int numberOfTicksAimedFor = Integer.parseInt(axis.majorTicks.number.get());
+		String tickFormat = axis.tickLabels.format.get();
 
 		boolean isHorizontal = isHorizontal();
 		boolean isMirrored = autoMirror.get();
@@ -284,7 +282,7 @@ public class Data implements GraphicsPropertiesPageModel {
 				.append("g") //
 				.attr("id", "primary")
 				.attr("class", "primary");
-		plotPrimaryAxis(d3, primary, graphHeightInPx, isHorizontal, numberOfTicksAimedFor);
+		plotPrimaryAxis(d3, primary, graphHeightInPx, isHorizontal, numberOfTicksAimedFor, tickFormat);
 
 		//secondary axis
 		axisSelection.selectAll(".secondary").remove();
@@ -306,7 +304,8 @@ public class Data implements GraphicsPropertiesPageModel {
 			Selection axisSelection,
 			Double graphHeightInPx,
 			boolean isHorizontal,
-			int numberOfTicksAimedFor) {
+			int numberOfTicksAimedFor,
+			String tickFormat) {
 
 		//set translation and tick padding
 		double tickPadding;
@@ -318,20 +317,61 @@ public class Data implements GraphicsPropertiesPageModel {
 
 		}
 
+		//create tick format expression
+		//also see https://github.com/mbostock/d3/wiki/Formatting#d3_format
+		String formatFunctionExpression = createFormatFunctionExpression(tickFormat);
+
 		//create d3 axis
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(scale)
-				.outerTickSize(0.0)
-				.tickPadding(tickPadding)
-				.ticks(numberOfTicksAimedFor); //for log axis only the tick labels will be influenced
+				.scale(scale) //
+				.outerTickSize(0.0) //
+				.tickPadding(tickPadding);
+
+		if (log.get()) {
+			//for log axis only the number of tick labels will be influenced, not the number of tick lines
+
+			axis.ticksExpression(numberOfTicksAimedFor, formatFunctionExpression);
+		} else {
+			axis.ticks(numberOfTicksAimedFor);
+			axis.tickFormatExpression(formatFunctionExpression);
+		}
 
 		setAxisDirection(axis, isHorizontal);
 
 		axis.apply(axisSelection);
 
 		return axisSelection;
+	}
+
+	private String createFormatFunctionExpression(String tickFormat) {
+		String formatString = tickFormat;
+		if (formatString.equals("")) {
+			if (log.get()) {
+				formatString = "log";
+			} else {
+				formatString = "g";
+			}
+		}
+		String formatFunctionExpression = "d3.format('" + formatString + "')"; //"function (d) { return d; }";
+
+		if (formatString.equals("log")) {
+
+			//use unicode characters to create exponent notation 10^0, 10^1, ...
+			formatFunctionExpression = "function(d){" //
+					+ " var superscript = '\u2070\u00B9\u00B2\u00B3\u2074" // super script numbers in
+					+ "\u2075\u2076\u2077\u2078\u2079';" // unicode from 0 to 9
+					+ " function formatPower (d){" //
+					+ "  return (d + \"\").split(\"\").map(function(c) { return superscript[c]; }).join(\"\");" //
+					+ " }" //
+					+ " var power = formatPower(Math.round(Math.log(d) / Math.LN10));"
+					+ " var displayString = '10' + power;" //
+					+ " return displayString;" //
+					+ "}";
+
+		}
+		return formatFunctionExpression;
 	}
 
 	private static void setAxisDirection(org.treez.javafxd3.d3.svg.Axis axis, boolean isHorizontal) {

@@ -9,13 +9,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * The background settings for a graph
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Background implements GraphicsPropertiesPageModel {
+public class Background implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 

@@ -19,6 +19,7 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
+import org.treez.core.utils.Utils;
 
 /**
  * Allows the user to choose a line style
@@ -33,7 +34,7 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 	//#region ATTRIBUTES
 
-	@IsParameter(defaultValue = "My Line Style:")
+	@IsParameter(defaultValue = "Line Style:")
 	private String label;
 
 	@IsParameter(defaultValue = "solid")
@@ -68,17 +69,7 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	 */
 	public LineStyle(String name) {
 		super(name);
-		label = name;
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
-	public LineStyle(String name, String label) {
-		super(name);
-		this.label = label;
+		label = Utils.firstToUpperCase(name);
 	}
 
 	/**
@@ -87,9 +78,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	 * @param name
 	 * @param defaultStyle
 	 */
-	public LineStyle(String name, String label, String defaultStyle) {
-		super(name);
-		this.label = label;
+	public LineStyle(String name, String defaultStyle) {
+		this(name);
 
 		boolean isLineStyle = lineStyles.contains(defaultStyle);
 		if (isLineStyle) {

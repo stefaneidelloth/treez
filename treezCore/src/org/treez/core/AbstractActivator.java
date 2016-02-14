@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
@@ -292,8 +293,17 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 		if (helpSystem != null) {
 			helpSystem.setHelp(helpControl, helpContextId);
 
-			Display.getDefault().getActiveShell().setData("org.eclipse.ui.help",
-					helpContextId);
+			Display display = Display.getDefault();
+			if (display == null) {
+				display = Display.getCurrent();
+			}
+
+			if (display != null) {
+				Shell shell = display.getActiveShell();
+				if (shell != null) {
+					shell.setData("org.eclipse.ui.help", helpContextId);
+				}
+			}
 
 		} else {
 			throw new IllegalStateException("Could not get help system.");

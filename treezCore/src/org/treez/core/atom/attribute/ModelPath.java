@@ -61,9 +61,19 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	private boolean hasToBeEnabled;
 
 	/**
+	 * Content container
+	 */
+	private Composite contentContainer;
+
+	/**
 	 * Sub container for (text field and button) or combo box
 	 */
 	private Composite subContainer;
+
+	/**
+	 * The label
+	 */
+	private CustomLabel labelComposite;
 
 	/**
 	 * If a relative root is present, this label shows its path
@@ -320,22 +330,32 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		//toolkit
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
-		//container for label and rest
-		Composite container = createContainer(parent, toolkit);
+		//create content composite for label and check box
+		contentContainer = toolkit.createComposite(parent);
 
-		//label
-		@SuppressWarnings("unused")
-		CustomLabel labelComposite = new CustomLabel(toolkit, container, label);
+		//check label length
+		boolean useExtraLine = label.length() > CHARACTER_LENGTH_LIMIT;
+
+		//create container layout
+		int marginWidth = 0;
+		if (useExtraLine) {
+			createLayoutForIndividualLines(contentContainer, marginWidth);
+		} else {
+			createLayoutForSingleLine(contentContainer, marginWidth);
+		}
+
+		//create label
+		createLabel(toolkit);
 
 		//relative root label
-		rootLabel = new CustomLabel(toolkit, container, "");
+		rootLabel = new CustomLabel(toolkit, contentContainer, "");
 		final int grayValue = 190;
 		rootLabel.setForeground(new Color(Display.getCurrent(), grayValue,
 				grayValue, grayValue));
 		rootLabel.hide();
 
 		//sub container for rest (tree selector or combo box selector)
-		subContainer = createSubContainer(toolkit, container);
+		subContainer = createSubContainer(toolkit, contentContainer);
 
 		switch (selectionType) {
 			case FLAT :
@@ -352,11 +372,17 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		return this;
 	}
 
+	private void createLabel(FormToolkit toolkit) {
+		labelComposite = new CustomLabel(toolkit, contentContainer, label);
+		final int prefferedLabelWidth = 80;
+		labelComposite.setPrefferedWidth(prefferedLabelWidth);
+	}
+
 	@SuppressWarnings("checkstyle:magicnumber")
 	private static Composite createSubContainer(FormToolkit toolkit,
 			Composite container) {
 		Composite subContainer = toolkit.createComposite(container);
-		GridLayout gridLayout = new GridLayout(2, false);
+		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.horizontalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		subContainer.setLayout(gridLayout);
@@ -366,24 +392,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		subFillHorizontal.horizontalAlignment = GridData.FILL;
 		subContainer.setLayoutData(subFillHorizontal);
 		return subContainer;
-	}
-
-	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit) {
-		Composite container = toolkit.createComposite(parent);
-		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.verticalSpacing = 1;
-		gridLayout.marginWidth = 0;
-
-		container.setLayout(gridLayout);
-
-		//create grid data to use all horizontal space
-		GridData fillHorizontal = new GridData();
-		fillHorizontal.grabExcessHorizontalSpace = true;
-		fillHorizontal.horizontalAlignment = GridData.FILL;
-		container.setLayoutData(fillHorizontal);
-		return container;
 	}
 
 	/**
@@ -660,14 +668,14 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	@Override
 	public void refreshAttributeAtomControl() {
 
-		if (subContainer != null) {
+		if (contentContainer != null) {
 			//recreate components if they already exist to refresh them
 			switch (selectionType) {
 				case FLAT :
-					reCreateComboBoxSelector(subContainer);
+					reCreateComboBoxSelector(contentContainer);
 					break;
 				case TREE :
-					reCreateTextFieldAndButtonForTreeSelector(subContainer);
+					reCreateTextFieldAndButtonForTreeSelector(contentContainer);
 					break;
 				default :
 					throw new IllegalStateException("The selection type '"

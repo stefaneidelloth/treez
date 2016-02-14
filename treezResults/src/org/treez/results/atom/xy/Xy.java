@@ -9,9 +9,12 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.results.Activator;
+import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents an xy scatter plot
@@ -78,24 +81,23 @@ public class Xy extends GraphicsPropertiesPage {
 	// #region METHODS
 
 	@Override
-	protected void fillPageModelList() {
+	protected void createPropertyPageFactories() {
+
 		data = new Data();
-		pageModels.add(data);
-
-		symbol = new Symbol();
-		pageModels.add(symbol);
-
-		line = new Line();
-		pageModels.add(line);
-
-		//errorBar = new ErrorBar();
-		//pageModels.add(errorBar);
+		propertyPageFactories.add(data);
 
 		area = new Area();
-		pageModels.add(area);
+		propertyPageFactories.add(area);
+
+		line = new Line();
+		propertyPageFactories.add(line);
+
+		symbol = new Symbol();
+		propertyPageFactories.add(symbol);
+
+		//errorBar = new ErrorBar();
 
 		//label = new Label();
-		//pageModels.add(label);
 	}
 
 	/**
@@ -124,22 +126,123 @@ public class Xy extends GraphicsPropertiesPage {
 	/**
 	 * @param d3
 	 * @param graphSelection
-	 * @param rectSelection
 	 */
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, Refreshable refreshable) {
+	@Override
+	public Selection plotWithD3(
+			D3 d3,
+			Selection graphSelection,
+			Selection graphRectSelection,
+			Refreshable refreshable) {
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
+		//remove old xy group if it already exists
+		graphSelection //
+				.select("#" + name) //
+				.remove();
+
+		//create new axis group
 		xySelection = graphSelection //
 				.insert("g", ".axis") //
 				.attr("id", "" + name) //TODO: listener for name changes to update id
-				.attr("class", "xy");
+				.attr("class", "xy") //
+				.onMouseClick(this);
 
-		xySelection = data.plotWithD3(d3, xySelection, rectSelection, this);
-
-		xySelection.onMouseClick(this);
+		updatePlotWithD3(d3);
 
 		return graphSelection;
+	}
+
+	@Override
+	public void updatePlotWithD3(D3 d3) {
+		plotPageModels(d3);
+	}
+
+	/**
+	 * Plots the page models for the Graph (e.g. Border)
+	 *
+	 * @param d3
+	 */
+	private void plotPageModels(D3 d3) {
+		for (GraphicsPropertiesPageFactory pageModel : propertyPageFactories) {
+			xySelection = pageModel.plotWithD3(d3, xySelection, null, this);
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public String getXyDataString() {
+
+		List<Object> xDataValues = getXData();
+		List<Object> yDataValues = getYData();
+
+		int xLength = xDataValues.size();
+		int yLength = yDataValues.size();
+		boolean lengthsAreOk = xLength == yLength;
+		if (!lengthsAreOk) {
+			String message = "The x and y data has to be of equal size but size of x data is " + xLength
+					+ " and size of y data is " + yLength;
+			throw new IllegalStateException(message);
+		}
+
+		List<String> rowList = new java.util.ArrayList<>();
+		for (int rowIndex = 0; rowIndex < xLength; rowIndex++) {
+			Object xDatum = xDataValues.get(rowIndex);
+			Double x = Double.parseDouble(xDatum.toString());
+
+			Object yDatum = yDataValues.get(rowIndex);
+			Double y = Double.parseDouble(yDatum.toString());
+
+			String rowString = "[" + x + "," + y + "]";
+			rowList.add(rowString);
+		}
+		String xyDataString = "[" + String.join(",", rowList) + "]";
+		return xyDataString;
+	}
+
+	/**
+	 * @return
+	 */
+	public QuantitativeScale<?> getXScale() {
+		Axis xAxisAtom = getXAxis();
+		QuantitativeScale<?> scale = (QuantitativeScale<?>) xAxisAtom.getScale();
+		return scale;
+	}
+
+	/**
+	 * @return
+	 */
+	public QuantitativeScale<?> getYScale() {
+		Axis yAxisAtom = getYAxis();
+		QuantitativeScale<?> scale = (QuantitativeScale<?>) yAxisAtom.getScale();
+		return scale;
+	}
+
+	private Axis getXAxis() {
+		String xAxisPath = data.xAxis.get();
+		Axis xAxisAtom = (Axis) getChildFromRoot(xAxisPath);
+		return xAxisAtom;
+	}
+
+	private Axis getYAxis() {
+		String yAxisPath = data.yAxis.get();
+		Axis yAxisAtom = (Axis) getChildFromRoot(yAxisPath);
+		return yAxisAtom;
+	}
+
+	private List<Object> getXData() {
+		String xDataPath = data.xData.get();
+		org.treez.data.column.Column xDataColumn = (org.treez.data.column.Column) getChildFromRoot(xDataPath);
+		List<Object> xDataValues = xDataColumn.getValues();
+		return xDataValues;
+	}
+
+	private List<Object> getYData() {
+		String yDataPath = data.yData.get();
+		org.treez.data.column.Column yDataColumn = (org.treez.data.column.Column) getChildFromRoot(yDataPath);
+		List<Object> yDataValues = yDataColumn.getValues();
+		return yDataValues;
 	}
 
 	// #end region

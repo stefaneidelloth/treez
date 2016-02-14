@@ -12,13 +12,13 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * XY line settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Line implements GraphicsPropertiesPageModel {
+public class Line implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -85,68 +85,29 @@ public class Line implements GraphicsPropertiesPageModel {
 
 	@Override
 	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
-		//see method replotWithD3
-		return xySelection;
-	}
 
-	/**
-	 * @param d3
-	 * @param xySelection
-	 * @param parent
-	 * @param xyDataString
-	 * @param xScale
-	 * @param yScale
-	 */
-	public void replotWithD3(
-			D3 d3,
-			Selection xySelection,
-			GraphicsAtom parent,
-			String xyDataString,
-			QuantitativeScale<?> xScale,
-			QuantitativeScale<?> yScale) {
-
-		Xy xy = (Xy) parent;
-		interpolation.addModificationConsumer("replot", (data) -> {
-			xy.area.replotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
-			doReplotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
-		});
-
-		doReplotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
-
-	}
-
-	private void doReplotWithD3(
-			D3 d3,
-			Selection xySelection,
-			GraphicsAtom parent,
-			String xyDataString,
-			QuantitativeScale<?> xScale,
-			QuantitativeScale<?> yScale) {
-
-		replotLinesWithD3(d3, xySelection, xyDataString, xScale, yScale);
-
-		Xy xy = (Xy) parent;
-		xy.symbol.replotWithD3(d3, xySelection, xyDataString, xScale, yScale, parent);
-	}
-
-	private void replotLinesWithD3(
-			D3 d3,
-			Selection xySelection,
-			String xyDataString,
-			QuantitativeScale<?> xScale,
-			QuantitativeScale<?> yScale) {
+		//remove old line group if it already exists
 		xySelection //
 				.selectAll("#lines") //
 				.remove();
 
+		//create new line group
 		Selection linesSelection = xySelection //
 				.append("g") //
 				.attr("id", "lines") //
 				.attr("class", "lines");
 
+		//get xy parent
+		Xy xy = (Xy) parent;
+
+		//get interpolation mode
 		String modeString = interpolation.get();
 		org.treez.javafxd3.d3.svg.InterpolationMode mode = org.treez.javafxd3.d3.svg.InterpolationMode
 				.fromValue(modeString);
+
+		//line path generator
+		QuantitativeScale<?> xScale = xy.getXScale();
+		QuantitativeScale<?> yScale = xy.getYScale();
 
 		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
 				.svg()//
@@ -156,16 +117,27 @@ public class Line implements GraphicsPropertiesPageModel {
 				.interpolate(mode);
 
 		//plot new lines
+		String xyDataString = xy.getXyDataString();
 		Selection lines = linesSelection //
 				.append("path") //
 				.attr("d", linePathGenerator.generate(xyDataString))
 				.attr("fill", "none");
 
+		//bind attributes
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideLine", lines, hide);
 		GraphicsAtom.bindStringAttribute(lines, "stroke", color);
 		GraphicsAtom.bindStringAttribute(lines, "stroke-width", width);
 		GraphicsAtom.bindLineTransparency(lines, transparency);
 		GraphicsAtom.bindLineStyle(lines, style);
+
+		interpolation.addModificationConsumer("replot", (data) -> {
+			//if the line interpolation changes other stuff like the area
+			//has to be updated as well
+			//=> update the whole xy
+			xy.updatePlotWithD3(d3);
+		});
+
+		return xySelection;
 	}
 
 	//#end region

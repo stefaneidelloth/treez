@@ -12,13 +12,13 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * XY area settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Area implements GraphicsPropertiesPageModel {
+public class Area implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -114,28 +114,13 @@ public class Area implements GraphicsPropertiesPageModel {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
-		//see replotWithD3
-		return graphSelection;
-	}
-
-	/**
-	 * @param d3
-	 * @param xySelection
-	 * @param parent
-	 * @param xyDataString
-	 * @param xScale
-	 * @param yScale
-	 */
-	public void replotWithD3(
-			D3 d3,
-			Selection xySelection,
-			GraphicsAtom parent,
-			String xyDataString,
-			QuantitativeScale<?> xScale,
-			QuantitativeScale<?> yScale) {
+	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
 
 		Xy xy = (Xy) parent;
+		String xyDataString = xy.getXyDataString();
+		QuantitativeScale<?> xScale = xy.getXScale();
+		QuantitativeScale<?> yScale = xy.getYScale();
+
 		String modeString = xy.line.interpolation.get();
 		org.treez.javafxd3.d3.svg.InterpolationMode mode = org.treez.javafxd3.d3.svg.InterpolationMode
 				.fromValue(modeString);
@@ -143,8 +128,7 @@ public class Area implements GraphicsPropertiesPageModel {
 		plotAboveAreaWithD3(d3, xySelection, xyDataString, xScale, yScale, mode);
 		plotBelowAreaWithD3(d3, xySelection, xyDataString, xScale, yScale, mode);
 
-		xy.line.replotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
-
+		return xySelection;
 	}
 
 	private void plotAboveAreaWithD3(
@@ -155,10 +139,12 @@ public class Area implements GraphicsPropertiesPageModel {
 			QuantitativeScale<?> yScale,
 			org.treez.javafxd3.d3.svg.InterpolationMode mode) {
 
+		//remove old area group if it already exists
 		xySelection
 				.selectAll("#area-above") //
 				.remove();
 
+		//create new area group
 		Selection areaAboveSelection = xySelection //
 				.append("g") //
 				.attr("id", "area-above") //
@@ -188,10 +174,12 @@ public class Area implements GraphicsPropertiesPageModel {
 			QuantitativeScale<?> yScale,
 			org.treez.javafxd3.d3.svg.InterpolationMode mode) {
 
+		//remove old area group if it already exists
 		xySelection
 				.selectAll("#area-below") //
 				.remove();
 
+		//create new area group
 		Selection areaBelowSelection = xySelection //
 				.append("g") //
 				.attr("id", "area-below") //

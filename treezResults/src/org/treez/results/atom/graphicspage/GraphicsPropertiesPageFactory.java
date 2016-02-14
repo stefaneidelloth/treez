@@ -9,7 +9,7 @@ import org.treez.javafxd3.d3.core.Selection;
 /**
  * Serves as a factory for a properties page and "plots" the corresponding d3 representation
  */
-public interface GraphicsPropertiesPageModel {
+public interface GraphicsPropertiesPageFactory {
 
 	/**
 	 * Creates the properties page as child of the given root
@@ -20,7 +20,7 @@ public interface GraphicsPropertiesPageModel {
 	void createPage(AttributeRoot root, AbstractAtom parent);
 
 	/**
-	 * Performs the plot with javafx-d3 / applies the setting of the page model to the given selections
+	 * Performs the plot with javafx-d3 / applies the setting of the page model to the given selections.
 	 *
 	 * @param selection
 	 * @return

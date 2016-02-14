@@ -9,13 +9,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents the line of an axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class AxisLine implements GraphicsPropertiesPageModel {
+public class AxisLine implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -73,7 +73,7 @@ public class AxisLine implements GraphicsPropertiesPageModel {
 		Selection axisDomainLine = axisSelection //
 				.selectAll(".domain") //
 				.style("fill", "none") //
-				.style("stroke-linecap", "square")
+				.style("stroke-linecap", "square") //
 				.style("shape-rendering", "geometricPrecision");
 
 		GraphicsAtom.bindStringAttribute(axisDomainLine, "stroke", color);

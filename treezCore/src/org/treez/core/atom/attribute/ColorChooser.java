@@ -23,6 +23,7 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
+import org.treez.core.utils.Utils;
 
 /**
  * Allows the user to choose a value
@@ -69,17 +70,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	 */
 	public ColorChooser(String name) {
 		super(name);
-		label = name;
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
-	public ColorChooser(String name, String label) {
-		super(name);
-		this.label = label;
+		label = Utils.firstToUpperCase(name);
 	}
 
 	/**
@@ -88,9 +79,8 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	 * @param name
 	 * @param defaultColor
 	 */
-	public ColorChooser(String name, String label, String defaultColor) {
-		super(name);
-		this.label = label;
+	public ColorChooser(String name, String defaultColor) {
+		this(name);
 		setDefaultValue(defaultColor);
 	}
 
@@ -148,11 +138,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		Composite container = createContainer(parent, toolkit, fillHorizontal);
 
 		//label
-		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container,
-				currentLabel);
-		final int prefferedLabelWidth = 85;
-		labelComposite.setPrefferedWidth(prefferedLabelWidth);
+		createLabel(toolkit, container);
 
 		//button value
 		//chooser-----------------------------------------------------
@@ -197,6 +183,14 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		colorButton.addSelectionListener(colorButtonListener);
 
 		return this;
+	}
+
+	private void createLabel(FormToolkit toolkit, Composite container) {
+		String currentLabel = getLabel();
+		CustomLabel labelComposite = new CustomLabel(toolkit, container,
+				currentLabel);
+		final int prefferedLabelWidth = 85;
+		labelComposite.setPrefferedWidth(prefferedLabelWidth);
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")

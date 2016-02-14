@@ -15,7 +15,6 @@ import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.swt.JavaFxWrapperForSwt;
@@ -27,12 +26,13 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.treez.results.Activator;
 import org.treez.results.atom.graph.Graph;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 
 /**
  * Represents a plotting page that might include several graphs
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Page extends GraphicsAtom {
+public class Page extends GraphicsPropertiesPage {
 
 	/**
 	 * Logger for this class
@@ -65,6 +65,8 @@ public class Page extends GraphicsAtom {
 	private JavaFxD3Browser browser;
 
 	private Selection pageSelection;
+
+	private Selection rectSelection;
 
 	//#end region
 
@@ -120,6 +122,12 @@ public class Page extends GraphicsAtom {
 
 	}
 
+	@Override
+	protected void createPropertyPageFactories() {
+		//not used here since there are only a few properties
+		//the few properties are created directly
+	}
+
 	/**
 	 * Provides an image to represent this atom
 	 */
@@ -150,48 +158,62 @@ public class Page extends GraphicsAtom {
 	 */
 	@Override
 	public void execute(Refreshable refreshable) {
-		this.treeViewRefreshable = refreshable;
 
 		Runnable plotPageRunnable = () -> {
 			D3 d3 = browser.getD3();
 			Objects.requireNonNull(d3);
-			plotPageWithD3AndCreatePageSelection(d3);
-			plotChildGraphs(d3, refreshable);
+
+			Selection svgSelection = d3 //
+					.select("#svg");
+			bindStringAttribute(svgSelection, "width", pageWidth);
+			bindStringAttribute(svgSelection, "height", pageHeight);
+
+			plotWithD3(d3, svgSelection, null, refreshable);
 		};
 		browser = createD3BrowserInCadView(plotPageRunnable);
 	}
 
-	private void plotPageWithD3AndCreatePageSelection(D3 d3) {
+	@Override
+	public Selection plotWithD3(D3 d3, Selection svgSelection, Selection contentSelection, Refreshable refreshable) {
+		this.treeViewRefreshable = refreshable;
 
-		Selection svgSelection = d3 //
-				.select("#svg");
+		//remove old page group if it already exists
+		svgSelection //
+				.select("#" + name)
+				.remove();
 
-		bindStringAttribute(svgSelection, "width", pageWidth);
-		bindStringAttribute(svgSelection, "height", pageHeight);
-
+		//create new page group
 		pageSelection = svgSelection //
 				.append("g") //
 				.attr("id", "" + name);
 
 		bindDisplayToBooleanAttribute("hidePage", pageSelection, hide);
 
-		Selection rectSelection = pageSelection //
-				.append("rect");
+		//create rect
+		rectSelection = pageSelection //
+				.append("rect") //
+				.onMouseClick(this);
 
 		bindStringAttribute(rectSelection, "fill", pageColor);
-
 		bindStringAttribute(rectSelection, "width", pageWidth);
 		bindStringAttribute(rectSelection, "height", pageHeight);
 
-		rectSelection.onMouseClick(this);
+		updatePlotWithD3(d3);
+
+		return pageSelection;
 	}
 
-	private void plotChildGraphs(D3 d3, Refreshable refreshable) {
+	@Override
+	public void updatePlotWithD3(D3 d3) {
+		plotChildGraphs(d3);
+	}
+
+	private void plotChildGraphs(D3 d3) {
 		for (Adaptable child : children) {
 			Boolean isGraph = child.getClass().equals(Graph.class);
 			if (isGraph) {
 				Graph graph = (Graph) child;
-				graph.plotWidthD3(d3, pageSelection, refreshable);
+				graph.plotWithD3(d3, pageSelection, rectSelection, this.treeViewRefreshable);
 			}
 		}
 	}

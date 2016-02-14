@@ -10,13 +10,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * XY label settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Label implements GraphicsPropertiesPageModel {
+public class Label implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 

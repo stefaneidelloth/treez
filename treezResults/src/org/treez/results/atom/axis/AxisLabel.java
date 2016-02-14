@@ -15,7 +15,7 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.wrapper.Element;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 import javafx.geometry.BoundingBox;
 
@@ -23,7 +23,7 @@ import javafx.geometry.BoundingBox;
  * Represents the label for an axis
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class AxisLabel implements GraphicsPropertiesPageModel {
+public class AxisLabel implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -123,95 +123,26 @@ public class AxisLabel implements GraphicsPropertiesPageModel {
 	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
 
 		Axis axis = (Axis) parent;
-		boolean isHorizontal = axis.data.isHorizontal();
 
+		//remove label group if it already exists
+		axisSelection //
+				.select("#axis-label")
+				.remove();
+
+		//create new label
 		Selection label = axisSelection//
 				.append("g")
 				.attr("id", "axis-label")
 				.append("text");
 
-		Graph graph = (Graph) axis.getParentAtom();
-		org.treez.results.atom.page.Page page = (org.treez.results.atom.page.Page) graph.getParentAtom();
-
 		Consumer<String> geometryConsumer = (data) -> {
-
-			double offset = getPxLength(labelOffset);
-			double tickOffset = getPxLength(axis.tickLabels.offset);
-
-			double fontSize = getPxLength(size);
-
-			double graphLeftMargin = getPxLength(graph.main.leftMargin);
-			double graphTopMargin = getPxLength(graph.main.topMargin);
-			double graphWidth = getPxLength(graph.main.width);
-			double graphHeight = getPxLength(graph.main.height);
-
-			double pageHeight = getPxLength(page.pageHeight);
-
-			String positionString = position.get();
-			if (positionString.equals("at-minimum")) {
-				label.attr("text-anchor", "start");
-			} else if (positionString.equals("centre")) {
-				label.attr("text-anchor", "middle");
-			} else {
-				label.attr("text-anchor", "end");
-			}
-
-			String angleString = rotate.get();
-			double rotation = 0;
-			try {
-				rotation = -Double.parseDouble(angleString);
-			} catch (NumberFormatException exception) {}
-
-			//initial transformation
-			applyTransformation(label, 0, 0, rotation);
-
-			//get actual text geometry and update transformation
-			Element labelNode = label.node().getParentElement(); //label group
-			BoundingBox boundingBox = labelNode.getBBox();
-
-			double labelHeight = determineLabelHeight(boundingBox);
-
-			double x = 0.0;
-			double y = 0.0;
-			if (isHorizontal) {
-				Double tickLabelHeight = axis.tickLabels.getTickLabelHeight();
-
-				if (positionString.equals("centre")) {
-					x = graphWidth / 2;
-				} else if (positionString.equals("at-maximum")) {
-					x = graphWidth;
-				}
-
-				y = graphHeight + tickOffset + tickLabelHeight + offset + labelHeight;
-
-			} else {
-				Double tickLabelWidth = axis.tickLabels.getTickLabelWidth();
-				final int extraVerticalRotation = -90;
-				rotation += extraVerticalRotation;
-
-				x = -(tickOffset + tickLabelWidth + offset + labelHeight);
-
-				y = graphHeight;
-				if (positionString.equals("centre")) {
-					y = graphHeight / 2;
-				} else if (positionString.equals("at-maximum")) {
-					y = 0;
-				}
-			}
-
-			applyTransformation(label, x, y, rotation);
-
+			Graph graph = (Graph) axis.getParentAtom();
+			updateLabelGeometry(axis, label, graph);
 		};
 
 		position.addModificationConsumer("position", geometryConsumer);
 		rotate.addModificationConsumer("position", geometryConsumer);
 		labelOffset.addModificationConsumer("position", geometryConsumer);
-
-		graph.main.leftMargin.addModificationConsumer("position", geometryConsumer);
-		graph.main.topMargin.addModificationConsumer("position", geometryConsumer);
-		graph.main.width.addModificationConsumer("position", geometryConsumer);
-		graph.main.height.addModificationConsumer("position", geometryConsumer);
-		page.pageHeight.addModificationConsumer("position", geometryConsumer);
 
 		geometryConsumer.accept(null);
 
@@ -226,6 +157,101 @@ public class AxisLabel implements GraphicsPropertiesPageModel {
 		GraphicsAtom.bindTransparencyToBooleanAttribute(label, hide);
 
 		return axisSelection;
+	}
+
+	private void updateLabelGeometry(Axis axis, Selection label, Graph graph) {
+
+		String positionString = position.get();
+		setTextAnchor(label, positionString);
+
+		double rotation = getRotation();
+
+		//initial transformation
+		applyTransformation(label, 0, 0, rotation);
+
+		//get actual text geometry and update transformation
+		Element labelNode = label.node().getParentElement(); //label group
+		BoundingBox boundingBox = labelNode.getBBox();
+		double labelHeight = determineLabelHeight(boundingBox);
+
+		boolean isHorizontal = axis.data.isHorizontal();
+		if (isHorizontal) {
+			applyTransformationForHorizontalOrientation(graph, axis, label, positionString, rotation, labelHeight);
+		} else {
+			applyTransformationForVerticalOrientation(graph, axis, label, positionString, rotation, labelHeight);
+		}
+	}
+
+	private static void setTextAnchor(Selection label, String positionString) {
+		if (positionString.equals("at-minimum")) {
+			label.attr("text-anchor", "start");
+		} else if (positionString.equals("centre")) {
+			label.attr("text-anchor", "middle");
+		} else {
+			label.attr("text-anchor", "end");
+		}
+	}
+
+	private double getRotation() {
+		String angleString = rotate.get();
+		double rotation = 0;
+		try {
+			rotation = -Double.parseDouble(angleString);
+		} catch (NumberFormatException exception) {}
+		return rotation;
+	}
+
+	private void applyTransformationForVerticalOrientation(
+			Graph graph,
+			Axis axis,
+			Selection label,
+			String positionString,
+			double rotation,
+			double labelHeight) {
+
+		double offset = getPxLength(labelOffset);
+		double tickOffset = getPxLength(axis.tickLabels.offset);
+		double graphHeight = getPxLength(graph.main.height);
+
+		Double tickLabelWidth = axis.tickLabels.getTickLabelWidth();
+		final int extraVerticalRotation = -90;
+		double verticalRotation = rotation + extraVerticalRotation;
+
+		double x = -(tickOffset + tickLabelWidth + offset + labelHeight);
+		double y = graphHeight;
+		if (positionString.equals("centre")) {
+			y = graphHeight / 2;
+		} else if (positionString.equals("at-maximum")) {
+			y = 0;
+		}
+		applyTransformation(label, x, y, verticalRotation);
+	}
+
+	private void applyTransformationForHorizontalOrientation(
+			Graph graph,
+			Axis axis,
+			Selection label,
+			String positionString,
+			double rotation,
+			double labelHeight) {
+
+		double offset = getPxLength(labelOffset);
+		double tickOffset = getPxLength(axis.tickLabels.offset);
+
+		double graphWidth = getPxLength(graph.main.width);
+		double graphHeight = getPxLength(graph.main.height);
+
+		Double tickLabelHeight = axis.tickLabels.getTickLabelHeight();
+
+		double x = 0.0;
+		if (positionString.equals("centre")) {
+			x = graphWidth / 2;
+		} else if (positionString.equals("at-maximum")) {
+			x = graphWidth;
+		}
+
+		double y = graphHeight + tickOffset + tickLabelHeight + offset + labelHeight;
+		applyTransformation(label, x, y, rotation);
 	}
 
 	private double determineLabelHeight(BoundingBox boundingBox) {

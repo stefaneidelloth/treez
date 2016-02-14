@@ -12,7 +12,7 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents a plot axis
@@ -98,25 +98,25 @@ public class Axis extends GraphicsPropertiesPage {
 	}
 
 	@Override
-	protected void fillPageModelList() {
+	protected void createPropertyPageFactories() {
 
 		data = new Data();
-		pageModels.add(data);
+		propertyPageFactories.add(data);
 
 		axisLine = new AxisLine();
-		pageModels.add(axisLine);
+		propertyPageFactories.add(axisLine);
 
 		majorTicks = new MajorTicks();
-		pageModels.add(majorTicks);
+		propertyPageFactories.add(majorTicks);
 
 		minorTicks = new MinorTicks();
-		pageModels.add(minorTicks);
+		propertyPageFactories.add(minorTicks);
 
 		tickLabels = new TickLabels();
-		pageModels.add(tickLabels);
+		propertyPageFactories.add(tickLabels);
 
 		axisLabel = new AxisLabel();
-		pageModels.add(axisLabel);
+		propertyPageFactories.add(axisLabel);
 
 	}
 
@@ -135,31 +135,41 @@ public class Axis extends GraphicsPropertiesPage {
 	 * @param graphSelection
 	 * @return
 	 */
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, Refreshable refreshable) {
+	@Override
+	public Selection plotWithD3(
+			D3 d3,
+			Selection graphSelection,
+			Selection graphRectSelection,
+			Refreshable refreshable) {
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
+		//remove old axis group if it already exists
+		graphSelection //
+				.select("#" + name) //
+				.remove(); //
+
+		//create new axis group
 		axisSelection = graphSelection //
-				.append("g")
-				.attr("id", "" + name)
-				.attr("class", "axis");
+				.append("g") //
+				.attr("id", "" + name) //
+				.attr("class", "axis") //
+				.onMouseClick(this);
 
-		plotPageModels(d3, rectSelection);
-
-		//handle mouse click
-		axisSelection.onMouseClick(this);
+		updatePlotWithD3(d3);
 
 		return graphSelection;
 
 	}
 
-	/**
-	 * @param d3
-	 * @param rectSelection
-	 */
-	public void plotPageModels(D3 d3, Selection rectSelection) {
-		for (GraphicsPropertiesPageModel pageModel : pageModels) {
-			axisSelection = pageModel.plotWithD3(d3, axisSelection, rectSelection, this);
+	@Override
+	public void updatePlotWithD3(D3 d3) {
+		plotPageModels(d3);
+	}
+
+	private void plotPageModels(D3 d3) {
+		for (GraphicsPropertiesPageFactory pageModel : propertyPageFactories) {
+			axisSelection = pageModel.plotWithD3(d3, axisSelection, null, this);
 		}
 	}
 

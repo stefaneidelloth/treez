@@ -15,7 +15,7 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 import org.treez.results.atom.xy.Xy;
 
 /**
@@ -47,7 +47,7 @@ public class Graph extends GraphicsPropertiesPage {
 	 */
 	public Border border;
 
-	private Selection graphSelection;
+	private Selection graphGroupSelection;
 
 	private Selection rectSelection;
 
@@ -70,15 +70,15 @@ public class Graph extends GraphicsPropertiesPage {
 	//#region METHODS
 
 	@Override
-	protected void fillPageModelList() {
+	protected void createPropertyPageFactories() {
 		main = new Data();
-		pageModels.add(main);
+		propertyPageFactories.add(main);
 
 		background = new Background();
-		pageModels.add(background);
+		propertyPageFactories.add(background);
 
 		border = new Border();
-		pageModels.add(border);
+		propertyPageFactories.add(border);
 	}
 
 	/**
@@ -124,53 +124,88 @@ public class Graph extends GraphicsPropertiesPage {
 	 * @param pageSelection
 	 * @return
 	 */
-	public Selection plotWidthD3(D3 d3, Selection pageSelection, Refreshable refreshable) {
+	@Override
+	public Selection plotWithD3(D3 d3, Selection pageSelection, Selection pageRectSelection, Refreshable refreshable) {
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
-		plotGraphWithD3AndCreateGraphSelection(d3, pageSelection);
-		plotAxis(d3);
-		plotXy(d3);
+		//remove old graph group if it already exists
+		pageSelection //
+				.select("#" + name) //
+				.remove();
 
-		return graphSelection;
+		//create new graph group
+		graphGroupSelection = pageSelection //
+				.append("g") //
+				.attr("id", "" + name);
 
+		//create rect
+		rectSelection = graphGroupSelection //
+				.append("rect") //
+				.onMouseClick(this);
+
+		updatePlotWithD3(d3);
+		return graphGroupSelection;
 	}
 
+	/**
+	 * Updates the Graph
+	 */
+	@Override
+	public void updatePlotWithD3(D3 d3) {
+		plotPageModels(d3);
+		plotChildren(d3);
+	}
+
+	/**
+	 * Plots the page models for the Graph (e.g. Border)
+	 *
+	 * @param d3
+	 */
+	private void plotPageModels(D3 d3) {
+		for (GraphicsPropertiesPageFactory pageModel : propertyPageFactories) {
+			graphGroupSelection = pageModel.plotWithD3(d3, graphGroupSelection, rectSelection, this);
+		}
+	}
+
+	/**
+	 * Plots the children (e.g. Axis, Xy) of the graph
+	 *
+	 * @param d3
+	 */
+	private void plotChildren(D3 d3) {
+		plotAxis(d3);
+		plotXy(d3);
+	}
+
+	/**
+	 * Plots all child Xy
+	 *
+	 * @param d3
+	 */
 	private void plotXy(D3 d3) {
 		for (Adaptable child : children) {
 			Boolean isXY = child.getClass().equals(Xy.class);
 			if (isXY) {
 				Xy xy = (Xy) child;
-				xy.plotWithD3(d3, graphSelection, rectSelection, this.treeViewRefreshable);
+				xy.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
 			}
 		}
 	}
 
+	/**
+	 * Plots all child Axis
+	 *
+	 * @param d3
+	 */
 	private void plotAxis(D3 d3) {
 		for (Adaptable child : children) {
 			Boolean isAxis = child.getClass().equals(Axis.class);
 			if (isAxis) {
 				Axis axis = (Axis) child;
-				axis.plotWithD3(d3, graphSelection, rectSelection, this.treeViewRefreshable);
+				axis.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
 			}
 		}
-	}
-
-	private void plotGraphWithD3AndCreateGraphSelection(D3 d3, Selection pageSelection) {
-
-		graphSelection = pageSelection //
-				.append("g") //
-				.attr("id", "" + name);
-
-		rectSelection = graphSelection //
-				.append("rect");
-
-		for (GraphicsPropertiesPageModel pageModel : pageModels) {
-			graphSelection = pageModel.plotWithD3(d3, graphSelection, rectSelection, this);
-		}
-
-		//handle mouse click
-		rectSelection.onMouseClick(this);
 	}
 
 	//#end region

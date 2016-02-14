@@ -12,13 +12,13 @@ import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.Scale;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents the minor tick lines
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class MinorTicks implements GraphicsPropertiesPageModel {
+public class MinorTicks implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -97,93 +97,14 @@ public class MinorTicks implements GraphicsPropertiesPageModel {
 
 		Axis axis = (Axis) parent;
 		Scale<?> scale = axis.getScale();
-
 		boolean isHorizontal = axis.data.direction.get().equals("horizontal");
-
 		boolean isLog = axis.data.log.get();
 
-		Selection primaryMinorTickLines;
-		Selection secondaryMinorTickLines;
+		PrimaryAndSecondarySelection minorTickLineSelections;
 		if (isLog) {
-
-			axisSelection //
-					.selectAll("g")
-					.selectAll(".tick:not(.major)")
-					.classed("minor", true);
-
-			primaryMinorTickLines = axisSelection //
-					.selectAll(".primary") //
-					.selectAll(".minor") //
-					.selectAll("line");
-
-			secondaryMinorTickLines = axisSelection //
-					.selectAll(".secondary") //
-					.selectAll(".minor") //
-					.selectAll("line");
-
-			if (isHorizontal) {
-				primaryMinorTickLines.attr("y2", "-" + length.get());
-				secondaryMinorTickLines.attr("y2", length.get());
-			} else {
-				primaryMinorTickLines.attr("x2", length.get());
-				secondaryMinorTickLines.attr("x2", "-" + length.get());
-			}
-
+			minorTickLineSelections = createMinorTickLinesForLogScale(axisSelection, isHorizontal);
 		} else {
-
-			//remove old minor ticks
-			axisSelection.selectAll(".minor").remove();
-
-			//recreate minor ticks
-			int numberOfTicksAimedFor = getNumberOfTicksAimedFor();
-			LinearScale linearScale = ((LinearScale) scale);
-			Array<Double> tickData = linearScale.ticks(numberOfTicksAimedFor);
-
-			Selection primaryMinorTicks = axisSelection //
-					.selectAll(".primary") //
-					.selectAll(".tick") //
-					.dataExpression(tickData, "function(d) { return d; }") //
-					.enter() //
-					.insert("g", ".domain") //insert instead of append to ensure that tick lines are not on top in "z-order"
-					.classed("minor", true);
-
-			primaryMinorTickLines = primaryMinorTicks.append("line").attr("stroke", "black");
-
-			Selection secondaryMinorTicks = axisSelection //
-					.selectAll(".secondary") //
-					.selectAll("tick") //
-					.dataExpression(tickData, "function(d) { return d; }") //
-					.enter() //
-					.insert("g", ".domain") //insert instead of append to ensure that tick lines are not on top in "z-order"
-					.classed("minor", true);
-
-			secondaryMinorTickLines = secondaryMinorTicks.append("line").attr("stroke", "black");
-
-			//set tick line geometry
-			if (isHorizontal) {
-				primaryMinorTickLines //
-						.attr("x1", linearScale) //
-						.attr("x2", linearScale)
-						.attr("y1", "0") //
-						.attr("y2", "-" + length.get()); //
-				secondaryMinorTickLines //
-						.attr("x1", linearScale) //
-						.attr("x2", linearScale) //
-						.attr("y1", "0") //
-						.attr("y2", length.get());
-
-			} else {
-				primaryMinorTickLines //
-						.attr("x1", "0") //
-						.attr("x2", length.get()) //
-						.attr("y1", linearScale) //
-						.attr("y2", linearScale);
-				secondaryMinorTickLines //
-						.attr("x1", "0") //
-						.attr("x2", "-" + length.get()) //
-						.attr("y1", linearScale) //
-						.attr("y2", linearScale);
-			}
+			minorTickLineSelections = createMinorTickLinesForLinearScale(axisSelection, scale, isHorizontal);
 		}
 
 		//bind tick properties
@@ -191,24 +112,129 @@ public class MinorTicks implements GraphicsPropertiesPageModel {
 			Axis parentAxis = (Axis) parent;
 			boolean axisIsHorizontal = parentAxis.data.direction.get().equals("horizontal");
 			if (axisIsHorizontal) {
-				primaryMinorTickLines.attr("y2", "-" + length.get());
-				secondaryMinorTickLines.attr("y2", length.get());
+				minorTickLineSelections.getPrimary().attr("y2", "-" + length.get());
+				minorTickLineSelections.getSecondary().attr("y2", length.get());
 			} else {
-				primaryMinorTickLines.attr("x2", length.get());
-				secondaryMinorTickLines.attr("x2", "-" + length.get());
+				minorTickLineSelections.getPrimary().attr("x2", length.get());
+				minorTickLineSelections.getSecondary().attr("x2", "-" + length.get());
 			}
 		});
 
-		Selection minorTickLines = axisSelection //
+		Selection allMinorTickLines = axisSelection //
 				.selectAll("g")
 				.selectAll(".minor")
 				.selectAll("line");
 
-		GraphicsAtom.bindStringAttribute(minorTickLines, "stroke", color);
-		GraphicsAtom.bindStringAttribute(minorTickLines, "stroke-width", width);
-		GraphicsAtom.bindLineStyle(minorTickLines, style);
-		GraphicsAtom.bindLineTransparency(minorTickLines, transparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(minorTickLines, hide, transparency);
+		GraphicsAtom.bindStringAttribute(allMinorTickLines, "stroke", color);
+		GraphicsAtom.bindStringAttribute(allMinorTickLines, "stroke-width", width);
+		GraphicsAtom.bindLineStyle(allMinorTickLines, style);
+		GraphicsAtom.bindLineTransparency(allMinorTickLines, transparency);
+		GraphicsAtom.bindLineTransparencyToBooleanAttribute(allMinorTickLines, hide, transparency);
+	}
+
+	private PrimaryAndSecondarySelection createMinorTickLinesForLogScale(
+			Selection axisSelection,
+			boolean isHorizontal) {
+
+		//note: for log scales no additional minor ticks are created;
+		//only the already existing ticks are used (and modified in their length)
+
+		PrimaryAndSecondarySelection minorTickLineSelections = new PrimaryAndSecondarySelection();
+
+		axisSelection //
+				.selectAll("g")
+				.selectAll(".tick:not(.major)")
+				.classed("minor", true);
+
+		Selection primaryMinorTickLines = axisSelection //
+				.selectAll(".primary") //
+				.selectAll(".minor") //
+				.selectAll("line");
+		minorTickLineSelections.setPrimary(primaryMinorTickLines);
+
+		Selection secondaryMinorTickLines = axisSelection //
+				.selectAll(".secondary") //
+				.selectAll(".minor") //
+				.selectAll("line");
+		minorTickLineSelections.setSecondary(secondaryMinorTickLines);
+		if (isHorizontal) {
+			primaryMinorTickLines.attr("y2", "-" + length.get());
+			secondaryMinorTickLines.attr("y2", length.get());
+		} else {
+			primaryMinorTickLines.attr("x2", length.get());
+			secondaryMinorTickLines.attr("x2", "-" + length.get());
+		}
+
+		return minorTickLineSelections;
+	}
+
+	private PrimaryAndSecondarySelection createMinorTickLinesForLinearScale(
+			Selection axisSelection,
+			Scale<?> scale,
+			boolean isHorizontal) {
+		PrimaryAndSecondarySelection minorTickLineSelections = new PrimaryAndSecondarySelection();
+
+		//remove old minor ticks
+		axisSelection.selectAll(".minor").remove();
+
+		//recreate minor ticks
+		int numberOfTicksAimedFor = getNumberOfTicksAimedFor();
+		LinearScale linearScale = ((LinearScale) scale);
+		Array<Double> tickData = linearScale.ticks(numberOfTicksAimedFor);
+
+		Selection primaryMinorTicks = axisSelection //
+				.selectAll(".primary") //
+				.selectAll(".tick") //
+				.dataExpression(tickData, "function(d) { return d; }") //
+				.enter() //
+				.insert("g", ".domain") //insert instead of append to ensure that tick lines are not on top in "z-order"
+				.classed("minor", true);
+
+		Selection primaryMinorTickLines = primaryMinorTicks //
+				.append("line") //
+				.attr("stroke", "black");
+		minorTickLineSelections.setPrimary(primaryMinorTickLines);
+
+		Selection secondaryMinorTicks = axisSelection //
+				.selectAll(".secondary") //
+				.selectAll("tick") //
+				.dataExpression(tickData, "function(d) { return d; }") //
+				.enter() //
+				.insert("g", ".domain") //insert instead of append to ensure that tick lines are not on top in "z-order"
+				.classed("minor", true);
+
+		Selection secondaryMinorTickLines = secondaryMinorTicks //
+				.append("line") //
+				.attr("stroke", "black");
+		minorTickLineSelections.setSecondary(secondaryMinorTickLines);
+
+		//set tick line geometry
+		if (isHorizontal) {
+			primaryMinorTickLines //
+					.attr("x1", linearScale) //
+					.attr("x2", linearScale)
+					.attr("y1", "0") //
+					.attr("y2", "-" + length.get()); //
+			secondaryMinorTickLines //
+					.attr("x1", linearScale) //
+					.attr("x2", linearScale) //
+					.attr("y1", "0") //
+					.attr("y2", length.get());
+
+		} else {
+			primaryMinorTickLines //
+					.attr("x1", "0") //
+					.attr("x2", length.get()) //
+					.attr("y1", linearScale) //
+					.attr("y2", linearScale);
+			secondaryMinorTickLines //
+					.attr("x1", "0") //
+					.attr("x2", "-" + length.get()) //
+					.attr("y1", linearScale) //
+					.attr("y2", linearScale);
+		}
+
+		return minorTickLineSelections;
 	}
 
 	private int getNumberOfTicksAimedFor() {

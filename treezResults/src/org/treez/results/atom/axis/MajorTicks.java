@@ -9,13 +9,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents the major tick lines
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class MajorTicks implements GraphicsPropertiesPageModel {
+public class MajorTicks implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -84,6 +84,9 @@ public class MajorTicks implements GraphicsPropertiesPageModel {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
 
+		//Hint: The major tick lines already have been created with the axis (see Data).
+		//Here only the properties of the ticks need to be applied.
+
 		Axis axis = (Axis) parent;
 		boolean isLog = axis.data.log.get();
 
@@ -109,6 +112,8 @@ public class MajorTicks implements GraphicsPropertiesPageModel {
 				.selectAll("g") //
 				.selectAll(".major") //
 				.selectAll("line");
+
+		number.addModificationConsumer("replotAxis", (data) -> axis.updatePlotWithD3(d3));
 
 		length.addModificationConsumerAndRun("length", (data) -> {
 			boolean isHorizontal = axis.data.direction.get().equals("horizontal");

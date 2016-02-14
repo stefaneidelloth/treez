@@ -1,5 +1,7 @@
 package org.treez.results.atom.graph;
 
+import java.util.function.Consumer;
+
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
@@ -10,13 +12,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * The main settings for a graph
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Data implements GraphicsPropertiesPageModel {
+public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -76,6 +78,13 @@ public class Data implements GraphicsPropertiesPageModel {
 		GraphicsAtom.bindStringAttribute(rectSelection, "width", width);
 		GraphicsAtom.bindStringAttribute(rectSelection, "height", height);
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideGraph", graphSelection, hide);
+
+		Consumer<String> replotGraph = (data) -> {
+			Graph graph = (Graph) parent;
+			graph.updatePlotWithD3(d3);
+		};
+		width.addModificationConsumer("replotGraph", replotGraph);
+		height.addModificationConsumer("replotGraph", replotGraph);
 
 		return graphSelection;
 	}

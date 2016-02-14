@@ -17,13 +17,13 @@ import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * XY symbol settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Symbol implements GraphicsPropertiesPageModel {
+public class Symbol implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -171,26 +171,8 @@ public class Symbol implements GraphicsPropertiesPageModel {
 
 	@Override
 	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
-		//see method replotWithD3
-		return xySelection;
-	}
 
-	/**
-	 * @param d3
-	 * @param xySelection
-	 * @param xyDataString
-	 * @param xScale
-	 * @param yScale
-	 */
-	public void replotWithD3(
-			D3 d3,
-			Selection xySelection,
-			String xyDataString,
-			QuantitativeScale<?> xScale,
-			QuantitativeScale<?> yScale,
-			GraphicsAtom parent) {
-
-		//remove old symbols group
+		//remove old symbols group if it already exists
 		xySelection //
 				.select("#symbols") //
 				.remove();
@@ -216,47 +198,56 @@ public class Symbol implements GraphicsPropertiesPageModel {
 				.attr("width", width) //
 				.attr("height", height);
 
-		Consumer<String> dataChangedConsumer = (data) -> {
-			rePlotSymbols(d3, xyDataString, xScale, yScale);
-		};
-
+		//bind attributes
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideSymbols", symbolsSelection, hide);
-		symbolType.addModificationConsumer("replotSymbols", dataChangedConsumer);
-		size.addModificationConsumer("replotSymbols", dataChangedConsumer);
-		dataChangedConsumer.accept(null);
+
+		Consumer<String> replotSymbols = (data) -> {
+			rePlotSymbols(d3, parent);
+		};
+		symbolType.addModificationConsumer("replotSymbols", replotSymbols);
+		size.addModificationConsumer("replotSymbols", replotSymbols);
+
+		//initially plot symbols
+		replotSymbols.accept(null);
+
+		//see method replotWithD3
+		return xySelection;
 	}
 
-	private void rePlotSymbols(D3 d3, String xyDataString, QuantitativeScale<?> xScale, QuantitativeScale<?> yScale) {
+	private void rePlotSymbols(D3 d3, GraphicsAtom parent) {
 
 		//remove old symbols
 		symbolsSelection
 				.selectAll("path") //
 				.remove();
 
+		//get symbol type and plot new symbols
 		String symbolTypeString = symbolType.get();
-		boolean isNone = symbolTypeString.equals(SymbolStyleValue.NONE.toString());
-
-		if (!isNone) {
+		boolean isNoneSymbol = symbolTypeString.equals(SymbolStyleValue.NONE.toString());
+		if (!isNoneSymbol) {
 			//plot new symbols
-			plotNewSymbols(d3, xyDataString, xScale, yScale, symbolTypeString);
+			plotNewSymbols(d3, symbolTypeString, parent);
 		}
 	}
 
-	private void plotNewSymbols(
-			D3 d3,
-			String xyDataString,
-			QuantitativeScale<?> xScale,
-			QuantitativeScale<?> yScale,
-			String symbolTypeString) {
+	private void plotNewSymbols(D3 d3, String symbolTypeString, GraphicsAtom parent) {
+
 		SymbolType symbolTypeValue = SymbolType.fromString(symbolTypeString);
 		int symbolSquareSize = Integer.parseInt(size.get());
 
+		//symbol path generator
 		org.treez.javafxd3.d3.svg.Symbol symbol = d3 //
 				.svg() //
 				.symbol() //
 				.size(symbolSquareSize) //
 				.type(symbolTypeValue);
 		String symbolDString = symbol.generate();
+
+		//create symbols
+		Xy xy = (Xy) parent;
+		String xyDataString = xy.getXyDataString();
+		QuantitativeScale<?> xScale = xy.getXScale();
+		QuantitativeScale<?> yScale = xy.getYScale();
 
 		symbolsSelection
 				.selectAll("path") //
@@ -266,6 +257,7 @@ public class Symbol implements GraphicsPropertiesPageModel {
 				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
 				.attr("d", symbolDString);
 
+		//bind attributes
 		GraphicsAtom.bindStringAttribute(symbolsSelection, "fill", fillColor);
 		GraphicsAtom.bindTransparency(symbolsSelection, fillTransparency);
 		GraphicsAtom.bindTransparencyToBooleanAttribute(symbolsSelection, hideFill, fillTransparency);

@@ -1,3 +1,5 @@
 plugins
 xy
 treez
+rect
+unicode

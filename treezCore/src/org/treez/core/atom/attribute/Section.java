@@ -591,7 +591,6 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * Create a model path chooser
 	 *
 	 * @param name
-	 * @param label
 	 * @param defaultPath
 	 * @param atomType
 	 * @param selectionType
@@ -1107,8 +1106,7 @@ public class Section extends AbstractAttributeContainerAtom {
 	 */
 	public AbstractAttributeAtom<String> createFont(Attribute<String> wrap,
 			String name) {
-		Font font = new Font(name);
-		font.set("Arial");
+		Font font = new Font(name, "Arial");
 		addChild(font);
 		font.wrap(wrap);
 		return font;

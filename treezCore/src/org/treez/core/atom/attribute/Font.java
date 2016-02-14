@@ -10,8 +10,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -21,6 +19,7 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
+import org.treez.core.utils.Utils;
 
 /**
  * Allows the user to choose a font
@@ -45,6 +44,16 @@ public class Font extends AbstractAttributeAtom<String> {
 	private String tooltip;
 
 	/**
+	 * Container for label and combo box
+	 */
+	private Composite contentContainer;
+
+	/**
+	 * The label
+	 */
+	private CustomLabel labelComposite;
+
+	/**
 	 * The combo box
 	 */
 	private Combo fontCombo = null;
@@ -65,7 +74,7 @@ public class Font extends AbstractAttributeAtom<String> {
 	 */
 	public Font(String name) {
 		super(name);
-		label = name;
+		label = Utils.firstToUpperCase(name);
 	}
 
 	/**
@@ -87,11 +96,10 @@ public class Font extends AbstractAttributeAtom<String> {
 	 * @param defaultFont
 	 */
 	public Font(String name, String defaultFont) {
-		super(name);
-		label = name;
+		this(name);
 		boolean isFont = getFonts().contains(defaultFont);
 		if (isFont) {
-			attributeValue = defaultFont;
+			set(defaultFont);
 		} else {
 			throw new IllegalArgumentException(
 					"The specified font '" + defaultFont + "' is not known.");
@@ -136,17 +144,23 @@ public class Font extends AbstractAttributeAtom<String> {
 		//toolkit
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
-		Composite container = createContainer(parent, toolkit);
+		//create content composite for label and check box
+		contentContainer = toolkit.createComposite(parent);
 
-		//label
-		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container,
-				currentLabel);
-		final int preferredLabelWidth = 80;
-		labelComposite.setPrefferedWidth(preferredLabelWidth);
+		//create container layout
+		boolean useExtraComboBoxLine = label.length() > CHARACTER_LENGTH_LIMIT;
+		int marginWidth = 0;
+		if (useExtraComboBoxLine) {
+			createLayoutForIndividualLines(contentContainer, marginWidth);
+		} else {
+			createLayoutForSingleLine(contentContainer, marginWidth);
+		}
+
+		//create label
+		createLabel(toolkit);
 
 		//combo box
-		fontCombo = new Combo(container, SWT.NONE);
+		fontCombo = new Combo(contentContainer, SWT.NONE);
 		fontCombo.setEnabled(isEnabled());
 
 		//set available fronts
@@ -156,6 +170,10 @@ public class Font extends AbstractAttributeAtom<String> {
 		}
 
 		//initialize selected item
+		String value = get();
+		List<String> fonts = getFonts();
+		int index = fonts.indexOf(value);
+		fontCombo.select(index);
 
 		//action listener for combo box
 		fontCombo.addSelectionListener(new SelectionAdapter() {
@@ -175,21 +193,10 @@ public class Font extends AbstractAttributeAtom<String> {
 		return this;
 	}
 
-	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit) {
-		//create grid data to use all horizontal space
-		GridData fillHorizontal = new GridData();
-		fillHorizontal.grabExcessHorizontalSpace = true;
-		fillHorizontal.horizontalAlignment = GridData.FILL;
-
-		//create container control for labels and file style
-		Composite container = toolkit.createComposite(parent);
-		GridLayout gridLayout = new GridLayout(3, false);
-		gridLayout.horizontalSpacing = 10;
-		container.setLayout(gridLayout);
-		container.setLayoutData(fillHorizontal);
-		return container;
+	private void createLabel(FormToolkit toolkit) {
+		labelComposite = new CustomLabel(toolkit, contentContainer, label);
+		final int prefferedLabelWidth = 80;
+		labelComposite.setPrefferedWidth(prefferedLabelWidth);
 	}
 
 	@Override

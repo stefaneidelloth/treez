@@ -1,6 +1,5 @@
 package org.treez.results.atom.xy;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -13,15 +12,13 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.results.atom.axis.Axis;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * XY data settings
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Data implements GraphicsPropertiesPageModel {
+public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -98,13 +95,13 @@ public class Data implements GraphicsPropertiesPageModel {
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
 		value = "";
-		data
+		data //
 				.createModelPath(xAxis, "xaxis", value, targetClass, parent) //
 				.setLabel("X axis");
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
 		value = "";
-		data
+		data //
 				.createModelPath(yAxis, "yaxis", value, targetClass, parent) //
 				.setLabel("Y axis");
 
@@ -115,14 +112,12 @@ public class Data implements GraphicsPropertiesPageModel {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
 
-		Xy xy = (Xy) parent;
+		//this property page factory does create an own d3 group; the work will be
+		//done by the other property page factories
 
-		//add change consumer for x and y data
 		Consumer<String> dataChangedConsumer = (data) -> {
-			String xyDataString = getXyDataString(parent);
-			QuantitativeScale<?> xScale = getXScale(parent);
-			QuantitativeScale<?> yScale = getYScale(parent);
-			xy.area.replotWithD3(d3, xySelection, parent, xyDataString, xScale, yScale);
+			Xy xy = (Xy) parent;
+			xy.updatePlotWithD3(d3);
 		};
 		xData.addModificationConsumer("replot", dataChangedConsumer);
 		yData.addModificationConsumer("replot", dataChangedConsumer);
@@ -130,75 +125,7 @@ public class Data implements GraphicsPropertiesPageModel {
 		xAxis.addModificationConsumer("replot", dataChangedConsumer);
 		yAxis.addModificationConsumer("replot", dataChangedConsumer);
 
-		//execute consumer once
-		dataChangedConsumer.accept(null);
-
 		return xySelection;
-	}
-
-	private QuantitativeScale<?> getXScale(AbstractAtom parent) {
-		Axis xAxisAtom = getXAxis(parent);
-		QuantitativeScale<?> scale = (QuantitativeScale<?>) xAxisAtom.getScale();
-		return scale;
-	}
-
-	private QuantitativeScale<?> getYScale(AbstractAtom parent) {
-		Axis yAxisAtom = getYAxis(parent);
-		QuantitativeScale<?> scale = (QuantitativeScale<?>) yAxisAtom.getScale();
-		return scale;
-	}
-
-	private Axis getXAxis(AbstractAtom parent) {
-		Axis xAxisAtom = (Axis) parent.getChildFromRoot(xAxis.toString());
-		return xAxisAtom;
-	}
-
-	private Axis getYAxis(AbstractAtom parent) {
-		Axis yAxisAtom = (Axis) parent.getChildFromRoot(yAxis.toString());
-		return yAxisAtom;
-	}
-
-	private String getXyDataString(GraphicsAtom parent) {
-
-		List<Object> xDataValues = getXData(parent);
-		List<Object> yDataValues = getYData(parent);
-
-		int xLength = xDataValues.size();
-		int yLength = yDataValues.size();
-		boolean lengthsAreOk = xLength == yLength;
-		if (!lengthsAreOk) {
-			String message = "The x and y data has to be of equal size but size of x data is " + xLength
-					+ " and size of y data is " + yLength;
-			throw new IllegalStateException(message);
-		}
-
-		List<String> rowList = new java.util.ArrayList<>();
-		for (int rowIndex = 0; rowIndex < xLength; rowIndex++) {
-			Object xDatum = xDataValues.get(rowIndex);
-			Double x = Double.parseDouble(xDatum.toString());
-
-			Object yDatum = yDataValues.get(rowIndex);
-			Double y = Double.parseDouble(yDatum.toString());
-
-			String rowString = "[" + x + "," + y + "]";
-			rowList.add(rowString);
-		}
-		String xyDataString = "[" + String.join(",", rowList) + "]";
-		return xyDataString;
-	}
-
-	private List<Object> getXData(AbstractAtom parent) {
-		org.treez.data.column.Column xDataColumn = (org.treez.data.column.Column) parent
-				.getChildFromRoot(xData.toString());
-		List<Object> xDataValues = xDataColumn.getValues();
-		return xDataValues;
-	}
-
-	private List<Object> getYData(AbstractAtom parent) {
-		org.treez.data.column.Column yDataColumn = (org.treez.data.column.Column) parent
-				.getChildFromRoot(yData.toString());
-		List<Object> yDataValues = yDataColumn.getValues();
-		return yDataValues;
 	}
 
 	//#end region

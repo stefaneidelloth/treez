@@ -13,7 +13,7 @@ import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.wrapper.Element;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageModel;
+import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 import javafx.geometry.BoundingBox;
 
@@ -21,7 +21,7 @@ import javafx.geometry.BoundingBox;
  * Represents the tick labels
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class TickLabels implements GraphicsPropertiesPageModel {
+public class TickLabels implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
@@ -115,59 +115,33 @@ public class TickLabels implements GraphicsPropertiesPageModel {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		Axis axis = (Axis) parent;
-		boolean isHorizontal = axis.data.isHorizontal();
+		//Hint: The major ticks already have been created with the axis (see Data).
+		//Here only the properties of the tick labels need to be applied.
 
+		//get tick labels
 		Selection tickLabels = axisSelection //
 				.selectAll(".primary")
 				.selectAll(".tick")
 				.selectAll("text");
 
 		//remove default shift
+		Axis axis = (Axis) parent;
+		boolean isHorizontal = axis.data.isHorizontal();
 		if (isHorizontal) {
 			tickLabels.attr("dy", "0");
 		}
 
+		//update label geometry
 		Consumer<String> geometryConsumer = (data) -> {
-
-			double tickOffset = getPxLength(offset);
-
-			String angleString = rotate.get();
-			double rotation = 0;
-			try {
-				rotation = -Double.parseDouble(angleString);
-			} catch (NumberFormatException exception) {}
-
-			//initial transform
-			applyTransformation(tickLabels, 0, 0, rotation);
-
-			//get actual text geometry and update transformation
-			double x = 0;
-			double y = 0;
-
-			if (isHorizontal) {
-				tickLabelHeight = determineTickLabelHeight(tickLabels);
-				y += tickLabelHeight + tickOffset;
-			} else {
-
-				Element firstNode = tickLabels.node();
-				Element tickNode = firstNode.getParentElement();
-				BoundingBox boundingBox = tickNode.getBBox();
-				tickLabelWidth = boundingBox.getWidth();
-				double deltaX = -boundingBox.getMaxX();
-				x += deltaX - tickOffset;
-			}
-
-			applyTransformation(tickLabels, x, y, rotation);
-
+			updateLabelGeometry(tickLabels, isHorizontal);
 		};
-
 		rotate.addModificationConsumer("position", geometryConsumer);
 		offset.addModificationConsumer("position", geometryConsumer);
 		size.addModificationConsumer("position", geometryConsumer);
 
 		geometryConsumer.accept(null);
 
+		//bind attributes
 		GraphicsAtom.bindStringAttribute(tickLabels, "font-family", font);
 		GraphicsAtom.bindStringAttribute(tickLabels, "font-size", size);
 		GraphicsAtom.bindStringAttribute(tickLabels, "fill", color);
@@ -176,7 +150,41 @@ public class TickLabels implements GraphicsPropertiesPageModel {
 		GraphicsAtom.bindFontUnderline(tickLabels, underline);
 		GraphicsAtom.bindTransparencyToBooleanAttribute(tickLabels, hide);
 
+		format.addModificationConsumer("replotAxis", (data) -> axis.updatePlotWithD3(d3));
+
 		return axisSelection;
+	}
+
+	private void updateLabelGeometry(Selection tickLabels, boolean isHorizontal) {
+		double tickOffset = getPxLength(offset);
+
+		String angleString = rotate.get();
+		double rotation = 0;
+		try {
+			rotation = -Double.parseDouble(angleString);
+		} catch (NumberFormatException exception) {}
+
+		//initial transform
+		applyTransformation(tickLabels, 0, 0, rotation);
+
+		//get actual text geometry and update transformation
+		double x = 0;
+		double y = 0;
+
+		if (isHorizontal) {
+			tickLabelHeight = determineTickLabelHeight(tickLabels);
+			y += tickLabelHeight + tickOffset;
+		} else {
+
+			Element firstNode = tickLabels.node();
+			Element tickNode = firstNode.getParentElement();
+			BoundingBox boundingBox = tickNode.getBBox();
+			tickLabelWidth = boundingBox.getWidth();
+			double deltaX = -boundingBox.getMaxX();
+			x += deltaX - tickOffset;
+		}
+
+		applyTransformation(tickLabels, x, y, rotation);
 	}
 
 	private double determineTickLabelHeight(Selection tickLabels) {
