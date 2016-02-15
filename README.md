@@ -11,7 +11,7 @@ GUI, tree based, tree structure, hierarchical structure, scientific plotting, d3
 * Install Eclipse (e.g. )
 * Change the eclipse.ini to start Eclipse with JDK instead of JRE. The first two lines of eclipse.ini should look similar to:
 
--vm
+-vm<br>
 C:\Program Files\Java\jdk1.8.0_51\bin/javaw.exe
 
 * Use following [**Eclipse Update Side**](http://www.vogella.com/tutorials/Eclipse/article.html#plugin_installation) to install Treez:  
