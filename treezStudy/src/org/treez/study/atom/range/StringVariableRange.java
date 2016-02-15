@@ -64,8 +64,8 @@ public class StringVariableRange extends AbstractVariableRange<String> {
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
-				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
-						StringVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.createModelPath(sourceVariableModelPath, this, defaultValue, StringVariableField.class, selectionType,
+						modelEntryPoint, hasToBeEnabled)
 				.setLabel("String variable");
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
 		if (assignRelativeRoot) {

@@ -15,6 +15,7 @@ import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.swt.JavaFxWrapperForSwt;
@@ -26,13 +27,12 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.treez.results.Activator;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 
 /**
  * Represents a plotting page that might include several graphs
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Page extends GraphicsPropertiesPage {
+public class Page extends GraphicsAtom {
 
 	/**
 	 * Logger for this class
@@ -45,17 +45,17 @@ public class Page extends GraphicsPropertiesPage {
 	/**
 	 * Width
 	 */
-	public final Attribute<String> pageWidth = new Wrap<>();
+	public final Attribute<String> width = new Wrap<>();
 
 	/**
 	 * Height
 	 */
-	public final Attribute<String> pageHeight = new Wrap<>();
+	public final Attribute<String> height = new Wrap<>();
 
 	/**
 	 * Color
 	 */
-	public final Attribute<String> pageColor = new Wrap<>();
+	public final Attribute<String> color = new Wrap<>();
 
 	/**
 	 * If this is true the page is hidden.
@@ -107,25 +107,19 @@ public class Page extends GraphicsPropertiesPage {
 
 		//page settings
 		section
-				.createTextField(pageWidth, "pageWidth", "15 cm") //
+				.createTextField(width, "width", "15 cm") //
 				.setLabel("Page width");
 
 		section
-				.createTextField(pageHeight, "pageHeight", "15 cm") //
+				.createTextField(height, "height", "15 cm") //
 				.setLabel("Page Height");
 
-		section.createColorChooser(pageColor, "color", "white");
+		section.createColorChooser(color, "color", "white");
 
 		section.createCheckBox(hide, "hide");
 
 		setModel(root);
 
-	}
-
-	@Override
-	protected void createPropertyPageFactories() {
-		//not used here since there are only a few properties
-		//the few properties are created directly
 	}
 
 	/**
@@ -165,16 +159,21 @@ public class Page extends GraphicsPropertiesPage {
 
 			Selection svgSelection = d3 //
 					.select("#svg");
-			bindStringAttribute(svgSelection, "width", pageWidth);
-			bindStringAttribute(svgSelection, "height", pageHeight);
+			GraphicsAtom.bindStringAttribute(svgSelection, "width", width);
+			GraphicsAtom.bindStringAttribute(svgSelection, "height", height);
 
-			plotWithD3(d3, svgSelection, null, refreshable);
+			plotWithD3(d3, svgSelection, refreshable);
 		};
 		browser = createD3BrowserInCadView(plotPageRunnable);
 	}
 
-	@Override
-	public Selection plotWithD3(D3 d3, Selection svgSelection, Selection contentSelection, Refreshable refreshable) {
+	/**
+	 * @param d3
+	 * @param svgSelection
+	 * @param refreshable
+	 * @return
+	 */
+	public Selection plotWithD3(D3 d3, Selection svgSelection, Refreshable refreshable) {
 		this.treeViewRefreshable = refreshable;
 
 		//remove old page group if it already exists
@@ -187,23 +186,25 @@ public class Page extends GraphicsPropertiesPage {
 				.append("g"); //
 		bindNameToId(pageSelection);
 
-		bindDisplayToBooleanAttribute("hidePage", pageSelection, hide);
+		GraphicsAtom.bindDisplayToBooleanAttribute("hidePage", pageSelection, hide);
 
 		//create rect
 		rectSelection = pageSelection //
 				.append("rect") //
 				.onMouseClick(this);
 
-		bindStringAttribute(rectSelection, "fill", pageColor);
-		bindStringAttribute(rectSelection, "width", pageWidth);
-		bindStringAttribute(rectSelection, "height", pageHeight);
+		bindStringAttribute(rectSelection, "fill", color);
+		bindStringAttribute(rectSelection, "width", width);
+		bindStringAttribute(rectSelection, "height", height);
 
 		updatePlotWithD3(d3);
 
 		return pageSelection;
 	}
 
-	@Override
+	/**
+	 * @param d3
+	 */
 	public void updatePlotWithD3(D3 d3) {
 		plotChildGraphs(d3);
 	}

@@ -66,7 +66,8 @@ public class CodeContainer {
 		String bulkCode = joinLines(bulkLines);
 		String closingCode = joinLines(closingLines);
 
-		String code = headerCode + importCode + openingCode + bulkCode + closingCode;
+		String code = headerCode + importCode + openingCode + bulkCode
+				+ closingCode;
 		return code;
 	}
 
@@ -91,12 +92,13 @@ public class CodeContainer {
 	 * @param codeContainer
 	 */
 	public void extend(CodeContainer codeContainer) {
-		Objects.requireNonNull(codeContainer, "Code container must not be null.");
+		Objects.requireNonNull(codeContainer,
+				"Code container must not be null.");
 
 		boolean hasEqualType = scriptType.equals(codeContainer.scriptType);
 		if (!hasEqualType) {
-			String message = "The given code container does not have the expected script type '" + scriptType
-					+ "' but '" + codeContainer.scriptType + "'.";
+			String message = "The given code container does not have the expected script type '"
+					+ scriptType + "' but '" + codeContainer.scriptType + "'.";
 			throw new IllegalArgumentException(message);
 		}
 
@@ -124,7 +126,8 @@ public class CodeContainer {
 	 */
 	public void extendHeader(String header) {
 		if (StringUtils.isBlank(header)) {
-			throw new IllegalArgumentException("Extended code must not be empty.");
+			throw new IllegalArgumentException(
+					"Extended code must not be empty.");
 		}
 		headerLines.add(header);
 
@@ -144,7 +147,8 @@ public class CodeContainer {
 	 */
 	public void extendImports(String importString) {
 		if (StringUtils.isBlank(importString)) {
-			throw new IllegalArgumentException("Extended code must not be empty.");
+			throw new IllegalArgumentException(
+					"Extended code must not be empty.");
 		}
 		this.importLines.add(importString);
 	}
@@ -161,13 +165,13 @@ public class CodeContainer {
 	/**
 	 * Extends the opening
 	 *
-	 * @param opening
+	 * @param newOpeningLine
 	 */
-	public void extendOpening(String opening) {
-		if (StringUtils.isBlank(opening)) {
-			throw new IllegalArgumentException("Extended code must not be empty.");
+	public void extendOpening(String newOpeningLine) {
+		if (StringUtils.isBlank(newOpeningLine)) {
+			throw new IllegalArgumentException("Added code must not be empty.");
 		}
-		openingLines.add(opening);
+		openingLines.add(newOpeningLine);
 	}
 
 	/**
@@ -180,13 +184,13 @@ public class CodeContainer {
 	/**
 	 * Extends the bulk
 	 *
-	 * @param bulk
+	 * @param newbulkLine
 	 */
-	public void extendBulk(String bulk) {
-		if (StringUtils.isBlank(bulk)) {
-			throw new IllegalArgumentException("Extended code must not be empty.");
+	public void extendBulk(String newbulkLine) {
+		if (StringUtils.isBlank(newbulkLine)) {
+			throw new IllegalArgumentException("Added code must not be empty.");
 		}
-		bulkLines.add(bulk);
+		bulkLines.add(newbulkLine);
 	}
 
 	/**
@@ -199,13 +203,13 @@ public class CodeContainer {
 	/**
 	 * Extends the closing
 	 *
-	 * @param closing
+	 * @param newClosingLine
 	 */
-	public void extendClosing(String closing) {
-		if (StringUtils.isBlank(closing)) {
-			throw new IllegalArgumentException("Extended code must not be empty.");
+	public void extendClosing(String newClosingLine) {
+		if (StringUtils.isBlank(newClosingLine)) {
+			throw new IllegalArgumentException("Added code must not be empty.");
 		}
-		closingLines.add(closing);
+		closingLines.add(newClosingLine);
 
 	}
 
@@ -221,7 +225,8 @@ public class CodeContainer {
 	//#region REPLACE
 
 	/**
-	 * Replaces all occurrences of the first given string with the second given string
+	 * Replaces all occurrences of the first given string with the second given
+	 * string
 	 *
 	 * @param valueToReplace
 	 * @param newValue
@@ -229,7 +234,8 @@ public class CodeContainer {
 	public void replaceInBulk(String valueToReplace, String newValue) {
 		for (int index = 0; index < bulkLines.size(); index++) {
 			String currentLine = bulkLines.get(index);
-			boolean containsValueToReplace = currentLine.contains(valueToReplace);
+			boolean containsValueToReplace = currentLine
+					.contains(valueToReplace);
 			if (containsValueToReplace) {
 				String newLine = currentLine.replace(valueToReplace, newValue);
 				bulkLines.set(index, newLine);
@@ -242,8 +248,8 @@ public class CodeContainer {
 	//#region TRIM
 
 	/**
-	 * Makes sure that the bulk ends with a single empty line (removes empty lines and/or adds an empty line as
-	 * required)
+	 * Makes sure that the bulk ends with a single empty line (removes empty
+	 * lines and/or adds an empty line as required)
 	 */
 	public void makeBulkEndWithSingleEmptyLine() {
 
@@ -271,7 +277,8 @@ public class CodeContainer {
 	//#region HEADER
 
 	/**
-	 * Returns the first lines of the code, for example a package declaration. (Part I)
+	 * Returns the first lines of the code, for example a package declaration.
+	 * (Part I)
 	 *
 	 * @return
 	 */
@@ -311,7 +318,8 @@ public class CodeContainer {
 	//#region OPENING
 
 	/**
-	 * Returns the opening code, e.g. the declaration of a class and its constructor
+	 * Returns the opening code, e.g. the declaration of a class and its
+	 * constructor
 	 *
 	 * @return
 	 */
@@ -370,7 +378,8 @@ public class CodeContainer {
 	//#region CLOSING
 
 	/**
-	 * Returns the end of the code, e.g. the closing brackets for a class definition
+	 * Returns the end of the code, e.g. the closing brackets for a class
+	 * definition
 	 *
 	 * @return
 	 */
@@ -395,8 +404,10 @@ public class CodeContainer {
 	 * @return
 	 */
 	public boolean isEmpty() {
-		boolean startIsEmpty = headerLines.isEmpty() && importLines.isEmpty() && openingLines.isEmpty();
-		boolean isEmpty = startIsEmpty && bulkLines.isEmpty() && closingLines.isEmpty();
+		boolean startIsEmpty = headerLines.isEmpty() && importLines.isEmpty()
+				&& openingLines.isEmpty();
+		boolean isEmpty = startIsEmpty && bulkLines.isEmpty()
+				&& closingLines.isEmpty();
 		return isEmpty;
 	}
 

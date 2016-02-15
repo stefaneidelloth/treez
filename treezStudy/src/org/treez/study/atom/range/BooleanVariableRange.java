@@ -71,8 +71,8 @@ public class BooleanVariableRange extends AbstractVariableRange<Boolean> {
 		boolean hasToBeEnabled = true;
 
 		data
-				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
-						BooleanVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.createModelPath(sourceVariableModelPath, this, defaultValue, BooleanVariableField.class, selectionType,
+						modelEntryPoint, hasToBeEnabled)
 				.setLabel("Boolean variable");
 
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();

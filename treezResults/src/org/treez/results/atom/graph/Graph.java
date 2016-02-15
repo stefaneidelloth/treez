@@ -35,7 +35,7 @@ public class Graph extends GraphicsPropertiesPage {
 	/**
 	 * Main properties, e.g. width & height
 	 */
-	public Data main;
+	public Data data;
 
 	/**
 	 * The properties of the background
@@ -71,8 +71,8 @@ public class Graph extends GraphicsPropertiesPage {
 
 	@Override
 	protected void createPropertyPageFactories() {
-		main = new Data();
-		propertyPageFactories.add(main);
+		data = new Data();
+		propertyPageFactories.add(data);
 
 		background = new Background();
 		propertyPageFactories.add(background);

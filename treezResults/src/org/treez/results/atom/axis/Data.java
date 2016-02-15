@@ -121,7 +121,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Section data = dataPage.createSection("data");
 
-		data.createTextField(label, "Label");
+		data.createTextField(label, "label");
 
 		data.createTextField(min, "min", "0");
 
@@ -175,8 +175,8 @@ public class Data implements GraphicsPropertiesPageFactory {
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideAxis", axisSelection, hide);
 
 		Graph graph = (Graph) parentAxis.getParentAtom();
-		Attribute<String> height = graph.main.height;
-		Attribute<String> width = graph.main.width;
+		Attribute<String> height = graph.data.height;
+		Attribute<String> width = graph.data.width;
 
 		initializeScale(d3, width, height);
 		plotAxisWithD3(d3, axisSelection, parentAxis, width, height);

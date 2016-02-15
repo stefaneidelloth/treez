@@ -123,7 +123,7 @@ public class SensitivityProbe extends AbstractProbe {
 
 		TextField timeAxisLabel = timeSection.createTextField(timeLabel, "timeLabel", "Year");
 		timeAxisLabel.setLabel("Label for time axis");
-		ModelPath timeRangePath = timeSection.createModelPath(timeRange, "timeRange", "", VariableRange.class, this);
+		ModelPath timeRangePath = timeSection.createModelPath(timeRange, this, "", VariableRange.class, this);
 		timeRangePath.setLabel("Range for time axis");
 		timeRangePath.setSelectionType(ModelPathSelectionType.FLAT);
 		//timeRangePath.set("root.studies.picker.time");
@@ -139,7 +139,7 @@ public class SensitivityProbe extends AbstractProbe {
 		tupleListSection.setExpanded(false);
 
 		//tupleListSection.createTextField(tupleListLabel, "tupleListLabel", "Label for first family", "family1");
-		//tupleListSection.createModelPath(tupleList, "firstFamilyRange", "Range for first family", "",
+		//tupleListSection.createModelPath(tupleList, this, "Range for first family", "",
 		//		VariableRange.class, this);
 
 		//probe section
@@ -147,12 +147,11 @@ public class SensitivityProbe extends AbstractProbe {
 
 		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
 		probeNameField.setLabel("Name");
-		ModelPath sweepOutputModelPath = probeSection.createModelPath(pickerOutput, "pickerOutput", "",
-				OutputAtom.class, this);
+		ModelPath sweepOutputModelPath = probeSection.createModelPath(pickerOutput, this, "", OutputAtom.class, this);
 		sweepOutputModelPath.setLabel("Picker output");
 
-		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, "firstProbeTable",
-				sweepOutputModelPath, Table.class);
+		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, this, sweepOutputModelPath,
+				Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
 		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");

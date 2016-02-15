@@ -76,13 +76,13 @@ public class Data implements GraphicsPropertiesPageFactory {
 		Class<?> targetClass = org.treez.data.column.Column.class;
 		String value = "root.data.table.columns.x";
 		data
-				.createModelPath(xData, "xdata", value, targetClass, parent) //
+				.createModelPath(xData, this, value, targetClass, parent) //
 				.setLabel("X data");
 
 		targetClass = org.treez.data.column.Column.class;
 		value = "root.data.table.columns.y";
 		data
-				.createModelPath(yData, "ydata", value, targetClass, parent) //
+				.createModelPath(yData, this, value, targetClass, parent) //
 				.setLabel("Y data");
 
 		TextField legendTextField = data.createTextField(legendText, "legendText", "");
@@ -95,14 +95,15 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
 		value = "";
+
 		data //
-				.createModelPath(xAxis, "xaxis", value, targetClass, parent) //
+				.createModelPath(xAxis, this, value, targetClass, parent) //
 				.setLabel("X axis");
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
 		value = "";
 		data //
-				.createModelPath(yAxis, "yaxis", value, targetClass, parent) //
+				.createModelPath(yAxis, this, value, targetClass, parent) //
 				.setLabel("Y axis");
 
 		//data.createTextField(colorMarkers, "colorMarkers", "Color markers", "");

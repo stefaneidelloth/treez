@@ -211,7 +211,7 @@ public class AxisLabel implements GraphicsPropertiesPageFactory {
 
 		double offset = getPxLength(labelOffset);
 		double tickOffset = getPxLength(axis.tickLabels.offset);
-		double graphHeight = getPxLength(graph.main.height);
+		double graphHeight = getPxLength(graph.data.height);
 
 		Double tickLabelWidth = axis.tickLabels.getTickLabelWidth();
 		final int extraVerticalRotation = -90;
@@ -238,8 +238,8 @@ public class AxisLabel implements GraphicsPropertiesPageFactory {
 		double offset = getPxLength(labelOffset);
 		double tickOffset = getPxLength(axis.tickLabels.offset);
 
-		double graphWidth = getPxLength(graph.main.width);
-		double graphHeight = getPxLength(graph.main.height);
+		double graphWidth = getPxLength(graph.data.width);
+		double graphHeight = getPxLength(graph.data.height);
 
 		Double tickLabelHeight = axis.tickLabels.getTickLabelHeight();
 

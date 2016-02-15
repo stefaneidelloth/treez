@@ -1,5 +1,6 @@
 package org.treez.core.atom.attribute;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -517,16 +518,17 @@ public class Section extends AbstractAttributeContainerAtom {
 	/**
 	 * Creates a model path chooser
 	 *
-	 * @param name
+	 * @param attributeParent
 	 * @param defaultPath
 	 * @param atomType
 	 * @return
 	 */
-	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			String defaultPath, Class<?> atomType) {
+	public ModelPath createModelPath(Attribute<String> wrap,
+			Object attributeParent, String defaultPath, Class<?> atomType) {
+		String attributeName = getFieldName(wrap, attributeParent);
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		ModelPath modelPath = new ModelPath(name, defaultPath, atomType,
-				selectionType, null, false);
+		ModelPath modelPath = new ModelPath(attributeName, defaultPath,
+				atomType, selectionType, null, false);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
 		return modelPath;
@@ -535,14 +537,17 @@ public class Section extends AbstractAttributeContainerAtom {
 	/**
 	 * Creates a model path chooser with a parent model path chooser
 	 *
-	 * @param name
+	 * @param attributeParent
 	 * @param parentModelPath
 	 * @param atomType
 	 * @return
 	 */
-	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			ModelPath parentModelPath, Class<?> atomType) {
-		ModelPath modelPath = new ModelPath(name, parentModelPath, atomType);
+	public ModelPath createModelPath(Attribute<String> wrap,
+			Object attributeParent, ModelPath parentModelPath,
+			Class<?> atomType) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		ModelPath modelPath = new ModelPath(attributeName, parentModelPath,
+				atomType);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
 		return modelPath;
@@ -551,17 +556,18 @@ public class Section extends AbstractAttributeContainerAtom {
 	/**
 	 * Creates a model path chooser
 	 *
-	 * @param name
+	 * @param attributeParent
 	 * @param defaultPath
 	 * @param atomType
 	 * @param selectionType
 	 * @return
 	 */
-	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			String defaultPath, Class<?> atomType,
+	public ModelPath createModelPath(Attribute<String> wrap,
+			Object attributeParent, String defaultPath, Class<?> atomType,
 			ModelPathSelectionType selectionType) {
-		ModelPath modelPath = new ModelPath(name, defaultPath, atomType,
-				selectionType, null, false);
+		String attributeName = getFieldName(wrap, attributeParent);
+		ModelPath modelPath = new ModelPath(attributeName, defaultPath,
+				atomType, selectionType, null, false);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
 		return modelPath;
@@ -570,18 +576,18 @@ public class Section extends AbstractAttributeContainerAtom {
 	/**
 	 * Creates a model path chooser
 	 *
-	 * @param name
 	 * @param defaultPath
 	 * @param atomType
 	 * @param modelEntryAtom
 	 * @return
 	 */
-	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			String defaultPath, Class<?> atomType,
+	public ModelPath createModelPath(Attribute<String> wrap,
+			Object attributeParent, String defaultPath, Class<?> atomType,
 			AbstractAtom modelEntryAtom) {
+		String attributeName = getFieldName(wrap, attributeParent);
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		ModelPath modelPath = new ModelPath(name, defaultPath, atomType,
-				selectionType, modelEntryAtom, false);
+		ModelPath modelPath = new ModelPath(attributeName, defaultPath,
+				atomType, selectionType, modelEntryAtom, false);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
 		return modelPath;
@@ -590,7 +596,7 @@ public class Section extends AbstractAttributeContainerAtom {
 	/**
 	 * Create a model path chooser
 	 *
-	 * @param name
+	 * @param attributeParent
 	 * @param defaultPath
 	 * @param atomType
 	 * @param selectionType
@@ -598,12 +604,13 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * @return
 	 */
 	@SuppressWarnings("checkstyle:parameternumber")
-	public ModelPath createModelPath(Attribute<String> wrap, String name,
-			String defaultPath, Class<?> atomType,
+	public ModelPath createModelPath(Attribute<String> wrap,
+			Object attributeParent, String defaultPath, Class<?> atomType,
 			ModelPathSelectionType selectionType, AbstractAtom modelEntryPoint,
 			boolean hasToBeEnabled) {
-		ModelPath modelPath = new ModelPath(name, defaultPath, atomType,
-				selectionType, modelEntryPoint, hasToBeEnabled);
+		String attributeName = getFieldName(wrap, attributeParent);
+		ModelPath modelPath = new ModelPath(attributeName, defaultPath,
+				atomType, selectionType, modelEntryPoint, hasToBeEnabled);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
 		return modelPath;
@@ -1139,13 +1146,15 @@ public class Section extends AbstractAttributeContainerAtom {
 	/**
 	 * Creates a symbol type selection combo box
 	 *
-	 * @param name
+	 * @param attributeParent
 	 * @return
 	 */
 	public AbstractAttributeAtom<String> createSymbolType(
-			Attribute<String> wrap, String name, String label,
+			Attribute<String> wrap, Object attributeParent, String label,
 			String defaultValue) {
-		SymbolType symbolType = new SymbolType(name, label, defaultValue);
+		String attributeName = getFieldName(wrap, attributeParent);
+		SymbolType symbolType = new SymbolType(attributeName, label,
+				defaultValue);
 		addChild(symbolType);
 		symbolType.wrap(wrap);
 		return symbolType;
@@ -1267,6 +1276,31 @@ public class Section extends AbstractAttributeContainerAtom {
 		variableList.wrap(wrap);
 		return variableList;
 
+	}
+
+	//#end region
+
+	//#region REFLECTION
+
+	@SuppressWarnings("checkstyle:illegalcatch")
+	private static String getFieldName(Object fieldObject, Object parent) {
+
+		Field[] allFields = parent.getClass().getFields();
+		for (Field field : allFields) {
+			Object currentFieldObject;
+			try {
+				currentFieldObject = field.get(parent);
+			} catch (Exception e) {
+				throw new IllegalStateException(
+						"Could not determine field name.");
+			}
+			boolean isWantedField = currentFieldObject.equals(fieldObject);
+			if (isWantedField) {
+				String fieldName = field.getName();
+				return fieldName;
+			}
+		}
+		throw new IllegalStateException("Could not determine field name.");
 	}
 
 	//#end region

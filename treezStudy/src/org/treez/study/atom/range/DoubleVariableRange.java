@@ -64,8 +64,8 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
-				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
-						DoubleVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.createModelPath(sourceVariableModelPath, this, defaultValue, DoubleVariableField.class, selectionType,
+						modelEntryPoint, hasToBeEnabled)
 				.setLabel("Double variable");
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
 		if (assignRelativeRoot) {

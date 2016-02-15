@@ -102,14 +102,14 @@ public class Picking extends AbstractParameterVariation {
 		//model to run
 		String modelToRunDefaultValue = "";
 		pickingSection
-				.createModelPath(modelToRunModelPath, "modelToRunModelPath", modelToRunDefaultValue, Model.class,
-						selectionType, modelEntryPoint, false)
+				.createModelPath(modelToRunModelPath, this, modelToRunDefaultValue, Model.class, selectionType,
+						modelEntryPoint, false)
 				.setLabel("Model to run");
 
 		//variable source model
 		String sourceModelDefaultValue = "";
-		ModelPath modelPath = pickingSection.createModelPath(sourceModelPath, "sourceModelPath",
-				sourceModelDefaultValue, Model.class, selectionType, modelEntryPoint, false);
+		ModelPath modelPath = pickingSection.createModelPath(sourceModelPath, this, sourceModelDefaultValue,
+				Model.class, selectionType, modelEntryPoint, false);
 		modelPath.setLabel("Variable source model (provides variables)");
 
 		//variable list

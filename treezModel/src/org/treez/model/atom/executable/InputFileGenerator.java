@@ -127,8 +127,8 @@ public class InputFileGenerator extends AdjustableAtom {
 		//variable source model
 		String defaultValue = "root.models.genericModel";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		ModelPath sourceModelPath = data.createModelPath(sourceModel, "sourceModel", defaultValue,
-				GenericInputModel.class, selectionType, this, false);
+		ModelPath sourceModelPath = data.createModelPath(sourceModel, this, defaultValue, GenericInputModel.class,
+				selectionType, this, false);
 		sourceModelPath.setLabel("Variable source model (provides variables)");
 
 		//label width

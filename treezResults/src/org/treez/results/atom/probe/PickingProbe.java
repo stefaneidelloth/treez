@@ -123,7 +123,7 @@ public class PickingProbe extends AbstractProbe {
 
 		TextField timeLabelField = timeSection.createTextField(timeLabel, "timeLabel", "Year");
 		timeLabelField.setLabel("Label for time axis");
-		ModelPath timeRangePath = timeSection.createModelPath(timeRange, "timeRange", "", VariableRange.class, this);
+		ModelPath timeRangePath = timeSection.createModelPath(timeRange, this, "", VariableRange.class, this);
 		timeRangePath.setLabel("Range for time axis");
 		timeRangePath.setSelectionType(ModelPathSelectionType.FLAT);
 		//timeRangePath.set("root.studies.picking.time");
@@ -139,7 +139,7 @@ public class PickingProbe extends AbstractProbe {
 		tupleListSection.setExpanded(false);
 
 		//tupleListSection.createTextField(tupleListLabel, "tupleListLabel", "Label for first family", "family1");
-		//tupleListSection.createModelPath(tupleList, "firstFamilyRange", "Range for first family", "",
+		//tupleListSection.createModelPath(tupleList, this, "Range for first family", "",
 		//		VariableRange.class, this);
 
 		//probe section
@@ -147,11 +147,11 @@ public class PickingProbe extends AbstractProbe {
 
 		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
 		probeNameField.setLabel("Name");
-		ModelPath pickingOutputModelPath = probeSection.createModelPath(pickingOutput, "pickingOutput", "",
-				OutputAtom.class, this);
+		ModelPath pickingOutputModelPath = probeSection.createModelPath(pickingOutput, this, "", OutputAtom.class,
+				this);
 		pickingOutputModelPath.setLabel("Picking output");
-		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, "firstProbeTable",
-				pickingOutputModelPath, Table.class);
+		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, this, pickingOutputModelPath,
+				Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
 		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");

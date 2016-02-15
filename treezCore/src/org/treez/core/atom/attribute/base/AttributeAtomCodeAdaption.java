@@ -16,7 +16,8 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(AttributeAtomCodeAdaption.class);
+	private static Logger sysLog = Logger
+			.getLogger(AttributeAtomCodeAdaption.class);
 
 	//#region ATTRIBUTES
 
@@ -38,8 +39,9 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 	//#region METHODS
 
 	/**
-	 * Creates a new code container that contains code for setting the attribute values of the AttributeAtom that
-	 * corresponds to this code adaption. Might be overridden by inheriting classes.
+	 * Creates a new code container that contains code for setting the attribute
+	 * values of the AttributeAtom that corresponds to this code adaption. Might
+	 * be overridden by inheriting classes.
 	 *
 	 * @return
 	 */
@@ -54,8 +56,8 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 		if (hasDefaultValue) {
 			return attributeContainer;
 		} else {
-			CodeContainer nonDefaultContainer = buildCodeContainerForNonDefaultAttribute(attributeContainer,
-					attributeAtom);
+			CodeContainer nonDefaultContainer = buildCodeContainerForNonDefaultAttribute(
+					attributeContainer, attributeAtom);
 			return nonDefaultContainer;
 
 		}
@@ -63,7 +65,8 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 	}
 
 	/**
-	 * Creates a new code container for an attribute atom that does not have the default value
+	 * Creates a new code container for an attribute atom that does not have the
+	 * default value
 	 *
 	 * @param attributeContainer
 	 * @param attributeAtom
@@ -96,7 +99,8 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 
 			//get quantities
 			Quantity quantity = (Quantity) value;
-			Quantity defaultQuantity = (Quantity) attributeAtom.getDefaultValue();
+			Quantity defaultQuantity = (Quantity) attributeAtom
+					.getDefaultValue();
 
 			//get values
 			valueString = quantity.getValue();
@@ -110,29 +114,33 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 
 			//create bulk code
 			if (!hasDefaultValueString) {
-				attributeContainer.extendBulk("\t\t" + VARIABLE_NAME + ".setValueString(\"" + valueString + "\");");
+				attributeContainer.extendBulk("\t\t" + VARIABLE_NAME
+						+ ".setValueString(\"" + valueString + "\");");
 			}
 			if (!hasDefaultUnitString) {
-				attributeContainer.extendBulk("\t\t" + VARIABLE_NAME + ".setUnitString(\"" + unitString + "\");");
+				attributeContainer.extendBulk("\t\t" + VARIABLE_NAME
+						+ ".setUnitString(\"" + unitString + "\");");
 			}
 
 			return attributeContainer;
 		}
 
-		String message = "The type " + valueClassName + " is not yet implemented";
+		String message = "The type " + valueClassName
+				+ " is not yet implemented";
 		throw new IllegalStateException(message);
 	}
 
 	/**
-	 * Returns a String that represents the current attribute value. If the attribute value can not be returned as a
-	 * String, null is returned.
+	 * Returns a String that represents the current attribute value. If the
+	 * attribute value can not be returned as a String, null is returned.
 	 *
 	 * @return
 	 */
 	private String getValueString() {
 
 		@SuppressWarnings("unchecked")
-		AbstractAttributeAtom<T> attributeAtom = (AbstractAttributeAtom<T>) this.getAdaptable();
+		AbstractAttributeAtom<T> attributeAtom = (AbstractAttributeAtom<T>) this
+				.getAdaptable();
 		T value = attributeAtom.get();
 		String valueClassName = value.getClass().getSimpleName();
 
@@ -196,17 +204,13 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 	}
 
 	/**
-	 * @param parentAtom
+	 * @param intermediateAtom
 	 * @param parentContainer
 	 * @return
 	 */
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
-			AbstractAtom parentAtom,
-			CodeContainer parentContainer) {
-
-		String parentNameDebug = parentAtom.getName();
-		sysLog.info("attribute for parent " + parentNameDebug);
+			AbstractAtom intermediateAtom, CodeContainer parentContainer) {
 
 		CodeContainer extendedContainer = parentContainer;
 
@@ -217,15 +221,16 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 			return extendedContainer;
 		} else {
 			CodeContainer extendedAttributeContainer = extendAttributeCodeContainerForModelParentForNonDefaultAttribute(
-					extendedContainer, attributeAtom);
+					extendedContainer, intermediateAtom, attributeAtom);
 			return extendedAttributeContainer;
 		}
 
 	}
 
 	private CodeContainer extendAttributeCodeContainerForModelParentForNonDefaultAttribute(
-			CodeContainer extendedContainer,
+			CodeContainer extendedContainer, AbstractAtom intermediateAtom,
 			AbstractAttributeAtom<T> attributeAtom) {
+
 		String attributeName = attributeAtom.getName();
 
 		T value = attributeAtom.get();
@@ -235,27 +240,40 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 		//code for setting a simple value string
 		String valueString = getValueString();
 		if (valueString != null) {
-			extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "." + attributeName + ".set(" + valueString + ");");
+
+			String newBulkLine = "\t\t" + VARIABLE_NAME + ".";
+
+			if (intermediateAtom != null) {
+				String parentName = intermediateAtom.getName();
+				newBulkLine += parentName + ".";
+			}
+
+			newBulkLine += attributeName + ".set(" + valueString + ");";
+
+			extendedContainer.extendBulk(newBulkLine);
 			return extendedContainer;
 		}
 
 		//code for setting a quantity value
 		boolean isQuantity = value.getClass().equals(Quantity.class);
 		if (isQuantity) {
-			CodeContainer exdentedWithQuantityContainer = extendContainerForQuantityValue(extendedContainer,
-					attributeAtom, attributeName, value);
+			CodeContainer exdentedWithQuantityContainer = extendContainerForQuantityValue(
+					extendedContainer, intermediateAtom, attributeAtom, value);
 			return exdentedWithQuantityContainer;
 		}
 
-		String message = "The type " + valueClassName + " is not yet implemented";
+		String message = "The type " + valueClassName
+				+ " is not yet implemented";
 		throw new IllegalStateException(message);
 	}
 
 	private CodeContainer extendContainerForQuantityValue(
-			CodeContainer extendedContainer,
-			AbstractAttributeAtom<T> attributeAtom,
-			String attributeName,
-			T value) {
+			CodeContainer extendedContainer, AbstractAtom parentAtom,
+			AbstractAttributeAtom<T> attributeAtom, T value) {
+
+		String parentName = parentAtom.getName();
+		String attributeName = attributeAtom.getName();
+
 		String valueString;
 
 		//add import for quantity
@@ -282,33 +300,37 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 		//create code
 		boolean setQuantity = !hasDefaultValueString || !hasDefaultUnitString;
 		if (setQuantity) {
-			String quantityString = "new Quantity(" + valueString + ", " + unitString + ")";
+			String quantityString = "new Quantity(" + valueString + ", "
+					+ unitString + ")";
 			extendedContainer
-					.extendBulk("\t\t" + VARIABLE_NAME + "." + attributeName + ".set(" + quantityString + ");");
+					.extendBulk("\t\t" + parentName + "." + VARIABLE_NAME + "."
+							+ attributeName + ".set(" + quantityString + ");");
 		}
 
 		return extendedContainer;
 	}
 
 	/**
-	 * Checks if the atom has methods setValue and getValue to set a Quantity. Throws an exception if the required
-	 * setters do not exist.
+	 * Checks if the atom has methods setValue and getValue to set a Quantity.
+	 * Throws an exception if the required setters do not exist.
 	 */
 	private void checkIfAtomHasSettersForQuantity() {
 		Class<?> atomClass = atom.getClass();
 		try {
 
-			atomClass.getMethod("setValueString", new Class<?>[] { String.class });
+			atomClass.getMethod("setValueString", new Class<?>[]{String.class});
 		} catch (NoSuchMethodException exception) {
-			String message = "The AttributeAtom '" + atom.getName() + "' of type '" + atom.getClass().getSimpleName()
+			String message = "The AttributeAtom '" + atom.getName()
+					+ "' of type '" + atom.getClass().getSimpleName()
 					+ "' has no setter setValueString(String valueString).";
 			throw new IllegalStateException(message);
 		}
 
 		try {
-			atomClass.getMethod("setUnitString", new Class<?>[] { String.class });
+			atomClass.getMethod("setUnitString", new Class<?>[]{String.class});
 		} catch (NoSuchMethodException exception) {
-			String message = "The AttributeAtom '" + atom.getName() + "' of type '" + atom.getClass().getSimpleName()
+			String message = "The AttributeAtom '" + atom.getName()
+					+ "' of type '" + atom.getClass().getSimpleName()
 					+ "' has no setter setUnitString(String valueString).";
 			throw new IllegalStateException(message);
 		}
@@ -316,22 +338,25 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 	}
 
 	/**
-	 * Checks if the parentAtom has a setter with the given name and value class. Throws an IllegalStateException if the
-	 * setter does not exist.
+	 * Checks if the parentAtom has a setter with the given name and value
+	 * class. Throws an IllegalStateException if the setter does not exist.
 	 *
 	 * @param parentAtom
 	 * @param setterName
 	 * @param valueClass
 	 */
-	protected static void checkIfSetterExists(AbstractAtom parentAtom, String setterName, Class<?> valueClass) {
+	protected static void checkIfSetterExists(AbstractAtom parentAtom,
+			String setterName, Class<?> valueClass) {
 		Class<?> parentClass = parentAtom.getClass();
 
 		try {
-			parentClass.getMethod(setterName, new Class<?>[] { valueClass });
+			parentClass.getMethod(setterName, new Class<?>[]{valueClass});
 		} catch (NoSuchMethodException e) {
 			String treePath = parentAtom.createTreeNodeAdaption().getTreePath();
-			String message = "The atom '" + treePath + "' of type '" + parentAtom.getClass().getSimpleName()
-					+ "' has no setter '" + setterName + "(" + valueClass.getSimpleName() + " valueToSet)'.";
+			String message = "The atom '" + treePath + "' of type '"
+					+ parentAtom.getClass().getSimpleName()
+					+ "' has no setter '" + setterName + "("
+					+ valueClass.getSimpleName() + " valueToSet)'.";
 			throw new IllegalStateException(message);
 		}
 

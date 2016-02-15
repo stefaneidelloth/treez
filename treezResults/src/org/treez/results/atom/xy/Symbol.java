@@ -122,7 +122,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		Section symbol = symbolPage.createSection("symbol");
 
-		symbol.createSymbolType(symbolType, "symbol", "Symbol", "circle");
+		symbol.createSymbolType(symbolType, this, "Symbol", "circle");
 
 		symbol.createTextField(size, "size", "64");
 
@@ -187,8 +187,8 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 		//create clipping path that ensures that the symbols are only
 		//shown within the bounds of the graph
 		Graph graph = (Graph) parent.getParentAtom();
-		double width = Length.toPx(graph.main.width.get());
-		double height = Length.toPx(graph.main.width.get());
+		double width = Length.toPx(graph.data.width.get());
+		double height = Length.toPx(graph.data.width.get());
 		symbolsSelection
 				.append("clipPath") //
 				.attr("id", "symbol-clip-path") //

@@ -213,8 +213,8 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 
 		//target result table (must already exist for manual execution of the TableImport)
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		ModelPath resultTable = targetSection.createModelPath(resultTableModelPath, "resultTableModelPath", null,
-				Table.class, selectionType, this, false);
+		ModelPath resultTable = targetSection.createModelPath(resultTableModelPath, this, null, Table.class,
+				selectionType, this, false);
 		resultTable.setLabel("Result table");
 
 		//append check box (if true, existing data is not deleted and new data is appended)

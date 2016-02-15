@@ -103,4 +103,15 @@ public abstract class GraphicsPropertiesPage extends GraphicsAtom {
 
 	//#end region
 
+	//#region ACCESSORS
+
+	/**
+	 * @return
+	 */
+	public List<GraphicsPropertiesPageFactory> getPropertyPageFactories() {
+		return propertyPageFactories;
+	}
+
+	//#end region
+
 }

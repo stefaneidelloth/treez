@@ -19,7 +19,8 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(AdjustableAtomCodeAdaption.class);
+	private static Logger sysLog = Logger
+			.getLogger(AdjustableAtomCodeAdaption.class);
 
 	//#end region
 
@@ -39,15 +40,31 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 	//#region METHODS
 
 	/**
-	 * Builds the code for setting attribute values of the atom. Might be overridden by inheriting classes.
+	 * Builds the code for setting attribute values of the atom. Might be
+	 * overridden by inheriting classes.
 	 *
 	 * @return
 	 */
-	@SuppressWarnings("checkstyle:illegalcatch")
+
 	@Override
 	protected CodeContainer buildCodeContainerForAttributes() {
 
-		//Initialize the model if required
+		AdjustableAtom adjustableAtom = initializeModelIfRequired();
+
+		AbstractAtom model = adjustableAtom.getModel();
+		if (model != null) {
+			CodeContainer codeContainer = createCodeForAttributesFromModel(
+					adjustableAtom);
+			return codeContainer;
+		} else {
+			throw new IllegalStateException(
+					"Could not create attribute code because the underlying model could not be initialized.");
+		}
+
+	}
+
+	@SuppressWarnings("checkstyle:illegalcatch")
+	protected AdjustableAtom initializeModelIfRequired() {
 		AdjustableAtom adjustableAtom = (AdjustableAtom) atom;
 		AbstractAtom model = adjustableAtom.getModel();
 		boolean modelIsInitialized = model != null;
@@ -59,16 +76,7 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 				throw new IllegalStateException(message, exception);
 			}
 		}
-
-		model = adjustableAtom.getModel();
-		if (model != null) {
-			CodeContainer codeContainer = createCodeForAttributesFromModel(adjustableAtom);
-			return codeContainer;
-		} else {
-			throw new IllegalStateException(
-					"Could not create attribute code because the underlying model could not be initialized.");
-		}
-
+		return adjustableAtom;
 	}
 
 	/**
@@ -77,12 +85,14 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 	 * @param parentAtom
 	 * @return
 	 */
-	private CodeContainer createCodeForAttributesFromModel(AdjustableAtom parentAtom) {
+	protected CodeContainer createCodeForAttributesFromModel(
+			AdjustableAtom parentAtom) {
 
 		CodeContainer attributeContainer = new CodeContainer(scriptType);
 
 		AbstractAtom model = parentAtom.getModel();
-		List<TreeNodeAdaption> pageNodes = model.createTreeNodeAdaption().getChildren();
+		List<TreeNodeAdaption> pageNodes = model.createTreeNodeAdaption()
+				.getChildren();
 
 		for (TreeNodeAdaption pageNode : pageNodes) {
 
@@ -91,8 +101,8 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 			String pageType = Page.class.getSimpleName();
 			boolean isPage = type.equals(pageType);
 			if (!isPage) {
-				String message = "The type of the first children of an AdjustableAtom has to be " + pageType
-						+ " and not '" + type + "'.";
+				String message = "The type of the first children of an AdjustableAtom has to be "
+						+ pageType + " and not '" + type + "'.";
 				throw new IllegalArgumentException(message);
 			}
 
@@ -101,10 +111,12 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 
 			//extend code with attribute code for page
 
-			AttributeParentCodeAdaption codeAdaption = page.createCodeAdaption(scriptType);
+			AttributeParentCodeAdaption codeAdaption = page
+					.createCodeAdaption(scriptType);
 
 			attributeContainer = codeAdaption
-					.extendAttributeCodeContainerForModelParent(parentAtom, attributeContainer);
+					.extendAttributeCodeContainerForModelParent(null,
+							attributeContainer);
 		}
 
 		return attributeContainer;

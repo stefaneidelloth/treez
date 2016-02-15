@@ -64,8 +64,8 @@ public class DirectoryPathVariableRange extends AbstractVariableRange<String> {
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
-				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
-						DirectoryPathVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.createModelPath(sourceVariableModelPath, this, defaultValue, DirectoryPathVariableField.class,
+						selectionType, modelEntryPoint, hasToBeEnabled)
 				.setLabel("Directory path variable");
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
 		if (assignRelativeRoot) {

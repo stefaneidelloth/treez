@@ -135,7 +135,7 @@ public class SweepProbe extends AbstractProbe {
 
 		TextField xLabelField = xSection.createTextField(xLabel, "xLabel", "x");
 		xLabelField.setLabel("Label for x-Axis");
-		ModelPath xRangePath = xSection.createModelPath(xRange, "xRange", "", VariableRange.class, this);
+		ModelPath xRangePath = xSection.createModelPath(xRange, this, "", VariableRange.class, this);
 		xRangePath.setLabel("Range for x-Axis");
 		xRangePath.setSelectionType(ModelPathSelectionType.FLAT);
 		xRangePath.set("root.studies.sweep.threshold");
@@ -153,7 +153,7 @@ public class SweepProbe extends AbstractProbe {
 		TextField firstFamilyField = firstFamilySection.createTextField(firstFamilyLabel, "firstFamilyLabel",
 				"family1");
 		firstFamilyField.setLabel("Label for first family");
-		ModelPath firstFamilyRangePath = firstFamilySection.createModelPath(firstFamilyRange, "firstFamilyRange", "",
+		ModelPath firstFamilyRangePath = firstFamilySection.createModelPath(firstFamilyRange, this, "",
 				VariableRange.class, this);
 		firstFamilyRangePath.setLabel("Range for first family");
 
@@ -164,8 +164,8 @@ public class SweepProbe extends AbstractProbe {
 		TextField secondFamilyField = secondFamilySection.createTextField(secondFamilyLabel, "secondFamilyLabel",
 				"family2");
 		secondFamilyField.setLabel("Label for second family");
-		ModelPath secondFamilyRangePath = secondFamilySection.createModelPath(secondFamilyRange, "secondFamilyRange",
-				"", VariableRange.class, this);
+		ModelPath secondFamilyRangePath = secondFamilySection.createModelPath(secondFamilyRange, this, "",
+				VariableRange.class, this);
 		secondFamilyRangePath.setLabel("Range for second family");
 
 		//probe section
@@ -173,12 +173,11 @@ public class SweepProbe extends AbstractProbe {
 
 		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
 		probeNameField.setLabel("Name");
-		ModelPath sweepOutputModelPath = probeSection.createModelPath(sweepOutput, "sweepOutput", "", OutputAtom.class,
-				this);
+		ModelPath sweepOutputModelPath = probeSection.createModelPath(sweepOutput, this, "", OutputAtom.class, this);
 		sweepOutputModelPath.setLabel("Sweep output");
 
-		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, "firstProbeTable",
-				sweepOutputModelPath, Table.class);
+		ModelPath firstProbeTablePath = probeSection.createModelPath(firstProbeTable, this, sweepOutputModelPath,
+				Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
 		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");

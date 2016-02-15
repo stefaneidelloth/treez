@@ -76,15 +76,15 @@ public class Probability extends AbstractParameterVariation {
 		//model to run
 		String modelToRunDefaultValue = "";
 		pickingSection
-				.createModelPath(modelToRunModelPath, "modelToRunModelPath", modelToRunDefaultValue, Model.class,
-						selectionType, modelEntryPoint, false)
+				.createModelPath(modelToRunModelPath, this, modelToRunDefaultValue, Model.class, selectionType,
+						modelEntryPoint, false)
 				.setLabel("Model to run");
 
 		//variable source model
 		String sourceModelDefaultValue = "";
 		pickingSection
-				.createModelPath(sourceModelPath, "sourceModelPath", sourceModelDefaultValue, Model.class,
-						selectionType, modelEntryPoint, false)
+				.createModelPath(sourceModelPath, this, sourceModelDefaultValue, Model.class, selectionType,
+						modelEntryPoint, false)
 				.setLabel("Variable source model (provides variables)");
 
 		//export study info check box

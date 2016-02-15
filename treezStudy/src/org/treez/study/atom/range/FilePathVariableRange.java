@@ -64,8 +64,8 @@ public class FilePathVariableRange extends AbstractVariableRange<String> {
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
-				.createModelPath(sourceVariableModelPath, "sourceVariableModelPath", defaultValue,
-						FilePathVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled)
+				.createModelPath(sourceVariableModelPath, this, defaultValue, FilePathVariableField.class,
+						selectionType, modelEntryPoint, hasToBeEnabled)
 				.setLabel("File path variable");
 
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
