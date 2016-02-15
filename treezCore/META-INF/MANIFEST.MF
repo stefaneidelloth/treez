@@ -11,7 +11,8 @@ Bundle-ClassPath: .,
  lib/commons-logging-1.2.jar,
  lib/log4j-1.2.5.jar,
  lib/spring-expression-4.1.6.RELEASE.jar,
- lib/spring-core-4.1.6.RELEASE.jar
+ lib/spring-core-4.1.6.RELEASE.jar,
+ lib/jfxswt.jar
 Export-Package: org.apache.commons.exec,
  org.apache.log4j;uses:="org.apache.log4j.helpers,org.apache.log4j.or,org.apache.log4j.spi",
  org.treez.core;
@@ -82,6 +83,7 @@ Export-Package: org.apache.commons.exec,
    org.eclipse.swt.graphics,
    org.eclipse.swt.widgets"
 Require-Bundle: org.apache.commons.lang3,
+ org.eclipse.fx.javafx,
  org.treez.javafxd3,
  org.eclipse.core.runtime,
  org.eclipse.ui,
