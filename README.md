@@ -8,9 +8,9 @@ GUI, tree based, tree structure, hierarchical structure, scientific plotting, d3
 
 ##Installation
 
+* Install Java JDK
 * Install Eclipse (e.g. [eclipse-jee-mars-1-win32-x86_64.zip](https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/1/eclipse-jee-mars-1-win32-x86_64.zip))
-* Change the eclipse.ini to start Eclipse with JDK instead of JRE. The first two lines of eclipse.ini should look similar to:
-
+* Change the eclipse.ini file to start Eclipse with JDK instead of JRE. The first two lines of eclipse.ini should look similar to:<br>
 -vm<br>
 C:\Program Files\Java\jdk1.8.0_51\bin/javaw.exe
 
