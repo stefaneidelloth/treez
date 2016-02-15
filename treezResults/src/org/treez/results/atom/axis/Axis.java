@@ -152,9 +152,9 @@ public class Axis extends GraphicsPropertiesPage {
 		//create new axis group
 		axisSelection = graphSelection //
 				.append("g") //
-				.attr("id", "" + name) //
 				.attr("class", "axis") //
 				.onMouseClick(this);
+		bindNameToId(axisSelection);
 
 		updatePlotWithD3(d3);
 

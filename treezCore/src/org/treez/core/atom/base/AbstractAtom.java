@@ -63,6 +63,11 @@ public abstract class AbstractAtom
 	protected String name;
 
 	/**
+	 * A list of listeners that are informed on name changes
+	 */
+	private List<Consumer<String>> nameListeners;
+
+	/**
 	 * The parent of this AbstractAtom
 	 */
 	protected AbstractAtom parentAtom;
@@ -447,6 +452,24 @@ public abstract class AbstractAtom
 		String newName = Utils.getInput("Please enter the new name:",
 				getName());
 		setName(newName);
+	}
+
+	protected void addNameModificationListener(Consumer<String> nameConsumer) {
+		if (nameListeners == null) {
+			nameListeners = new ArrayList<>();
+		}
+		nameListeners.add(nameConsumer);
+	}
+
+	protected void removeNameModificationListener(
+			Consumer<String> nameConsumer) {
+		nameListeners.remove(nameConsumer);
+	}
+
+	private void triggerNameListeners(String newName) {
+		for (Consumer<String> listener : nameListeners) {
+			listener.accept(newName);
+		}
 	}
 
 	//#end region
@@ -837,7 +860,12 @@ public abstract class AbstractAtom
 	 * @param name
 	 */
 	public void setName(String name) {
-		this.name = name;
+		boolean isDifferentName = (name != null && !name.equals(this.name))
+				|| (name == null && this.name != null);
+		if (isDifferentName) {
+			this.name = name;
+			triggerNameListeners(name);
+		}
 	}
 
 	/**

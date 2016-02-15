@@ -184,8 +184,8 @@ public class Page extends GraphicsPropertiesPage {
 
 		//create new page group
 		pageSelection = svgSelection //
-				.append("g") //
-				.attr("id", "" + name);
+				.append("g"); //
+		bindNameToId(pageSelection);
 
 		bindDisplayToBooleanAttribute("hidePage", pageSelection, hide);
 

@@ -136,8 +136,8 @@ public class Graph extends GraphicsPropertiesPage {
 
 		//create new graph group
 		graphGroupSelection = pageSelection //
-				.append("g") //
-				.attr("id", "" + name);
+				.append("g");
+		bindNameToId(graphGroupSelection);
 
 		//create rect
 		rectSelection = graphGroupSelection //

@@ -64,6 +64,16 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	}
 
 	/**
+	 * Binds the name of this atom to the id attribute of the given selection
+	 * 
+	 * @param selection
+	 */
+	protected void bindNameToId(Selection selection) {
+		selection.attr("id", name);
+		addNameModificationListener((newName) -> selection.attr("id", newName));
+	}
+
+	/**
 	 * Binds the given Attribute to the JavaScript attribute with the given
 	 * data. A change of the attribute will change the JavaScript attribute. The
 	 * original value is trimmed and spaces are removed, e.g. " 1 cm " => "1cm".

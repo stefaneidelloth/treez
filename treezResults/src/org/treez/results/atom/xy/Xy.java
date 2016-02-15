@@ -144,9 +144,9 @@ public class Xy extends GraphicsPropertiesPage {
 		//create new axis group
 		xySelection = graphSelection //
 				.insert("g", ".axis") //
-				.attr("id", "" + name) //TODO: listener for name changes to update id
 				.attr("class", "xy") //
 				.onMouseClick(this);
+		bindNameToId(xySelection);
 
 		updatePlotWithD3(d3);
 
