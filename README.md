@@ -8,9 +8,15 @@ GUI, tree based, tree structure, hierarchical structure, scientific plotting, d3
 
 ##Installation
 
-Use following [**Eclipse Update Side**](http://www.vogella.com/tutorials/Eclipse/article.html#plugin_installation) and disable the option "Group items by category" to see the treez feature:
+* Install [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* Install Eclipse (e.g. [eclipse-jee-mars-1-win32-x86_64.zip](https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/1/eclipse-jee-mars-1-win32-x86_64.zip))
+* Change the eclipse.ini file to start Eclipse with JDK instead of JRE. The first two lines of eclipse.ini should look similar to:<br>
+-vm<br>
+C:/Program Files/Java/jdk1.8.0_51/bin/javaw.exe
 
+* Use following [**Eclipse Update Side**](http://www.vogella.com/tutorials/Eclipse/article.html#plugin_installation) to install Treez:  
 https://github.com/stefaneidelloth/treez/raw/master/treezUpdate/
+* After selecting the update site, you have to **disable the option "Group items by category"** to actually see the single treez feature.
 
 If you have trouble getting Treez up and running, please create an issue ticket. 
 
