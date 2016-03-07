@@ -210,7 +210,7 @@ class ExecutableExecutor {
 
 	private void postProcessFailedProcess(Exception exception) {
 
-		String statusMessage = "Process execution failed!";
+		String statusMessage = "Process execution failed:";
 		issueMessage = statusMessage;
 		sysLog.error(statusMessage, exception);
 		executable.runUiJobNonBlocking(() -> executable.executionStatusInfo.set(statusMessage));

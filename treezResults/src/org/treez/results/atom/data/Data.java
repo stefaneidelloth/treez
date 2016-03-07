@@ -16,6 +16,7 @@ import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.data.output.OutputAtom;
 import org.treez.data.table.Table;
 import org.treez.results.Activator;
+import org.treez.results.atom.probe.AbstractProbe;
 import org.treez.results.atom.probe.PickingProbe;
 import org.treez.results.atom.probe.ProbabilityProbe;
 import org.treez.results.atom.probe.SensitivityProbe;
@@ -136,6 +137,12 @@ public class Data extends AdjustableAtom {
 		return actions;
 	}
 
+	@Override
+	public void execute(Refreshable treeViewerRefreshable) {
+		treeViewRefreshable = treeViewerRefreshable;
+		executeChildren(AbstractProbe.class, treeViewRefreshable);
+	}
+
 	//#region CREATE CHILD ATOMS
 
 	/**
@@ -172,6 +179,42 @@ public class Data extends AdjustableAtom {
 		SweepProbe sweepProbe = new SweepProbe(name);
 		addChild(sweepProbe);
 		return sweepProbe;
+	}
+
+	/**
+	 * Creates a PickingProbe child
+	 *
+	 * @param name
+	 * @return
+	 */
+	public PickingProbe createPickingProbe(String name) {
+		PickingProbe pickingProbe = new PickingProbe(name);
+		addChild(pickingProbe);
+		return pickingProbe;
+	}
+
+	/**
+	 * Creates a SensitivityProbe child
+	 *
+	 * @param name
+	 * @return
+	 */
+	public SensitivityProbe createSensitivityProbe(String name) {
+		SensitivityProbe sensitivityProbe = new SensitivityProbe(name);
+		addChild(sensitivityProbe);
+		return sensitivityProbe;
+	}
+
+	/**
+	 * Creates a ProbabilityProbe child
+	 *
+	 * @param name
+	 * @return
+	 */
+	public ProbabilityProbe createProbabilityProbe(String name) {
+		ProbabilityProbe probabilityProbe = new ProbabilityProbe(name);
+		addChild(probabilityProbe);
+		return probabilityProbe;
 	}
 
 	//#end region

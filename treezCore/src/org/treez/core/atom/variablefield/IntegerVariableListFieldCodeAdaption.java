@@ -11,16 +11,16 @@ import org.treez.core.utils.Utils;
 /**
  * Code adaption for the double variable list field
  */
-public class DoubleVariableListFieldCodeAdaption
+public class IntegerVariableListFieldCodeAdaption
 		extends
-			AttributeAtomCodeAdaption<List<Double>> {
+			AttributeAtomCodeAdaption<List<Integer>> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
 	private static Logger sysLog = Logger
-			.getLogger(DoubleVariableListFieldCodeAdaption.class);
+			.getLogger(IntegerVariableListFieldCodeAdaption.class);
 
 	//#region ATTRIBUTES
 
@@ -33,7 +33,7 @@ public class DoubleVariableListFieldCodeAdaption
 	 *
 	 * @param atom
 	 */
-	public DoubleVariableListFieldCodeAdaption(DoubleVariableListField atom) {
+	public IntegerVariableListFieldCodeAdaption(IntegerVariableListField atom) {
 		super(atom);
 	}
 
@@ -52,7 +52,7 @@ public class DoubleVariableListFieldCodeAdaption
 
 		CodeContainer extendedContainer = parentContainer;
 
-		DoubleVariableListField variableListField = (DoubleVariableListField) atom;
+		IntegerVariableListField variableListField = (IntegerVariableListField) atom;
 		boolean hasDefaultValue = variableListField.hasDefaultValue();
 		if (hasDefaultValue) {
 			return extendedContainer;

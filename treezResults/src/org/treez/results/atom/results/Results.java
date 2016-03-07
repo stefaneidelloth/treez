@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
+import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
@@ -87,6 +88,13 @@ public class Results extends AdjustableAtom {
 		actions.add(addPage);
 
 		return actions;
+	}
+
+	@Override
+	public void execute(Refreshable treeViewerRefreshable) {
+		treeViewRefreshable = treeViewerRefreshable;
+		executeChildren(Data.class, treeViewRefreshable);
+		executeChildren(Page.class, treeViewRefreshable);
 	}
 
 	//#region CREATE CHILD ATOMS

@@ -29,7 +29,7 @@ import org.treez.core.swt.CustomLabel;
  */
 public class QuantityVariableListField
 		extends
-			AbstractAttributeAtom<List<Quantity>> {
+			AbstractVariableListField<Quantity> {
 
 	/**
 	 * Logger for this class
@@ -371,15 +371,29 @@ public class QuantityVariableListField
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
-		throw new IllegalStateException("Not yet implemented");
+	public VariableField<Quantity> createVariableField() {
+		QuantityVariableField variableField = new QuantityVariableField(name);
+		List<Quantity> currentValues = get();
+		if (currentValues == null || currentValues.isEmpty()) {
+			variableField.set(null);
+		} else {
+			Quantity firstValue = currentValues.get(0);
+			variableField.set(firstValue);
+		}
+		return variableField;
 
 	}
 
 	//#end region
 
 	//#region ACCESSORS
+
+	@Override
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
+		throw new IllegalStateException("Not yet implemented");
+
+	}
 
 	//#region VALUE
 
@@ -505,6 +519,7 @@ public class QuantityVariableListField
 	/**
 	 * @param label
 	 */
+	@Override
 	public void setLabel(String label) {
 		this.label = label;
 	}

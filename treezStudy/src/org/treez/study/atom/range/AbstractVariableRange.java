@@ -244,7 +244,7 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 
 	// #end region
 
-	// #region ENABLED STATE
+	//#region ENABLED STATE
 
 	/**
 	 * Sets the enabled state
@@ -260,6 +260,8 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 			treeViewRefreshable.refresh();
 		}
 	}
+
+	//#end region
 
 	/**
 	 * Returns the range values as a list

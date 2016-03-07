@@ -26,7 +26,9 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Allows to edit a list of VariableFields with a combo box for each value
  */
-public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
+public class VariableList
+		extends
+			AbstractAttributeAtom<List<VariableField<?>>> {
 
 	/**
 	 * Logger for this class
@@ -57,7 +59,7 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	/**
 	 * Maps from variable name to VariableField
 	 */
-	private Map<String, VariableField> availableVariables;
+	private Map<String, VariableField<?>> availableVariables;
 
 	//#end region
 
@@ -79,7 +81,8 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	 *
 	 * @param name
 	 */
-	public VariableList(String name, List<VariableField> availableVariables) {
+	public VariableList(String name,
+			List<VariableField<?>> availableVariables) {
 		super(name);
 		label = name;
 		createTreezList(availableVariables);
@@ -105,7 +108,7 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	 * Creates a treez list that contains Strings/text
 	 */
 	protected void createTreezList(
-			List<VariableField> availableVariableFields) {
+			List<VariableField<?>> availableVariableFields) {
 		treezList = new TreezListAtom("treezList");
 		treezList.setColumnType(ColumnType.TEXT);
 
@@ -133,7 +136,7 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<List<VariableField>> createAttributeAtomControl(
+	public AbstractAttributeAtom<List<VariableField<?>>> createAttributeAtomControl(
 			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
@@ -202,9 +205,9 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	@Override
 	public void refreshAttributeAtomControl() {
 		if (treezList != null) {
-			List<VariableField> variableFields = get();
+			List<VariableField<?>> variableFields = get();
 			List<Row> rows = new ArrayList<>();
-			for (VariableField variableField : variableFields) {
+			for (VariableField<?> variableField : variableFields) {
 				if (variableField != null) {
 					Row newRow = new Row(treezList);
 					String variableName = variableField.getName();
@@ -223,12 +226,12 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	 * @param valueString
 	 * @return
 	 */
-	private List<VariableField> valueStringToList(String valueString) {
-		List<VariableField> variableFields = new ArrayList<>();
+	private List<VariableField<?>> valueStringToList(String valueString) {
+		List<VariableField<?>> variableFields = new ArrayList<>();
 		if (!valueString.isEmpty()) {
 			String[] individualValues = valueString.split(",");
 			for (String variableName : individualValues) {
-				VariableField variableField = availableVariables
+				VariableField<?> variableField = availableVariables
 						.get(variableName);
 				variableFields.add(variableField);
 			}
@@ -276,17 +279,17 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	public void setValue(String valueString) {
 		Objects.requireNonNull(availableVariables,
 				"Available variables must be set before calling this method.");
-		List<VariableField> variableFields = valueStringToList(valueString);
+		List<VariableField<?>> variableFields = valueStringToList(valueString);
 		set(variableFields);
 	}
 
 	@Override
-	public List<VariableField> get() {
+	public List<VariableField<?>> get() {
 		Objects.requireNonNull(availableVariables,
 				"Available variables must be set before calling this method.");
 		if (isInitialized()) {
 			String data = treezList.getData(",");
-			List<VariableField> variableFields = valueStringToList(data);
+			List<VariableField<?>> variableFields = valueStringToList(data);
 			return variableFields;
 		} else {
 			return getDefaultValue();
@@ -301,8 +304,8 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	 * @return
 	 */
 	@Override
-	public List<VariableField> getDefaultValue() {
-		List<VariableField> stringValues = valueStringToList(
+	public List<VariableField<?>> getDefaultValue() {
+		List<VariableField<?>> stringValues = valueStringToList(
 				defaultValueString);
 		return stringValues;
 	}
@@ -324,10 +327,10 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 	 * @param availableVariableFields
 	 */
 	public void setAvailableVariables(
-			List<VariableField> availableVariableFields) {
+			List<VariableField<?>> availableVariableFields) {
 
 		//get list of previously selected variables
-		List<VariableField> oldFields = new ArrayList<>();
+		List<VariableField<?>> oldFields = new ArrayList<>();
 		if (availableVariables != null) {
 			oldFields = get();
 		}
@@ -338,7 +341,7 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 		availableVariables = new HashMap<>();
 
 		if (availableVariableFields != null) {
-			for (VariableField variableField : availableVariableFields) {
+			for (VariableField<?> variableField : availableVariableFields) {
 				String variableName = variableField.getName();
 				availableVariableNames.add(variableName);
 				availableVariables.put(variableName, variableField);
@@ -353,8 +356,8 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 		treezList.setAvailableStringItems(availableVariableNameString);
 
 		//filter old non existing values
-		List<VariableField> newVariableFields = new ArrayList<>();
-		for (VariableField oldField : oldFields) {
+		List<VariableField<?>> newVariableFields = new ArrayList<>();
+		for (VariableField<?> oldField : oldFields) {
 			String oldName = oldField.getName();
 			boolean variableExists = availableVariables.containsKey(oldName);
 			if (variableExists) {
@@ -364,6 +367,17 @@ public class VariableList extends AbstractAttributeAtom<List<VariableField>> {
 
 		//update selected variable fields
 		set(newVariableFields);
+
+	}
+
+	/**
+	 * Adds a variable
+	 *
+	 * @param variableField
+	 */
+	public void addVariable(VariableField<?> variableField) {
+		String variableName = variableField.getName();
+		treezList.addRow(variableName);
 
 	}
 

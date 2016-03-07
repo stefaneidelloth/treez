@@ -16,7 +16,7 @@ import org.treez.testutils.PreviewWindow;
  */
 public class VariableListTest
 		extends
-			AbstractAttributeAtomConstructionTest<List<VariableField>> {
+			AbstractAttributeAtomConstructionTest<List<VariableField<?>>> {
 
 	/**
 	 * Logger for this class
@@ -31,12 +31,12 @@ public class VariableListTest
 	public void createTestAtom() {
 
 		//create some variable fields
-		List<VariableField> variables = new ArrayList<>();
+		List<VariableField<?>> variables = new ArrayList<>();
 
-		VariableField firstField = new BooleanVariableField("myFlag");
+		VariableField<?> firstField = new BooleanVariableField("myFlag");
 		variables.add(firstField);
 
-		VariableField secondField = new StringVariableField("myString");
+		VariableField<?> secondField = new StringVariableField("myString");
 		variables.add(secondField);
 
 		//create test atom
@@ -54,7 +54,7 @@ public class VariableListTest
 
 			VariableList variableList = (VariableList) atom;
 			@SuppressWarnings("unused")
-			List<VariableField> variables = variableList.get();
+			List<VariableField<?>> variables = variableList.get();
 
 			//note: here you can set a break point to check if the selected variable fields
 			//are correctly returned

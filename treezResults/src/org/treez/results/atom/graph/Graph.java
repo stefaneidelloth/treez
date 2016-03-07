@@ -17,6 +17,7 @@ import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 import org.treez.results.atom.xy.Xy;
+import org.treez.results.atom.xyseries.XySeries;
 
 /**
  * Represents a graph on a page. A graph may contain several xy plots
@@ -103,18 +104,29 @@ public class Graph extends GraphicsPropertiesPage {
 				treeViewer);
 		actions.add(addData);
 
-		Action addXY = new AddChildAtomTreeViewerAction(Xy.class, "xy", Activator.getImage("xy.png"), this, treeViewer);
-		actions.add(addXY);
+		Action addXySeries = new AddChildAtomTreeViewerAction(
+				XySeries.class,
+				"xySeries",
+				Activator.getImage("xySeries.png"),
+				this,
+				treeViewer);
+		actions.add(addXySeries);
+
+		Action addXy = new AddChildAtomTreeViewerAction(Xy.class, "xy", Activator.getImage("xy.png"), this, treeViewer);
+		actions.add(addXy);
 
 		return actions;
 	}
 
 	@Override
 	public void execute(Refreshable refreshable) {
-		org.treez.results.atom.page.Page page = (org.treez.results.atom.page.Page) createTreeNodeAdaption()
-				.getParent()
-				.getAdaptable();
-		page.execute(refreshable);
+
+		executeChildren(XySeries.class, treeViewRefreshable);
+
+		//org.treez.results.atom.page.Page page = (org.treez.results.atom.page.Page) createTreeNodeAdaption()
+		//		.getParent()
+		//		.getAdaptable();
+		//page.execute(refreshable);
 	}
 
 	//#region D3
@@ -175,7 +187,23 @@ public class Graph extends GraphicsPropertiesPage {
 	 */
 	private void plotChildren(D3 d3) {
 		plotAxis(d3);
+		plotXySeries(d3);
 		plotXy(d3);
+	}
+
+	/**
+	 * Plots all child XySeries
+	 *
+	 * @param d3
+	 */
+	private void plotXySeries(D3 d3) {
+		for (Adaptable child : children) {
+			Boolean isXySeries = child.getClass().equals(XySeries.class);
+			if (isXySeries) {
+				XySeries xySeries = (XySeries) child;
+				xySeries.plotWithD3(d3, graphGroupSelection, this.treeViewRefreshable);
+			}
+		}
 	}
 
 	/**
@@ -185,8 +213,8 @@ public class Graph extends GraphicsPropertiesPage {
 	 */
 	private void plotXy(D3 d3) {
 		for (Adaptable child : children) {
-			Boolean isXY = child.getClass().equals(Xy.class);
-			if (isXY) {
+			Boolean isXy = child.getClass().equals(Xy.class);
+			if (isXy) {
 				Xy xy = (Xy) child;
 				xy.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
 			}
@@ -225,7 +253,19 @@ public class Graph extends GraphicsPropertiesPage {
 	}
 
 	/**
-	 * Creates an XY child
+	 * Creates an XySeries child
+	 *
+	 * @param name
+	 * @return
+	 */
+	public XySeries createXySeries(String name) {
+		XySeries child = new XySeries(name);
+		addChild(child);
+		return child;
+	}
+
+	/**
+	 * Creates an Xy child
 	 *
 	 * @param name
 	 * @return

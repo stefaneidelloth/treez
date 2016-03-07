@@ -199,8 +199,8 @@ public class InputFileGenerator extends AdjustableAtom {
 
 		String resultString = templateString;
 
-		List<VariableField> variableFields = sourceModel.getEnabledVariableFields();
-		for (VariableField variableField : variableFields) {
+		List<VariableField<?>> variableFields = sourceModel.getEnabledVariableFields();
+		for (VariableField<?> variableField : variableFields) {
 			String variableName = variableField.getName();
 			String variableLabel = variableField.getLabel();
 			String valueString = variableField.getValueString(); //e.g. "1"

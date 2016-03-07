@@ -1,6 +1,7 @@
 package org.treez.core.atom.attribute;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -55,7 +56,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	private String tooltip;
 
 	@IsParameter(defaultValue = "org.treez.core.atom.base.AbstractAtom")
-	private String targetClassName;
+	private String targetClassNames;
 
 	@IsParameter(defaultValue = "false")
 	private boolean hasToBeEnabled;
@@ -148,7 +149,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		selectionType = modelPathToCopy.selectionType;
 		defaultValue = modelPathToCopy.defaultValue;
 		tooltip = modelPathToCopy.tooltip;
-		targetClassName = modelPathToCopy.targetClassName;
+		targetClassNames = modelPathToCopy.targetClassNames;
 		hasToBeEnabled = modelPathToCopy.hasToBeEnabled;
 
 		//TODO: replace with path to be able to copy them here
@@ -209,7 +210,39 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		super(name);
 		setLabel(name);
 		setSelectionType(selectionType);
-		setTargetClassName(atomType.getName());
+		List<String> targetClassNameList = Arrays.asList(atomType.getName());
+		setTargetClassNames(targetClassNameList);
+		this.parentModelPath = parentModelPath;
+		this.modelEntryAtom = parentModelPath.modelEntryAtom;
+
+		//try to get abstract model with current path value from rootModelPath
+		updateRelativeRootAtom();
+
+		//add listener to update relative root if value of parent ModelPath
+		//changes
+		parentModelPath.addModifyListener("updateRelativeRootAtom",
+				(event) -> updateRelativeRootAtom());
+
+	}
+
+	/**
+	 * Constructor that uses another ModelPath as root.
+	 *
+	 * @param name
+	 * @param parentModelPath
+	 */
+	public ModelPath(String name, ModelPath parentModelPath,
+			Class<?>[] atomTypes) {
+		super(name);
+		setLabel(name);
+		setSelectionType(selectionType);
+
+		List<String> targetClassNameList = new ArrayList<>();
+		for (Class<?> atomType : atomTypes) {
+			targetClassNameList.add(atomType.getName());
+		}
+		setTargetClassNames(targetClassNameList);
+
 		this.parentModelPath = parentModelPath;
 		this.modelEntryAtom = parentModelPath.modelEntryAtom;
 
@@ -275,6 +308,34 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setDefaultValue(defaultPath);
 		set(defaultPath);
 		setTargetClassName(atomType.getName());
+		setSelectionType(selectionType);
+		setModelEntryAtom(modelEntryAtom);
+		setHasToBeEnabled(hasToBeEnabled);
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param name
+	 * @param defaultPath
+	 * @param atomTypes
+	 * @param selectionType
+	 * @param modelEntryAtom
+	 */
+	public ModelPath(String name, String defaultPath, Class<?>[] atomTypes,
+			ModelPathSelectionType selectionType, AbstractAtom modelEntryAtom,
+			boolean hasToBeEnabled) {
+		super(name);
+		setLabel(label);
+		setDefaultValue(defaultPath);
+		set(defaultPath);
+
+		List<String> targetClassNameList = new ArrayList<>();
+		for (Class<?> atomType : atomTypes) {
+			targetClassNameList.add(atomType.getName());
+		}
+		setTargetClassNames(targetClassNameList);
+
 		setSelectionType(selectionType);
 		setModelEntryAtom(modelEntryAtom);
 		setHasToBeEnabled(hasToBeEnabled);
@@ -413,6 +474,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 		//get available target paths
 		List<String> availableTargetPaths = getAvailableTargetPaths();
+		availableTargetPaths.add(0, ""); //entry for empty selection
 		String[] availableTargetPathsArray = Utils
 				.stringListToArray(availableTargetPaths);
 
@@ -440,10 +502,8 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 					if (relativeRoot != null) {
 						currentValue = relativeToAbsolutePath(currentValue);
 					}
-					set(currentValue);
+					set(currentValue); //(will also update modification listeners)
 
-					//trigger modification listeners
-					triggerModificationListeners();
 				}
 			});
 		}
@@ -482,11 +542,11 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		List<String> availableTargetPaths = new ArrayList<>();
 		if (model != null) {
 			availableTargetPaths = ModelPathSelector.getAvailableTargetPaths(
-					model, targetClassName, hasToBeEnabled);
+					model, targetClassNames, hasToBeEnabled);
 			if (availableTargetPaths == null) {
 				throw new IllegalStateException(
-						"No model paths are available for the target class '"
-								+ targetClassName + "' .");
+						"No model paths are available for the target class(es) '"
+								+ targetClassNames + "' .");
 			}
 
 			//convert paths to relative paths
@@ -629,7 +689,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 					//select path
 					String modelPath = ModelPathSelector.selectTreePath(model,
-							targetClassName, defaultValue);
+							targetClassNames, defaultValue);
 
 					//update default value and value
 					updateDefaultValueAndValue(modelPath);
@@ -755,8 +815,15 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key,
-				(event) -> consumer.accept(event.data.toString()));
+		addModifyListener(key, (event) -> {
+			if (event.data == null) {
+				consumer.accept(null);
+			} else {
+				String data = event.data.toString();
+				consumer.accept(data);
+			}
+
+		});
 	}
 
 	//#end region
@@ -769,7 +836,12 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	@Override
 	public String get() {
 		String path = super.get();
-		return path;
+		if (path.equals("")) {
+			return null;
+		} else {
+			return path;
+		}
+
 	}
 
 	/**
@@ -867,13 +939,17 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Sets the target class name that is used to filter the items that can be
+	 * Sets the target class names that are used to filter the items that can be
 	 * selected in the model tree
 	 *
-	 * @param targetClassName
+	 * @param targetClassNames
 	 */
-	public void setTargetClassName(String targetClassName) {
-		this.targetClassName = targetClassName;
+	public void setTargetClassNames(List<String> targetClassNames) {
+		this.targetClassNames = String.join(",", targetClassNames);
+	}
+
+	private void setTargetClassName(String singleTargetClassName) {
+		this.targetClassNames = singleTargetClassName;
 	}
 
 	private void setModelEntryAtom(AbstractAtom modelEntryAtom) {
@@ -892,6 +968,14 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	 */
 	public void setHasToBeEnabled(boolean state) {
 		this.hasToBeEnabled = state;
+	}
+
+	@Override
+	public void setEnabled(boolean state) {
+		super.setEnabled(state);
+		if (isAvailable(combo)) {
+			combo.setEnabled(state);
+		}
 	}
 
 	//#end region

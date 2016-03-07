@@ -231,8 +231,15 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key,
-				(event) -> consumer.accept(event.data.toString()));
+		addModifyListener(key, (event) -> {
+			if (event.data == null) {
+				consumer.accept(null);
+			} else {
+				String data = event.data.toString();
+				consumer.accept(data);
+			}
+
+		});
 	}
 
 	//#end region

@@ -86,15 +86,18 @@ public class Line implements GraphicsPropertiesPageFactory {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
 
+		String parentName = parent.getName();
+		String id = "lines_" + parentName;
+
 		//remove old line group if it already exists
 		xySelection //
-				.selectAll("#lines") //
+				.selectAll("#" + id) //
 				.remove();
 
 		//create new line group
 		Selection linesSelection = xySelection //
 				.append("g") //
-				.attr("id", "lines") //
+				.attr("id", id) //
 				.attr("class", "lines");
 
 		//get xy parent

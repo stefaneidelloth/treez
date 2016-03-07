@@ -36,31 +36,38 @@ public class SweepProbe extends AbstractProbe {
 
 	//#region ATTRIBUTES
 
+	/**
+	 * Used as separator in column names, e.g. probeColumn_1_3
+	 */
+	private static final String NAME_SEPARATOR = "_";
+
 	//x section
 
 	/**
-	 * x label
+	 * domain label (name of first column)
 	 */
-	public final Attribute<String> xLabel = new Wrap<>();
+	public final Attribute<String> domainLabel = new Wrap<>();
 
 	/**
-	 * x range
+	 * domain range (values of first column)
 	 */
-	public final Attribute<String> xRange = new Wrap<>();
+	public final Attribute<String> domainRange = new Wrap<>();
 
-	//y section
+	//range section
 
 	/**
-	 * y label
+	 * probe label If there is only one result column, this equals the name of the result column. If there are several
+	 * result columns, this will be used as name prefix. The family range indices will also be added to the result
+	 * column names.
 	 */
-	public final Attribute<String> yLabel = new Wrap<>();
+	public final Attribute<String> probeLabel = new Wrap<>();
 
 	//first family section
 
 	/**
-	 * first family label
+	 * first family legend (will be saved as column description)
 	 */
-	public final Attribute<String> firstFamilyLabel = new Wrap<>();
+	public final Attribute<String> firstFamilyLegend = new Wrap<>();
 
 	/**
 	 * first family range
@@ -70,9 +77,9 @@ public class SweepProbe extends AbstractProbe {
 	//second family section
 
 	/**
-	 * second family label
+	 * second family legend (will be saved as column description)
 	 */
-	public final Attribute<String> secondFamilyLabel = new Wrap<>();
+	public final Attribute<String> secondFamilyLegend = new Wrap<>();
 
 	/**
 	 * second family range
@@ -84,7 +91,7 @@ public class SweepProbe extends AbstractProbe {
 	/**
 	 * probe name
 	 */
-	public final Attribute<String> probeName = new Wrap<>();
+	//public final Attribute<String> probeName = new Wrap<>();
 
 	/**
 	 * sweep output model path
@@ -124,35 +131,30 @@ public class SweepProbe extends AbstractProbe {
 
 	//#region METHODS
 
+	@SuppressWarnings({ "checkstyle:javancss", "checkstyle:executablestatementcount" })
 	private void createSweepProbeModel() {
 		AttributeRoot root = new AttributeRoot("root");
 
 		org.treez.core.atom.attribute.Page page = root.createPage("page");
 
-		//x section
-		Section xSection = page.createSection("xSection", "X");
-		xSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
+		//domain section
+		Section domainSection = page.createSection("domainSection", "Domain");
+		domainSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
-		TextField xLabelField = xSection.createTextField(xLabel, "xLabel", "x");
-		xLabelField.setLabel("Label for x-Axis");
-		ModelPath xRangePath = xSection.createModelPath(xRange, this, "", VariableRange.class, this);
-		xRangePath.setLabel("Range for x-Axis");
+		TextField domainLabelField = domainSection.createTextField(domainLabel, "domainLabel", "x");
+		domainLabelField.setLabel("Domain label");
+		ModelPath xRangePath = domainSection.createModelPath(domainRange, this, "", VariableRange.class, this);
+		xRangePath.setLabel("Domain range");
 		xRangePath.setSelectionType(ModelPathSelectionType.FLAT);
 		xRangePath.set("root.studies.sweep.threshold");
-
-		//y section
-		Section ySection = page.createSection("ySection", "Y");
-
-		TextField yLabelField = ySection.createTextField(yLabel, "yLabel", "y");
-		yLabelField.setLabel("Label for y-Axis");
 
 		//first family section
 		Section firstFamilySection = page.createSection("firstFamily", "First family");
 		firstFamilySection.setExpanded(false);
 
-		TextField firstFamilyField = firstFamilySection.createTextField(firstFamilyLabel, "firstFamilyLabel",
+		TextField firstFamilyField = firstFamilySection.createTextField(firstFamilyLegend, "firstFamilyLegend",
 				"family1");
-		firstFamilyField.setLabel("Label for first family");
+		firstFamilyField.setLabel("Legend for first family");
 		ModelPath firstFamilyRangePath = firstFamilySection.createModelPath(firstFamilyRange, this, "",
 				VariableRange.class, this);
 		firstFamilyRangePath.setLabel("Range for first family");
@@ -161,9 +163,9 @@ public class SweepProbe extends AbstractProbe {
 		Section secondFamilySection = page.createSection("secondFamily", "Second family");
 		secondFamilySection.setExpanded(false);
 
-		TextField secondFamilyField = secondFamilySection.createTextField(secondFamilyLabel, "secondFamilyLabel",
+		TextField secondFamilyField = secondFamilySection.createTextField(secondFamilyLegend, "secondFamilyLegend",
 				"family2");
-		secondFamilyField.setLabel("Label for second family");
+		secondFamilyField.setLabel("Legend for second family");
 		ModelPath secondFamilyRangePath = secondFamilySection.createModelPath(secondFamilyRange, this, "",
 				VariableRange.class, this);
 		secondFamilyRangePath.setLabel("Range for second family");
@@ -171,8 +173,9 @@ public class SweepProbe extends AbstractProbe {
 		//probe section
 		Section probeSection = page.createSection("probe", "Probe");
 
-		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
-		probeNameField.setLabel("Name");
+		TextField probeLabelField = probeSection.createTextField(probeLabel, "probeLabel", "y");
+		probeLabelField.setLabel("Probe label");
+
 		ModelPath sweepOutputModelPath = probeSection.createModelPath(sweepOutput, this, "", OutputAtom.class, this);
 		sweepOutputModelPath.setLabel("Sweep output");
 
@@ -192,6 +195,11 @@ public class SweepProbe extends AbstractProbe {
 
 	@Override
 	protected void afterCreateControlAdaptionHook() {
+		updateRelativePathRoots();
+	}
+
+	@Override
+	protected void updateRelativePathRoots() {
 		Attribute<String> attribute = getWrappedAttribute(firstProbeTable);
 		ModelPath firstProbeTableModelPath = (ModelPath) attribute;
 		firstProbeTableModelPath.updateRelativeRootAtom();
@@ -209,7 +217,7 @@ public class SweepProbe extends AbstractProbe {
 	//#region CREATE TABLE COLUMNS
 
 	/**
-	 * Creates the required columns for the given new table
+	 * Creates the required columns for the given new table. This also includes meta data about the column legends.
 	 *
 	 * @param table
 	 */
@@ -224,63 +232,66 @@ public class SweepProbe extends AbstractProbe {
 		List<ColumnType> columnTypes = new ArrayList<>();
 		List<String> columnLegends = new ArrayList<>();
 
-		//x column----------------------------------------
-		String xLabelString = xLabel.get();
-		String xColumnName = xLabelString;
-		columnNames.add(xColumnName);
+		//domain column----------------------------------------
+		String domainLabelString = domainLabel.get();
+		String domainColumnName = domainLabelString;
+		columnNames.add(domainColumnName);
 
-		Class<?> xType = getXType();
-		ColumnType xColumnType = ColumnType.getDefaultTypeForClass(xType);
-		columnTypes.add(xColumnType);
+		Class<?> domainType = getDomainType();
+		ColumnType domainColumnType = ColumnType.getDefaultTypeForClass(domainType);
+		columnTypes.add(domainColumnType);
 
-		String xLegend = xLabelString;
-		columnLegends.add(xLegend);
+		String domainLegend = domainLabelString;
+		columnLegends.add(domainLegend);
 
-		//y columns---------------------------------------
+		//probe columns---------------------------------------
 
-		//get y information
-		String yLabelString = yLabel.get();
-		ColumnType yColumnType = ColumnType.TEXT;
+		//get probe information
+		String probeLabelString = probeLabel.get();
+		ColumnType probeColumnType = ColumnType.TEXT;
 
 		//get first family information
-		String firstFamilyLabelString = firstFamilyLabel.get();
+		String firstFamilyLabelString = firstFamilyLegend.get();
 		List<?> firstFamilyRangeValues = getFirstFamilyRangeValues();
 
 		//get second family information
-		String secondFamilyLabelString = firstFamilyLabel.get();
-		String secondFamilyPath = secondFamilyRange.get();
-		boolean secondFamilyIsSpecified = !"".equals(secondFamilyPath);
-		List<?> secondFamilyRangeValues = null;
-		if (secondFamilyIsSpecified) {
-			VariableRange<?> secondFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(secondFamilyPath);
-			secondFamilyRangeValues = secondFamilyRangeAtom.getRange();
-		}
+		String secondFamilyLabelString = firstFamilyLegend.get();
+		List<?> secondFamilyRangeValues = getSecondFamilyRangeValues();
 
 		//create y column names, types and legends
-		int firstFamilyIndex = 1;
-		for (Object firstFamilyRangeValue : firstFamilyRangeValues) {
-			String columnName = yLabelString + "#" + firstFamilyIndex;
-			String firstFamilyRangeValueString = firstFamilyRangeValue.toString();
-			String legendText = firstFamilyLabelString + ": " + firstFamilyRangeValueString;
-			if (secondFamilyIsSpecified) {
-				int secondFamilyIndex = 1;
-				for (Object secondFamilyRangeValue : secondFamilyRangeValues) {
-					String extendedColumnName = columnName + "#" + secondFamilyIndex;
-					columnNames.add(extendedColumnName);
-					columnTypes.add(yColumnType);
-					String secondFamilyRangeValueString = secondFamilyRangeValue.toString();
-					String extendedLegendText = legendText + ", " + secondFamilyLabelString + ": "
-							+ secondFamilyRangeValueString;
-					columnLegends.add(extendedLegendText);
-					secondFamilyIndex++;
-				}
+		boolean firstFamilyIsSpecified = firstFamilyRangeValues != null;
+		if (firstFamilyIsSpecified) {
+			boolean secondFamilyIsSpecified = secondFamilyRangeValues != null;
+			int firstFamilyIndex = 1;
+			for (Object firstFamilyRangeValue : firstFamilyRangeValues) {
+				String columnName = probeLabelString + NAME_SEPARATOR + firstFamilyIndex;
+				String firstFamilyRangeValueString = firstFamilyRangeValue.toString();
+				String legendText = firstFamilyLabelString + ": " + firstFamilyRangeValueString;
+				if (secondFamilyIsSpecified) {
+					int secondFamilyIndex = 1;
+					for (Object secondFamilyRangeValue : secondFamilyRangeValues) {
+						String extendedColumnName = columnName + NAME_SEPARATOR + secondFamilyIndex;
+						columnNames.add(extendedColumnName);
+						columnTypes.add(probeColumnType);
+						String secondFamilyRangeValueString = secondFamilyRangeValue.toString();
+						String extendedLegendText = legendText + ", " + secondFamilyLabelString + ": "
+								+ secondFamilyRangeValueString;
+						columnLegends.add(extendedLegendText);
+						secondFamilyIndex++;
+					}
 
-			} else {
-				columnNames.add(columnName);
-				columnTypes.add(yColumnType);
-				columnLegends.add(legendText);
+				} else {
+					columnNames.add(columnName);
+					columnTypes.add(probeColumnType);
+					columnLegends.add(legendText);
+				}
+				firstFamilyIndex++;
 			}
-			firstFamilyIndex++;
+		} else {
+			String columnName = probeLabelString;
+			columnNames.add(columnName);
+			columnTypes.add(probeColumnType);
+			columnLegends.add("");
 		}
 
 		//create columns--------------------------------------------------------------------------
@@ -308,20 +319,28 @@ public class SweepProbe extends AbstractProbe {
 
 	private List<?> getFirstFamilyRangeValues() {
 		String firstFamilyPath = firstFamilyRange.get();
-		boolean firstFamilyIsSpecified = !"".equals(firstFamilyPath);
+		boolean firstFamilyIsSpecified = firstFamilyPath != null && !"".equals(firstFamilyPath);
 		List<?> firstFamilyRangeValues = null;
 		if (firstFamilyIsSpecified) {
 			VariableRange<?> firstFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(firstFamilyPath);
 			firstFamilyRangeValues = firstFamilyRangeAtom.getRange();
-		} else {
-			String message = "At least the first family range needs to be specified.";
-			throw new IllegalStateException(message);
 		}
 		return firstFamilyRangeValues;
 	}
 
-	private Class<?> getXType() {
-		String xPath = xRange.get();
+	private List<?> getSecondFamilyRangeValues() {
+		String secondFamilyPath = secondFamilyRange.get();
+		boolean secondFamilyIsSpecified = secondFamilyPath != null && !"".equals(secondFamilyPath);
+		List<?> secondFamilyRangeValues = null;
+		if (secondFamilyIsSpecified) {
+			VariableRange<?> secondFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(secondFamilyPath);
+			secondFamilyRangeValues = secondFamilyRangeAtom.getRange();
+		}
+		return secondFamilyRangeValues;
+	}
+
+	private Class<?> getDomainType() {
+		String xPath = domainRange.get();
 		boolean xIsSpecified = !"".equals(xPath);
 		Class<?> xType = null;
 		if (xIsSpecified) {
@@ -341,8 +360,8 @@ public class SweepProbe extends AbstractProbe {
 		sysLog.info("Filling probe table...");
 
 		//get x information
-		String xLabelString = xLabel.get();
-		String xPath = xRange.get();
+		String xLabelString = domainLabel.get();
+		String xPath = domainRange.get();
 		boolean xIsSpecified = !"".equals(xPath);
 		VariableRange<?> xRangeAtom = null;
 
@@ -353,24 +372,17 @@ public class SweepProbe extends AbstractProbe {
 		}
 
 		//get y information
-		String yLabelString = yLabel.get();
+		String yLabelString = probeLabel.get();
 
 		//get first family information
-		String firstFamilyPath = firstFamilyRange.get();
-		List<?> firstFamilyRangeValues = getFirstFamilyRangeValues(firstFamilyPath);
+		List<?> firstFamilyRangeValues = getFirstFamilyRangeValues();
 
 		//get second family information
-		String secondFamilyPath = secondFamilyRange.get();
-		boolean secondFamilyIsSpecified = !"".equals(secondFamilyPath);
-		List<?> secondFamilyRangeValues = null;
-		if (secondFamilyIsSpecified) {
-			VariableRange<?> secondFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(secondFamilyPath);
-			secondFamilyRangeValues = secondFamilyRangeAtom.getRange();
-		}
+		List<?> secondFamilyRangeValues = getSecondFamilyRangeValues();
 
 		//column names
 		List<String> columnNames = createColumnNames(xLabelString, yLabelString, firstFamilyRangeValues,
-				secondFamilyIsSpecified, secondFamilyRangeValues);
+				secondFamilyRangeValues);
 
 		//get sweep output path
 		String sweepOutputPath = sweepOutput.get();
@@ -455,7 +467,6 @@ public class SweepProbe extends AbstractProbe {
 			String xLabelString,
 			String yLabelString,
 			List<?> firstFamilyRangeValues,
-			boolean secondFamilyIsSpecified,
 			List<?> secondFamilyRangeValues) {
 		List<String> columnNames = new ArrayList<>();
 
@@ -464,32 +475,26 @@ public class SweepProbe extends AbstractProbe {
 		columnNames.add(xColumnName);
 
 		//create remaining column info (=y columns)
-		for (int firstFamilyIndex = 1; firstFamilyIndex <= firstFamilyRangeValues.size(); firstFamilyIndex++) {
-			String columnName = yLabelString + "#" + firstFamilyIndex;
-			if (secondFamilyIsSpecified) {
-				for (int secondFamilyIndex = 1; secondFamilyIndex <= secondFamilyRangeValues
-						.size(); secondFamilyIndex++) {
-					String extendedColumnName = columnName + "#" + secondFamilyIndex;
-					columnNames.add(extendedColumnName);
+		boolean firstFamilyIsSpecified = firstFamilyRangeValues != null;
+		boolean secondFamilyIsSpecified = secondFamilyRangeValues != null;
+		if (firstFamilyIsSpecified) {
+			for (int firstFamilyIndex = 1; firstFamilyIndex <= firstFamilyRangeValues.size(); firstFamilyIndex++) {
+				String columnName = yLabelString + NAME_SEPARATOR + firstFamilyIndex;
+				if (secondFamilyIsSpecified) {
+					for (int secondFamilyIndex = 1; secondFamilyIndex <= secondFamilyRangeValues
+							.size(); secondFamilyIndex++) {
+						String extendedColumnName = columnName + NAME_SEPARATOR + secondFamilyIndex;
+						columnNames.add(extendedColumnName);
+					}
+				} else {
+					columnNames.add(columnName);
 				}
-			} else {
-				columnNames.add(columnName);
 			}
+		} else {
+			String yColumnName = yLabelString;
+			columnNames.add(yColumnName);
 		}
 		return columnNames;
-	}
-
-	private List<?> getFirstFamilyRangeValues(String firstFamilyPath) {
-		boolean firstFamilyIsSpecified = !"".equals(firstFamilyPath);
-		List<?> firstFamilyRangeValues = null;
-		if (firstFamilyIsSpecified) {
-			VariableRange<?> firstFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(firstFamilyPath);
-			firstFamilyRangeValues = firstFamilyRangeAtom.getRange();
-		} else {
-			String message = "At least the first family range needs to be specified.";
-			throw new IllegalStateException(message);
-		}
-		return firstFamilyRangeValues;
 	}
 
 	private Object getProbeValue(String probeTablePath, int rowIndex, int columnIndex) {

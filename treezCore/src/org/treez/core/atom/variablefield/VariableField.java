@@ -3,7 +3,10 @@ package org.treez.core.atom.variablefield;
 /**
  * Represents a variable field
  */
-public interface VariableField {
+/**
+ *
+ */
+public interface VariableField<T> {
 
 	/**
 	 * Returns the name
@@ -21,7 +24,7 @@ public interface VariableField {
 
 	/**
 	 * Sets the label
-	 * 
+	 *
 	 * @param newLabel
 	 */
 	void setLabel(String newLabel);
@@ -32,6 +35,13 @@ public interface VariableField {
 	 * @return
 	 */
 	String getValueString();
+
+	/**
+	 * Sets the value string
+	 *
+	 * @param valueString
+	 */
+	void setValueString(String valueString);
 
 	/**
 	 * Returns true if the variable field is enabled
@@ -46,5 +56,20 @@ public interface VariableField {
 	 * @param state
 	 */
 	void setEnabled(boolean state);
+
+	/**
+	 * Returns the variable value
+	 *
+	 * @return
+	 */
+	T get();
+
+	/**
+	 * Creates a VariableListField whose variable type is the same as the type
+	 * of this VariableField
+	 * 
+	 * @return
+	 */
+	AbstractVariableListField<T> createVariableListField();
 
 }

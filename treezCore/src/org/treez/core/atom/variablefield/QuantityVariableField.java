@@ -1,5 +1,8 @@
 package org.treez.core.atom.variablefield;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -27,7 +30,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(QuantityVariableField.class);
+	private static Logger sysLog = Logger
+			.getLogger(QuantityVariableField.class);
 
 	//#region ATTRIBUTES
 
@@ -35,8 +39,9 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	private String defaultUnitString;
 
 	/**
-	 * Contains the actual unitString. This is used together with the valueString to represent the state of this
-	 * attribute atom. The attributeValue is derived from them.
+	 * Contains the actual unitString. This is used together with the
+	 * valueString to represent the state of this attribute atom. The
+	 * attributeValue is derived from them.
 	 */
 	private String unitString;
 
@@ -92,7 +97,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<Quantity> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<Quantity> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize quantity value at the first call
@@ -109,7 +115,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 
 		//create container composite
 		//its layout depends on the length of the labels and values
-		Composite container = createContainerForLabelsAndTextFields(parent, toolkit, useIndividualLines);
+		Composite container = createContainerForLabelsAndTextFields(parent,
+				toolkit, useIndividualLines);
 
 		//label
 		createValueLabel(toolkit, container);
@@ -150,7 +157,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 		}
 
 		//check if the content is too long for a single line
-		boolean useIndividualLines = (valueLabelSize + valueSize + unitSize) > CHARACTER_LENGTH_LIMIT;
+		boolean useIndividualLines = (valueLabelSize + valueSize
+				+ unitSize) > CHARACTER_LENGTH_LIMIT;
 		return useIndividualLines;
 	}
 
@@ -162,7 +170,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	 * @param useIndividualLines
 	 */
 	@SuppressWarnings("checkstyle:magicnumber")
-	private void createUnitContainer(FormToolkit toolkit, Composite container, boolean useIndividualLines) {
+	private void createUnitContainer(FormToolkit toolkit, Composite container,
+			boolean useIndividualLines) {
 
 		//create composite and set layout
 		Composite unitComposite = toolkit.createComposite(container);
@@ -186,7 +195,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 		if (useIndividualLines) {
 			startLabelText = "unit: [ ";
 		}
-		CustomLabel unitStartLabel = new CustomLabel(toolkit, unitComposite, startLabelText);
+		CustomLabel unitStartLabel = new CustomLabel(toolkit, unitComposite,
+				startLabelText);
 		unitStartLabel.setBackground(BACKGROUND_COLOR);
 
 		//unit text field
@@ -205,7 +215,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	 * @param useIndividualLines
 	 */
 
-	private void createUnitTextField(FormToolkit toolkit, Composite container, boolean useIndividualLines) {
+	private void createUnitTextField(FormToolkit toolkit, Composite container,
+			boolean useIndividualLines) {
 
 		String currentUnitString = getUnitString();
 		unitField = toolkit.createText(container, currentUnitString);
@@ -242,7 +253,9 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 			final int preferredUnitWidth = 40;
 			int unitWidth = unitField.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
 			if (unitWidth < preferredUnitWidth) {
-				GridDataFactory.fillDefaults().hint(preferredUnitWidth, SWT.DEFAULT).applyTo(unitField);
+				GridDataFactory.fillDefaults()
+						.hint(preferredUnitWidth, SWT.DEFAULT)
+						.applyTo(unitField);
 			}
 		}
 	}
@@ -297,9 +310,23 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
+	}
+
+	@Override
+	public AbstractVariableListField<Quantity> createVariableListField() {
+
+		QuantityVariableListField listField = new QuantityVariableListField(
+				name);
+		List<Quantity> valueList = new ArrayList<>();
+		Quantity currentValue = get();
+		valueList.add(currentValue);
+		listField.set(valueList);
+
+		return listField;
 	}
 
 	//#end region
@@ -309,8 +336,9 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	//#region VALUE
 
 	/**
-	 * Returns the quantity. This does not use the attributeValue to store the state of this attribute atom but uses the
-	 * valueString and the unitString to do so.
+	 * Returns the quantity. This does not use the attributeValue to store the
+	 * state of this attribute atom but uses the valueString and the unitString
+	 * to do so.
 	 */
 	@Override
 	public Quantity get() {
@@ -346,8 +374,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	}
 
 	/**
-	 * Sets the unit string. If the given value is null, the unit string is set to "". Specify the unit without
-	 * brackets, e.g. "m" instead of "[m]"
+	 * Sets the unit string. If the given value is null, the unit string is set
+	 * to "". Specify the unit without brackets, e.g. "m" instead of "[m]"
 	 *
 	 * @param unitString
 	 */
@@ -374,7 +402,8 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	 */
 	@Override
 	public Quantity getDefaultValue() {
-		Quantity quantity = new Quantity(getDefaultValueString(), defaultUnitString);
+		Quantity quantity = new Quantity(getDefaultValueString(),
+				defaultUnitString);
 		return quantity;
 	}
 

@@ -1,5 +1,6 @@
 package org.treez.core.atom.variablefield;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -92,10 +93,32 @@ public class BooleanVariableField extends CheckBox implements VariableField {
 	}
 
 	@Override
+	public AbstractVariableListField<Boolean> createVariableListField() {
+
+		throw new NotImplementedException();
+	}
+
+	//#end region
+
+	//#region ACCESSORS
+
+	@Override
 	public String getValueString() {
 		Boolean value = this.get();
 		String valueString = value.toString();
 		return valueString;
+	}
+
+	@Override
+	public void setValueString(String valueString) {
+		try {
+			Boolean value = new Boolean(valueString);
+			this.set(value);
+		} catch (Exception exception) {
+			String message = "The string value '" + valueString
+					+ "' could not be inteprted as Boolean value";
+			throw new IllegalStateException(message);
+		}
 	}
 
 	//#end region

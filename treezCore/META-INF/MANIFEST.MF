@@ -83,7 +83,6 @@ Export-Package: org.apache.commons.exec,
    org.eclipse.swt.graphics,
    org.eclipse.swt.widgets"
 Require-Bundle: org.apache.commons.lang3,
- org.eclipse.fx.javafx,
  org.treez.javafxd3,
  org.eclipse.core.runtime,
  org.eclipse.ui,

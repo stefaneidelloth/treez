@@ -37,7 +37,8 @@ public class TreeViewProvider {
 	//#region ATTRIBUTES
 
 	/**
-	 * The treez view (typically an eclipse view part) for which the tree view will be provided
+	 * The treez view (typically an eclipse view part) for which the tree view
+	 * will be provided
 	 */
 	private TreezView treezView;
 
@@ -85,17 +86,18 @@ public class TreeViewProvider {
 	//#region METHODS
 
 	/**
-	 * Provides a tree view to the treezView (which has been passed to the constructor of this class before) The
-	 * argument treeViewActionProvider might provide actions to the tree view or you pass null if no actions should be
-	 * provided.
+	 * Provides a tree view to the treezView (which has been passed to the
+	 * constructor of this class before) The argument treeViewActionProvider
+	 * might provide actions to the tree view or you pass null if no actions
+	 * should be provided.
 	 *
-	 * @param targetClassName
-	 *            : class for the elements that are shown in the tree; can be used to filter the nodes for specific type
+	 * @param targetClassNames
+	 *            : class for the elements that are shown in the tree; can be
+	 *            used to filter the nodes for specific type
 	 * @param treeViewActionProvider
 	 * @param treeViewCodeConverter
 	 */
-	public void provideTreeView(
-			String targetClassName,
+	public void provideTreeView(String targetClassNames,
 			ActionProviderRefreshable treeViewActionProvider,
 			TreeViewCodeConverter treeViewCodeConverter) {
 
@@ -111,9 +113,11 @@ public class TreeViewProvider {
 		contentComposite.setLayoutData(parentData);
 
 		//create the tree viewer
-		treeViewer = new TreeViewerRefreshable(contentComposite, treeViewActionProvider, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL);
-		treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		treeViewer = new TreeViewerRefreshable(contentComposite,
+				treeViewActionProvider,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		treeViewer.getControl()
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		//set the label provider that determines how the nodes are displayed
 		treeViewer.setLabelProvider(new TreeViewLabelAndImageProvider());
@@ -122,7 +126,7 @@ public class TreeViewProvider {
 		treeViewer.setComparer(new NodeComparer());
 
 		//set the content provider that provides the nodes for the tree
-		contentProvider = new TreeViewContentProvider(targetClassName);
+		contentProvider = new TreeViewContentProvider(targetClassNames);
 		treeViewer.setContentProvider(contentProvider);
 
 		//set the invisible root node. the children of this
@@ -156,7 +160,8 @@ public class TreeViewProvider {
 
 		if (workbench != null) {
 			try {
-				workbench.getHelpSystem().setHelp(treeViewer.getControl(), HELP_CONTEXT_ID);
+				workbench.getHelpSystem().setHelp(treeViewer.getControl(),
+						HELP_CONTEXT_ID);
 			} catch (Exception error) {
 				sysLog.warn("Could not set help id for treeViewer control.");
 			}
@@ -164,9 +169,10 @@ public class TreeViewProvider {
 	}
 
 	/**
-	 * Passes the focus request to the treeViewer's control. The eclipse plugin (the part view) has a setFocus method
-	 * that has to be overridden. This focus request is redirected to this method which further redirects the focus to
-	 * the control of the tree viewer.
+	 * Passes the focus request to the treeViewer's control. The eclipse plugin
+	 * (the part view) has a setFocus method that has to be overridden. This
+	 * focus request is redirected to this method which further redirects the
+	 * focus to the control of the tree viewer.
 	 */
 	public void setFocus() {
 		treeViewer.getControl().setFocus();
@@ -178,18 +184,16 @@ public class TreeViewProvider {
 	 * @return
 	 */
 	public String getFileNameOfCurrentlyActiveDocument() {
-		IEditorPart activeEditor = PlatformUI
-				.getWorkbench()
-				.getActiveWorkbenchWindow()
-				.getActivePage()
-				.getActiveEditor();
+		IEditorPart activeEditor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		String filename = activeEditor.getEditorInput().getName();
 		return filename;
 	}
 
 	/**
-	 * Checks if the given filename ends with a known extension and returns the corresponding script type. If the
-	 * extension is not known ScriptType.UNKNOWN is returned.
+	 * Checks if the given filename ends with a known extension and returns the
+	 * corresponding script type. If the extension is not known
+	 * ScriptType.UNKNOWN is returned.
 	 *
 	 * @param fileName
 	 * @return
@@ -203,7 +207,8 @@ public class TreeViewProvider {
 			return ScriptType.JAVA;
 		}
 
-		boolean isJavaScript = fileName.substring(length - 3, length).equals(".js");
+		boolean isJavaScript = fileName.substring(length - 3, length)
+				.equals(".js");
 		if (isJavaScript) {
 			return ScriptType.JAVA_SCRIPT;
 		}
@@ -213,8 +218,8 @@ public class TreeViewProvider {
 	}
 
 	/**
-	 * Updates the tree content with a given root element. It tries to restore the expansion state of the tree after
-	 * updating the content.
+	 * Updates the tree content with a given root element. It tries to restore
+	 * the expansion state of the tree after updating the content.
 	 *
 	 * @param invisibleRoot
 	 */
@@ -236,37 +241,44 @@ public class TreeViewProvider {
 	}
 
 	/**
-	 * Visually shows if the tree contains errors by setting the background of the tree viewer to orange
+	 * Visually shows if the tree contains errors by setting the background of
+	 * the tree viewer to orange
 	 *
 	 * @param parsingState
 	 * @param executionException
 	 */
-	public void visualizeErrorState(TreeErrorState parsingState, Exception executionException) {
+	public void visualizeErrorState(TreeErrorState parsingState,
+			Exception executionException) {
 
 		final Color errorColor = new Color(Display.getCurrent(), 250, 200, 128);
-		final Color normalColor = new Color(Display.getCurrent(), 255, 255, 255);
+		final Color normalColor = new Color(Display.getCurrent(), 255, 255,
+				255);
 
 		switch (parsingState) {
-		case OK:
-			treeViewer.getTree().setBackground(normalColor);
-			treeViewer.getTree().setToolTipText("");
-			break;
-		case ERROR:
-			//show tool tip
-			treeViewer.getTree().setBackground(errorColor);
-			String errorCode = ExceptionUtils.getStackTrace(executionException);
-			treeViewer.getTree().setToolTipText(errorCode);
+			case OK :
+				treeViewer.getTree().setBackground(normalColor);
+				treeViewer.getTree().setToolTipText("");
+				break;
+			case ERROR :
+				//show tool tip
+				treeViewer.getTree().setBackground(errorColor);
+				String errorCode = ExceptionUtils
+						.getStackTrace(executionException);
+				treeViewer.getTree().setToolTipText(errorCode);
 
-			//create atom to display error
-			AttributeRoot invisibleRoot = new AttributeRoot("invisibleRoot");
-			String messageTitle = "Could not build tree from code!";
-			ErrorAtom errorAtom = new ErrorAtom("error", messageTitle, executionException);
-			invisibleRoot.addChild(errorAtom);
-			treeViewer.setInput(invisibleRoot);
+				//create atom to display error
+				AttributeRoot invisibleRoot = new AttributeRoot(
+						"invisibleRoot");
+				String messageTitle = "Could not build tree from code!";
+				ErrorAtom errorAtom = new ErrorAtom("error", messageTitle,
+						executionException);
+				invisibleRoot.addChild(errorAtom);
+				treeViewer.setInput(invisibleRoot);
 
-			break;
-		default:
-			throw new IllegalStateException("The parsing state " + parsingState + " is not yet implementet.");
+				break;
+			default :
+				throw new IllegalStateException("The parsing state "
+						+ parsingState + " is not yet implementet.");
 		}
 
 	}
@@ -277,7 +289,8 @@ public class TreeViewProvider {
 	 * @param message
 	 */
 	public void showMessage(String message) {
-		MessageDialog.openInformation(treeViewer.getControl().getShell(), "TreeView", message);
+		MessageDialog.openInformation(treeViewer.getControl().getShell(),
+				"TreeView", message);
 	}
 
 	/**
@@ -302,9 +315,11 @@ public class TreeViewProvider {
 	}
 
 	/**
-	 * Creates dummy IActionBars for test purposes. If the tree viewer is not shown inside an eclipse plugin but is run
-	 * in test mode, it is not possible to get the IActionBars from Eclipse. In order to run the test without exceptions
-	 * for missing IActionBars this dummy implementation is used.
+	 * Creates dummy IActionBars for test purposes. If the tree viewer is not
+	 * shown inside an eclipse plugin but is run in test mode, it is not
+	 * possible to get the IActionBars from Eclipse. In order to run the test
+	 * without exceptions for missing IActionBars this dummy implementation is
+	 * used.
 	 *
 	 * @return
 	 */

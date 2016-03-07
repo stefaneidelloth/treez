@@ -1,5 +1,6 @@
 package org.treez.core.atom.variablefield;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -62,7 +63,8 @@ public class StringVariableField extends AbstractVariableField<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize quantity value at the first call
@@ -79,7 +81,8 @@ public class StringVariableField extends AbstractVariableField<String> {
 
 		//create container composite
 		//its layout depends on the length of the labels and values
-		Composite container = createContainerForLabelsAndTextFields(parent, toolkit, useIndividualLines);
+		Composite container = createContainerForLabelsAndTextFields(parent,
+				toolkit, useIndividualLines);
 
 		//label
 		createValueLabel(toolkit, container);
@@ -91,9 +94,16 @@ public class StringVariableField extends AbstractVariableField<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
+	}
+
+	@Override
+	public AbstractVariableListField<String> createVariableListField() {
+
+		throw new NotImplementedException();
 	}
 
 	//#end region
@@ -103,8 +113,9 @@ public class StringVariableField extends AbstractVariableField<String> {
 	//#region VALUE
 
 	/**
-	 * Returns the quantity. This does not use the attributeValue to store the state of this attribute atom but uses the
-	 * valueString and the unitString to do so.
+	 * Returns the quantity. This does not use the attributeValue to store the
+	 * state of this attribute atom but uses the valueString and the unitString
+	 * to do so.
 	 */
 	@Override
 	public String get() {

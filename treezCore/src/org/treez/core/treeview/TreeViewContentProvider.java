@@ -21,7 +21,8 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(TreeViewContentProvider.class);
+	private static Logger sysLog = Logger
+			.getLogger(TreeViewContentProvider.class);
 
 	//#region ATTRIBUTES
 
@@ -36,11 +37,13 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 	private Adaptable root = null;
 
 	/**
-	 * The class name of the objects that are shown in the tree. This can be used to filter the elements in a model to
-	 * only show nodes of a particular class (and their parent nodes). Set targetClassName to null if you want to show
-	 * all classes
+	 * The class name(s) of the objects that are shown in the tree. This can be
+	 * used to filter the elements in a model to only show nodes of a particular
+	 * class (and their parent nodes). Set targetClassName to null if you want
+	 * to show all classes. Use comma separated class names if you want to show
+	 * several classes.
 	 */
-	private String wantedTypeName;
+	private String wantedTypeNames;
 
 	//#end region
 
@@ -49,11 +52,11 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 	/**
 	 * Constructor
 	 *
-	 * @param targetClassName
+	 * @param targetClassNames
 	 */
-	public TreeViewContentProvider(String targetClassName) {
+	public TreeViewContentProvider(String targetClassNames) {
 		this.invisibleRoot = new AttributeRoot("invisibleRoot");
-		this.wantedTypeName = targetClassName;
+		this.wantedTypeNames = targetClassNames;
 	}
 
 	//#end region
@@ -117,8 +120,10 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 						childrenToShow.add(childAdaptable);
 					}
 				} catch (ClassCastException e) {
-					sysLog.warn("Could not display a node of following type because it is not known as AbstractAtom: "
-							+ childAdaptable.getClass().getSimpleName());
+					sysLog.warn(
+							"Could not display a node of following type because it is not known as AbstractAtom: "
+									+ childAdaptable.getClass()
+											.getSimpleName());
 				}
 
 			}
@@ -134,8 +139,8 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 	}
 
 	/**
-	 * Checks if a given AbstractAtom is of the type that should be shown in the tree or if its children contain any
-	 * child that has the wanted type
+	 * Checks if a given AbstractAtom is of the type that should be shown in the
+	 * tree or if its children contain any child that has the wanted type
 	 *
 	 * @param atom
 	 * @return
@@ -144,17 +149,23 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 
 		boolean showChild = false;
 
-		if (wantedTypeName != null) {
-			//check if child has the wanted type
-			boolean hasWantedType = Utils.checkIfHasWantedType(atom, wantedTypeName);
-			if (hasWantedType) {
-				showChild = true;
-			}
+		if (wantedTypeNames != null) {
 
-			//check if the child includes sub children with the wanted type
-			boolean containsWantedType = atom.containsChildOfType(wantedTypeName);
-			if (containsWantedType) {
-				showChild = true;
+			String[] wantedTypeNameArray = wantedTypeNames.split(",");
+			for (String wantedTypeName : wantedTypeNameArray) {
+				//check if child has the wanted type
+				boolean hasWantedType = Utils.checkIfHasWantedType(atom,
+						wantedTypeName);
+				if (hasWantedType) {
+					showChild = true;
+				}
+
+				//check if the child includes sub children with the wanted type
+				boolean containsWantedType = atom
+						.containsChildOfType(wantedTypeName);
+				if (containsWantedType) {
+					showChild = true;
+				}
 			}
 
 			return showChild;
@@ -170,7 +181,8 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 			boolean childrenExist = toTreeNode(parent).hasChildren();
 			if (childrenExist) {
 				//check if one of the children has the wanted type
-				List<TreeNodeAdaption> children = toTreeNode(parent).getChildren();
+				List<TreeNodeAdaption> children = toTreeNode(parent)
+						.getChildren();
 				for (TreeNodeAdaption treeNodeAdaption : children) {
 					Adaptable childAdaptable = treeNodeAdaption.getAdaptable();
 
@@ -184,7 +196,8 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 					} catch (ClassCastException e) {
 						throw new IllegalStateException(
 								"Could not check if node has children to show because of unknown type"
-										+ childAdaptable.getClass().getSimpleName());
+										+ childAdaptable.getClass()
+												.getSimpleName());
 					}
 				}
 			}
@@ -201,10 +214,12 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 	public static TreeNodeAdaption toTreeNode(Object object) {
 		Objects.requireNonNull(object, "Object must not be null.");
 		if (object instanceof Adaptable) {
-			TreeNodeAdaption treeNodeAdaption = ((Adaptable) object).createTreeNodeAdaption();
+			TreeNodeAdaption treeNodeAdaption = ((Adaptable) object)
+					.createTreeNodeAdaption();
 			return treeNodeAdaption;
 		} else {
-			throw new IllegalArgumentException("Input object must implement adaptable");
+			throw new IllegalArgumentException(
+					"Input object must implement adaptable");
 		}
 	}
 

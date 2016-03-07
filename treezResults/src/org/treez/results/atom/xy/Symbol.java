@@ -172,26 +172,39 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
 
+		String parentName = parent.getName();
+		String id = "symbols_" + parentName;
+		String clipPathId = id + "_clip-path";
+
 		//remove old symbols group if it already exists
 		xySelection //
-				.select("#symbols") //
+				.select("#" + id) //
 				.remove();
 
 		//create new symbols group
 		symbolsSelection = xySelection //
 				.append("g") //
-				.attr("id", "symbols") //
+				.attr("id", id) //
 				.attr("class", "symbols") //
-				.attr("clip-path", "url(#symbol-clip-path)");
+				.attr("clip-path", "url(#" + clipPathId);
 
 		//create clipping path that ensures that the symbols are only
 		//shown within the bounds of the graph
-		Graph graph = (Graph) parent.getParentAtom();
+		AbstractAtom grandParent = parent.getParentAtom();
+		Graph graph;
+		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
+		if (isGraph) {
+			graph = (Graph) grandParent;
+		} else {
+			AbstractAtom greatGrandParent = grandParent.getParentAtom();
+			graph = (Graph) greatGrandParent;
+		}
+
 		double width = Length.toPx(graph.data.width.get());
 		double height = Length.toPx(graph.data.width.get());
 		symbolsSelection
 				.append("clipPath") //
-				.attr("id", "symbol-clip-path") //
+				.attr("id", clipPathId) //
 				.append("rect") //
 				.attr("x", 0) //
 				.attr("y", 0) //

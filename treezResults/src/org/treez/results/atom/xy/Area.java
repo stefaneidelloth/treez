@@ -117,6 +117,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
 
 		Xy xy = (Xy) parent;
+		String parentName = xy.getName();
 		String xyDataString = xy.getXyDataString();
 		QuantitativeScale<?> xScale = xy.getXScale();
 		QuantitativeScale<?> yScale = xy.getYScale();
@@ -125,29 +126,32 @@ public class Area implements GraphicsPropertiesPageFactory {
 		org.treez.javafxd3.d3.svg.InterpolationMode mode = org.treez.javafxd3.d3.svg.InterpolationMode
 				.fromValue(modeString);
 
-		plotAboveAreaWithD3(d3, xySelection, xyDataString, xScale, yScale, mode);
-		plotBelowAreaWithD3(d3, xySelection, xyDataString, xScale, yScale, mode);
+		plotAboveAreaWithD3(d3, parentName, xySelection, xyDataString, xScale, yScale, mode);
+		plotBelowAreaWithD3(d3, parentName, xySelection, xyDataString, xScale, yScale, mode);
 
 		return xySelection;
 	}
 
 	private void plotAboveAreaWithD3(
 			D3 d3,
+			String parentName,
 			Selection xySelection,
 			String xyDataString,
 			QuantitativeScale<?> xScale,
 			QuantitativeScale<?> yScale,
 			org.treez.javafxd3.d3.svg.InterpolationMode mode) {
 
+		String id = "area-above_" + parentName;
+
 		//remove old area group if it already exists
 		xySelection
-				.selectAll("#area-above") //
+				.selectAll("#" + id) //
 				.remove();
 
 		//create new area group
 		Selection areaAboveSelection = xySelection //
 				.append("g") //
-				.attr("id", "area-above") //
+				.attr("id", id) //
 				.attr("class", "area-above");
 
 		org.treez.javafxd3.d3.svg.Area areaAbovePathGenerator = d3 //
@@ -168,21 +172,24 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 	private void plotBelowAreaWithD3(
 			D3 d3,
+			String parentName,
 			Selection xySelection,
 			String xyDataString,
 			QuantitativeScale<?> xScale,
 			QuantitativeScale<?> yScale,
 			org.treez.javafxd3.d3.svg.InterpolationMode mode) {
 
+		String id = "area-below_" + parentName;
+
 		//remove old area group if it already exists
 		xySelection
-				.selectAll("#area-below") //
+				.selectAll("#" + id) //
 				.remove();
 
 		//create new area group
 		Selection areaBelowSelection = xySelection //
 				.append("g") //
-				.attr("id", "area-below") //
+				.attr("id", id) //
 				.attr("class", "area-below");
 
 		double yMin = yScale.apply(0.0).asDouble();

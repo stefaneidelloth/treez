@@ -164,6 +164,11 @@ public class PickingProbe extends AbstractProbe {
 
 	@Override
 	protected void afterCreateControlAdaptionHook() {
+		updateRelativePathRoots();
+	}
+
+	@Override
+	protected void updateRelativePathRoots() {
 		Attribute<String> attribute = getWrappedAttribute(firstProbeTable);
 		ModelPath firstProbeTableModelPath = (ModelPath) attribute;
 		firstProbeTableModelPath.updateRelativeRootAtom();

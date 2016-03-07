@@ -12,7 +12,6 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
-import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
@@ -73,7 +72,7 @@ public class Xy extends GraphicsPropertiesPage {
 	 */
 	public Xy(String name) {
 		super(name);
-		setRunnable();
+		//setRunnable();
 	}
 
 	// #end region
@@ -119,30 +118,31 @@ public class Xy extends GraphicsPropertiesPage {
 
 	@Override
 	public void execute(Refreshable refreshable) {
-		Graph graph = (Graph) createTreeNodeAdaption().getParent().getAdaptable();
-		graph.execute(refreshable);
+		treeViewRefreshable = refreshable;
+		//Graph graph = (Graph) createTreeNodeAdaption().getParent().getAdaptable();
+		//graph.execute(refreshable);
 	}
 
 	/**
 	 * @param d3
-	 * @param graphSelection
+	 * @param graphOrXySeriesSelection
 	 */
 	@Override
 	public Selection plotWithD3(
 			D3 d3,
-			Selection graphSelection,
+			Selection graphOrXySeriesSelection,
 			Selection graphRectSelection,
 			Refreshable refreshable) {
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
 		//remove old xy group if it already exists
-		graphSelection //
+		graphOrXySeriesSelection //
 				.select("#" + name) //
 				.remove();
 
 		//create new axis group
-		xySelection = graphSelection //
+		xySelection = graphOrXySeriesSelection //
 				.insert("g", ".axis") //
 				.attr("class", "xy") //
 				.onMouseClick(this);
@@ -150,7 +150,7 @@ public class Xy extends GraphicsPropertiesPage {
 
 		updatePlotWithD3(d3);
 
-		return graphSelection;
+		return xySelection;
 	}
 
 	@Override

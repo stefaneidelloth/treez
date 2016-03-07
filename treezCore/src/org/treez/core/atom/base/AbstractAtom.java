@@ -294,7 +294,7 @@ public abstract class AbstractAtom
 			Refreshable treeViewerRefreshable) throws IllegalArgumentException {
 		for (AbstractAtom child : children) {
 			Class<?> currentClass = child.getClass();
-			boolean hasWantedClass = currentClass.equals(wantedClass);
+			boolean hasWantedClass = wantedClass.isAssignableFrom(currentClass);
 			if (hasWantedClass) {
 				try {
 					child.execute(treeViewerRefreshable);
@@ -467,8 +467,10 @@ public abstract class AbstractAtom
 	}
 
 	private void triggerNameListeners(String newName) {
-		for (Consumer<String> listener : nameListeners) {
-			listener.accept(newName);
+		if (nameListeners != null) {
+			for (Consumer<String> listener : nameListeners) {
+				listener.accept(newName);
+			}
 		}
 	}
 
@@ -486,6 +488,58 @@ public abstract class AbstractAtom
 	 */
 	public Image provideImage() {
 		return Activator.getImage(IMAGE_KEY);
+	}
+
+	//#end region
+
+	//#region REFLECTION
+
+	protected static String getFieldName(Object fieldObject, Object parent) {
+		Objects.requireNonNull(fieldObject);
+
+		Field[] allPublicFieldsWithFieldsOfSuperClasses = parent.getClass()
+				.getFields();
+
+		String fieldName = getFieldName(fieldObject, parent,
+				allPublicFieldsWithFieldsOfSuperClasses);
+		if (fieldName == null) {
+			Field[] allFieldsOfCurrentClass = parent.getClass()
+					.getDeclaredFields();
+			fieldName = getFieldName(fieldObject, parent,
+					allFieldsOfCurrentClass);
+		}
+
+		if (fieldName != null) {
+			return fieldName;
+		}
+
+		throw new IllegalStateException("Could not determine field name.");
+	}
+
+	@SuppressWarnings("checkstyle:illegalcatch")
+	private static String getFieldName(Object fieldObject, Object parent,
+			Field[] allFields) {
+
+		for (Field field : allFields) {
+
+			boolean isAccessible = field.isAccessible();
+			field.setAccessible(true);
+			Object currentFieldObject;
+			try {
+				currentFieldObject = field.get(parent);
+				field.setAccessible(isAccessible);
+			} catch (Exception e) {
+				throw new IllegalStateException(
+						"Could not determine field name.");
+			}
+			boolean isWantedField = fieldObject.equals(currentFieldObject);
+			if (isWantedField) {
+				String fieldName = field.getName();
+				return fieldName;
+			}
+		}
+
+		return null;
 	}
 
 	//#end region
@@ -680,6 +734,26 @@ public abstract class AbstractAtom
 	}
 
 	/**
+	 * Gets a list of all child atoms with the given class. Returns an empty
+	 * list if no child with the given class could be found.
+	 *
+	 * @param clazz
+	 * @return
+	 */
+	public <T> List<T> getChildrenByClass(Class<T> clazz) {
+		List<T> wantedChildren = new ArrayList<>();
+		for (AbstractAtom currentChild : children) {
+			boolean isWantedChild = currentChild.getClass().equals(clazz);
+			if (isWantedChild) {
+				@SuppressWarnings("unchecked")
+				T castedChild = (T) currentChild;
+				wantedChildren.add(castedChild);
+			}
+		}
+		return wantedChildren;
+	}
+
+	/**
 	 * Checks if any of the children, sub children and so on is of the class
 	 * with the given name
 	 *
@@ -726,6 +800,28 @@ public abstract class AbstractAtom
 	 */
 	public void removeAllChildren() {
 		children.clear();
+	}
+
+	/**
+	 * Removes the child with the given name if it exists. The names of the
+	 * children should be unique. Only the first child with the given name is
+	 * removed.
+	 */
+	public void removeChildIfExists(String childName) {
+
+		AbstractAtom childToRemove = null;
+		for (AbstractAtom child : children) {
+			String currentChildName = child.getName();
+			boolean isWantedChild = currentChildName.equals(childName);
+			if (isWantedChild) {
+				childToRemove = child;
+				break;
+			}
+		}
+		if (childToRemove != null) {
+			children.remove(childToRemove);
+		}
+
 	}
 
 	//#end region

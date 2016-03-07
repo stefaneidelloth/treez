@@ -8,28 +8,28 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.variablefield.DoubleVariableField;
-import org.treez.core.atom.variablefield.DoubleVariableListField;
+import org.treez.core.atom.variablefield.IntegerVariableField;
+import org.treez.core.atom.variablefield.IntegerVariableListField;
 import org.treez.study.Activator;
 
 /**
- * Represents a variable range of Double values, might consist of one or several values. The parent must by a Study
+ * Represents a variable range of Integer values, might consist of one or several values. The parent must by a Study
  * (e.g. Sweep)
  */
-public class DoubleVariableRange extends AbstractVariableRange<Double> {
+public class IntegerVariableRange extends AbstractVariableRange<Integer> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings({ "hiding", "unused" })
-	private static Logger sysLog = Logger.getLogger(DoubleVariableRange.class);
+	private static Logger sysLog = Logger.getLogger(IntegerVariableRange.class);
 
 	//#region ATTRIBUTES
 
 	/**
 	 * Used to enter the range
 	 */
-	private DoubleVariableListField range;
+	private IntegerVariableListField range;
 
 	//#end region
 
@@ -40,7 +40,7 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 	 *
 	 * @param name
 	 */
-	public DoubleVariableRange(String name) {
+	public IntegerVariableRange(String name) {
 		super(name);
 	}
 
@@ -64,16 +64,16 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 		AbstractAtom modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
-				.createModelPath(sourceVariableModelPath, this, defaultValue, DoubleVariableField.class, selectionType,
+				.createModelPath(sourceVariableModelPath, this, defaultValue, IntegerVariableField.class, selectionType,
 						modelEntryPoint, hasToBeEnabled)
-				.setLabel("Double variable");
+				.setLabel("Integer variable");
 		boolean assignRelativeRoot = sourceModelModelPath != null && !sourceModelModelPath.isEmpty();
 		if (assignRelativeRoot) {
 			assignRealtiveRootToSourceVariablePath();
 		}
 
 		//range
-		range = data.createDoubleVariableListField("range", "Range");
+		range = data.createIntegerVariableListField("range", "Range");
 
 		//enabled check box
 		createEnabledCheckBox();
@@ -86,7 +86,7 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 	 */
 	@Override
 	public Image provideImage() {
-		Image baseImage = Activator.getImage("doubleVariableRange.png");
+		Image baseImage = Activator.getImage("integerVariableRange.png");
 		Image image = decorateImageWidthEnabledState(baseImage);
 		return image;
 	}
@@ -98,12 +98,12 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 	//#region RANGE VALUES
 
 	/**
-	 * Returns the range as a list of doubles
+	 * Returns the range as a list of Integers
 	 *
 	 * @return
 	 */
 	@Override
-	public List<Double> getRange() {
+	public List<Integer> getRange() {
 		return range.get();
 	}
 
@@ -121,8 +121,8 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 	//#region TYPE
 
 	@Override
-	public Class<Double> getType() {
-		return Double.class;
+	public Class<Integer> getType() {
+		return Integer.class;
 	}
 
 	//#end region

@@ -152,6 +152,9 @@ public class Page extends GraphicsAtom {
 	 */
 	@Override
 	public void execute(Refreshable refreshable) {
+		treeViewRefreshable = refreshable;
+
+		executeChildren(Graph.class, treeViewRefreshable);
 
 		Runnable plotPageRunnable = () -> {
 			D3 d3 = browser.getD3();
@@ -162,7 +165,7 @@ public class Page extends GraphicsAtom {
 			GraphicsAtom.bindStringAttribute(svgSelection, "width", width);
 			GraphicsAtom.bindStringAttribute(svgSelection, "height", height);
 
-			plotWithD3(d3, svgSelection, refreshable);
+			plotWithD3(d3, svgSelection, treeViewRefreshable);
 		};
 		browser = createD3BrowserInCadView(plotPageRunnable);
 	}

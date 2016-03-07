@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,8 @@ import org.treez.core.atom.base.AtomTreeNodeAdaption;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.variablefield.DoubleVariableField;
 import org.treez.core.atom.variablefield.DoubleVariableListField;
+import org.treez.core.atom.variablefield.IntegerVariableField;
+import org.treez.core.atom.variablefield.IntegerVariableListField;
 import org.treez.core.atom.variablefield.QuantityVariableField;
 import org.treez.core.atom.variablefield.QuantityVariableListField;
 import org.treez.core.atom.variablefield.VariableField;
@@ -344,8 +345,8 @@ public class Section extends AbstractAttributeContainerAtom {
 	}
 
 	/**
-	 * Creates a new combo box with a given enum that provides the available
-	 * values
+	 * Creates a new combo box with a given enum value. The enum provides the
+	 * available values and the enum value is used as default value.
 	 *
 	 * @param name
 	 * @param defaultEnumValue
@@ -355,6 +356,7 @@ public class Section extends AbstractAttributeContainerAtom {
 			Enum<?> defaultEnumValue) {
 		@SuppressWarnings({"unchecked", "rawtypes"})
 		ComboBox comboBox = new ComboBox(name);
+		comboBox.setItems(defaultEnumValue);
 		comboBox.setDefaultValue(defaultEnumValue);
 		addChild(comboBox);
 		comboBox.wrap(wrap);
@@ -535,6 +537,26 @@ public class Section extends AbstractAttributeContainerAtom {
 	}
 
 	/**
+	 * Creates a model path chooser for an array of supported atom types
+	 *
+	 * @param attributeParent
+	 * @param defaultPath
+	 * @param atomTypes
+	 * @return
+	 */
+	public ModelPath createModelPath(Attribute<String> wrap,
+			AbstractAtom attributeParent, String defaultPath,
+			Class<?>[] atomTypes) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
+		ModelPath modelPath = new ModelPath(attributeName, defaultPath,
+				atomTypes, selectionType, attributeParent, false);
+		addChild(modelPath);
+		modelPath.wrap(wrap);
+		return modelPath;
+	}
+
+	/**
 	 * Creates a model path chooser with a parent model path chooser
 	 *
 	 * @param attributeParent
@@ -543,7 +565,7 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * @return
 	 */
 	public ModelPath createModelPath(Attribute<String> wrap,
-			Object attributeParent, ModelPath parentModelPath,
+			AbstractAtom attributeParent, ModelPath parentModelPath,
 			Class<?> atomType) {
 		String attributeName = getFieldName(wrap, attributeParent);
 		ModelPath modelPath = new ModelPath(attributeName, parentModelPath,
@@ -563,11 +585,11 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * @return
 	 */
 	public ModelPath createModelPath(Attribute<String> wrap,
-			Object attributeParent, String defaultPath, Class<?> atomType,
+			AbstractAtom attributeParent, String defaultPath, Class<?> atomType,
 			ModelPathSelectionType selectionType) {
 		String attributeName = getFieldName(wrap, attributeParent);
 		ModelPath modelPath = new ModelPath(attributeName, defaultPath,
-				atomType, selectionType, null, false);
+				atomType, selectionType, attributeParent, false);
 		addChild(modelPath);
 		modelPath.wrap(wrap);
 		return modelPath;
@@ -808,6 +830,88 @@ public class Section extends AbstractAttributeContainerAtom {
 		variableListField.setLabel(label);
 		addChild(variableListField);
 		return variableListField;
+	}
+
+	/**
+	 * Creates a Double variable list field and wraps it.
+	 *
+	 */
+	public DoubleVariableListField createDoubleVariableListField(
+			Attribute<List<Double>> wrap, AbstractAtom attributeParent,
+			String label) {
+
+		String attributeName = getFieldName(wrap, attributeParent);
+		DoubleVariableListField variableListField = new DoubleVariableListField(
+				attributeName);
+		variableListField.setLabel(label);
+
+		addChild(variableListField);
+		variableListField.wrap(wrap);
+		return variableListField;
+
+	}
+
+	//#end region
+
+	//#region INTEGER VARIABLE FIELD
+
+	/**
+	 * Creates a Integer variable field with the given name
+	 *
+	 * @param name
+	 * @return
+	 */
+	public IntegerVariableField createIntegerVariableField(String name) {
+		IntegerVariableField variableField = new IntegerVariableField(name);
+		addChild(variableField);
+		return variableField;
+	}
+
+	/**
+	 * Creates a Double variable list field with the given name
+	 *
+	 * @param name
+	 * @return
+	 */
+	public IntegerVariableListField createIntegerListField(String name) {
+		IntegerVariableListField variableListField = new IntegerVariableListField(
+				name);
+		addChild(variableListField);
+		return variableListField;
+	}
+
+	/**
+	 * Creates a Double variable list field with the given name and label
+	 *
+	 * @param name
+	 * @param label
+	 * @return
+	 */
+	public IntegerVariableListField createIntegerVariableListField(String name,
+			String label) {
+		IntegerVariableListField variableListField = new IntegerVariableListField(
+				name);
+		variableListField.setLabel(label);
+		addChild(variableListField);
+		return variableListField;
+	}
+
+	/**
+	 * Creates an Integer variable list field and wraps it.
+	 *
+	 */
+	public IntegerVariableListField createIntegerVariableListField(
+			Attribute<List<Integer>> wrap, AbstractAtom attributeParent,
+			String label) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		IntegerVariableListField variableListField = new IntegerVariableListField(
+				attributeName);
+		variableListField.setLabel(label);
+
+		addChild(variableListField);
+		variableListField.wrap(wrap);
+		return variableListField;
+
 	}
 
 	//#end region
@@ -1267,8 +1371,8 @@ public class Section extends AbstractAttributeContainerAtom {
 	 * @param label
 	 * @return
 	 */
-	public VariableList createVariableList(Attribute<List<VariableField>> wrap,
-			String name, String label) {
+	public VariableList createVariableList(
+			Attribute<List<VariableField<?>>> wrap, String name, String label) {
 
 		VariableList variableList = new VariableList(name, null);
 		variableList.setLabel(label);
@@ -1276,31 +1380,6 @@ public class Section extends AbstractAttributeContainerAtom {
 		variableList.wrap(wrap);
 		return variableList;
 
-	}
-
-	//#end region
-
-	//#region REFLECTION
-
-	@SuppressWarnings("checkstyle:illegalcatch")
-	private static String getFieldName(Object fieldObject, Object parent) {
-
-		Field[] allFields = parent.getClass().getFields();
-		for (Field field : allFields) {
-			Object currentFieldObject;
-			try {
-				currentFieldObject = field.get(parent);
-			} catch (Exception e) {
-				throw new IllegalStateException(
-						"Could not determine field name.");
-			}
-			boolean isWantedField = currentFieldObject.equals(fieldObject);
-			if (isWantedField) {
-				String fieldName = field.getName();
-				return fieldName;
-			}
-		}
-		throw new IllegalStateException("Could not determine field name.");
 	}
 
 	//#end region

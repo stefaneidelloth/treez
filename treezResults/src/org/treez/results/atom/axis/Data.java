@@ -160,21 +160,21 @@ public class Data implements GraphicsPropertiesPageFactory {
 	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
 
 		Axis parentAxis = (Axis) parent;
-		Consumer<String> replotAxis = (data) -> {
-			parentAxis.updatePlotWithD3(d3);
+		Graph graph = (Graph) parentAxis.getParentAtom();
+		Consumer<String> replotGraph = (data) -> {
+			graph.updatePlotWithD3(d3);
 		};
 
-		direction.addModificationConsumer("replotAxis", replotAxis);
-		min.addModificationConsumer("replotAxis", replotAxis);
-		max.addModificationConsumer("replotAxis", replotAxis);
-		log.addModificationConsumer("replotAxis", (data) -> replotAxis.accept(null));
+		direction.addModificationConsumer("replotAxis", replotGraph);
+		min.addModificationConsumer("replotAxis", replotGraph);
+		max.addModificationConsumer("replotAxis", replotGraph);
+		log.addModificationConsumer("replotAxis", (data) -> replotGraph.accept(null));
 
 		//hint: the auto mirror option will be considered by the other plot pages
-		autoMirror.addModificationConsumer("replotAxis", (data) -> replotAxis.accept(null));
+		autoMirror.addModificationConsumer("replotAxis", (data) -> replotGraph.accept(null));
 
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideAxis", axisSelection, hide);
 
-		Graph graph = (Graph) parentAxis.getParentAtom();
 		Attribute<String> height = graph.data.height;
 		Attribute<String> width = graph.data.width;
 

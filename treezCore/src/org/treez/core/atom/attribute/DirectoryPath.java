@@ -148,7 +148,8 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -161,7 +162,8 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 		//container for label and rest
 		container = createVerticalContainer(parent, toolkit);
 
-		checkBoxAndLabelContainer = createHorizontalContainer(container, toolkit);
+		checkBoxAndLabelContainer = createHorizontalContainer(container,
+				toolkit);
 
 		//label
 		labelComposite = toolkit.createLabel(checkBoxAndLabelContainer, label);
@@ -220,9 +222,7 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 		//create error decoration for text field
 		String errorMessage = "Invalid directory path";
 		final TextFieldErrorDecoration errorDecoration = new TextFieldErrorDecoration(
-				textField,
-				errorMessage,
-				container);
+				textField, errorMessage, container);
 
 		//create listener for text field
 		textField.addModifyListener(new ModifyListener() {
@@ -261,7 +261,8 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				DirectoryDialog directoryDialog = new DirectoryDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
+				DirectoryDialog directoryDialog = new DirectoryDialog(
+						Display.getCurrent().getActiveShell(), SWT.MULTI);
 
 				directoryDialog.setFilterPath(defaultValue);
 
@@ -300,7 +301,8 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 	 * @param errorDecoration
 	 * @param text
 	 */
-	private void validateText(final TextFieldErrorDecoration errorDecoration, String text) {
+	private void validateText(final TextFieldErrorDecoration errorDecoration,
+			String text) {
 
 		boolean isValid = FileHelper.isValidDirectoryPath(text);
 		if (isValid) {
@@ -430,6 +432,7 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 		}
 
 	}
+
 	//#end region
 
 }

@@ -20,7 +20,7 @@ import org.treez.core.swt.CustomLabel;
  */
 public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 		implements
-			VariableField {
+			VariableField<T> {
 
 	/**
 	 * Logger for this class
@@ -336,6 +336,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	 *
 	 * @param valueString
 	 */
+	@Override
 	public void setValueString(String valueString) {
 		if (valueString == null) {
 			boolean valueChanged = !"".equals(this.valueString);

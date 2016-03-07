@@ -145,13 +145,30 @@ public final class Utils {
 	 */
 	public static void showMessage(String message) {
 
+		sysLog.info(message);
+
 		Runnable showMessageRunnable = () -> {
 			Display currentDisplay = Display.getCurrent();
-			MessageDialog.openConfirm(currentDisplay.getActiveShell(), "Info",
-					message);
+			if (currentDisplay == null) {
+				currentDisplay = Display.getDefault();
+			}
+
+			if (currentDisplay != null) {
+				MessageDialog.openConfirm(currentDisplay.getActiveShell(),
+						"Info", message);
+			}
+
 		};
+
 		Display display = Display.getCurrent();
-		display.syncExec(showMessageRunnable);
+		if (display == null) {
+			display = Display.getDefault();
+		}
+		if (display != null) {
+			display.syncExec(showMessageRunnable);
+		} else {
+			sysLog.info(message);
+		}
 	}
 
 	/**
@@ -178,56 +195,66 @@ public final class Utils {
 	//#region CLASS & INTERFACE REFLECTION
 
 	/**
-	 * Returns true if the given class has the given type or implements an
-	 * interface of the given type.
+	 * Returns true if the given class has one of the the given types or
+	 * implements an interface of the given types.
 	 *
 	 * @param object
-	 * @param wantedTypeName
+	 * @param wantedTypeNames
+	 *            names of wanted types, separated by ","
 	 * @return
 	 */
 	public static boolean checkIfHasWantedType(Object object,
-			String wantedTypeName) {
+			String wantedTypeNames) {
 
 		//get class of object
 		Class<?> actualClass = object.getClass();
 
-		//check class type by name
-		String actualClassName = actualClass.getName();
-		boolean hasWantedClassType = actualClassName.equals(wantedTypeName);
-		if (hasWantedClassType) {
-			return true;
-		}
+		String[] wantedTypeNameArray = wantedTypeNames.split(",");
 
-		//check class type by class
-		Class<?> wantedClass = null;
-		try {
-			wantedClass = Class.forName(wantedTypeName);
-		} catch (ClassNotFoundException e) {
-			//nothing to do (might be an interface)
-		}
-
-		if (wantedClass != null) {
-			//the wanted type represents a class: use it to perform the check
-			boolean hasWantedType = wantedClass.isAssignableFrom(actualClass);
-			return hasWantedType;
-		} else {
-			//the wanted type might represent an interface
-			//check if the actual class implements that interface
-			Set<Class<?>> implementedInterfaces = getAllInterfaces(actualClass);
-			for (Class<?> currentInterface : implementedInterfaces) {
-				boolean implementsWantedInterface = currentInterface.getName()
-						.equals(wantedTypeName);
-				if (implementsWantedInterface) {
-					//implements wanted interface
-					return true;
-				}
+		for (String wantedTypeName : wantedTypeNameArray) {
+			//check class type by name
+			String actualClassName = actualClass.getName();
+			boolean hasWantedClassType = actualClassName.equals(wantedTypeName);
+			if (hasWantedClassType) {
+				return true;
 			}
 
-			//does not implement wanted interface or type does not represent
-			//any interface
-			return false;
+			//check class type by class
+			Class<?> wantedClass = null;
+			try {
+				wantedClass = Class.forName(wantedTypeName);
+			} catch (ClassNotFoundException e) {
+				//nothing to do (might be an interface)
+			}
 
+			if (wantedClass != null) {
+				//the wanted type represents a class: use it to perform the check
+				boolean hasWantedType = wantedClass
+						.isAssignableFrom(actualClass);
+				if (hasWantedType) {
+					return true;
+				}
+
+			} else {
+				//the wanted type might represent an interface
+				//check if the actual class implements that interface
+				Set<Class<?>> implementedInterfaces = getAllInterfaces(
+						actualClass);
+				for (Class<?> currentInterface : implementedInterfaces) {
+					boolean implementsWantedInterface = currentInterface
+							.getName().equals(wantedTypeName);
+					if (implementsWantedInterface) {
+						//implements wanted interface
+						return true;
+					}
+				}
+			}
 		}
+
+		//does not implement wanted interface or type does not represent
+		//any interface
+		return false;
+
 	}
 
 	/**

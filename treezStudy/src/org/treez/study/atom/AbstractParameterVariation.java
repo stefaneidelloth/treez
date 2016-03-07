@@ -154,6 +154,9 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 	 */
 	protected AbstractAtom getSourceModelAtom() {
 		String sourcePath = sourceModelPath.get();
+		if (sourcePath == null) {
+			return null;
+		}
 		AbstractAtom modelAtom = this.getChildFromRoot(sourcePath);
 		boolean isModel = modelAtom instanceof Model;
 		if (isModel) {

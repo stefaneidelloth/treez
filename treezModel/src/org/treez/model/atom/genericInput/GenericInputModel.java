@@ -21,6 +21,7 @@ import org.treez.core.atom.variablefield.BooleanVariableField;
 import org.treez.core.atom.variablefield.DirectoryPathVariableField;
 import org.treez.core.atom.variablefield.DoubleVariableField;
 import org.treez.core.atom.variablefield.FilePathVariableField;
+import org.treez.core.atom.variablefield.IntegerVariableField;
 import org.treez.core.atom.variablefield.QuantityVariableField;
 import org.treez.core.atom.variablefield.StringItemVariableField;
 import org.treez.core.atom.variablefield.StringVariableField;
@@ -160,6 +161,14 @@ public class GenericInputModel extends AbstractModel {
 				treeViewer);
 		actions.add(addDoubleVariableField);
 
+		Action addIntegerVariableField = new AddChildAtomTreeViewerAction(
+				IntegerVariableField.class,
+				"integerVariable",
+				org.treez.core.Activator.getImage("integerVariable.png"),
+				this,
+				treeViewer);
+		actions.add(addIntegerVariableField);
+
 		Action addBooleanVariableField = new AddChildAtomTreeViewerAction(
 				BooleanVariableField.class,
 				"booleanVariable",
@@ -211,7 +220,7 @@ public class GenericInputModel extends AbstractModel {
 		for (AbstractAtom child : children) {
 			boolean isVariableField = VariableField.class.isAssignableFrom(child.getClass());
 			if (isVariableField) {
-				VariableField variableField = (VariableField) child;
+				VariableField<?> variableField = (VariableField<?>) child;
 				variableField.setEnabled(true);
 			}
 
@@ -226,7 +235,7 @@ public class GenericInputModel extends AbstractModel {
 		for (AbstractAtom child : children) {
 			boolean isVariableField = VariableField.class.isAssignableFrom(child.getClass());
 			if (isVariableField) {
-				VariableField variableField = (VariableField) child;
+				VariableField<?> variableField = (VariableField<?>) child;
 				variableField.setEnabled(false);
 			}
 
@@ -363,12 +372,12 @@ public class GenericInputModel extends AbstractModel {
 	 *
 	 * @return
 	 */
-	public List<VariableField> getVariableFields() {
-		List<VariableField> variableFields = new ArrayList<>();
+	public List<VariableField<?>> getVariableFields() {
+		List<VariableField<?>> variableFields = new ArrayList<>();
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
 			@SuppressWarnings("unchecked")
-			VariableField variableField = (VariableField) childNode.getAdaptable();
+			VariableField<?> variableField = (VariableField<?>) childNode.getAdaptable();
 			variableFields.add(variableField);
 		}
 		return variableFields;
@@ -379,12 +388,12 @@ public class GenericInputModel extends AbstractModel {
 	 *
 	 * @return
 	 */
-	public List<VariableField> getEnabledVariableFields() {
-		List<VariableField> variableFields = new ArrayList<>();
+	public List<VariableField<?>> getEnabledVariableFields() {
+		List<VariableField<?>> variableFields = new ArrayList<>();
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
 			@SuppressWarnings("unchecked")
-			VariableField variableField = (VariableField) childNode.getAdaptable();
+			VariableField<?> variableField = (VariableField<?>) childNode.getAdaptable();
 			if (variableField.isEnabled()) {
 				variableFields.add(variableField);
 			}

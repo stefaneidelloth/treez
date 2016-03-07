@@ -322,6 +322,7 @@ public abstract class AbstractAttributeAtom<T>
 
 	/**
 	 * Wraps this attribute in the AttributeWrapper that is given as Attribute
+	 * 
 	 *
 	 * @param wrap
 	 */

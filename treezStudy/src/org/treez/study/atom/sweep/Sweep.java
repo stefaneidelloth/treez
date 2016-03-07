@@ -38,6 +38,7 @@ import org.treez.study.atom.range.BooleanVariableRange;
 import org.treez.study.atom.range.DirectoryPathVariableRange;
 import org.treez.study.atom.range.DoubleVariableRange;
 import org.treez.study.atom.range.FilePathVariableRange;
+import org.treez.study.atom.range.IntegerVariableRange;
 import org.treez.study.atom.range.QuantityVariableRange;
 import org.treez.study.atom.range.StringItemVariableRange;
 import org.treez.study.atom.range.StringVariableRange;
@@ -101,12 +102,16 @@ public class Sweep extends AbstractParameterVariation {
 						modelEntryPoint, false)
 				.setLabel("Variable source model (provides variables)");
 
-		//export sweep info check box
-		CheckBox exportStudy = sweepSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);
+		//study info
+		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
+		studyInfoSection.setTitle("Export study info");
+
+		//export study info check box
+		CheckBox exportStudy = studyInfoSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);
 		exportStudy.setLabel("Export study information");
 
 		//export sweep info path
-		FilePath filePath = sweepSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",
+		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
 		filePath.addModifyListener("updateEnabledState", new ModifyListener() {
@@ -150,7 +155,7 @@ public class Sweep extends AbstractParameterVariation {
 		SweepModelInputGenerator inputGenerator = new SweepModelInputGenerator(sweepModelPath);
 
 		//get variable ranges
-		List<AbstractVariableRange<?>> variableRanges = inputGenerator.getActiveVariableRanges(this);
+		List<AbstractVariableRange<?>> variableRanges = inputGenerator.getEnabledVariableRanges(this);
 		sysLog.info("Number of variable ranges: " + variableRanges.size());
 
 		//check if all variable ranges reference enabled variables
@@ -181,7 +186,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		//export sweep info to text file if the corresponding option is enabled
 		if (exportStudyInfo.get()) {
-			exportSweepInfo(variableRanges, numberOfSimulations);
+			exportStudyInfo(variableRanges, numberOfSimulations);
 		}
 
 		//prepare result structure
@@ -292,33 +297,33 @@ public class Sweep extends AbstractParameterVariation {
 	}
 
 	/**
-	 * Creates a text file with some information about the sweep and saves it at the exportSweepInfoPath
+	 * Creates a text file with some information about the (Sweep) study and saves it at the exportStudyInfoPath
 	 *
 	 * @param variableRanges
 	 * @param numberOfSimulations
 	 */
-	private void exportSweepInfo(List<AbstractVariableRange<?>> variableRanges, int numberOfSimulations) {
-		String sweepInfo = "---------- SweepInfo ----------\r\n\r\n" + "Total number of simulations:\r\n"
+	private void exportStudyInfo(List<AbstractVariableRange<?>> variableRanges, int numberOfSimulations) {
+		String studyInfo = "---------- SweepInfo ----------\r\n\r\n" + "Total number of simulations:\r\n"
 				+ numberOfSimulations + "\r\n\r\n" + "Variable model paths and values:\r\n\r\n";
 
 		for (AbstractVariableRange<?> range : variableRanges) {
 			String variablePath = range.getSourceVariableModelPath();
-			sweepInfo += variablePath + "\r\n";
+			studyInfo += variablePath + "\r\n";
 			List<?> rangeValues = range.getRange();
 			for (Object value : rangeValues) {
-				sweepInfo += value.toString() + "\r\n";
+				studyInfo += value.toString() + "\r\n";
 			}
-			sweepInfo += "\r\n";
+			studyInfo += "\r\n";
 		}
 
 		String filePath = exportStudyInfoPath.get();
 		File file = new File(filePath);
 
 		try {
-			FileUtils.writeStringToFile(file, sweepInfo);
+			FileUtils.writeStringToFile(file, studyInfo);
 		} catch (IOException exception) {
-			String message = "The specified exportSweepInfoPath '" + filePath
-					+ "' is not valid. Export of sweep info is skipped.";
+			String message = "The specified exportStudyInfoPath '" + filePath
+					+ "' is not valid. Export of study info is skipped.";
 			sysLog.error(message);
 		}
 
@@ -381,6 +386,14 @@ public class Sweep extends AbstractParameterVariation {
 				this,
 				treeViewer);
 		actions.add(addDoubleRange);
+
+		Action addIntegerRange = new AddChildAtomTreeViewerAction(
+				IntegerVariableRange.class,
+				"integerRange",
+				Activator.getImage("integerVariableRange.png"),
+				this,
+				treeViewer);
+		actions.add(addIntegerRange);
 
 		Action addBooleanRange = new AddChildAtomTreeViewerAction(
 				BooleanVariableRange.class,

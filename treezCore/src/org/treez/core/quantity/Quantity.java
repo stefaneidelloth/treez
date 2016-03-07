@@ -73,14 +73,15 @@ public class Quantity implements Copiable<Quantity> {
 	//#end region
 
 	/**
-	 * Creates a list of Quantity for the given list of Double values and the given unit that is the same for all Double
-	 * values.
+	 * Creates a list of Quantity for the given list of Double values and the
+	 * given unit that is the same for all Double values.
 	 *
 	 * @param valueList
 	 * @param unit
 	 * @return
 	 */
-	public static List<Quantity> createQuantityList(List<Double> valueList, String unit) {
+	public static List<Quantity> createQuantityList(List<Double> valueList,
+			String unit) {
 		Objects.requireNonNull(valueList, "Value list must not be null.");
 		List<Quantity> quantities = new ArrayList<>();
 		for (Double value : valueList) {
@@ -91,13 +92,15 @@ public class Quantity implements Copiable<Quantity> {
 	}
 
 	/**
-	 * Checks if all given quantities have the same unit and collects the values to a double list
+	 * Checks if all given quantities have the same unit and collects the values
+	 * to a double list
 	 *
 	 * @param quantities
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public static List<Double> createDoubleList(List<Quantity> quantities) throws IllegalArgumentException {
+	public static List<Double> createDoubleList(List<Quantity> quantities)
+			throws IllegalArgumentException {
 		List<Double> doubleList = new ArrayList<Double>();
 		boolean isEmpty = quantities.isEmpty();
 		if (isEmpty) {
@@ -149,7 +152,11 @@ public class Quantity implements Copiable<Quantity> {
 
 	@Override
 	public String toString() {
-		return "{" + value + "} " + unit;
+		String quantityString = "" + value;
+		if (unit != null && !unit.equals("")) {
+			quantityString += " " + unit;
+		}
+		return quantityString;
 	}
 
 	//#end region

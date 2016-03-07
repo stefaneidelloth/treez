@@ -13,16 +13,16 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 
 /**
- * Represents a model variable (-text field) that is used to enter a Double
+ * Represents a model variable (-text field) that is used to enter an Integer
  * value
  */
-public class DoubleVariableField extends AbstractVariableField<Double> {
+public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(DoubleVariableField.class);
+	private static Logger sysLog = Logger.getLogger(IntegerVariableField.class);
 
 	//#region CONSTRUCTORS
 
@@ -31,7 +31,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	 *
 	 * @param name
 	 */
-	public DoubleVariableField(String name) {
+	public IntegerVariableField(String name) {
 		super(name);
 	}
 
@@ -40,7 +40,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	 *
 	 * @param fieldToCopy
 	 */
-	private DoubleVariableField(DoubleVariableField fieldToCopy) {
+	private IntegerVariableField(IntegerVariableField fieldToCopy) {
 		super(fieldToCopy);
 	}
 
@@ -51,8 +51,8 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	//#region COPY
 
 	@Override
-	public DoubleVariableField copy() {
-		return new DoubleVariableField(this);
+	public IntegerVariableField copy() {
+		return new IntegerVariableField(this);
 	}
 
 	//#end region
@@ -62,17 +62,17 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	 */
 	@Override
 	public Image provideBaseImage() {
-		return Activator.getImage("doubleVariable.png");
+		return Activator.getImage("integerVariable.png");
 	}
 
 	@Override
-	public AbstractAttributeAtom<Double> createAttributeAtomControl(
+	public AbstractAttributeAtom<Integer> createAttributeAtomControl(
 			Composite parent, Refreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
-		//initialize double value at the first call
+		//initialize integer value at the first call
 		if (!isInitialized()) {
-			Double defaultValue = getDefaultValue();
+			Integer defaultValue = getDefaultValue();
 			set(defaultValue);
 		}
 
@@ -104,11 +104,11 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	}
 
 	@Override
-	public AbstractVariableListField<Double> createVariableListField() {
+	public AbstractVariableListField<Integer> createVariableListField() {
 
-		DoubleVariableListField listField = new DoubleVariableListField(name);
-		List<Double> valueList = new ArrayList<>();
-		Double currentValue = get();
+		IntegerVariableListField listField = new IntegerVariableListField(name);
+		List<Integer> valueList = new ArrayList<>();
+		Integer currentValue = get();
 		valueList.add(currentValue);
 		listField.set(valueList);
 
@@ -122,17 +122,17 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	//#region VALUE
 
 	/**
-	 * Returns the Double value. This does not use the attributeValue to store
+	 * Returns the Integer value. This does not use the attributeValue to store
 	 * the state of this attribute atom but uses the valueString
 	 */
 	@Override
-	public Double get() {
-		Double value = new Double(getValueString());
+	public Integer get() {
+		Integer value = new Integer(getValueString());
 		return value;
 	}
 
 	@Override
-	public void set(Double value) {
+	public void set(Integer value) {
 		disableModificationListeners();
 		if (value == null) {
 			setValueString("");
@@ -152,15 +152,15 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	 * @return
 	 */
 	@Override
-	public Double getDefaultValue() {
-		Double value = new Double(getDefaultValueString());
+	public Integer getDefaultValue() {
+		Integer value = new Integer(getDefaultValueString());
 		return value;
 	}
 
 	/**
 	 * @param defaultValue
 	 */
-	public void setDefaultValue(Double defaultValue) {
+	public void setDefaultValue(Integer defaultValue) {
 		if (defaultValue == null) {
 			setDefaultValueString("");
 		} else {

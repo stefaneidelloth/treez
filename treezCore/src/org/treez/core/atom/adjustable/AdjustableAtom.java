@@ -323,7 +323,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 
 	/**
 	 * Set the value for the attribute with the given attribute path and string
-	 * value
+	 * value. The path can be relative or absolute (=starting with "root").
 	 *
 	 * @param modelAttributePath
 	 * @param value

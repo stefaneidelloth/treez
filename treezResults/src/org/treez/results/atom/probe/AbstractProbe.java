@@ -1,5 +1,7 @@
 package org.treez.results.atom.probe;
 
+import java.util.Objects;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
@@ -44,8 +46,17 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	 */
 	@Override
 	public void execute(Refreshable refreshable) {
+		Objects.requireNonNull(refreshable);
+		afterCreateControlAdaptionHook();
 		runNonUiJob("AbstractProbe: execute", (monitor) -> runProbe(refreshable, monitor));
 	}
+
+	/**
+	 * If relative model paths are used in the model of the probe, the root for those paths is updated with this method.
+	 * This method has to be called after the tree has been established, so that the model path atoms are able to access
+	 * their parent.
+	 */
+	protected abstract void updateRelativePathRoots();
 
 	/**
 	 * Runs the Probe to create a table with collected probe data
@@ -67,16 +78,20 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 			continueProbe = true;
 		} catch (IllegalStateException exception) {
 			String exceptionMessage = exception.getMessage();
-			String message = "Could not create the probe table. The probe is canceled.\n" + exceptionMessage;
+			String message = "Could not create the probe table. The probe has been canceled.\n" + exceptionMessage;
 			Utils.showMessage(message);
 		}
 
 		if (continueProbe) {
-			this.runUiJobNonBlocking(() -> refreshable.refresh());
+			//this.runUiJobNonBlocking(() -> refreshable.refresh());
 
 			//collect probe data
 			collectProbeDataAndFillTable(table);
-			this.runUiJobNonBlocking(() -> refreshable.refresh());
+			this.runUiJobNonBlocking(() -> {
+				if (refreshable != null) {
+					refreshable.refresh();
+				}
+			});
 		}
 
 		sysLog.info("Finished " + identifier + ".");

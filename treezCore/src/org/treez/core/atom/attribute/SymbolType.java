@@ -244,8 +244,13 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		addModifyListener(key, (event) -> {
-			String value = event.data.toString();
-			consumer.accept(value);
+			if (event.data == null) {
+				consumer.accept(null);
+			} else {
+				String data = event.data.toString();
+				consumer.accept(data);
+			}
+
 		});
 	}
 

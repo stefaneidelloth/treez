@@ -9,7 +9,7 @@ import org.treez.model.input.ModelInput;
 import org.treez.study.atom.range.AbstractVariableRange;
 
 /**
- * Creates the model input for a sweep
+ * Creates the model input for a Sweep parameter variation
  */
 public class SweepModelInputGenerator {
 
@@ -114,12 +114,12 @@ public class SweepModelInputGenerator {
 	}
 
 	/**
-	 * Gets the variable ranges from the children of the given parent atom
+	 * Gets the enabled variable ranges from the children of the given parent atom
 	 *
 	 * @param parentAtom
 	 * @return
 	 */
-	public List<AbstractVariableRange<?>> getActiveVariableRanges(AbstractAtom parentAtom) {
+	public List<AbstractVariableRange<?>> getEnabledVariableRanges(AbstractAtom parentAtom) {
 		List<AbstractVariableRange<?>> variableRanges = new ArrayList<>();
 		for (AbstractAtom child : parentAtom.getChildAtoms()) {
 			boolean isVariableRange = child instanceof AbstractVariableRange;
