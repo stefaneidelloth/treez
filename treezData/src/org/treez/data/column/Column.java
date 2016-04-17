@@ -172,7 +172,16 @@ public class Column extends AdjustableAtom {
 		return actions;
 	}
 
-	//#region VALUES
+	/**
+	 * @return
+	 */
+	public <T> List<T> makeList() {
+		return new ArrayList<T>();
+	}
+
+	//#end region
+
+	//#region ACCESSORS
 
 	/**
 	 * Returns the values this column contains in the table
@@ -220,13 +229,14 @@ public class Column extends AdjustableAtom {
 		}
 	}
 
-	//#end region
-
 	/**
+	 * Returns the column type
+	 *
 	 * @return
 	 */
-	public <T> List<T> makeList() {
-		return new ArrayList<T>();
+	public ColumnType getColumnType() {
+		ColumnType columnTypeEnumValue = ColumnType.getType(columnType.get());
+		return columnTypeEnumValue;
 	}
 
 	//#end region

@@ -291,6 +291,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 
 	@Override
 	public void setEnabled(boolean state) {
+		super.setEnabled(state);
 		if (isAvailable(textField)) {
 			textField.setEnabled(state);
 		}

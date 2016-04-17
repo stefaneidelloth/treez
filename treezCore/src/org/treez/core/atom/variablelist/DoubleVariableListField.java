@@ -1,4 +1,4 @@
-package org.treez.core.atom.variablefield;
+package org.treez.core.atom.variablelist;
 
 import java.util.List;
 
@@ -14,31 +14,31 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
+import org.treez.core.atom.variablefield.DoubleVariableField;
+import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.springspel.VectorEvaluation;
 import org.treez.core.swt.CustomLabel;
 
 /**
- * Allows a user to enter a string that is interpreted as a list Integers. This
- * is use for example by the study atom IntegerVariableRange
+ * Allows a user to enter a string that is interpreted as a list of numeric
+ * values. This is use for example by the study atom DoubleVariableRange
  */
-public class IntegerVariableListField
-		extends
-			AbstractVariableListField<Integer> {
+public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
 	private static Logger sysLog = Logger
-			.getLogger(IntegerVariableListField.class);
+			.getLogger(DoubleVariableListField.class);
 
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "MyVariable")
 	private String label;
 
-	@IsParameter(defaultValue = "{0,1,2}")
+	@IsParameter(defaultValue = "{0.0}")
 	private String defaultValueString;
 
 	@IsParameter(defaultValue = "")
@@ -56,7 +56,7 @@ public class IntegerVariableListField
 	private Text valueField = null;
 
 	/**
-	 * Used to parse string , e.g. "range(1,10,0)" to Integer list
+	 * Used to parse string , e.g. "range(1,10,0.5)" to double list *
 	 */
 	private static VectorEvaluation vectorEvaluation;
 
@@ -69,7 +69,7 @@ public class IntegerVariableListField
 	 *
 	 * @param name
 	 */
-	public IntegerVariableListField(String name) {
+	public DoubleVariableListField(String name) {
 		super(name);
 		label = name;
 		vectorEvaluation = new VectorEvaluation();
@@ -80,7 +80,7 @@ public class IntegerVariableListField
 	 *
 	 * @param fieldToCopy
 	 */
-	private IntegerVariableListField(IntegerVariableListField fieldToCopy) {
+	private DoubleVariableListField(DoubleVariableListField fieldToCopy) {
 		super(fieldToCopy);
 		label = fieldToCopy.label;
 		defaultValueString = fieldToCopy.defaultValueString;
@@ -96,8 +96,8 @@ public class IntegerVariableListField
 	//#region COPY
 
 	@Override
-	public IntegerVariableListField copy() {
-		return new IntegerVariableListField(this);
+	public DoubleVariableListField copy() {
+		return new DoubleVariableListField(this);
 	}
 
 	//#end region
@@ -107,16 +107,16 @@ public class IntegerVariableListField
 	 */
 	@Override
 	public Image provideImage() {
-		return Activator.getImage("integerVariable.png");
+		return Activator.getImage("doubleVariable.png");
 	}
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractAttributeAtom<List<Integer>> createAttributeAtomControl(
+	public AbstractAttributeAtom<List<Double>> createAttributeAtomControl(
 			Composite parent, Refreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
-		//initialize integer list value at the first call
+		//initialize Double list value at the first call
 		if (!isInitialized()) {
 			set(getDefaultValue());
 		}
@@ -187,13 +187,13 @@ public class IntegerVariableListField
 	}
 
 	@Override
-	public IntegerVariableListFieldCodeAdaption createCodeAdaption(
+	public DoubleVariableListFieldCodeAdaption createCodeAdaption(
 			ScriptType scriptType) {
 
-		IntegerVariableListFieldCodeAdaption codeAdaption;
+		DoubleVariableListFieldCodeAdaption codeAdaption;
 		switch (scriptType) {
 			case JAVA :
-				codeAdaption = new IntegerVariableListFieldCodeAdaption(this);
+				codeAdaption = new DoubleVariableListFieldCodeAdaption(this);
 				break;
 			default :
 				String message = "The ScriptType " + scriptType
@@ -216,15 +216,15 @@ public class IntegerVariableListField
 	}
 
 	/**
-	 * Creates a list of Integers by evaluating the value string
+	 * Creates a list of Doubles by evaluating the value string to a double list
 	 *
 	 * @param valueString
 	 * @param unitString
 	 * @return
 	 */
-	private static List<Integer> createIntegerList(String valueString) {
-		List<Integer> values = vectorEvaluation
-				.parseStringToIntegerList(valueString);
+	private static List<Double> createDoubleList(String valueString) {
+		List<Double> values = vectorEvaluation
+				.parseStringToDoubleList(valueString);
 		return values;
 	}
 
@@ -242,13 +242,13 @@ public class IntegerVariableListField
 	}
 
 	@Override
-	public VariableField<Integer> createVariableField() {
-		IntegerVariableField variableField = new IntegerVariableField(name);
-		List<Integer> currentValues = get();
+	public VariableField<Double> createVariableField() {
+		DoubleVariableField variableField = new DoubleVariableField(name);
+		List<Double> currentValues = get();
 		if (currentValues == null || currentValues.isEmpty()) {
 			variableField.set(null);
 		} else {
-			Integer firstValue = currentValues.get(0);
+			Double firstValue = currentValues.get(0);
 			variableField.set(firstValue);
 		}
 		return variableField;
@@ -269,7 +269,7 @@ public class IntegerVariableListField
 	@Override
 	public void setEnabled(boolean state) {
 		super.setEnabled(state);
-		if (valueField != null) {
+		if (isAvailable(valueField)) {
 			valueField.setEnabled(state);
 		}
 	}
@@ -277,23 +277,23 @@ public class IntegerVariableListField
 	//#region VALUE
 
 	/**
-	 * Returns the Integer list. This does not use the attributeValue to store
+	 * Returns the Double list. This does not use the attributeValue to store
 	 * the state of this attribute atom but uses the valueString
 	 */
 	@Override
-	public List<Integer> get() {
-		List<Integer> quantities = createIntegerList(getValueString());
-		return quantities;
+	public List<Double> get() {
+		List<Double> doubleList = createDoubleList(getValueString());
+		return doubleList;
 	}
 
 	@Override
-	public void set(List<Integer> valueList) {
+	public void set(List<Double> valueList) {
 		disableModificationListeners();
 		if (valueList.isEmpty()) {
 			setValueString("");
 		} else {
 			String currentValueString = VectorEvaluation
-					.integerListToDisplayString(valueList);
+					.doubleListToDisplayString(valueList);
 			setValueString(currentValueString);
 		}
 		enableModificationListeners();
@@ -355,26 +355,26 @@ public class IntegerVariableListField
 
 	//#end region
 
-	//#region DEFAULT VALUE
+	//#region DEFAULT VALUE & UNIT
 
 	/**
 	 * @return
 	 */
 	@Override
-	public List<Integer> getDefaultValue() {
-		List<Integer> defaultValues = createIntegerList(defaultValueString);
+	public List<Double> getDefaultValue() {
+		List<Double> defaultValues = createDoubleList(defaultValueString);
 		return defaultValues;
 	}
 
 	/**
 	 * @param valueList
 	 */
-	public void setDefaultValue(List<Integer> valueList) {
+	public void setDefaultValue(List<Double> valueList) {
 		if (valueList.isEmpty()) {
 			setDefaultValueString("");
 		} else {
 			String currentDefaultValueString = VectorEvaluation
-					.integerListToDisplayString(valueList);
+					.doubleListToDisplayString(valueList);
 			setDefaultValueString(currentDefaultValueString);
 		}
 	}

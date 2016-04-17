@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -11,6 +12,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.variablelist.AbstractVariableListField;
+import org.treez.core.atom.variablelist.DoubleVariableListField;
 
 /**
  * Represents a model variable (-text field) that is used to enter a Double
@@ -94,6 +97,40 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 		createValueTextField(toolkit, container);
 
 		return this;
+	}
+
+	@Override
+	protected void restrictInput(VerifyEvent event) {
+		String allowedCharacters = "0123456789.,eE+-";
+		String text = event.text;
+		for (int index = 0; index < text.length(); index++) {
+			char character = text.charAt(index);
+			boolean isAllowed = allowedCharacters.indexOf(character) > -1;
+			if (!isAllowed) {
+				event.doit = false;
+				return;
+			}
+		}
+	}
+
+	@Override
+	protected void validateValueOnChange(String text) {
+		try {
+			Double.parseDouble(valueField.getText());
+			valueErrorDecorator.hide();
+		} catch (NumberFormatException exception) {
+			//expressions like "5e-" are allowed while typing
+		}
+	}
+
+	@Override
+	protected void validateValueOnFocusLoss(String value) {
+		try {
+			Double.parseDouble(valueField.getText());
+			valueErrorDecorator.hide();
+		} catch (NumberFormatException exception) {
+			valueErrorDecorator.show();
+		}
 	}
 
 	@Override

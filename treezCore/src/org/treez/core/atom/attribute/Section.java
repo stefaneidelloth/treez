@@ -15,12 +15,12 @@ import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.AtomTreeNodeAdaption;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.variablefield.DoubleVariableField;
-import org.treez.core.atom.variablefield.DoubleVariableListField;
 import org.treez.core.atom.variablefield.IntegerVariableField;
-import org.treez.core.atom.variablefield.IntegerVariableListField;
 import org.treez.core.atom.variablefield.QuantityVariableField;
-import org.treez.core.atom.variablefield.QuantityVariableListField;
 import org.treez.core.atom.variablefield.VariableField;
+import org.treez.core.atom.variablelist.DoubleVariableListField;
+import org.treez.core.atom.variablelist.IntegerVariableListField;
+import org.treez.core.atom.variablelist.QuantityVariableListField;
 import org.treez.core.atom.variablelist.VariableList;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.data.column.ColumnType;
@@ -358,6 +358,21 @@ public class Section extends AbstractAttributeContainerAtom {
 		ComboBox comboBox = new ComboBox(name);
 		comboBox.setItems(defaultEnumValue);
 		comboBox.setDefaultValue(defaultEnumValue);
+		addChild(comboBox);
+		comboBox.wrap(wrap);
+		return comboBox;
+	}
+
+	/**
+	 * Creates a new combo box
+	 *
+	 * @return
+	 */
+	public ComboBox createComboBox(Attribute<String> wrap,
+			AbstractAtom attributeParent) {
+		@SuppressWarnings({"unchecked", "rawtypes"})
+		String attributeName = getFieldName(wrap, attributeParent);
+		ComboBox comboBox = new ComboBox(attributeName);
 		addChild(comboBox);
 		comboBox.wrap(wrap);
 		return comboBox;
@@ -708,6 +723,21 @@ public class Section extends AbstractAttributeContainerAtom {
 		return textField;
 	}
 
+	/**
+	 * Creates a new text field with default value
+	 *
+	 * @param attributeParent
+	 * @return
+	 */
+	public TextField createTextField(Attribute<String> wrap,
+			AbstractAtom attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		TextField textField = new TextField(attributeName);
+		addChild(textField);
+		textField.wrap(wrap);
+		return textField;
+	}
+
 	//#end region
 
 	//#region LABEL
@@ -854,6 +884,25 @@ public class Section extends AbstractAttributeContainerAtom {
 	//#end region
 
 	//#region INTEGER VARIABLE FIELD
+
+	/**
+	 * @param wrap
+	 * @param attributeParent
+	 * @param defaultValue
+	 * @return
+	 */
+	public IntegerVariableField createIntegerVariableField(
+			Attribute<Integer> wrap, AbstractAtom attributeParent,
+			Integer defaultValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		IntegerVariableField variableField = new IntegerVariableField(
+				attributeName);
+		variableField.setDefaultValue(defaultValue);
+		variableField.set(defaultValue);
+		variableField.wrap(wrap);
+		addChild(variableField);
+		return variableField;
+	}
 
 	/**
 	 * Creates a Integer variable field with the given name

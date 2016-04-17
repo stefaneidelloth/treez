@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -9,11 +8,14 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.ComboBox;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 /**
  * An item example
  */
-public class StringItemVariableField extends ComboBox implements VariableField {
+public class StringItemVariableField extends ComboBox
+		implements
+			VariableField<String> {
 
 	/**
 	 * Logger for this class
@@ -96,7 +98,7 @@ public class StringItemVariableField extends ComboBox implements VariableField {
 	@Override
 	public AbstractVariableListField<String> createVariableListField() {
 
-		throw new NotImplementedException();
+		throw new IllegalStateException("Not yet implemented");
 	}
 
 	//#end region

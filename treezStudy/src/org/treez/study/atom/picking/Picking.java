@@ -28,10 +28,11 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.DoubleVariableField;
-import org.treez.core.atom.variablefield.DoubleVariableListField;
 import org.treez.core.atom.variablefield.IntegerVariableField;
-import org.treez.core.atom.variablefield.IntegerVariableListField;
 import org.treez.core.atom.variablefield.VariableField;
+import org.treez.core.atom.variablelist.DoubleVariableListField;
+import org.treez.core.atom.variablelist.IntegerVariableListField;
+import org.treez.core.atom.variablelist.NumberRangeProvider;
 import org.treez.core.atom.variablelist.VariableList;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -52,7 +53,7 @@ import org.treez.study.atom.AbstractParameterVariation;
  * the definition space.
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Picking extends AbstractParameterVariation {
+public class Picking extends AbstractParameterVariation implements NumberRangeProvider {
 
 	/**
 	 * Logger for this class
@@ -159,6 +160,7 @@ public class Picking extends AbstractParameterVariation {
 		//time dependent picking
 		Section timeDependentSection = dataPage.createSection("timeDependent", absoluteHelpContextId);
 		timeDependentSection.setTitle("Time dependent picking");
+		timeDependentSection.setExpanded(false);
 		CheckBox isTimeDependentCheckBox = timeDependentSection.createCheckBox(isTimeDependent, "isTimeDependent");
 		isTimeDependentCheckBox.setLabel("Use time series");
 		isTimeDependentCheckBox.set(false);
@@ -609,6 +611,31 @@ public class Picking extends AbstractParameterVariation {
 	public List<VariableField<?>> getPickingVariables() {
 		List<VariableField<?>> selectedVariables = variableList.get();
 		return selectedVariables;
+	}
+
+	@Override
+	public List<Number> getRange() {
+		return getTimeRange();
+	}
+
+	@Override
+	public Class<? extends Number> getRangeType() {
+		if (isTimeDependent.get()) {
+			Class<?> rangeType = timeRangeAtom.getClass();
+			boolean isIntegerRange = IntegerVariableListField.class.isAssignableFrom(rangeType);
+			if (isIntegerRange) {
+				return Integer.class;
+			}
+			boolean isDoubleRange = DoubleVariableListField.class.isAssignableFrom(rangeType);
+			if (isDoubleRange) {
+				return Double.class;
+			}
+
+			String message = "Could not get value type for time range atom of type " + rangeType.getSimpleName();
+			throw new IllegalStateException(message);
+		} else {
+			return null;
+		}
 	}
 
 	/**

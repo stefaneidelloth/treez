@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.variablelist.AbstractVariableListField;
+import org.treez.core.atom.variablelist.IntegerVariableListField;
 
 /**
  * Represents a model variable (-text field) that is used to enter an Integer
@@ -23,6 +29,24 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 	 */
 	@SuppressWarnings("unused")
 	private static Logger sysLog = Logger.getLogger(IntegerVariableField.class);
+
+	//#region ATTRIBUTES
+
+	/**
+	 * Container of the label and the spinner
+	 */
+	private Composite contentContainer;
+
+	/**
+	 * This VariableField uses a Spinner instead of a text field
+	 */
+	private Spinner valueSpinner;
+
+	private Integer minValue = Integer.MIN_VALUE;
+
+	private Integer maxValue = Integer.MAX_VALUE;
+
+	//#end region
 
 	//#region CONSTRUCTORS
 
@@ -84,22 +108,114 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 		//create container composite
 		//its layout depends on the length of the labels and values
-		Composite container = createContainerForLabelsAndTextFields(parent,
+		contentContainer = createContainerForLabelsAndTextFields(parent,
 				toolkit, useIndividualLines);
 
 		//label
-		createValueLabel(toolkit, container);
+		createValueLabel(toolkit, contentContainer);
 
 		//value
-		createValueTextField(toolkit, container);
+		createValueSpinner(contentContainer);
 
 		return this;
 	}
 
+	/**
+	 * Creates the text field for the value
+	 *
+	 * @param toolkit
+	 * @param container
+	 */
+	protected void createValueSpinner(Composite container) {
+
+		valueSpinner = new Spinner(container, SWT.BORDER);
+		valueSpinner.setMinimum(minValue);
+		valueSpinner.setMaximum(maxValue);
+		Integer intValue = get();
+		valueSpinner.setData(intValue);
+		valueSpinner.addModifyListener((event) -> updateValue(event));
+
+		valueSpinner.setToolTipText(tooltip);
+
+		valueSpinner.setEnabled(isEnabled());
+		GridData valueFillHorizontal = new GridData();
+		valueFillHorizontal.grabExcessHorizontalSpace = true;
+		valueFillHorizontal.horizontalAlignment = GridData.FILL;
+		valueFillHorizontal.verticalAlignment = GridData.CENTER;
+		valueSpinner.setLayoutData(valueFillHorizontal);
+
+	}
+
+	private synchronized void updateValue(ModifyEvent event) {
+
+		//avoid update loops
+		if (isUpdating) {
+			return;
+		}
+
+		//set update lock
+		isUpdating = true;
+
+		//get Spinner
+		Spinner spinner = (Spinner) event.getSource();
+
+		//get value expression from text field
+		String currentValueString = spinner.getText();
+
+		//set value expression
+		setValueString(currentValueString);
+
+		//release update lock
+		isUpdating = false;
+	}
+
+	/**
+	 * Sets the value string without checking it.
+	 *
+	 * @param valueString
+	 */
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
-		throw new IllegalStateException("Not yet implemented");
+	protected void setValueStringUnchecked(String valueString) {
+		this.valueString = valueString;
+		if (isAvailable(valueSpinner)) {
+			valueSpinner.setData(new Integer(valueString));
+		}
+		setInitialized();
+		triggerModificationListeners();
+	}
+
+	@Override
+	public void setEnabled(boolean state) {
+		super.setEnabled(state);
+		if (isAvailable(valueSpinner)) {
+			valueSpinner.setEnabled(state);
+		}
+		if (treeViewRefreshable != null) {
+			treeViewRefreshable.refresh();
+		}
+		refreshAttributeAtomControl();
+	}
+
+	@Override
+	public void refreshAttributeAtomControl() {
+		if (isAvailable(valueSpinner)) {
+			String currentValueString = getValueString();
+			if (!valueSpinner.getText().equals(currentValueString)) {
+				valueSpinner.setData(new Integer(currentValueString));
+			}
+		}
+	}
+
+	@Override
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color color) {
+		super.setBackgroundColor(color);
+		if (isAvailable(contentContainer)) {
+			contentContainer.setBackground(color);
+		}
+
+		if (isAvailable(valueSpinner)) {
+			valueSpinner.setBackground(color);
+		}
 
 	}
 
@@ -169,6 +285,29 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 	}
 
 	//#end region
+
+	//#region MIN & MAX
+
+	/**
+	 * @param minValue
+	 */
+	public void setMinValue(Integer minValue) {
+		this.minValue = minValue;
+		if (isAvailable(valueSpinner)) {
+			valueSpinner.setMinimum(minValue);
+		}
+
+	}
+
+	/**
+	 * @param maxValue
+	 */
+	public void setMaxValue(Integer maxValue) {
+		this.maxValue = maxValue;
+		if (isAvailable(valueSpinner)) {
+			valueSpinner.setMaximum(maxValue);
+		}
+	}
 
 	//#end region
 

@@ -1,4 +1,4 @@
-package org.treez.core.atom.variablefield;
+package org.treez.core.atom.variablelist;
 
 import java.util.List;
 
@@ -11,16 +11,16 @@ import org.treez.core.utils.Utils;
 /**
  * Code adaption for the double variable list field
  */
-public class IntegerVariableListFieldCodeAdaption
+public class DoubleVariableListFieldCodeAdaption
 		extends
-			AttributeAtomCodeAdaption<List<Integer>> {
+			AttributeAtomCodeAdaption<List<Double>> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
 	private static Logger sysLog = Logger
-			.getLogger(IntegerVariableListFieldCodeAdaption.class);
+			.getLogger(DoubleVariableListFieldCodeAdaption.class);
 
 	//#region ATTRIBUTES
 
@@ -33,7 +33,7 @@ public class IntegerVariableListFieldCodeAdaption
 	 *
 	 * @param atom
 	 */
-	public IntegerVariableListFieldCodeAdaption(IntegerVariableListField atom) {
+	public DoubleVariableListFieldCodeAdaption(DoubleVariableListField atom) {
 		super(atom);
 	}
 
@@ -52,7 +52,7 @@ public class IntegerVariableListFieldCodeAdaption
 
 		CodeContainer extendedContainer = parentContainer;
 
-		IntegerVariableListField variableListField = (IntegerVariableListField) atom;
+		DoubleVariableListField variableListField = (DoubleVariableListField) atom;
 		boolean hasDefaultValue = variableListField.hasDefaultValue();
 		if (hasDefaultValue) {
 			return extendedContainer;

@@ -56,7 +56,7 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	/**
 	 * The check box
 	 */
-	private Button checkBox;
+	private Button valueCheckBox;
 
 	/**
 	 * The parent composite for the attribute atom control can be stored here to
@@ -160,7 +160,7 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 		createCheckBox(toolkit);
 
 		//initialize filePath
-		set(checkBox.getSelection());
+		set(valueCheckBox.getSelection());
 
 		return this;
 	}
@@ -172,18 +172,18 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	}
 
 	private void createCheckBox(FormToolkit toolkit) {
-		checkBox = toolkit.createButton(contentContainer, "", SWT.CHECK);
-		checkBox.setEnabled(isEnabled());
-		checkBox.setSelection(get());
-		checkBox.setToolTipText(tooltip);
+		valueCheckBox = toolkit.createButton(contentContainer, "", SWT.CHECK);
+		valueCheckBox.setEnabled(isEnabled());
+		valueCheckBox.setSelection(get());
+		valueCheckBox.setToolTipText(tooltip);
 
 		//action listener
-		checkBox.addSelectionListener(new SelectionAdapter() {
+		valueCheckBox.addSelectionListener(new SelectionAdapter() {
 
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				boolean currentValue = checkBox.getSelection();
+				boolean currentValue = valueCheckBox.getSelection();
 				set(currentValue);
 				//updated enabled states if ComboBoxEnableTarget children exist
 				updateTargetsEnabledStates(currentValue);
@@ -198,8 +198,8 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	@Override
 	public void setEnabled(boolean state) {
 		super.setEnabled(state);
-		if (isAvailable(checkBox)) {
-			checkBox.setEnabled(state);
+		if (isAvailable(valueCheckBox)) {
+			valueCheckBox.setEnabled(state);
 		}
 		if (treeViewRefreshable != null) {
 			treeViewRefreshable.refresh();
@@ -209,10 +209,10 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 
 	@Override
 	public void refreshAttributeAtomControl() {
-		if (isAvailable(checkBox)) {
+		if (isAvailable(valueCheckBox)) {
 			Boolean value = get();
-			if (checkBox.getSelection() != value) {
-				checkBox.setSelection(value);
+			if (valueCheckBox.getSelection() != value) {
+				valueCheckBox.setSelection(value);
 			}
 		}
 	}
@@ -249,8 +249,8 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	public void addModificationConsumer(String key,
 			Consumer<Boolean> consumer) {
 		addModifyListener(key, (event) -> {
-			if (isAvailable(checkBox)) {
-				Boolean value = checkBox.getSelection();
+			if (isAvailable(valueCheckBox)) {
+				Boolean value = valueCheckBox.getSelection();
 				consumer.accept(value);
 			}
 		});
@@ -317,8 +317,8 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 		if (isAvailable(labelComposite)) {
 			labelComposite.setBackground(color);
 		}
-		if (isAvailable(checkBox)) {
-			checkBox.setBackground(color);
+		if (isAvailable(valueCheckBox)) {
+			valueCheckBox.setBackground(color);
 		}
 	}
 	//#end region

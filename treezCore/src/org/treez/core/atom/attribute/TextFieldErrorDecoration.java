@@ -12,7 +12,9 @@ import org.treez.core.atom.copy.Copiable;
 /**
  * An error decoration that shows if a text field contains erroneous data.
  */
-public class TextFieldErrorDecoration extends ControlDecoration implements Copiable<TextFieldErrorDecoration> {
+public class TextFieldErrorDecoration extends ControlDecoration
+		implements
+			Copiable<TextFieldErrorDecoration> {
 
 	//#region ATTRIBUTES
 
@@ -21,7 +23,8 @@ public class TextFieldErrorDecoration extends ControlDecoration implements Copia
 	private Composite parentComposite;
 
 	/**
-	 * The message (prefix) that is shown. Additional information might be added by the show(extraMessage) method.
+	 * The message (prefix) that is shown. Additional information might be added
+	 * by the show(extraMessage) method.
 	 */
 	private String basicMessage;
 
@@ -36,8 +39,9 @@ public class TextFieldErrorDecoration extends ControlDecoration implements Copia
 	 * @param parent
 	 * @param message
 	 */
-	public TextFieldErrorDecoration(Control parentControl, String message, Composite parent) {
-		super(parentControl, SWT.TOP, parent);
+	public TextFieldErrorDecoration(Control parentControl, String message,
+			Composite parent) {
+		super(parentControl, SWT.RIGHT, parent);
 		this.parentControl = parentControl;
 		this.basicMessage = message;
 		this.parentComposite = parent;
@@ -49,8 +53,10 @@ public class TextFieldErrorDecoration extends ControlDecoration implements Copia
 	 *
 	 * @param decorationToCopy
 	 */
-	private TextFieldErrorDecoration(TextFieldErrorDecoration decorationToCopy) {
-		super(decorationToCopy.parentControl, SWT.TOP, decorationToCopy.parentComposite);
+	private TextFieldErrorDecoration(
+			TextFieldErrorDecoration decorationToCopy) {
+		super(decorationToCopy.parentControl, SWT.TOP,
+				decorationToCopy.parentComposite);
 		this.parentControl = decorationToCopy.parentControl;
 		this.basicMessage = decorationToCopy.basicMessage;
 		this.parentComposite = decorationToCopy.parentComposite;
@@ -78,8 +84,7 @@ public class TextFieldErrorDecoration extends ControlDecoration implements Copia
 	private void initialize(String message) {
 		this.setDescriptionText(message);
 		this.setMarginWidth(1);
-		Image image = FieldDecorationRegistry
-				.getDefault()
+		Image image = FieldDecorationRegistry.getDefault()
 				.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
 				.getImage();
 		this.setImage(image);
@@ -100,7 +105,8 @@ public class TextFieldErrorDecoration extends ControlDecoration implements Copia
 	@Override
 	public void show() {
 		super.show();
-		final Color errorColor = new Color(parentControl.getDisplay(), 250, 200, 128);
+		final Color errorColor = new Color(parentControl.getDisplay(), 250, 200,
+				128);
 		parentControl.setBackground(errorColor);
 	}
 
@@ -108,7 +114,8 @@ public class TextFieldErrorDecoration extends ControlDecoration implements Copia
 	public void hide() {
 		super.hide();
 		setDescriptionText(basicMessage);
-		final Color normalColor = new Color(parentControl.getDisplay(), 255, 255, 255);
+		final Color normalColor = new Color(parentControl.getDisplay(), 255,
+				255, 255);
 		parentControl.setBackground(normalColor);
 	}
 	//#end region

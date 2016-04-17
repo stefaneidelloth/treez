@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.variablefield.AbstractVariableListField;
 import org.treez.core.atom.variablefield.VariableField;
+import org.treez.core.atom.variablelist.AbstractVariableListField;
 import org.treez.model.input.HashMapModelInput;
 import org.treez.model.input.ModelInput;
 

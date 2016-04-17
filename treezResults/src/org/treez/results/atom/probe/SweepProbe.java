@@ -13,10 +13,10 @@ import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
 import org.treez.core.quantity.Quantity;
-import org.treez.data.column.Columns;
 import org.treez.data.output.OutputAtom;
 import org.treez.data.table.Table;
 import org.treez.results.Activator;
@@ -138,7 +138,8 @@ public class SweepProbe extends AbstractProbe {
 		org.treez.core.atom.attribute.Page page = root.createPage("page");
 
 		//domain section
-		Section domainSection = page.createSection("domainSection", "Domain");
+		Section domainSection = page.createSection("domainSection", "DomainSectionHelpId");
+		domainSection.setTitle("Domain");
 		domainSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
 		TextField domainLabelField = domainSection.createTextField(domainLabel, "domainLabel", "x");
@@ -227,22 +228,16 @@ public class SweepProbe extends AbstractProbe {
 
 		sysLog.info("Creating table columns...");
 
-		//determine column names, types and legends------------------------------------------
-		List<String> columnNames = new ArrayList<>();
-		List<ColumnType> columnTypes = new ArrayList<>();
-		List<String> columnLegends = new ArrayList<>();
+		//create column blueprints
+		List<ColumnBlueprint> columnBlueprints = new ArrayList<>();
 
 		//domain column----------------------------------------
 		String domainLabelString = domainLabel.get();
 		String domainColumnName = domainLabelString;
-		columnNames.add(domainColumnName);
-
 		Class<?> domainType = getDomainType();
 		ColumnType domainColumnType = ColumnType.getDefaultTypeForClass(domainType);
-		columnTypes.add(domainColumnType);
-
 		String domainLegend = domainLabelString;
-		columnLegends.add(domainLegend);
+		columnBlueprints.add(new ColumnBlueprint(domainColumnName, domainColumnType, domainLegend));
 
 		//probe columns---------------------------------------
 
@@ -271,50 +266,29 @@ public class SweepProbe extends AbstractProbe {
 					int secondFamilyIndex = 1;
 					for (Object secondFamilyRangeValue : secondFamilyRangeValues) {
 						String extendedColumnName = columnName + NAME_SEPARATOR + secondFamilyIndex;
-						columnNames.add(extendedColumnName);
-						columnTypes.add(probeColumnType);
 						String secondFamilyRangeValueString = secondFamilyRangeValue.toString();
 						String extendedLegendText = legendText + ", " + secondFamilyLabelString + ": "
 								+ secondFamilyRangeValueString;
-						columnLegends.add(extendedLegendText);
+						columnBlueprints
+								.add(new ColumnBlueprint(extendedColumnName, probeColumnType, extendedLegendText));
 						secondFamilyIndex++;
 					}
 
 				} else {
-					columnNames.add(columnName);
-					columnTypes.add(probeColumnType);
-					columnLegends.add(legendText);
+					columnBlueprints.add(new ColumnBlueprint(columnName, probeColumnType, legendText));
 				}
 				firstFamilyIndex++;
 			}
 		} else {
 			String columnName = probeLabelString;
-			columnNames.add(columnName);
-			columnTypes.add(probeColumnType);
-			columnLegends.add("");
+			columnBlueprints.add(new ColumnBlueprint(columnName, probeColumnType, ""));
 		}
 
-		//create columns--------------------------------------------------------------------------
-		createColumns(table, columnNames, columnTypes, columnLegends);
+		//create columns
+		createColumns(table, columnBlueprints);
 
 		sysLog.info("Created table columns.");
 
-	}
-
-	private static void createColumns(
-			Table table,
-			List<String> columnNames,
-			List<ColumnType> columnTypes,
-			List<String> columnLegends) {
-
-		Columns columns = table.createColumns("columns");
-
-		for (int columnIndex = 0; columnIndex < columnNames.size(); columnIndex++) {
-			String columnHeader = columnNames.get(columnIndex);
-			ColumnType columnType = columnTypes.get(columnIndex);
-			String legendText = columnLegends.get(columnIndex);
-			columns.createColumn(columnHeader, columnType, legendText);
-		}
 	}
 
 	private List<?> getFirstFamilyRangeValues() {

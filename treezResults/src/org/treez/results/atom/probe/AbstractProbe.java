@@ -1,5 +1,6 @@
 package org.treez.results.atom.probe;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.log4j.Logger;
@@ -8,7 +9,9 @@ import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.utils.Utils;
+import org.treez.data.column.Columns;
 import org.treez.data.table.Table;
 
 /**
@@ -136,6 +139,13 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	 * Collects the probe data and fills the probe table
 	 */
 	protected abstract void collectProbeDataAndFillTable(Table table);
+
+	protected static void createColumns(Table table, List<ColumnBlueprint> columnBlueprints) {
+		Columns columns = table.createColumns("columns");
+		for (ColumnBlueprint columnBlueprint : columnBlueprints) {
+			columns.createColumn(columnBlueprint);
+		}
+	}
 
 	/**
 	 * Returns true if this atom has a child of type Table

@@ -2,8 +2,9 @@ package org.treez.core.atom.variablefield;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -11,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
+import org.treez.core.atom.attribute.TextFieldErrorDecoration;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
@@ -31,12 +33,6 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Background color
-	 */
-	protected static final Color BACKGROUND_COLOR = new Color(null, 240, 245,
-			249);
-
 	@IsParameter(defaultValue = "MyVariable")
 	private String label;
 
@@ -44,14 +40,22 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	private String defaultValueString;
 
 	@IsParameter(defaultValue = "")
-	private String tooltip;
+	protected String tooltip;
+
+	@SuppressWarnings("checkstyle:magicnumber")
+	protected Color backgroundColor = new Color(null, 240, 245, 249);
 
 	/**
 	 * Contains the actual valueString. This is used together with the
 	 * unitString to represent the state of this attribute atom. The
 	 * attributeValue is derived from them.
 	 */
-	private String valueString;
+	protected String valueString;
+
+	/**
+	 * The lable for the value text field
+	 */
+	protected CustomLabel labelComposite;
 
 	/**
 	 * The value text field
@@ -61,7 +65,11 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	/**
 	 * Used to avoid update collisions
 	 */
-	private boolean isUpdating = false;
+	protected boolean isUpdating = false;
+
+	protected TextFieldErrorDecoration valueErrorDecorator;
+
+	private Composite container;
 
 	//#end region
 
@@ -148,11 +156,11 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	 * @param useIndividualLines
 	 * @return
 	 */
-	protected static Composite createContainerForLabelsAndTextFields(
-			Composite parent, FormToolkit toolkit, boolean useIndividualLines) {
+	protected Composite createContainerForLabelsAndTextFields(Composite parent,
+			FormToolkit toolkit, boolean useIndividualLines) {
 
 		//create container
-		Composite container = toolkit.createComposite(parent);
+		container = toolkit.createComposite(parent);
 
 		//create layout
 		if (useIndividualLines) {
@@ -162,7 +170,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 		}
 
 		//set background color
-		container.setBackground(BACKGROUND_COLOR);
+		container.setBackground(backgroundColor);
 
 		return container;
 	}
@@ -222,9 +230,9 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	@SuppressWarnings("checkstyle:magicnumber")
 	protected void createValueLabel(FormToolkit toolkit, Composite container) {
 
-		CustomLabel labelComposite = new CustomLabel(toolkit, container, label);
+		labelComposite = new CustomLabel(toolkit, container, label);
 		labelComposite.setPrefferedWidth(80);
-		labelComposite.setBackground(BACKGROUND_COLOR);
+		labelComposite.setBackground(backgroundColor);
 
 	}
 
@@ -238,15 +246,71 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 			Composite container) {
 		String value = getValueString();
 		valueField = toolkit.createText(container, value, SWT.BORDER);
+		valueField.addVerifyListener((event) -> restrictInput(event));
+		valueField.addModifyListener((event) -> {
+			validateValueOnChange(valueField.getText());
+			updateValue(event);
+		});
+
 		valueField.setToolTipText(tooltip);
+
+		valueErrorDecorator = new TextFieldErrorDecoration(valueField,
+				"Invalid input", container);
+
+		valueField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusGained(org.eclipse.swt.events.FocusEvent e) {
+			}
+
+			@Override
+			public void focusLost(org.eclipse.swt.events.FocusEvent event) {
+				validateValueOnFocusLoss(valueField.getText());
+			}
+
+		});
+
 		valueField.setEnabled(isEnabled());
 		GridData valueFillHorizontal = new GridData();
 		valueFillHorizontal.grabExcessHorizontalSpace = true;
 		valueFillHorizontal.horizontalAlignment = GridData.FILL;
 		valueFillHorizontal.verticalAlignment = GridData.CENTER;
 		valueField.setLayoutData(valueFillHorizontal);
-		ModifyListener valueModifyListener = (event) -> updateValue(event);
-		valueField.addModifyListener(valueModifyListener);
+
+	}
+
+	/**
+	 * This default implementation allows all input. In an inheriting class you
+	 * might want to set event.doit = false for specific characters.
+	 *
+	 * @param event
+	 */
+	protected void restrictInput(
+			@SuppressWarnings("unused") VerifyEvent event) {
+		return;
+	}
+
+	/**
+	 * This default implementation allows all input. In an inheriting class you
+	 * might want to use valueErrorDecorator.show() if a value is invalid.
+	 *
+	 * @param text
+	 */
+	protected void validateValueOnFocusLoss(
+			@SuppressWarnings("unused") String text) {
+		return;
+	}
+
+	/**
+	 * This default implementation allows all input. In an inheriting class you
+	 * might want to use valueErrorDecorator.hide() if a value previously has
+	 * been invalid and is now valid.
+	 *
+	 * @param text
+	 */
+	protected void validateValueOnChange(
+			@SuppressWarnings("unused") String text) {
+		return;
 	}
 
 	private synchronized void updateValue(ModifyEvent event) {
@@ -283,9 +347,9 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	 *
 	 * @param valueString
 	 */
-	private void setValueStringUnchecked(String valueString) {
+	protected void setValueStringUnchecked(String valueString) {
 		this.valueString = valueString;
-		if (valueField != null && !valueField.isDisposed()) {
+		if (isAvailable(valueField)) {
 			valueField.setText(valueString);
 		}
 		setInitialized();
@@ -295,7 +359,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	@Override
 	public void setEnabled(boolean state) {
 		super.setEnabled(state);
-		if (valueField != null && !valueField.isDisposed()) {
+		if (isAvailable(valueField)) {
 			valueField.setEnabled(state);
 		}
 		if (treeViewRefreshable != null) {
@@ -306,7 +370,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 
 	@Override
 	public void refreshAttributeAtomControl() {
-		if (valueField != null && !valueField.isDisposed()) {
+		if (isAvailable(valueField)) {
 			String currentValueString = getValueString();
 			if (!valueField.getText().equals(currentValueString)) {
 				valueField.setText(currentValueString);
@@ -409,6 +473,21 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	}
 
 	//#end region
+
+	//#region BACKGROUND COLOR
+
+	@Override
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color color) {
+		backgroundColor = color;
+		if (isAvailable(container)) {
+			container.setBackground(color);
+		}
+
+		if (isAvailable(labelComposite)) {
+			labelComposite.setBackground(color);
+		}
+
+	}
 
 	//#end region
 

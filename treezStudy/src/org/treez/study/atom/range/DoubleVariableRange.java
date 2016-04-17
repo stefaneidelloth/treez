@@ -9,7 +9,7 @@ import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.DoubleVariableField;
-import org.treez.core.atom.variablefield.DoubleVariableListField;
+import org.treez.core.atom.variablelist.DoubleVariableListField;
 import org.treez.study.Activator;
 
 /**

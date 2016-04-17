@@ -4,18 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.ComboBox;
 import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.variablefield.IntegerVariableField;
+import org.treez.core.atom.variablelist.NumberRangeProvider;
 import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
 import org.treez.core.quantity.Quantity;
+import org.treez.data.column.Column;
 import org.treez.data.column.Columns;
 import org.treez.data.output.OutputAtom;
 import org.treez.data.table.Table;
@@ -36,43 +43,40 @@ public class PickingProbe extends AbstractProbe {
 
 	//#region ATTRIBUTES
 
-	//time section
+	//domain section
+
+	private static final String DOMAIN_TYPE_SAMPLES = "Samples";
+
+	private static final String DOMAIN_TYPE_TIME_SERIES_PICKING = "Time series from picking";
+
+	private static final String DOMAIN_TYPE_TIME_SERIES_COLUMN = "Time series from column";
 
 	/**
-	 * time label
+	 * domain type
 	 */
-	public final Attribute<String> timeLabel = new Wrap<>();
+	public final Attribute<String> domainType = new Wrap<>();
 
 	/**
-	 * time range
+	 * domain label
 	 */
-	public final Attribute<String> timeRange = new Wrap<>();
-
-	//y section
+	public final Attribute<String> domainLabel = new Wrap<>();
 
 	/**
-	 * y label
+	 * The model path to a column that is used to retrieve domain values
 	 */
-	public final Attribute<String> yLabel = new Wrap<>();
-
-	//tuple section
+	public final Attribute<String> domainColumnPath = new Wrap<>();
 
 	/**
-	 * tuple list label
+	 * The model path to Picking that is used to retrieve time values
 	 */
-	public final Attribute<String> tupleListLabel = new Wrap<>();
-
-	/**
-	 * tuple list
-	 */
-	public final Attribute<String> tupleList = new Wrap<>();
+	public final Attribute<String> pickingPath = new Wrap<>();
 
 	//probe section
 
 	/**
 	 * probe name
 	 */
-	public final Attribute<String> probeName = new Wrap<>();
+	public final Attribute<String> probeLabel = new Wrap<>();
 
 	/**
 	 * picking output model path
@@ -87,12 +91,12 @@ public class PickingProbe extends AbstractProbe {
 	/**
 	 * probe column index
 	 */
-	public final Attribute<String> probeColumnIndex = new Wrap<>();
+	public final Attribute<Integer> probeColumnIndex = new Wrap<>();
 
 	/**
 	 * probe row index
 	 */
-	public final Attribute<String> probeRowIndex = new Wrap<>();
+	public final Attribute<Integer> probeRowIndex = new Wrap<>();
 
 	//#end region
 
@@ -112,41 +116,65 @@ public class PickingProbe extends AbstractProbe {
 
 	//#region METHODS
 
+	@SuppressWarnings({ "checkstyle:javancss", "checkstyle:executablestatementcount" })
 	private void createPickingProbeModel() {
 		AttributeRoot root = new AttributeRoot("root");
 
 		org.treez.core.atom.attribute.Page page = root.createPage("page");
 
-		//time section
-		Section timeSection = page.createSection("timeSection", "Time");
-		timeSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
+		//domain section
+		Section domainSection = page.createSection("domainSection", "DomainSectionHelpId");
+		domainSection.setTitle("Domain");
+		domainSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
-		TextField timeLabelField = timeSection.createTextField(timeLabel, "timeLabel", "Year");
-		timeLabelField.setLabel("Label for time axis");
-		ModelPath timeRangePath = timeSection.createModelPath(timeRange, this, "", VariableRange.class, this);
-		timeRangePath.setLabel("Range for time axis");
-		timeRangePath.setSelectionType(ModelPathSelectionType.FLAT);
+		ComboBox domainTypeCombo = domainSection.createComboBox(domainType, this);
+		domainTypeCombo.setLabel("Domain type");
+		domainTypeCombo.setItems(
+				DOMAIN_TYPE_SAMPLES + "," + DOMAIN_TYPE_TIME_SERIES_PICKING + "," + DOMAIN_TYPE_TIME_SERIES_COLUMN);
+		domainTypeCombo.set("Samples");
+
+		TextField domainLabelField = domainSection.createTextField(domainLabel, this);
+		domainLabelField.setLabel("Domain label");
+		domainLabelField.setEnabled(false);
+
+		ModelPath pickingModelPath = domainSection.createModelPath(pickingPath, this, "", NumberRangeProvider.class,
+				this);
+		pickingModelPath.setLabel("Picking for domain range");
+		pickingModelPath.setSelectionType(ModelPathSelectionType.FLAT);
+		pickingModelPath.setEnabled(false);
+
+		ModelPath timeColumnModelPath = domainSection.createModelPath(domainColumnPath, this, "", Column.class, this);
+		timeColumnModelPath.setLabel("Column for domain range");
+		timeColumnModelPath.setSelectionType(ModelPathSelectionType.FLAT);
+		timeColumnModelPath.setEnabled(false);
 		//timeRangePath.set("root.studies.picking.time");
 
-		//y section
-		Section ySection = page.createSection("ySection", "Y");
+		domainTypeCombo.addModificationConsumerAndRun("Update label field", (data) -> {
 
-		TextField yLabelField = ySection.createTextField(yLabel, "yLabel", "y");
-		yLabelField.setLabel("Label for y-Axis");
+			domainLabelField.set("Sample");
+			domainLabelField.setEnabled(false);
+			pickingModelPath.setEnabled(false);
+			timeColumnModelPath.setEnabled(false);
 
-		//tuple list section
-		Section tupleListSection = page.createSection("tupleList", "Tuple list");
-		tupleListSection.setExpanded(false);
-
-		//tupleListSection.createTextField(tupleListLabel, "tupleListLabel", "Label for first family", "family1");
-		//tupleListSection.createModelPath(tupleList, this, "Range for first family", "",
-		//		VariableRange.class, this);
+			boolean isPickingTimeSeries = isPickingTimeSeries();
+			boolean isColumnTimeSeries = isColumnTimeSeries();
+			if (isPickingTimeSeries || isColumnTimeSeries) {
+				domainLabelField.set("Time");
+				domainLabelField.setEnabled(true);
+				if (isPickingTimeSeries) {
+					pickingModelPath.setEnabled(true);
+				}
+				if (isColumnTimeSeries) {
+					timeColumnModelPath.setEnabled(true);
+				}
+			}
+		});
 
 		//probe section
 		Section probeSection = page.createSection("probe", "Probe");
 
-		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
-		probeNameField.setLabel("Name");
+		TextField probeNameField = probeSection.createTextField(probeLabel, this);
+		probeNameField.setLabel("Probe label");
 		ModelPath pickingOutputModelPath = probeSection.createModelPath(pickingOutput, this, "", OutputAtom.class,
 				this);
 		pickingOutputModelPath.setLabel("Picking output");
@@ -154,12 +182,34 @@ public class PickingProbe extends AbstractProbe {
 				Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
-		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");
+		final Color white = new Color(null, 255, 255, 255);
+		IntegerVariableField columnIndex = probeSection.createIntegerVariableField(probeColumnIndex, this, 0);
 		columnIndex.setLabel("Column index");
-		TextField rowIndex = probeSection.createTextField(probeRowIndex, "probeRowIndex", "0");
-		rowIndex.setLabel("Row index");
-		setModel(root);
+		columnIndex.setBackgroundColor(white);
+		columnIndex.setMinValue(0);
 
+		IntegerVariableField rowIndex = probeSection.createIntegerVariableField(probeRowIndex, this, 0);
+		rowIndex.setLabel("Row index");
+		rowIndex.setBackgroundColor(white);
+		rowIndex.setMinValue(0);
+		setModel(root);
+	}
+
+	private boolean isColumnTimeSeries() {
+		boolean isColumnTimeSeries = domainType.get().equals(DOMAIN_TYPE_TIME_SERIES_COLUMN);
+		return isColumnTimeSeries;
+	}
+
+	private boolean isPickingTimeSeries() {
+		boolean isPickingTimeSeries = domainType.get().equals(DOMAIN_TYPE_TIME_SERIES_PICKING);
+		return isPickingTimeSeries;
+	}
+
+	private boolean isTimeSeries() {
+		boolean isPickingTimeSeries = isPickingTimeSeries();
+		boolean isColumnTimeSeries = isColumnTimeSeries();
+		boolean isTimeSeries = isPickingTimeSeries || isColumnTimeSeries;
+		return isTimeSeries;
 	}
 
 	@Override
@@ -196,93 +246,150 @@ public class PickingProbe extends AbstractProbe {
 
 		sysLog.info("Creating table columns...");
 
-		//determine column names, types and legends------------------------------------------
-		List<String> columnNames = new ArrayList<>();
-		List<ColumnType> columnTypes = new ArrayList<>();
-		List<String> columnLegends = new ArrayList<>();
+		//determine column names, types and legends
+		List<ColumnBlueprint> columnBlueprints = new ArrayList<>();
 
-		//time column----------------------------------------
-		String timeLabelString = timeLabel.get();
-		String timeColumnName = timeLabelString;
-		columnNames.add(timeColumnName);
+		if (isTimeSeries()) {
+			columnBlueprints = createColumnBlueprintsWithTimeSeries();
+		} else {
+			//domain column
+			columnBlueprints.add(new ColumnBlueprint("Sample", ColumnType.TEXT, ""));
 
-		Class<?> timeType = getTimeType();
-		ColumnType timeColumnType = ColumnType.getDefaultTypeForClass(timeType);
-		columnTypes.add(timeColumnType);
-
-		String timeLegend = timeLabelString;
-		columnLegends.add(timeLegend);
-
-		//y columns---------------------------------------
-
-		//get y information
-		String yLabelString = yLabel.get();
-		ColumnType yColumnType = ColumnType.TEXT;
-
-		//get tuple information
-		String tupleListLabelString = tupleListLabel.get();
-		List<?> tupleList = getTupleList();
-
-		//create y column names, types and legends
-		int tupleIndex = 1;
-		for (Object tuple : tupleList) {
-			String columnName = yLabelString + "#" + tupleIndex;
-			String tupleResultValueString = tuple.toString();
-			String legendText = tupleListLabelString + ": " + tupleResultValueString;
-
-			columnNames.add(columnName);
-			columnTypes.add(yColumnType);
-			columnLegends.add(legendText);
-
-			tupleIndex++;
+			//probe column
+			ColumnType probeColumnType = this.getPickingProbeColumnType();
+			columnBlueprints.add(new ColumnBlueprint(probeLabel.get(), probeColumnType, probeLabel.get()));
 		}
 
-		//create columns--------------------------------------------------------------------------
-		createColumns(table, columnNames, columnTypes, columnLegends);
+		createColumns(table, columnBlueprints);
 
 		sysLog.info("Created table columns.");
 
 	}
 
-	private static void createColumns(
-			Table table,
-			List<String> columnNames,
-			List<ColumnType> columnTypes,
-			List<String> columnLegends) {
+	private List<ColumnBlueprint> createColumnBlueprintsWithTimeSeries() {
 
-		Columns columns = table.createColumns("columns");
+		List<ColumnBlueprint> columnBlueprints = new ArrayList<>();
 
-		for (int columnIndex = 0; columnIndex < columnNames.size(); columnIndex++) {
-			String columnHeader = columnNames.get(columnIndex);
-			ColumnType columnType = columnTypes.get(columnIndex);
-			String legendText = columnLegends.get(columnIndex);
-			columns.createColumn(columnHeader, columnType, legendText);
+		//domain column
+		ColumnType domainColumnType = getDomainColumnType();
+		columnBlueprints.add(new ColumnBlueprint(domainLabel.get(), domainColumnType, ""));
+
+		//sample columns
+		if (isPickingTimeSeries()) {
+			columnBlueprints = addSampleColumnBlueprintsForPickingTimeSeries(columnBlueprints);
+		} else if (isColumnTimeSeries()) {
+			columnBlueprints = addSampleColumnBlueprintsForColumnTimeSeries(columnBlueprints);
+		} else {
+			throw new IllegalStateException("Unknown domain series type");
 		}
+
+		return columnBlueprints;
 	}
 
-	private List<?> getTupleList() {
-		String firstFamilyPath = tupleList.get();
-		boolean firstFamilyIsSpecified = !"".equals(firstFamilyPath);
-		List<?> firstFamilyRangeValues = null;
-		if (firstFamilyIsSpecified) {
-			VariableRange<?> firstFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(firstFamilyPath);
-			firstFamilyRangeValues = firstFamilyRangeAtom.getRange();
+	private List<ColumnBlueprint> addSampleColumnBlueprintsForPickingTimeSeries(
+			List<ColumnBlueprint> columnBlueprints) {
+		ColumnType probeColumnType = getPickingProbeColumnType();
+		List<AbstractAtom> samples = getSamplesFromPicking();
+		for (AbstractAtom sample : samples) {
+			String sampleName = sample.getName();
+			columnBlueprints.add(new ColumnBlueprint(sampleName, probeColumnType, sampleName));
+		}
+		return columnBlueprints;
+	}
+
+	private List<ColumnBlueprint> addSampleColumnBlueprintsForColumnTimeSeries(List<ColumnBlueprint> columnBlueprints) {
+		String domainColumnModelPath = domainColumnPath.get();
+		boolean timeIsSpecified = !"".equals(domainColumnModelPath);
+		if (timeIsSpecified) {
+			Column column = (Column) this.getChildFromRoot(domainColumnModelPath);
+			ColumnType columnType = column.getColumnType();
+
+			int numberOfDomainValues = column.getValues().size();
+			if (numberOfDomainValues > 0) {
+				int numberOfPickingOutputs = getNumberOfPickingOutputs();
+				int numberOfProbeColumns = numberOfPickingOutputs / numberOfDomainValues;
+				for (int columnIndex = 1; columnIndex <= numberOfProbeColumns; columnIndex++) {
+					String sampleColumnName = "Costum_sample_" + columnIndex;
+					columnBlueprints.add(new ColumnBlueprint(sampleColumnName, columnType, sampleColumnName));
+				}
+			}
+		}
+		return columnBlueprints;
+	}
+
+	private int getNumberOfPickingOutputs() {
+		String pickingOutputModelPath = pickingOutput.get();
+		boolean pickingOutputIsSpecified = !"".equals(pickingOutputModelPath);
+		if (pickingOutputIsSpecified) {
+			AbstractAtom pickingOutputAtom = this.getChildFromRoot(pickingOutputModelPath);
+			int numberOfOutputs = pickingOutputAtom.getChildAtoms().size();
+			return numberOfOutputs;
+		}
+		return 0;
+	}
+
+	private List<AbstractAtom> getSamplesFromPicking() {
+		String pickingModelPath = pickingPath.get();
+		boolean pickingIsSpecified = !"".equals(pickingModelPath);
+		if (pickingIsSpecified) {
+			AbstractAtom picking = this.getChildFromRoot(pickingModelPath);
+			return picking.getChildAtoms();
+		}
+		return null;
+	}
+
+	private ColumnType getPickingProbeColumnType() {
+		String firstProbeTableModelPath = firstProbeTable.get();
+		boolean probeTableSpecified = !"".equals(firstProbeTableModelPath);
+		if (probeTableSpecified) {
+			Table table = (Table) this.getChildFromRoot(firstProbeTableModelPath);
+			Columns columns = table.getColumns();
+			int columnIndex = this.probeColumnIndex.get();
+			Column probeColumn = columns.getColumnByIndex(columnIndex);
+			ColumnType columnType = probeColumn.getColumnType();
+			return columnType;
 		} else {
-			String message = "At least the first family range needs to be specified.";
+			String message = "Could not determine the probe column type. Please make sure that a probe table is specified.";
 			throw new IllegalStateException(message);
 		}
-		return firstFamilyRangeValues;
 	}
 
-	private Class<?> getTimeType() {
-		String timePath = timeRange.get();
-		boolean timeIsSpecified = !"".equals(timePath);
-		Class<?> timeType = null;
-		if (timeIsSpecified) {
-			VariableRange<?> timeRangeAtom = (VariableRange<?>) this.getChildFromRoot(timePath);
-			timeType = timeRangeAtom.getType();
+	private ColumnType getDomainColumnType() {
+		if (isColumnTimeSeries()) {
+			return getDomainColumnTypeFromColumn();
+		} else if (isPickingTimeSeries()) {
+			return getDomainColumnTypeFromPicking();
 		}
-		return timeType;
+		throw new IllegalStateException("Unknown time series type");
+	}
+
+	private ColumnType getDomainColumnTypeFromColumn() {
+		String domainColumnModelPath = domainColumnPath.get();
+		boolean timeIsSpecified = !"".equals(domainColumnModelPath);
+		if (timeIsSpecified) {
+			Column column = (Column) this.getChildFromRoot(domainColumnModelPath);
+			ColumnType columnType = column.getColumnType();
+			return columnType;
+		} else {
+			return null;
+		}
+	}
+
+	private ColumnType getDomainColumnTypeFromPicking() {
+		String pickingModelPath = pickingPath.get();
+		boolean pickingIsSpecified = !"".equals(pickingModelPath);
+		Class<?> domainColumnType = null;
+		if (pickingIsSpecified) {
+			NumberRangeProvider picking = (NumberRangeProvider) this.getChildFromRoot(pickingModelPath);
+			domainColumnType = picking.getRangeType();
+			if (domainColumnType == null) {
+				String message = "The picking '" + pickingModelPath + "' that is used for the picking probe '"
+						+ getName() + "'does not provide a time series.";
+				throw new IllegalArgumentException(message);
+			}
+		}
+		ColumnType columnType = ColumnType.getDefaultTypeForClass(domainColumnType);
+		return columnType;
 	}
 
 	//#end region
@@ -294,42 +401,56 @@ public class PickingProbe extends AbstractProbe {
 
 		sysLog.info("Filling probe table...");
 
-		//get time information
-		String timeLabelString = timeLabel.get();
-		String timePath = timeRange.get();
-		boolean timeIsSpecified = !"".equals(timePath);
-		VariableRange<?> timeRangeAtom = null;
+		boolean isTimeSeries = isTimeSeries();
 
-		List<?> timeRangeValues = null;
-		if (timeIsSpecified) {
-			timeRangeAtom = (VariableRange<?>) this.getChildFromRoot(timePath);
-			timeRangeValues = timeRangeAtom.getRange();
+		if (isTimeSeries) {
+
+			//get domain information
+
+			List<Number> domainValues = getDomainTimeSeriesRange();
+
+			String timeLabelString = domainLabel.get();
+			String timePath = domainColumnPath.get();
+			boolean timeIsSpecified = !"".equals(timePath);
+			VariableRange<?> timeRangeAtom = null;
+
+			List<?> timeRangeValues = null;
+			if (timeIsSpecified) {
+				timeRangeAtom = (VariableRange<?>) this.getChildFromRoot(timePath);
+				timeRangeValues = timeRangeAtom.getRange();
+			}
+
+			/*
+			//get y information
+			String yLabelString = yLabel.get();
+
+			//get tuple information
+			String tupleyPath = tupleList.get();
+			List<?> tupleListValues = getTupleValues(tupleyPath);
+
+			//column names
+			List<String> columnNames = createColumnNames(timeLabelString, yLabelString, tupleListValues);
+
+			*/
+
+			//get sweep output path
+			String sweepOutputPath = pickingOutput.get();
+
+			//get probe table relative path
+			String firstProbeTableRelativePath = getFirstProbeRelativePath();
+			String[] pathItems = firstProbeTableRelativePath.split("\\.");
+			String firstPrefix = pathItems[0];
+			int firstIndex = firstPrefix.length() + 1;
+			String relativeProbeTablePath = firstProbeTableRelativePath.substring(firstIndex);
+
+			//get probe table prefix
+			String prefix = getProbeTablePrefix(firstPrefix);
+
+			//fillProbeTable(table, timeRangeValues, columnNames, sweepOutputPath, relativeProbeTablePath, prefix);
+
+		} else {
+
 		}
-
-		//get y information
-		String yLabelString = yLabel.get();
-
-		//get tuple information
-		String tupleyPath = tupleList.get();
-		List<?> tupleListValues = getTupleValues(tupleyPath);
-
-		//column names
-		List<String> columnNames = createColumnNames(timeLabelString, yLabelString, tupleListValues);
-
-		//get sweep output path
-		String sweepOutputPath = pickingOutput.get();
-
-		//get probe table relative path
-		String firstProbeTableRelativePath = getFirstProbeRelativePath();
-		String[] pathItems = firstProbeTableRelativePath.split("\\.");
-		String firstPrefix = pathItems[0];
-		int firstIndex = firstPrefix.length() + 1;
-		String relativeProbeTablePath = firstProbeTableRelativePath.substring(firstIndex);
-
-		//get probe table prefix
-		String prefix = getProbeTablePrefix(firstPrefix);
-
-		fillProbeTable(table, timeRangeValues, columnNames, sweepOutputPath, relativeProbeTablePath, prefix);
 
 		sysLog.info("Filled probe table.");
 
@@ -343,10 +464,10 @@ public class PickingProbe extends AbstractProbe {
 			String relativeProbeTablePath,
 			String prefix) {
 		//get probe table row index
-		int probeRowId = Integer.parseInt(probeRowIndex.get());
+		int probeRowId = probeRowIndex.get();
 
 		//get probe table column index
-		int probeColumnId = Integer.parseInt(probeColumnIndex.get());
+		int probeColumnId = probeColumnIndex.get();
 
 		int sweepIndex = 1;
 		for (int rowIndex = 0; rowIndex < xRangeValues.size(); rowIndex++) {
@@ -381,6 +502,34 @@ public class PickingProbe extends AbstractProbe {
 		}
 	}
 
+	private List<Number> getDomainTimeSeriesRange() {
+		if (isColumnTimeSeries()) {
+			String domainColumnModelPath = domainColumnPath.get();
+			boolean timeIsSpecified = !"".equals(domainColumnModelPath);
+			if (timeIsSpecified) {
+				Column column = (Column) this.getChildFromRoot(domainColumnModelPath);
+				List<?> domainRange = column.getValues();
+				List<Number> domainNumberRange = new ArrayList<>();
+				for (Object domainValue : domainRange) {
+					Number domainNumberValue = (Number) domainValue;
+					domainNumberRange.add(domainNumberValue);
+				}
+			}
+			return null;
+		} else if (isPickingTimeSeries()) {
+			String pickingModelPath = pickingPath.get();
+			boolean pickingIsSpecified = !"".equals(pickingModelPath);
+			if (pickingIsSpecified) {
+				NumberRangeProvider picking = (NumberRangeProvider) this.getChildFromRoot(pickingModelPath);
+				List<Number> domainNumberRange = picking.getRange();
+				return domainNumberRange;
+			}
+			return null;
+		}
+
+		throw new IllegalStateException("Unknown time series type");
+	}
+
 	private static String getProbeTablePrefix(String firstPrefix) {
 		String idSeparator = "Id";
 		String[] prefixItems = firstPrefix.split(idSeparator);
@@ -412,19 +561,6 @@ public class PickingProbe extends AbstractProbe {
 
 		}
 		return columnNames;
-	}
-
-	private List<?> getTupleValues(String firstFamilyPath) {
-		boolean firstFamilyIsSpecified = !"".equals(firstFamilyPath);
-		List<?> firstFamilyRangeValues = null;
-		if (firstFamilyIsSpecified) {
-			VariableRange<?> firstFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(firstFamilyPath);
-			firstFamilyRangeValues = firstFamilyRangeAtom.getRange();
-		} else {
-			String message = "At least the first family range needs to be specified.";
-			throw new IllegalStateException(message);
-		}
-		return firstFamilyRangeValues;
 	}
 
 	private Object getProbeValue(String probeTablePath, int rowIndex, int columnIndex) {

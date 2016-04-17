@@ -1,8 +1,9 @@
-package org.treez.core.atom.variablefield;
+package org.treez.core.atom.variablelist;
 
 import java.util.List;
 
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.variablefield.VariableField;
 
 /**
  * Abstract parent class for all variable list fields

@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -9,6 +8,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 /**
  * Represents a string model variable (-text field)
@@ -103,7 +103,7 @@ public class StringVariableField extends AbstractVariableField<String> {
 	@Override
 	public AbstractVariableListField<String> createVariableListField() {
 
-		throw new NotImplementedException();
+		throw new IllegalStateException("Not yet implemented");
 	}
 
 	//#end region

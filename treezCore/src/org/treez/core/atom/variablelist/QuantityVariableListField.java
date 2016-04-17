@@ -1,4 +1,4 @@
-package org.treez.core.atom.variablefield;
+package org.treez.core.atom.variablelist;
 
 import java.util.List;
 
@@ -17,6 +17,8 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
+import org.treez.core.atom.variablefield.QuantityVariableField;
+import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.quantity.Quantity;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.springspel.VectorEvaluation;

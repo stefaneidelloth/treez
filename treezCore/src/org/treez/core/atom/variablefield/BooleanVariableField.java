@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -9,11 +8,14 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 /**
  * An item example
  */
-public class BooleanVariableField extends CheckBox implements VariableField {
+public class BooleanVariableField extends CheckBox
+		implements
+			VariableField<Boolean> {
 
 	/**
 	 * Logger for this class
@@ -95,7 +97,7 @@ public class BooleanVariableField extends CheckBox implements VariableField {
 	@Override
 	public AbstractVariableListField<Boolean> createVariableListField() {
 
-		throw new NotImplementedException();
+		throw new IllegalStateException("Not yet implemented");
 	}
 
 	//#end region
@@ -109,6 +111,7 @@ public class BooleanVariableField extends CheckBox implements VariableField {
 		return valueString;
 	}
 
+	@SuppressWarnings("checkstyle:illegalcatch")
 	@Override
 	public void setValueString(String valueString) {
 		try {

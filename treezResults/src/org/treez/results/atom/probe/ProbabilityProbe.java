@@ -13,10 +13,10 @@ import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
 import org.treez.core.quantity.Quantity;
-import org.treez.data.column.Columns;
 import org.treez.data.output.OutputAtom;
 import org.treez.data.table.Table;
 import org.treez.results.Activator;
@@ -198,22 +198,16 @@ public class ProbabilityProbe extends AbstractProbe {
 
 		sysLog.info("Creating table columns...");
 
-		//determine column names, types and legends------------------------------------------
-		List<String> columnNames = new ArrayList<>();
-		List<ColumnType> columnTypes = new ArrayList<>();
-		List<String> columnLegends = new ArrayList<>();
+		//create column blueprints
+		List<ColumnBlueprint> columnBlueprints = new ArrayList<>();
 
 		//time column----------------------------------------
 		String timeLabelString = timeLabel.get();
 		String timeColumnName = timeLabelString;
-		columnNames.add(timeColumnName);
-
 		Class<?> timeType = getTimeType();
 		ColumnType timeColumnType = ColumnType.getDefaultTypeForClass(timeType);
-		columnTypes.add(timeColumnType);
-
 		String timeLegend = timeLabelString;
-		columnLegends.add(timeLegend);
+		columnBlueprints.add(new ColumnBlueprint(timeColumnName, timeColumnType, timeLegend));
 
 		//y columns---------------------------------------
 
@@ -231,35 +225,16 @@ public class ProbabilityProbe extends AbstractProbe {
 			String columnName = yLabelString + "#" + tupleIndex;
 			String tupleResultValueString = tuple.toString();
 			String legendText = tupleListLabelString + ": " + tupleResultValueString;
-
-			columnNames.add(columnName);
-			columnTypes.add(yColumnType);
-			columnLegends.add(legendText);
+			columnBlueprints.add(new ColumnBlueprint(columnName, yColumnType, legendText));
 
 			tupleIndex++;
 		}
 
 		//create columns--------------------------------------------------------------------------
-		createColumns(table, columnNames, columnTypes, columnLegends);
+		createColumns(table, columnBlueprints);
 
 		sysLog.info("Created table columns.");
 
-	}
-
-	private static void createColumns(
-			Table table,
-			List<String> columnNames,
-			List<ColumnType> columnTypes,
-			List<String> columnLegends) {
-
-		Columns columns = table.createColumns("columns");
-
-		for (int columnIndex = 0; columnIndex < columnNames.size(); columnIndex++) {
-			String columnHeader = columnNames.get(columnIndex);
-			ColumnType columnType = columnTypes.get(columnIndex);
-			String legendText = columnLegends.get(columnIndex);
-			columns.createColumn(columnHeader, columnType, legendText);
-		}
 	}
 
 	private List<?> getTupleList() {

@@ -14,8 +14,10 @@ import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.ColumnTypeComboBox;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
+import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
@@ -123,8 +125,8 @@ public class Columns extends AdjustableAtom {
 				if (columnHeader != null) {
 					headers.add(columnHeader);
 				} else {
-					throw new IllegalStateException("Could not read header for column '" + column.getName()
-							+ "'. The value is null.");
+					throw new IllegalStateException(
+							"Could not read header for column '" + column.getName() + "'. The value is null.");
 				}
 
 			} else {
@@ -214,6 +216,25 @@ public class Columns extends AdjustableAtom {
 	}
 
 	/**
+	 * Returns the column with the given index
+	 *
+	 * @param columnIndex
+	 * @return
+	 */
+	public Column getColumnByIndex(int columnIndex) {
+		List<AbstractAtom> children = this.getChildAtoms();
+		if (children.size() > columnIndex) {
+			Column column = (Column) children.get(columnIndex);
+			return column;
+		} else {
+			String message = "The table only has " + children.size() + " columns and the index " + columnIndex
+					+ " is invalid.";
+			throw new IllegalArgumentException(message);
+		}
+
+	}
+
+	/**
 	 * Returns true if at least one column exists
 	 *
 	 * @return
@@ -284,6 +305,18 @@ public class Columns extends AdjustableAtom {
 		addChild(column);
 		return column;
 
+	}
+
+	/**
+	 * Creates a new column with given ColumnBlueprint
+	 *
+	 * @param columnBlueprint
+	 */
+	public Column createColumn(ColumnBlueprint columnBlueprint) {
+		String columnHeader = columnBlueprint.getName();
+		ColumnType columnType = columnBlueprint.getType();
+		String legendText = columnBlueprint.getDescription();
+		return createColumn(columnHeader, columnType, legendText);
 	}
 
 	/**

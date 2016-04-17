@@ -9,7 +9,7 @@ import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.QuantityVariableField;
-import org.treez.core.atom.variablefield.QuantityVariableListField;
+import org.treez.core.atom.variablelist.QuantityVariableListField;
 import org.treez.core.quantity.Quantity;
 import org.treez.study.Activator;
 

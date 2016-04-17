@@ -1,5 +1,7 @@
 package org.treez.core.atom.variablefield;
 
+import org.treez.core.atom.variablelist.AbstractVariableListField;
+
 /**
  * Represents a variable field
  */

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,6 +19,8 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
+import org.treez.core.atom.variablelist.AbstractVariableListField;
+import org.treez.core.atom.variablelist.QuantityVariableListField;
 import org.treez.core.quantity.Quantity;
 import org.treez.core.swt.CustomLabel;
 
@@ -130,6 +133,16 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 		return this;
 	}
 
+	@Override
+	protected void restrictInput(VerifyEvent event) {
+		String text = event.text;
+		try {
+			Double.parseDouble(text);
+		} catch (NumberFormatException ex) {
+			event.doit = false;
+		}
+	}
+
 	/**
 	 * Checks if the content should be shown in individual lines
 	 *
@@ -180,7 +193,7 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 		gridLayout.marginWidth = 0;
 		gridLayout.horizontalSpacing = 2;
 		unitComposite.setLayout(gridLayout);
-		unitComposite.setBackground(BACKGROUND_COLOR);
+		unitComposite.setBackground(backgroundColor);
 
 		if (useIndividualLines) {
 			GridData fillHorizontal = new GridData();
@@ -197,14 +210,14 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 		}
 		CustomLabel unitStartLabel = new CustomLabel(toolkit, unitComposite,
 				startLabelText);
-		unitStartLabel.setBackground(BACKGROUND_COLOR);
+		unitStartLabel.setBackground(backgroundColor);
 
 		//unit text field
 		createUnitTextField(toolkit, unitComposite, useIndividualLines);
 
 		//unit end label
 		CustomLabel unitEndLabel = new CustomLabel(toolkit, unitComposite, "]");
-		unitEndLabel.setBackground(BACKGROUND_COLOR);
+		unitEndLabel.setBackground(backgroundColor);
 	}
 
 	/**
