@@ -6,16 +6,17 @@
       provider-name="Stefan Eidelloth"
       plugin="org.treez.core">
 
-   <description url="https://sourceforge.net/projects/treez">
+   <description url="https://github.com/stefaneidelloth/treez/">
       Treez is a set of Eclipse plugins for the creation of generic
 tree based user interfaces.
-Visit http://sourceforge.net/projects/treez/
+Visit https://github.com/stefaneidelloth/treez/
    </description>
 
-   <copyright url="http://sourceforge.net/projects/treez/">
+   <copyright url="https://github.com/stefaneidelloth/treez">
       Treez
-Treez is a set of Eclipse plugins for the creation of generic tree based user interfaces.
-Visit http://sourceforge.net/projects/treez/
+Treez is a set of Eclipse plugins for the creation of generic
+tree based user interfaces.
+Visit https://github.com/stefaneidelloth/treez
 Copyright (c) 2015 Stefan Eidelloth
 This offering is based on technology from the Eclipse Project.
 Visit http://www.eclipse.org
@@ -86,7 +87,7 @@ IT IS YOUR OBLIGATION TO READ AND ACCEPT ALL SUCH TERMS AND CONDITIONS PRIOR TO 
    </license>
 
    <url>
-      <update label="org.treez" url="https://svn.code.sf.net/p/treez/code/_trunk/treezUpdate/"/>
+      <update label="org.treez" url="https://github.com/stefaneidelloth/treez/raw/master/treezUpdate/"/>
    </url>
 
    <requires>
@@ -114,49 +115,49 @@ IT IS YOUR OBLIGATION TO READ AND ACCEPT ALL SUCH TERMS AND CONDITIONS PRIOR TO 
          id="org.treez.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.treez.views"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.treez.data"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.treez.model"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.treez.study"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.treez.results"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.treez.javafxd3"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
 </feature>
