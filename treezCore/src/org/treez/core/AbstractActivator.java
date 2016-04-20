@@ -33,16 +33,10 @@ import org.treez.testutils.TestUtils;
  */
 public abstract class AbstractActivator extends AbstractUIPlugin {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(AbstractActivator.class);
+	private static final Logger LOG = Logger.getLogger(AbstractActivator.class);
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * The constructor
-	 */
 	public AbstractActivator() {
 	}
 
@@ -186,7 +180,7 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 		try {
 			workbench = PlatformUI.getWorkbench();
 		} catch (NoClassDefFoundError error) {
-			sysLog.warn("Could not get workbench.");
+			LOG.warn("Could not get workbench.");
 		}
 
 		boolean runningAsEclipsePlugin = workbench != null;
@@ -202,7 +196,7 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 				//try to get the image from icons folder of the eclipse plugin
 				Display display = Display.getCurrent();
 				String path = getAbsolutePath() + "\\icons\\" + imageName;
-				//sysLog.debug("Loading image from path '" + path + "'.");
+				//LOG.debug("Loading image from path '" + path + "'.");
 				try {
 					image = new Image(display, path);
 				} catch (IllegalArgumentException | SWTException
@@ -210,7 +204,7 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 					//use error image as a default and log message
 					image = createDefaultImage();
 					String message = "Could not load image";
-					sysLog.error(message, exception);
+					LOG.error(message, exception);
 				}
 			}
 
@@ -360,7 +354,7 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 		try {
 			workbench = PlatformUI.getWorkbench();
 		} catch (Exception exception) {
-			sysLog.error("Could not get workbench.", exception);
+			LOG.error("Could not get workbench.", exception);
 		}
 
 		IWorkbenchHelpSystem helpSystem = null;

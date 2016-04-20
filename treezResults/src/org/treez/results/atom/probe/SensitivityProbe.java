@@ -28,81 +28,42 @@ import org.treez.results.Activator;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class SensitivityProbe extends AbstractProbe {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SensitivityProbe.class);
+	private static final Logger LOG = Logger.getLogger(SensitivityProbe.class);
 
 	//#region ATTRIBUTES
 
 	//time section
 
-	/**
-	 * time label
-	 */
 	public final Attribute<String> timeLabel = new Wrap<>();
 
-	/**
-	 * time range
-	 */
 	public final Attribute<String> timeRange = new Wrap<>();
 
 	//y section
 
-	/**
-	 * y label
-	 */
 	public final Attribute<String> yLabel = new Wrap<>();
 
 	//tuple section
 
-	/**
-	 * tuple list label
-	 */
 	public final Attribute<String> tupleListLabel = new Wrap<>();
 
-	/**
-	 * tuple list
-	 */
 	public final Attribute<String> tupleList = new Wrap<>();
 
 	//probe section
 
-	/**
-	 * probe name
-	 */
 	public final Attribute<String> probeName = new Wrap<>();
 
-	/**
-	 * picker output model path
-	 */
 	public final Attribute<String> pickerOutput = new Wrap<>();
 
-	/**
-	 * first probe table model path
-	 */
 	public final Attribute<String> firstProbeTable = new Wrap<>();
 
-	/**
-	 * probe column index
-	 */
 	public final Attribute<String> probeColumnIndex = new Wrap<>();
 
-	/**
-	 * probe row index
-	 */
 	public final Attribute<String> probeRowIndex = new Wrap<>();
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public SensitivityProbe(String name) {
 		super(name);
 		createPickerProbeModel();
@@ -176,9 +137,6 @@ public class SensitivityProbe extends AbstractProbe {
 		firstProbeTableModelPath.updateRelativeRootAtom();
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideBaseImage() {
 		Image baseImage = Activator.getImage("sensitivity.png");
@@ -196,7 +154,7 @@ public class SensitivityProbe extends AbstractProbe {
 	@SuppressWarnings({ "checkstyle:executablestatementcount", "checkstyle:javancss" })
 	protected void createTableColumns(Table table) {
 
-		sysLog.info("Creating table columns...");
+		LOG.info("Creating table columns...");
 
 		//create column blueprints
 		List<ColumnBlueprint> columnBlueprints = new ArrayList<>();
@@ -233,7 +191,7 @@ public class SensitivityProbe extends AbstractProbe {
 		//create columns--------------------------------------------------------------------------
 		createColumns(table, columnBlueprints);
 
-		sysLog.info("Created table columns.");
+		LOG.info("Created table columns.");
 
 	}
 
@@ -269,7 +227,7 @@ public class SensitivityProbe extends AbstractProbe {
 	@Override
 	protected void collectProbeDataAndFillTable(Table table) {
 
-		sysLog.info("Filling probe table...");
+		LOG.info("Filling probe table...");
 
 		//get time information
 		String timeLabelString = timeLabel.get();
@@ -308,7 +266,7 @@ public class SensitivityProbe extends AbstractProbe {
 
 		fillProbeTable(table, timeRangeValues, columnNames, sweepOutputPath, relativeProbeTablePath, prefix);
 
-		sysLog.info("Filled probe table.");
+		LOG.info("Filled probe table.");
 
 	}
 

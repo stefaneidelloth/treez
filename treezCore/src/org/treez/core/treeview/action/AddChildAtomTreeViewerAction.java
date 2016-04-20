@@ -37,20 +37,8 @@ public class AddChildAtomTreeViewerAction extends TreeViewerAction {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param namePrefix
-	 * @param image
-	 * @param parentAtom
-	 * @param treeViewer
-	 * @param atomClass
-	 */
-	public AddChildAtomTreeViewerAction(
-			Class<? extends AbstractAtom> atomClass,
-			String namePrefix,
-			Image image,
-			AbstractAtom parentAtom,
+	public AddChildAtomTreeViewerAction(Class<? extends AbstractAtom> atomClass,
+			String namePrefix, Image image, AbstractAtom parentAtom,
 			TreeViewerRefreshable treeViewer) {
 
 		super(createLabel(namePrefix), image, treeViewer, null);
@@ -66,7 +54,8 @@ public class AddChildAtomTreeViewerAction extends TreeViewerAction {
 	 * Decorates the passed image with an add symbol
 	 */
 	private void createDecoratedImage() {
-		Image decoratedImage = Activator.getOverlayImageStatic(baseImage, "add_decoration.png");
+		Image decoratedImage = Activator.getOverlayImageStatic(baseImage,
+				"add_decoration.png");
 		setImage(decoratedImage);
 	}
 

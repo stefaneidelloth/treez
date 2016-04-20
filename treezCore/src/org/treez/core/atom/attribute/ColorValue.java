@@ -3,81 +3,36 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a color
- */
 public enum ColorValue {
 
-	//#region VALUES     	
+	//#region VALUES
 
-	/**
-	 *
-	 */
 	WHITE("white", "#ffffff"),
 
-	/**
-	 *
-	 */
 	BLACK("black", "#000000"),
 
-	/**
-	 *
-	 */
 	RED("red", "#ff0000"),
 
-	/**
-	 *
-	 */
 	GREEN("green", "#008000"),
 
-	/**
-	 *
-	 */
 	BLUE("blue", "#0000ff"),
 
-	/**
-	 *
-	 */
 	CYAN("cyan", "#00ffff"),
 
-	/**
-	 *
-	 */
 	MAGENTA("magenta", "#ff00ff"),
 
-	/**
-	 *
-	 */
 	YELLOW("yellow", "#ffff00"),
 
-	/**
-	 *
-	 */
 	GREY("grey", "#808080"),
 
-	/**
-	 *
-	 */
 	DARKRED("darkred", "#8b0000"),
 
-	/**
-	 *
-	 */
 	DARKGREEN("darkgreen", "#006400"),
 
-	/**
-	 *
-	 */
 	DARKBLUE("darkblue", "#00008b"),
 
-	/**
-	 *
-	 */
 	DARKCYAN("darkcyan", "#008b8b"),
 
-	/**
-	 *
-	 */
 	DARKMAGENTA("darkmagenta", "#8b008b");
 
 	//#end region
@@ -106,19 +61,10 @@ public enum ColorValue {
 		return colorName;
 	}
 
-	/**
-	 * Returns the hex code
-	 * 
-	 * @return
-	 */
 	public String getHexCode() {
 		return hexCode;
 	}
 
-	/**
-	 * @param colorText
-	 * @return
-	 */
 	public static String getHexCode(String colorText) {
 		ColorValue[] allValues = ColorValue.values();
 		for (ColorValue color : allValues) {
@@ -127,12 +73,13 @@ public enum ColorValue {
 				return color.getHexCode();
 			}
 		}
-		throw new IllegalArgumentException("The color text '" + colorText + "' is not know. ");
+		throw new IllegalArgumentException(
+				"The color text '" + colorText + "' is not know. ");
 	}
 
 	/**
 	 * Returns a set of all colors as strings
-	 * 
+	 *
 	 * @return
 	 */
 	public static List<String> getAllStringValues() {
@@ -147,7 +94,7 @@ public enum ColorValue {
 
 	/**
 	 * Returns a set of all hex codes as strings
-	 * 
+	 *
 	 * @return
 	 */
 	public static List<String> getAllHexCodes() {

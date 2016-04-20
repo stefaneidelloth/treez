@@ -12,7 +12,7 @@ public class SymbolTypeTest extends AbstractAttributeAtomConstructionTest<String
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SymbolTypeTest.class);
+	private static final Logger LOG = Logger.getLogger(SymbolTypeTest.class);
 
 	//#region ATTRIBUTES
 

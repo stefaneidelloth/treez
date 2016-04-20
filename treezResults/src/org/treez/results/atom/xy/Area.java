@@ -42,9 +42,6 @@ public class Area implements GraphicsPropertiesPageFactory {
 	 */
 	public final Attribute<Boolean> belowHide = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//public final Attribute<Boolean> belowHideErrorFill = new Wrap<>();
 
 	/**
@@ -52,9 +49,6 @@ public class Area implements GraphicsPropertiesPageFactory {
 	 */
 	public final Attribute<String> aboveColor = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//public final Attribute<String> aboveFillStyle = new Wrap<>();
 
 	/**
@@ -67,9 +61,6 @@ public class Area implements GraphicsPropertiesPageFactory {
 	 */
 	public final Attribute<Boolean> aboveHide = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//public final Attribute<Boolean> aboveHideErrorFill = new Wrap<>();
 
 	//#end region
@@ -110,7 +101,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 		//fillBelow.createCheckBox(belowHideErrorFill, "hideErrorFill", "Hide error fill");
 
-		// #end region
+		//#end region
 	}
 
 	@Override

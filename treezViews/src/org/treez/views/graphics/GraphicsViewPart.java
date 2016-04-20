@@ -1,6 +1,5 @@
 package org.treez.views.graphics;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.treez.core.treeview.TreezView;
@@ -9,12 +8,6 @@ import org.treez.core.treeview.TreezView;
  * The GraphicsAdaption view of treez
  */
 public class GraphicsViewPart extends ViewPart implements TreezView {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(GraphicsViewPart.class);
 
 	//#region ATTRIBUTES
 
@@ -32,12 +25,7 @@ public class GraphicsViewPart extends ViewPart implements TreezView {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * The constructor.
-	 */
-	public GraphicsViewPart() {
-
-	}
+	public GraphicsViewPart() {}
 
 	//#end region
 
@@ -45,7 +33,7 @@ public class GraphicsViewPart extends ViewPart implements TreezView {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		//sysLog.debug("creating part control");
+		//LOG.debug("creating part control");
 		contentComposite = parent;
 	}
 
@@ -61,11 +49,6 @@ public class GraphicsViewPart extends ViewPart implements TreezView {
 
 	//#region ACCESSORS
 
-	/**
-	 * Return the properties component
-	 *
-	 * @return
-	 */
 	@Override
 	public Composite getContentComposite() {
 		return contentComposite;

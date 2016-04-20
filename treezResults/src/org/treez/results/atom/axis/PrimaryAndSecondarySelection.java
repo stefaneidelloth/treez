@@ -29,30 +29,18 @@ public class PrimaryAndSecondarySelection {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public Selection getPrimary() {
 		return primary;
 	}
 
-	/**
-	 * @param primary
-	 */
 	public void setPrimary(Selection primary) {
 		this.primary = primary;
 	}
 
-	/**
-	 * @return
-	 */
 	public Selection getSecondary() {
 		return secondary;
 	}
 
-	/**
-	 * @param secondary
-	 */
 	public void setSecondary(Selection secondary) {
 		this.secondary = secondary;
 	}

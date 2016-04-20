@@ -16,12 +16,6 @@ public class IdentifiableComposite extends Composite {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param id
-	 */
 	public IdentifiableComposite(Composite parent, String id) {
 		super(parent, SWT.NONE);
 		this.id = id;
@@ -31,11 +25,6 @@ public class IdentifiableComposite extends Composite {
 
 	//#region ACCESSORS
 
-	/**
-	 * Returns the id
-	 *
-	 * @return
-	 */
 	public String getId() {
 		return id;
 	}

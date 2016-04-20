@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,12 +25,6 @@ import org.treez.core.utils.Utils;
  */
 public class Font extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Font.class);
-
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "My Font:")
@@ -43,19 +36,10 @@ public class Font extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "")
 	private String tooltip;
 
-	/**
-	 * Container for label and combo box
-	 */
 	private Composite contentContainer;
 
-	/**
-	 * The label
-	 */
 	private CustomLabel labelComposite;
 
-	/**
-	 * The combo box
-	 */
 	private Combo fontCombo = null;
 
 	/**
@@ -67,34 +51,11 @@ public class Font extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Font(String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name);
 	}
 
-	/**
-	 * Copy constructor
-	 *
-	 * @param fontToCopy
-	 */
-	private Font(Font fontToCopy) {
-		super(fontToCopy);
-		label = fontToCopy.label;
-		defaultValue = fontToCopy.defaultValue;
-		tooltip = fontToCopy.tooltip;
-	}
-
-	/**
-	 * Constructor with default value
-	 *
-	 * @param name
-	 * @param defaultFont
-	 */
 	public Font(String name, String defaultFont) {
 		this(name);
 		boolean isFont = getFonts().contains(defaultFont);
@@ -106,32 +67,30 @@ public class Font extends AbstractAttributeAtom<String> {
 		}
 	}
 
+	/**
+	 * Copy constructor
+	 */
+	private Font(Font fontToCopy) {
+		super(fontToCopy);
+		label = fontToCopy.label;
+		defaultValue = fontToCopy.defaultValue;
+		tooltip = fontToCopy.tooltip;
+	}
+
 	//#end region
 
 	//#region METHODS
-
-	//#region COPY
 
 	@Override
 	public Font copy() {
 		return new Font(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("font.png");
 	}
 
-	/**
-	 * Creates the composite on a given parent
-	 *
-	 * @param parent
-	 */
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
 			Composite parent, Refreshable treeViewerRefreshable) {
@@ -171,8 +130,7 @@ public class Font extends AbstractAttributeAtom<String> {
 
 		//initialize selected item
 		String value = get();
-		List<String> fonts = getFonts();
-		int index = fonts.indexOf(value);
+		int index = currentFonts.indexOf(value);
 		fontCombo.select(index);
 
 		//action listener for combo box
@@ -248,65 +206,36 @@ public class Font extends AbstractAttributeAtom<String> {
 		return fonts;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * Get font
-	 *
-	 * @return the value
-	 */
 	@Override
 	public String get() {
 		return super.get();
 	}
 
-	/**
-	 * Set font
-	 *
-	 * @param font
-	 *            the font to set
-	 */
 	@Override
 	public void set(String font) {
 		super.set(font);

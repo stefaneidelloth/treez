@@ -15,7 +15,7 @@ public class JavaScriptingTest {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(JavaScriptingTest.class);
+	private static final Logger LOG = Logger.getLogger(JavaScriptingTest.class);
 
 	//#region ATTRIBUTES
 
@@ -69,7 +69,7 @@ public class JavaScriptingTest {
         
         AbstractAtom root = javaScripting.getRoot();
 		
-		sysLog.debug(root.getName());		
+		LOG.debug(root.getName());		
 
 	}
 

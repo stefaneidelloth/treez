@@ -19,29 +19,14 @@ public class Border implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Border color
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 * Border width
-	 */
 	public final Attribute<String> width = new Wrap<>();
 
-	/**
-	 * Border style
-	 */
 	public final Attribute<String> style = new Wrap<>();
 
-	/**
-	 * Border transparency
-	 */
 	public final Attribute<String> transparency = new Wrap<>();
 
-	/**
-	 * Hide
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	//#end region

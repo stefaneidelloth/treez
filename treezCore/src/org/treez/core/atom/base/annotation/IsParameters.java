@@ -7,21 +7,20 @@ import java.util.Objects;
 import org.apache.log4j.Logger;
 
 /**
- * This class provides static methods that help using the IsParameter annotation.
+ * This class provides static methods that help using the IsParameter
+ * annotation.
  */
 public final class IsParameters {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(IsParameters.class);
+	private static final Logger LOG = Logger.getLogger(IsParameters.class);
 
 	//#region CONSTRUCTORS
 
 	/**
 	 * Private Constructor that prevents construction
 	 */
-	private IsParameters() {}
+	private IsParameters() {
+	}
 
 	//#end region
 
@@ -81,9 +80,9 @@ public final class IsParameters {
 			}
 
 		} catch (Exception exception) {
-			String message = "Could not get current value for the attribute '" + attribute.getName() + "' of '"
-					+ parent + "'.";
-			sysLog.error(message, exception);
+			String message = "Could not get current value for the attribute '"
+					+ attribute.getName() + "' of '" + parent + "'.";
+			LOG.error(message, exception);
 
 		}
 		return currentValueString;
@@ -106,9 +105,9 @@ public final class IsParameters {
 			}
 
 		} catch (Exception exception) {
-			String message = "Could not get current value for the attribute '" + attribute.getName() + "' of '"
-					+ parent + " as Enum'.";
-			sysLog.error(message, exception);
+			String message = "Could not get current value for the attribute '"
+					+ attribute.getName() + "' of '" + parent + " as Enum'.";
+			LOG.error(message, exception);
 
 		}
 		return currentValueEnum;
@@ -122,7 +121,8 @@ public final class IsParameters {
 	 * @return
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	public static String[] getPossibleEnumValues(Field attribute, Object parent) {
+	public static String[] getPossibleEnumValues(Field attribute,
+			Object parent) {
 		String[] enumItems = null;
 		try {
 
@@ -141,14 +141,17 @@ public final class IsParameters {
 			}
 
 		} catch (Exception e) {
-			sysLog.error("Could not get possible enum value for the attribute '" + attribute.getName() + "' of '"
-					+ parent + "'.", e);
+			LOG.error(
+					"Could not get possible enum value for the attribute '"
+							+ attribute.getName() + "' of '" + parent + "'.",
+					e);
 		}
 		return enumItems;
 	}
 
 	/**
-	 * Returns true if the given attribute is annotated with the annotation IsParameter
+	 * Returns true if the given attribute is annotated with the annotation
+	 * IsParameter
 	 *
 	 * @param attribute
 	 * @return
@@ -164,7 +167,8 @@ public final class IsParameters {
 	 * @param parent
 	 * @param valueString
 	 */
-	public static void setAttributeValue(Field attribute, Object parent, String valueString) {
+	public static void setAttributeValue(Field attribute, Object parent,
+			String valueString) {
 
 		String type = attribute.getType().getSimpleName().toUpperCase();
 		boolean isEnum = isEnum(attribute);
@@ -173,26 +177,27 @@ public final class IsParameters {
 		}
 
 		switch (type) {
-		case "BOOLEAN":
-			setAttributeBooleanValue(attribute, parent, valueString);
-			break;
-		case "ENUM":
-			setAttributeEnumValue(attribute, parent, valueString);
-			break;
-		case "DOUBLE":
-			setAttributeDoubleValue(attribute, parent, valueString);
-			break;
-		case "FLOAT":
-			setAttributeFloatValue(attribute, parent, valueString);
-			break;
-		case "INTEGER":
-			setAttributeIntegerValue(attribute, parent, valueString);
-			break;
-		case "STRING":
-			setAttributeStringValue(attribute, parent, valueString);
-			break;
-		default:
-			throw new IllegalStateException("The type '" + type + "' is not yet implemented.");
+			case "BOOLEAN" :
+				setAttributeBooleanValue(attribute, parent, valueString);
+				break;
+			case "ENUM" :
+				setAttributeEnumValue(attribute, parent, valueString);
+				break;
+			case "DOUBLE" :
+				setAttributeDoubleValue(attribute, parent, valueString);
+				break;
+			case "FLOAT" :
+				setAttributeFloatValue(attribute, parent, valueString);
+				break;
+			case "INTEGER" :
+				setAttributeIntegerValue(attribute, parent, valueString);
+				break;
+			case "STRING" :
+				setAttributeStringValue(attribute, parent, valueString);
+				break;
+			default :
+				throw new IllegalStateException(
+						"The type '" + type + "' is not yet implemented.");
 
 		}
 	}
@@ -208,8 +213,8 @@ public final class IsParameters {
 		try {
 			return attribute.getType().isEnum();
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not determine if attribute '" + attribute.getName()
-					+ "' is an Enum.", e);
+			throw new IllegalStateException("Could not determine if attribute '"
+					+ attribute.getName() + "' is an Enum.", e);
 		}
 
 	}
@@ -222,7 +227,8 @@ public final class IsParameters {
 	 * @param valueString
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static void setAttributeEnumValue(Field attribute, Object parent, String valueString) {
+	private static void setAttributeEnumValue(Field attribute, Object parent,
+			String valueString) {
 		Objects.requireNonNull(attribute, "The attribute must not be null");
 		Objects.requireNonNull(parent, "The parent must not be null");
 		Objects.requireNonNull(valueString, "The valueString must not be null");
@@ -234,8 +240,8 @@ public final class IsParameters {
 		try {
 			attribute.set(parent, value);
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not set value of '" + attribute.getName() + "' to " + valueString
-					+ "");
+			throw new IllegalStateException("Could not set value of '"
+					+ attribute.getName() + "' to " + valueString + "");
 		}
 
 	}
@@ -247,19 +253,22 @@ public final class IsParameters {
 	 * @param valueString
 	 * @return
 	 */
-	private static Enum<?> convertStringToEnumValue(Field attribute, String valueString) {
+	private static Enum<?> convertStringToEnumValue(Field attribute,
+			String valueString) {
 		Class<?> enumType = attribute.getType();
 		Enum<?> value = null;
 		for (Object enumConstant : enumType.getEnumConstants()) {
-			boolean isWantedConstant = enumConstant.toString().equals(valueString);
+			boolean isWantedConstant = enumConstant.toString()
+					.equals(valueString);
 			if (isWantedConstant) {
 				value = (Enum<?>) enumConstant;
 			}
 		}
 
 		if (value == null) {
-			throw new IllegalStateException("Could not convert the string value '" + valueString
-					+ "' to an enum value.");
+			throw new IllegalStateException(
+					"Could not convert the string value '" + valueString
+							+ "' to an enum value.");
 		}
 		return value;
 	}
@@ -272,7 +281,8 @@ public final class IsParameters {
 	 * @param valueString
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static void setAttributeDoubleValue(Field attribute, Object parent, String valueString) {
+	private static void setAttributeDoubleValue(Field attribute, Object parent,
+			String valueString) {
 		Objects.requireNonNull(attribute, "The attribute must not be null");
 		Objects.requireNonNull(parent, "The parent must not be null");
 		Objects.requireNonNull(valueString, "The valueString must not be null");
@@ -281,14 +291,15 @@ public final class IsParameters {
 		try {
 			value = Double.parseDouble(valueString);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Could not parse the value '" + attribute.getName() + "' to a Double.");
+			throw new IllegalArgumentException("Could not parse the value '"
+					+ attribute.getName() + "' to a Double.");
 		}
 
 		try {
 			attribute.set(parent, value);
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not set value of '" + attribute.getName() + "' to " + valueString
-					+ "", e);
+			throw new IllegalStateException("Could not set value of '"
+					+ attribute.getName() + "' to " + valueString + "", e);
 		}
 
 	}
@@ -301,7 +312,8 @@ public final class IsParameters {
 	 * @param valueString
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static void setAttributeFloatValue(Field attribute, Object parent, String valueString) {
+	private static void setAttributeFloatValue(Field attribute, Object parent,
+			String valueString) {
 		Objects.requireNonNull(attribute, "The attribute must not be null");
 		Objects.requireNonNull(parent, "The parent must not be null");
 		Objects.requireNonNull(valueString, "The valueString must not be null");
@@ -310,14 +322,15 @@ public final class IsParameters {
 		try {
 			value = Float.parseFloat(valueString);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Could not parse the value '" + attribute.getName() + "' to a Float.");
+			throw new IllegalArgumentException("Could not parse the value '"
+					+ attribute.getName() + "' to a Float.");
 		}
 
 		try {
 			attribute.set(parent, value);
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not set value of '" + attribute.getName() + "' to " + valueString
-					+ "", e);
+			throw new IllegalStateException("Could not set value of '"
+					+ attribute.getName() + "' to " + valueString + "", e);
 		}
 
 	}
@@ -330,7 +343,8 @@ public final class IsParameters {
 	 * @param valueString
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static void setAttributeIntegerValue(Field attribute, Object parent, String valueString) {
+	private static void setAttributeIntegerValue(Field attribute, Object parent,
+			String valueString) {
 		Objects.requireNonNull(attribute, "The attribute must not be null");
 		Objects.requireNonNull(parent, "The parent must not be null");
 		Objects.requireNonNull(valueString, "The valueString must not be null");
@@ -339,14 +353,15 @@ public final class IsParameters {
 		try {
 			value = Integer.decode(valueString);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Could not parse the value '" + attribute.getName() + "' to an Integer.");
+			throw new IllegalArgumentException("Could not parse the value '"
+					+ attribute.getName() + "' to an Integer.");
 		}
 
 		try {
 			attribute.set(parent, value);
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not set value of '" + attribute.getName() + "' to " + valueString
-					+ "", e);
+			throw new IllegalStateException("Could not set value of '"
+					+ attribute.getName() + "' to " + valueString + "", e);
 		}
 
 	}
@@ -359,14 +374,16 @@ public final class IsParameters {
 	 * @param value
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static void setAttributeStringValue(Field attribute, Object parent, String value) {
+	private static void setAttributeStringValue(Field attribute, Object parent,
+			String value) {
 		Objects.requireNonNull(attribute, "The attribute must not be null");
 		Objects.requireNonNull(parent, "The parent must not be null");
 		Objects.requireNonNull(value, "The value must not be null");
 		try {
 			attribute.set(parent, value);
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not set value of '" + attribute.getName() + "' to " + value + "", e);
+			throw new IllegalStateException("Could not set value of '"
+					+ attribute.getName() + "' to " + value + "", e);
 		}
 
 	}
@@ -379,7 +396,8 @@ public final class IsParameters {
 	 * @param valueString
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static void setAttributeBooleanValue(Field attribute, Object parent, String valueString) {
+	private static void setAttributeBooleanValue(Field attribute, Object parent,
+			String valueString) {
 		Objects.requireNonNull(attribute, "The attribute must not be null");
 		Objects.requireNonNull(parent, "The parent must not be null");
 		Objects.requireNonNull(valueString, "The valueString must not be null");
@@ -388,7 +406,8 @@ public final class IsParameters {
 		boolean valueIsOk = isTrue || isFalse;
 
 		if (!valueIsOk) {
-			throw new IllegalArgumentException("The value '" + valueString + "' can not be interpreted as a Boolean.");
+			throw new IllegalArgumentException("The value '" + valueString
+					+ "' can not be interpreted as a Boolean.");
 		}
 
 		try {
@@ -398,7 +417,10 @@ public final class IsParameters {
 				attribute.set(parent, false);
 			}
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not set the value of attribute '" + attribute.getName() + "'.", e);
+			throw new IllegalStateException(
+					"Could not set the value of attribute '"
+							+ attribute.getName() + "'.",
+					e);
 		}
 	}
 
@@ -410,12 +432,14 @@ public final class IsParameters {
 	 */
 	public static String getSetterName(Field attribute) {
 		String name = attribute.getName();
-		String setterName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
+		String setterName = "set" + name.substring(0, 1).toUpperCase()
+				+ name.substring(1, name.length());
 		return setterName;
 	}
 
 	/**
-	 * Returns if a setter method exits for the given attribute, where the name is simply "set" + name of the attribute.
+	 * Returns if a setter method exits for the given attribute, where the name
+	 * is simply "set" + name of the attribute.
 	 *
 	 * @param attribute
 	 * @param parent
@@ -453,10 +477,12 @@ public final class IsParameters {
 	 * @param content
 	 * @return
 	 */
-	public static String addQuotesIfAttributeRepresentsString(String content, Field attribute) {
+	public static String addQuotesIfAttributeRepresentsString(String content,
+			Field attribute) {
 		String result = content;
-		//sysLog.debug("type: " + field.getType().getSimpleName());
-		boolean isString = (attribute.getType().getSimpleName().equals("String"));
+		//LOG.debug("type: " + field.getType().getSimpleName());
+		boolean isString = (attribute.getType().getSimpleName()
+				.equals("String"));
 		if (isString) {
 			result = "\"" + content + "\"";
 		}

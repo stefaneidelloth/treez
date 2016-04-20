@@ -1,6 +1,5 @@
 package org.treez.views.properties;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.treez.core.treeview.TreezView;
@@ -9,12 +8,6 @@ import org.treez.core.treeview.TreezView;
  * The property view of treez
  */
 public class PropertyViewPart extends ViewPart implements TreezView {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(PropertyViewPart.class);
 
 	//#region ATTRIBUTES
 
@@ -32,12 +25,7 @@ public class PropertyViewPart extends ViewPart implements TreezView {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * The constructor.
-	 */
-	public PropertyViewPart() {
-
-	}
+	public PropertyViewPart() {}
 
 	//#end region
 
@@ -45,13 +33,10 @@ public class PropertyViewPart extends ViewPart implements TreezView {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		//sysLog.debug("creating part control");
+		//LOG.debug("creating part control");
 		contentComposite = parent;
 	}
 
-	/**
-	 * Pass the focus request to the main form
-	 */
 	@Override
 	public void setFocus() {
 		contentComposite.setFocus();
@@ -61,11 +46,6 @@ public class PropertyViewPart extends ViewPart implements TreezView {
 
 	//#region ACCESSORS
 
-	/**
-	 * Return the properties component
-	 *
-	 * @return
-	 */
 	@Override
 	public Composite getContentComposite() {
 		return contentComposite;

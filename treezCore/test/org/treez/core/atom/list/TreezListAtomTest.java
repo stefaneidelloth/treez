@@ -13,7 +13,7 @@ public class TreezListAtomTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(TreezListAtomTest.class);
+	private static final Logger LOG = Logger.getLogger(TreezListAtomTest.class);
 
 	//#region SETUP
 

@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -17,59 +16,35 @@ public class StringItemVariableField extends ComboBox
 		implements
 			VariableField<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(StringItemVariableField.class);
+	//#region ATTRIBUTES
 
-	/**
-	 * Background color
-	 */
 	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245,
 			249);
 
-	// #region ATTRIBUTES
+	//#end region
 
-	// #end region
+	//#region CONSTRUCTORS
 
-	// #region CONSTRUCTORS
-
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public StringItemVariableField(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param checkBoxToCopy
 	 */
 	private StringItemVariableField(StringItemVariableField checkBoxToCopy) {
 		super(checkBoxToCopy);
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
-
-	//#region COPY
+	//#region METHODS
 
 	@Override
 	public StringItemVariableField copy() {
 		return new StringItemVariableField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image baseImage = Activator.getImage("stringItemVariable.png");
@@ -116,6 +91,6 @@ public class StringItemVariableField extends ComboBox
 		this.set(valueString);
 	}
 
-	// #end region
+	//#end region
 
 }

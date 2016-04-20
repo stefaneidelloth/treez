@@ -2,7 +2,6 @@ package org.treez.core.atom.attribute;
 
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -14,41 +13,21 @@ import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 
-/**
- * An item example
- */
 public class Label extends AbstractAttributeAtom<String> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Label.class);
 
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "Label")
 	private String label;
 
-	/**
-	 * Container for label and check box
-	 */
 	private Composite contentContainer;
 
-	/**
-	 * The label
-	 */
 	private CustomLabel labelComposite;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Label(String name) {
 		super(name);
 		label = name;
@@ -56,8 +35,6 @@ public class Label extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param atomToCopy
 	 */
 	protected Label(Label atomToCopy) {
 		super(atomToCopy);
@@ -68,18 +45,11 @@ public class Label extends AbstractAttributeAtom<String> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public Label copy() {
 		return new Label(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("label.png");
@@ -129,16 +99,10 @@ public class Label extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -159,26 +123,15 @@ public class Label extends AbstractAttributeAtom<String> {
 
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return get();
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		set(defaultValue);
 	}
 
-	/**
-	 * Sets the background color
-	 *
-	 * @param color
-	 */
 	@Override
 	public void setBackgroundColor(Color color) {
 		if (isAvailable(contentContainer)) {

@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -17,12 +16,7 @@ public class DirectoryPathVariableField extends DirectoryPath
 		implements
 			VariableField<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(DirectoryPathVariableField.class);
+	//#region ATTRIBUTES
 
 	/**
 	 * Background color
@@ -30,17 +24,10 @@ public class DirectoryPathVariableField extends DirectoryPath
 	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245,
 			249);
 
-	//#region ATTRIBUTES
-
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public DirectoryPathVariableField(String name) {
 		super(name);
 		this.setShowEnabledCheckBox(true);
@@ -48,8 +35,6 @@ public class DirectoryPathVariableField extends DirectoryPath
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param atomToCopy
 	 */
 	private DirectoryPathVariableField(DirectoryPathVariableField atomToCopy) {
 		super(atomToCopy);

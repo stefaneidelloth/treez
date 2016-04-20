@@ -1,6 +1,5 @@
 package org.treez.perspective;
 
-import org.apache.log4j.Logger;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -12,12 +11,6 @@ import org.treez.views.tree.TreeViewPart;
  * Factory for the Treez perspective (is referenced from corresponding extension point)
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(PerspectiveFactory.class);
 
 	//#region ATTRIBUTES
 

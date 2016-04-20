@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
@@ -11,16 +10,7 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
-/**
- * An item example
- */
 public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ComboBoxEnableTarget.class);
 
 	//#region ATTRIBUTES
 
@@ -35,15 +25,14 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 	//#region CONSTRUCTORS
 
 	/**
-	 * Constructor
-	 *
-	 * @param name
 	 * @param enableValues
-	 *            a comma separated list of values for which the target is enabled
+	 *            a comma separated list of values for which the target is
+	 *            enabled
 	 * @param targetPath
 	 *            the model path to the target whose enabled state is controlled
 	 */
-	public ComboBoxEnableTarget(String name, String enableValues, String targetPath) {
+	public ComboBoxEnableTarget(String name, String enableValues,
+			String targetPath) {
 		super(name);
 		setValue(enableValues);
 		setTargetPath(targetPath);
@@ -51,10 +40,9 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param comboBoxEnableTargetToCopy
 	 */
-	private ComboBoxEnableTarget(ComboBoxEnableTarget comboBoxEnableTargetToCopy) {
+	private ComboBoxEnableTarget(
+			ComboBoxEnableTarget comboBoxEnableTargetToCopy) {
 		super(comboBoxEnableTargetToCopy);
 		valueString = comboBoxEnableTargetToCopy.valueString;
 		targetPath = comboBoxEnableTargetToCopy.targetPath;
@@ -64,14 +52,10 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public ComboBoxEnableTarget copy() {
 		return new ComboBoxEnableTarget(this);
 	}
-
-	//#end region
 
 	/**
 	 * Provides an image to represent this atom
@@ -82,7 +66,8 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 	}
 
 	@Override
-	public void createAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public void createAtomControl(Composite parent,
+			Refreshable treeViewerRefreshable) {
 
 	}
 
@@ -90,37 +75,19 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return the items
-	 */
 	public List<String> getItems() {
 		String[] items = valueString.split(",");
 		return Arrays.asList(items);
 	}
 
-	/**
-	 * Set target path
-	 *
-	 * @param targetPath
-	 */
 	public void setTargetPath(String targetPath) {
 		this.targetPath = targetPath;
 	}
 
-	/**
-	 * Get target path
-	 *
-	 * @return
-	 */
 	public String getTargetPath() {
 		return targetPath;
 	}
 
-	/**
-	 * Set value
-	 *
-	 * @param value
-	 */
 	public void setValue(String value) {
 		this.valueString = value;
 	}

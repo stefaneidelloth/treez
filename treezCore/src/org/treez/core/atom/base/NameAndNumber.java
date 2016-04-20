@@ -15,12 +15,6 @@ public class NameAndNumber {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param number
-	 */
 	public NameAndNumber(String name, int number) {
 		this.name = name;
 		this.number = number;
@@ -28,7 +22,6 @@ public class NameAndNumber {
 
 	/**
 	 * Copy Constructor
-	 *
 	 */
 	public NameAndNumber(NameAndNumber nameAndNumberToCopy) {
 		this.name = nameAndNumberToCopy.name;
@@ -39,19 +32,11 @@ public class NameAndNumber {
 
 	//#region METHODS
 
-	/**
-	 * Copies this NameAndNumber
-	 *
-	 * @return
-	 */
 	public NameAndNumber copy() {
 		NameAndNumber newNameAndNumber = new NameAndNumber(this);
 		return newNameAndNumber;
 	}
 
-	/**
-	 * Increases the number
-	 */
 	public void increaseNumber() {
 		number += 1;
 	}
@@ -104,20 +89,10 @@ public class NameAndNumber {
 
 	//#region ACCESSORS
 
-	/**
-	 * Returns the name
-	 *
-	 * @return
-	 */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * Returns the full name (= name + number)
-	 *
-	 * @return
-	 */
 	public String getFullName() {
 		return name + number;
 	}

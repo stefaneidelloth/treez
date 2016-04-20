@@ -22,29 +22,14 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Left margin
-	 */
 	public final Attribute<String> leftMargin = new Wrap<>();
 
-	/**
-	 * Top margin
-	 */
 	public final Attribute<String> topMargin = new Wrap<>();
 
-	/**
-	 * Width
-	 */
 	public final Attribute<String> width = new Wrap<>();
 
-	/**
-	 * Height
-	 */
 	public final Attribute<String> height = new Wrap<>();
 
-	/**
-	 * Hide
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	//#end region

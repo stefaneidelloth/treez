@@ -10,8 +10,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.GraphicsAdaption;
 import org.treez.core.adaptable.CodeAdaption;
+import org.treez.core.adaptable.GraphicsAdaption;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.data.cell.CellEditorFactory;
@@ -45,12 +45,6 @@ public class VariableDefinitionTable implements TreezTable {
 
 	//#region METHODS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param definitionRows
-	 */
 	public VariableDefinitionTable(VariableDefinition parent, List<Row> definitionRows) {
 		this.parent = parent;
 		this.definitionRows = definitionRows;
@@ -65,17 +59,10 @@ public class VariableDefinitionTable implements TreezTable {
 
 	//#region ACCESSORS
 
-	/**
-	 * Returns the rows of the table
-	 */
 	@Override
 	public List<Row> getRows() {
 		return definitionRows;
 	}
-
-	/**
-	 * Adds a new empty row
-	 */
 
 	@Override
 	public void addEmptyRow() {
@@ -83,20 +70,15 @@ public class VariableDefinitionTable implements TreezTable {
 		definitionRows.add(emptyRow);
 	}
 
-	/**
-	 * Define headers
-	 */
 	@Override
 	public List<String> getHeaders() {
 		if (headers == null) {
-			headers = new ArrayList<String>(Arrays.asList("Name", "Definition", "Value", "Unit", "Type", "Description"));
+			headers = new ArrayList<String>(
+					Arrays.asList("Name", "Definition", "Value", "Unit", "Type", "Description"));
 		}
 		return headers;
 	}
 
-	/**
-	 * Define column types
-	 */
 	@Override
 	public ColumnType getColumnType(String header) {
 		if (columnTypes == null) {
@@ -108,17 +90,11 @@ public class VariableDefinitionTable implements TreezTable {
 		return columnTypes.get(header);
 	}
 
-	/**
-	 * Define column header tool tips
-	 */
 	@Override
 	public String getColumnHeaderTooltip(String header) {
 		return "";
 	}
 
-	/**
-	 * Define which columns are editable
-	 */
 	@Override
 	public Boolean isEditable(String header) {
 		if (editable == null) {
@@ -133,18 +109,12 @@ public class VariableDefinitionTable implements TreezTable {
 		return editable.get(header);
 	}
 
-	/**
-	 * Define label provider
-	 */
 	@Override
 	public CellLabelProvider getLabelProvider(String header, ColumnType columnType) {
 		CellLabelProvider labelProvider = new VariableDefinitionLabelProvider(header);
 		return labelProvider;
 	}
 
-	/**
-	 * Define cell editor
-	 */
 	@Override
 	public CellEditor getCellEditor(String header, ColumnType columnType, Composite parent) {
 		CellEditor cellEditor = CellEditorFactory.createCellEditor(columnType, parent);

@@ -16,7 +16,7 @@ public class StringItemListTest
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(StringItemListTest.class);
+	private static final Logger LOG = Logger.getLogger(StringItemListTest.class);
 
 	//#region SETUP
 

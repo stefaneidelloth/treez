@@ -3,7 +3,6 @@ package org.treez.core.atom.error;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
@@ -18,12 +17,6 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 public class ErrorAtom extends AbstractAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ErrorAtom.class);
-
 	//#region ATTRIBUTES
 
 	private String message;
@@ -34,13 +27,6 @@ public class ErrorAtom extends AbstractAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param message
-	 * @param exception
-	 */
 	public ErrorAtom(String name, String message, Exception exception) {
 		super(name);
 		this.message = message;
@@ -49,8 +35,6 @@ public class ErrorAtom extends AbstractAtom {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param rootToCopy
 	 */
 	private ErrorAtom(ErrorAtom rootToCopy) {
 		super(rootToCopy);
@@ -71,28 +55,22 @@ public class ErrorAtom extends AbstractAtom {
 
 	//#end region
 
-	/**
-	 * Returns the control adaption for this atom
-	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, Refreshable treeViewRefreshable) {
-		String displayString = message + "\n" + ExceptionUtils.getStackTrace(exception);
+	public AbstractControlAdaption createControlAdaption(Composite parent,
+			Refreshable treeViewRefreshable) {
+		String displayString = message + "\n"
+				+ ExceptionUtils.getStackTrace(exception);
 		return new EmptyControlAdaption(parent, this, displayString);
 	}
 
-	/**
-	 * Creates the context menu actions
-	 */
 	@Override
-	protected ArrayList<Object> createContextMenuActions(final TreeViewerRefreshable treeViewer) {
+	protected ArrayList<Object> createContextMenuActions(
+			final TreeViewerRefreshable treeViewer) {
 
 		ArrayList<Object> actions = new ArrayList<>();
 		return actions;
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image image = Activator.getImage("error.png");

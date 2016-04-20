@@ -1,25 +1,15 @@
 package org.treez.core.atom.attribute;
 
-/**
- * An item example
- */
 public class ComboBox extends AbstractComboBox {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public ComboBox(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param comboBoxToCopy
 	 */
 	public ComboBox(AbstractComboBox comboBoxToCopy) {
 		super(comboBoxToCopy);
@@ -30,14 +20,10 @@ public class ComboBox extends AbstractComboBox {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public ComboBox copy() {
 		return new ComboBox(this);
 	}
-
-	//#end region
 
 	//#end region
 
@@ -54,6 +40,8 @@ public class ComboBox extends AbstractComboBox {
 					+ items;
 			throw new IllegalArgumentException(message);
 		}
-	} //#end region
+	}
+
+	//#end region
 
 }

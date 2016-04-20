@@ -22,39 +22,18 @@ public class Line implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Interpolation mode
-	 */
 	public final Attribute<String> interpolation = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//public final Attribute<Boolean> bezierJoin = new Wrap<>();
 
-	/**
-	 * Color
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 * Width
-	 */
 	public final Attribute<String> width = new Wrap<>();
 
-	/**
-	 * Style
-	 */
 	public final Attribute<String> style = new Wrap<>();
 
-	/**
-	 * Transparency
-	 */
 	public final Attribute<String> transparency = new Wrap<>();
 
-	/**
-	 * Hide
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	//#end region

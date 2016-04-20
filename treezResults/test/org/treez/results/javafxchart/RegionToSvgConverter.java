@@ -28,7 +28,7 @@ public class RegionToSvgConverter extends AbstractNodeToSvgConverter<Region> {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(RegionToSvgConverter.class);
+	private static final Logger LOG = Logger.getLogger(RegionToSvgConverter.class);
 
 	//#region ATTRIBUTES
 
@@ -213,7 +213,7 @@ public class RegionToSvgConverter extends AbstractNodeToSvgConverter<Region> {
 				styleContent = styleContent + "stroke-alignment:" + strokeAlignment + ";";
 				String message = "The svg stroke-alignment (JavaFx: StrokeType) is set to '" + strokeAlignment + "'.\n"
 						+ "This svg property is relativly new and might not yet be supported by your svg viewer.";
-				sysLog.warn(message);
+				LOG.warn(message);
 			}
 		}
 
@@ -354,14 +354,14 @@ public class RegionToSvgConverter extends AbstractNodeToSvgConverter<Region> {
 		if (hasIndividualFillRadiuses) {
 			//not yet implemented
 			String warnString = "Individual fill radiuses are not yet implemented.";
-			sysLog.warn(warnString);
+			LOG.warn(warnString);
 			rectGeometryString += indentation + "<!--" + warnString + "-->\n";
 		}
 
 		if (hasIndividualStrokeRadiuses) {
 			//not yet implemented
 			String warnString = "Individual stroke radiuses are not yet implemented.";
-			sysLog.warn(warnString);
+			LOG.warn(warnString);
 			rectGeometryString += indentation + "<!--" + warnString + "-->\n";
 		}
 
@@ -370,7 +370,7 @@ public class RegionToSvgConverter extends AbstractNodeToSvgConverter<Region> {
 			if (hasStrokeRadius) {
 				//not yet implemented
 				String warnString = "The stroke radius is not yet implemented for individual stroke styles.";
-				sysLog.warn(warnString);
+				LOG.warn(warnString);
 				rectGeometryString += indentation + "<!--" + warnString + "-->\n";
 			}
 

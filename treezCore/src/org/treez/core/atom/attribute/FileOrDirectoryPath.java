@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -25,12 +24,6 @@ import org.treez.core.atom.base.annotation.IsParameter;
  * Allows the user to choose a file path or directory path
  */
 public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FileOrDirectoryPath.class);
 
 	//#region ATTRIBUTES
 
@@ -57,29 +50,45 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "true")
 	private Boolean validatePath;
 
-	/**
-	 * The text field
-	 */
 	private Text textField = null;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FileOrDirectoryPath(String name) {
 		super(name);
 		label = name;
 	}
 
+	public FileOrDirectoryPath(String name, String defaultPath) {
+		super(name);
+		label = name;
+		setDefaultValue(defaultPath);
+		set(defaultPath);
+
+	}
+
+	public FileOrDirectoryPath(String name, String label, String defaultPath) {
+		super(name);
+		setLabel(label);
+		setDefaultValue(defaultPath);
+		set(defaultPath);
+
+	}
+
+	public FileOrDirectoryPath(String name, String label, String defaultPath,
+			Boolean validatePath) {
+		super(name);
+		setLabel(label);
+		setDefaultValue(defaultPath);
+		set(defaultPath);
+		setValidatePath(validatePath);
+
+	}
+
 	/**
 	 * Copy constructor
-	 *
-	 * @param filePathToCopy
 	 */
 	private FileOrDirectoryPath(FileOrDirectoryPath filePathToCopy) {
 		super(filePathToCopy);
@@ -92,75 +101,23 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		validatePath = filePathToCopy.validatePath;
 	}
 
-	/**
-	 * Constructor with default Path
-	 *
-	 * @param name
-	 * @param defaultPath
-	 */
-	public FileOrDirectoryPath(String name, String defaultPath) {
-		super(name);
-		label = name;
-		setDefaultValue(defaultPath);
-		set(defaultPath);
-
-	}
-
-	/**
-	 * Constructor with label and default path
-	 *
-	 * @param name
-	 * @param label
-	 * @param defaultPath
-	 */
-	public FileOrDirectoryPath(String name, String label, String defaultPath) {
-		super(name);
-		setLabel(label);
-		setDefaultValue(defaultPath);
-		set(defaultPath);
-
-	}
-
-	/**
-	 * Constructor with label, default path and validation flag
-	 *
-	 * @param name
-	 * @param label
-	 * @param defaultPath
-	 * @param validatePath
-	 */
-	public FileOrDirectoryPath(String name, String label, String defaultPath, Boolean validatePath) {
-		super(name);
-		setLabel(label);
-		setDefaultValue(defaultPath);
-		set(defaultPath);
-		setValidatePath(validatePath);
-
-	}
-
 	//#end region
 
 	//#region METHODS
-
-	//#region COPY
 
 	@Override
 	public FileOrDirectoryPath copy() {
 		return new FileOrDirectoryPath(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("browse.png");
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -209,7 +166,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		return this;
 	}
 
-	private static Composite createContainer(Composite parent, FormToolkit toolkit) {
+	private static Composite createContainer(Composite parent,
+			FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData containerFillHorizontal = new GridData();
 		containerFillHorizontal.grabExcessHorizontalSpace = true;
@@ -223,7 +181,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private Composite createSubContainer(FormToolkit toolkit, Composite container) {
+	private Composite createSubContainer(FormToolkit toolkit,
+			Composite container) {
 		Composite subContainer = toolkit.createComposite(container);
 		int numberOfColumns = 3;
 		if (showOpenButton) {
@@ -242,7 +201,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		return subContainer;
 	}
 
-	private void createTextField(FormToolkit toolkit, Composite container, Composite subContainer) {
+	private void createTextField(FormToolkit toolkit, Composite container,
+			Composite subContainer) {
 		//create grid data to use all horizontal space and limit preferred width
 		GridData textFieldFillHorizontal = new GridData();
 		textFieldFillHorizontal.grabExcessHorizontalSpace = true;
@@ -260,9 +220,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		//create error decoration for text field
 		String errorMessage = "Invalid path";
 		final TextFieldErrorDecoration errorDecoration = new TextFieldErrorDecoration(
-				textField,
-				errorMessage,
-				container);
+				textField, errorMessage, container);
 
 		//path validation
 
@@ -301,8 +259,10 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		}
 	}
 
-	private void createBrowseFileButton(FormToolkit toolkit, Composite subContainer) {
-		Label browseFileButton = toolkit.createLabel(subContainer, "", SWT.PUSH);
+	private void createBrowseFileButton(FormToolkit toolkit,
+			Composite subContainer) {
+		Label browseFileButton = toolkit.createLabel(subContainer, "",
+				SWT.PUSH);
 		browseFileButton.setEnabled(isEnabled());
 		Image browseImage = Activator.getImage("browse.png");
 		browseFileButton.setImage(browseImage);
@@ -317,7 +277,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				FileDialog fileDialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
+				FileDialog fileDialog = new FileDialog(
+						Display.getCurrent().getActiveShell(), SWT.MULTI);
 
 				fileDialog.setFilterPath(defaultValue);
 
@@ -335,8 +296,10 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		});
 	}
 
-	private void createBrowseDirectoryButton(FormToolkit toolkit, Composite subContainer) {
-		Label browseDirectoryButton = toolkit.createLabel(subContainer, "", SWT.PUSH);
+	private void createBrowseDirectoryButton(FormToolkit toolkit,
+			Composite subContainer) {
+		Label browseDirectoryButton = toolkit.createLabel(subContainer, "",
+				SWT.PUSH);
 		browseDirectoryButton.setEnabled(isEnabled());
 		Image browseFolderImage = Activator.getImage("browseDirectory.png");
 		browseDirectoryButton.setImage(browseFolderImage);
@@ -348,7 +311,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				DirectoryDialog directoryDialog = new DirectoryDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
+				DirectoryDialog directoryDialog = new DirectoryDialog(
+						Display.getCurrent().getActiveShell(), SWT.MULTI);
 
 				directoryDialog.setFilterPath(defaultValue);
 				String firstFolder = directoryDialog.open();
@@ -368,7 +332,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	 * @param errorDecoration
 	 * @param text
 	 */
-	private void validateFilePath(final TextFieldErrorDecoration errorDecoration, String text) {
+	private void validateFilePath(
+			final TextFieldErrorDecoration errorDecoration, String text) {
 
 		boolean isValid = FileHelper.isValidFilePath(text);
 		if (isValid) {
@@ -397,7 +362,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -406,45 +372,27 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultFilePath
-	 */
 	public void setDefaultValue(String defaultFilePath) {
 		this.defaultValue = defaultFilePath;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
@@ -469,7 +417,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Get file extension names as comma separated list, e.g. 'TestFile, ImageFile'
+	 * Get file extension names as comma separated list, e.g. 'TestFile,
+	 * ImageFile'
 	 *
 	 * @return the extensionNames
 	 */
@@ -478,7 +427,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Set file extension names as comma separated list, e.g. 'TestFile, ImageFile'
+	 * Set file extension names as comma separated list, e.g. 'TestFile,
+	 * ImageFile'
 	 *
 	 * @param extensionNames
 	 *            the extensionNames to set
@@ -488,7 +438,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * If set to false the file path is not validated/no error decoration is shown
+	 * If set to false the file path is not validated/no error decoration is
+	 * shown
 	 *
 	 * @param validatePath
 	 */

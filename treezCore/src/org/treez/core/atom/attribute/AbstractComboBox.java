@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -27,12 +26,6 @@ import org.treez.core.utils.Utils;
  * An item example
  */
 public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(AbstractComboBox.class);
 
 	//#region ATTRIBUTES
 
@@ -73,11 +66,6 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractComboBox(String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name);
@@ -85,8 +73,6 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param comboBoxToCopy
 	 */
 	protected AbstractComboBox(AbstractComboBox comboBoxToCopy) {
 		super(comboBoxToCopy);
@@ -100,9 +86,6 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 
 	//#region METHODS
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("ComboBox.png");
@@ -270,17 +253,10 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return the label
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 *            the label to set
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -303,27 +279,16 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 		super.set(value);
 	}
 
-	/**
-	 * Sets the value with an enumeration
-	 *
-	 * @param enumValue
-	 */
 	public void setValue(Enum<?> enumValue) {
 		String valueString = enumValue.name();
 		set(valueString);
 	}
 
-	/**
-	 * @return the defaultPath
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		boolean valueAllowed = items.contains(defaultValue);
 		if (valueAllowed) {
@@ -337,11 +302,6 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 
 	}
 
-	/**
-	 * Sets the default value with an enum
-	 *
-	 * @param defaultEnumValue
-	 */
 	public void setDefaultValue(Enum<?> defaultEnumValue) {
 		String defaultValueString = defaultEnumValue.name();
 		setDefaultValue(defaultValueString);
@@ -380,10 +340,6 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 		return items;
 	}
 
-	/**
-	 * @param items
-	 *            the items to set
-	 */
 	public void setItems(String items) {
 		this.items = items;
 	}
@@ -422,17 +378,10 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 		setItems(itemsString);
 	}
 
-	/**
-	 * @return the tool tip
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 *            the tool tip to set
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}

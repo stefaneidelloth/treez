@@ -14,7 +14,7 @@ public class QuantityVariableFieldTest extends AbstractAttributeAtomConstruction
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(QuantityVariableFieldTest.class);
+	private static final Logger LOG = Logger.getLogger(QuantityVariableFieldTest.class);
 
 	//#region SETUP
 

@@ -13,7 +13,7 @@ public class ColumnTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ColumnTest.class);
+	private static final Logger LOG = Logger.getLogger(ColumnTest.class);
 
 	//#region SETUP
 

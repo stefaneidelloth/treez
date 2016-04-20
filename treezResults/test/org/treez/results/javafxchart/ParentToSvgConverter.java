@@ -18,7 +18,7 @@ public class ParentToSvgConverter extends AbstractNodeToSvgConverter<Parent> {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(ParentToSvgConverter.class);
+	private static final Logger LOG = Logger.getLogger(ParentToSvgConverter.class);
 
 	//#region ATTRIBUTES
 
@@ -88,7 +88,7 @@ public class ParentToSvgConverter extends AbstractNodeToSvgConverter<Parent> {
 				String className = parent.getClass().getName();
 				String comment = "Warning: The class '" + className
 						+ "' does not derive from Region or Group and is not yet implemented";
-				sysLog.warn(comment);
+				LOG.warn(comment);
 				String svgString = initialSvgString + indentation + "<!--" + comment + "-->\n";
 
 				//create svg string from svg node properties

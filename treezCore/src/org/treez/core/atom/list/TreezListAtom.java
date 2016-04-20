@@ -3,7 +3,6 @@ package org.treez.core.atom.list;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -29,12 +28,6 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 public class TreezListAtom extends AbstractUiSynchronizingAtom
 		implements
 			TreezTable {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(TreezListAtom.class);
 
 	//#region ATTRIBUTES
 
@@ -240,12 +233,12 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 
 		row.setEntry(header, formattedValue);
 
-		//sysLog.debug("new row:" + row);
+		//LOG.debug("new row:" + row);
 
 		//add row
 		rows.add(row);
 
-		//sysLog.debug("added");
+		//LOG.debug("added");
 	}
 
 	/**

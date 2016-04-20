@@ -18,7 +18,7 @@ public class ModelPathSelectorTest {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(ModelPathSelectorTest.class);
+	private static final Logger LOG = Logger.getLogger(ModelPathSelectorTest.class);
 
 	//#region ATTRIBUTES
 
@@ -78,7 +78,7 @@ public class ModelPathSelectorTest {
 
 		String newModelPath = ModelPathSelector.selectTreePath(model, targetClassName, defaultModelPath);
 
-		sysLog.info("Selected model path: " + newModelPath);
+		LOG.info("Selected model path: " + newModelPath);
 
 	}
 

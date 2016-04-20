@@ -3,26 +3,21 @@ package org.treez.core.atom.adjustable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.Refreshable;
-import org.treez.core.atom.adjustable.preferencePage.Parameters;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.atom.uisynchronizing.ResultWrapper;
 import org.treez.core.scripting.ScriptType;
-import org.treez.core.scripting.java.JavaScripting;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.ActionSeparator;
 import org.treez.core.treeview.action.TreeViewerAction;
@@ -32,11 +27,6 @@ import org.treez.core.treeview.action.TreeViewerAction;
  * tree. See the package description for more information.
  */
 public class AdjustableAtom extends AbstractUiSynchronizingAtom {
-
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(AdjustableAtom.class);
 
 	//#region ATTRIBUTES
 
@@ -60,11 +50,6 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AdjustableAtom(String name) {
 		super(name);
 		//sysLog.debug("Creating adjustable atom " + name);
@@ -231,48 +216,6 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 	}
 
 	/**
-	 * Defines the model from which the Composites of the Control for the
-	 * AdjustableAtom are created. This method might be overridden by inheriting
-	 * classes.
-	 */
-	public void createAjustableAtomModel() {
-
-		//get property string
-		String modelDefinition = createModelScript();
-
-		//build model tree structure
-		JavaScripting scripting = new JavaScripting();
-		scripting.execute(modelDefinition);
-		model = scripting.getRoot();
-		if (model == null) {
-			sysLog.error("Could not get root from following model definition:\n"
-					+ modelDefinition);
-		}
-
-	}
-
-	/**
-	 * Defines a java script ... that defines the model. This method might be
-	 * overridden by inheriting classes. This default implementation gets the
-	 * java script definition from the eclipse preference store.
-	 *
-	 * @return
-	 */
-	public String createModelScript() {
-
-		AbstractUIPlugin activator = Activator.getInstance();
-		boolean runningInEclipse = activator != null;
-
-		if (runningInEclipse) {
-			IPreferenceStore store = Activator.getPreferenceStoreStatic();
-			String preferences = store.getString(Parameters.TREE_EDITOR_STRING);
-			return preferences;
-		} else {
-			return "//Error: you need to set a model with setModel(AbstractAtom model) to use the AdjustableAtom";
-		}
-	}
-
-	/**
 	 * Get a model attribute from the model that is identified by the given
 	 * model attribute path
 	 *
@@ -389,30 +332,14 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 
 	//#region ACCESSORS
 
-	/**
-	 * Get model
-	 *
-	 * @return the model
-	 */
 	public AbstractAtom getModel() {
 		return model;
 	}
 
-	/**
-	 * Set model
-	 *
-	 * @param model
-	 *            the model to set
-	 */
 	public void setModel(AbstractAtom model) {
 		this.model = model;
 	}
 
-	/**
-	 * Get runnable
-	 *
-	 * @return the runnable
-	 */
 	public Boolean isRunnable() {
 		return runnable;
 	}

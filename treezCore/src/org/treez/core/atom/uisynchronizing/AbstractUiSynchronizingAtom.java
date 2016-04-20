@@ -2,7 +2,6 @@ package org.treez.core.atom.uisynchronizing;
 
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,13 +22,6 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 		implements
 			Refreshable {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(AbstractUiSynchronizingAtom.class);
-
 	//#region ATTRIBUTES
 
 	/**
@@ -41,19 +33,12 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractUiSynchronizingAtom(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param atomToCopy
 	 */
 	public AbstractUiSynchronizingAtom(AbstractUiSynchronizingAtom atomToCopy) {
 		super(atomToCopy);

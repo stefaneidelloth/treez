@@ -6,16 +6,14 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * A cell editor for cells that contain file paths. It can handle null values. The path is validated to be a valid path.
- * The validation might also depend on the label provider.
+ * A cell editor for cells that contain file paths. It can handle null values.
+ * The path is validated to be a valid path. The validation might also depend on
+ * the label provider.
  */
 public class TreezPathCellEditor extends TreezStringCellEditor {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	public TreezPathCellEditor(Composite parent) {
 		super(parent);
 	}
@@ -25,8 +23,8 @@ public class TreezPathCellEditor extends TreezStringCellEditor {
 	//#region METHODS
 
 	/**
-	 * Validates the value to represents a valid file path. If it is not a valid file path, a red background color is
-	 * shown to "highlight an error state".
+	 * Validates the value to represents a valid file path. If it is not a valid
+	 * file path, a red background color is shown to "highlight an error state".
 	 *
 	 * @param label
 	 * @param cell

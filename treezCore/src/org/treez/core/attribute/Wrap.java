@@ -16,17 +16,9 @@ public class Wrap<T> implements AttributeWrapper<T> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	public Wrap() {
 	}
 
-	/**
-	 * Constructor with wrapped attribute
-	 *
-	 * @param wrappedAttribute
-	 */
 	public Wrap(Attribute<T> wrappedAttribute) {
 		this.wrappedAttribute = wrappedAttribute;
 	}

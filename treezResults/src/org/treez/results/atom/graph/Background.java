@@ -19,24 +19,12 @@ public class Background implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Background color
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 * Background fill style
-	 */
 	//public final Attribute<String> fillStyle = new Wrap<>();
 
-	/**
-	 * Background transparency
-	 */
 	public final Attribute<String> transparency = new Wrap<>();
 
-	/**
-	 * Hide
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	//#end region

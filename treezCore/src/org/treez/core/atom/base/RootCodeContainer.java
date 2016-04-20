@@ -7,7 +7,6 @@ import org.treez.core.scripting.ScriptType;
 
 /**
  * The root code container contains the complete code for creating a tree.
- * 
  */
 public class RootCodeContainer extends CodeContainer {
 
@@ -18,21 +17,12 @@ public class RootCodeContainer extends CodeContainer {
 	 */
 	private AbstractAtom atom;
 
-	/**
-	 * The class name
-	 */
 	private String className;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param atom
-	 * @param className
-	 */
 	public RootCodeContainer(AbstractAtom atom, String className) {
 		super(ScriptType.JAVA);
 		this.atom = atom;
@@ -84,7 +74,7 @@ public class RootCodeContainer extends CodeContainer {
 
 	/**
 	 * Builds code that is used to save the expansion state
-	 * 
+	 *
 	 */
 	private void buildExpansionCode() {
 		List<String> expandedNodes = atom.getExpandedNodes();

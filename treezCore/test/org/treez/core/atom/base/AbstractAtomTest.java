@@ -26,7 +26,7 @@ public class AbstractAtomTest {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(AbstractAtomTest.class);
+	private static final Logger LOG = Logger.getLogger(AbstractAtomTest.class);
 
 	//#region ATTRIBUTES
 
@@ -109,7 +109,7 @@ public class AbstractAtomTest {
 		//code adaption
 		assertEquals("adaptable", testAtom, codeAdaption.getAdaptable());
 		String code = codeAdaption.buildCodeContainer(null, null).buildCode();
-		sysLog.debug("Test Atom Code:\n" + code);
+		LOG.debug("Test Atom Code:\n" + code);
 
 		//tree node adaption
 		assertEquals("adaptable", testAtom, treeNodeAdaption.getAdaptable());

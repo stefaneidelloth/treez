@@ -40,12 +40,9 @@ import org.treez.core.data.row.Row;
  */
 public class TreezListViewer extends Composite {
 
-	//#region ATTRIBUTES
+	private static final Logger LOG = Logger.getLogger(TreezListViewer.class);
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(TreezListViewer.class);
+	//#region ATTRIBUTES
 
 	/**
 	 * Separators for clip board
@@ -111,12 +108,6 @@ public class TreezListViewer extends Composite {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param treezList
-	 */
 	@SuppressWarnings("checkstyle:magicnumber")
 	public TreezListViewer(Composite parent, TreezListAtom treezList) {
 		super(parent, SWT.NONE);
@@ -219,7 +210,7 @@ public class TreezListViewer extends Composite {
 
 		//add key shortcuts
 		Listener keyListener = (event) -> {
-			//sysLog.debug("Key event-----------");
+			//LOG.debug("Key event-----------");
 
 			if (event.stateMask == SWT.CTRL && event.keyCode == 'c') {
 				copy();
@@ -272,7 +263,7 @@ public class TreezListViewer extends Composite {
 		TextTransfer textTransfer = TextTransfer.getInstance();
 		cb.setContents(new Object[]{copyString}, new Transfer[]{textTransfer});
 
-		sysLog.debug(copyString);
+		LOG.debug(copyString);
 	}
 
 	/**
@@ -280,13 +271,13 @@ public class TreezListViewer extends Composite {
 	 */
 	void paste() {
 
-		sysLog.debug("paste");
+		LOG.debug("paste");
 		//get clip board text
 		Clipboard cb = new Clipboard(Display.getCurrent());
 		TextTransfer textTransfer = TextTransfer.getInstance();
 		String text = (String) cb.getContents(textTransfer);
 
-		sysLog.debug(text);
+		LOG.debug(text);
 
 		//get row index
 		int rowIndex = treezList.getRows().size() - 2;
@@ -363,7 +354,7 @@ public class TreezListViewer extends Composite {
 	 */
 	public void addRow(int rowIndex) {
 
-		//sysLog.debug("add row as duplicate of row with index " + rowIndex);
+		//LOG.debug("add row as duplicate of row with index " + rowIndex);
 
 		if (rowIndex > -1) {
 			Row currentRow = treezList.getRows().get(rowIndex);
@@ -582,13 +573,6 @@ public class TreezListViewer extends Composite {
 		return selectionIndex;
 	}
 
-	//#end region
-
-	//#region ACCESSORS
-
-	/**
-	 * @param showHeader
-	 */
 	public void setShowHeader(boolean showHeader) {
 		this.showHeader = showHeader;
 		table.setHeaderVisible(showHeader);

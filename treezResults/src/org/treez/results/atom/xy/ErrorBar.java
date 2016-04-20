@@ -21,44 +21,20 @@ public class ErrorBar implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 *
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> width = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> style = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> transparency = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> endSize = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> hideHorizontal = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> hideVertical = new Wrap<>();
 
 	//#end region

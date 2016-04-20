@@ -18,10 +18,7 @@ import org.treez.core.utils.Utils;
  */
 public class TreeViewContentProvider implements ITreeContentProvider {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger
+	private static final Logger LOG = Logger
 			.getLogger(TreeViewContentProvider.class);
 
 	//#region ATTRIBUTES
@@ -49,11 +46,6 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param targetClassNames
-	 */
 	public TreeViewContentProvider(String targetClassNames) {
 		this.invisibleRoot = new AttributeRoot("invisibleRoot");
 		this.wantedTypeNames = targetClassNames;
@@ -65,7 +57,7 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 
 	@Override
 	public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		//sysLog.debug("input changed");
+		//LOG.debug("input changed");
 	}
 
 	@Override
@@ -120,7 +112,7 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 						childrenToShow.add(childAdaptable);
 					}
 				} catch (ClassCastException e) {
-					sysLog.warn(
+					LOG.warn(
 							"Could not display a node of following type because it is not known as AbstractAtom: "
 									+ childAdaptable.getClass()
 											.getSimpleName());
@@ -227,11 +219,6 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 
 	//#region ACCESSORS
 
-	/**
-	 * Returns the root
-	 *
-	 * @return
-	 */
 	public Adaptable getRoot() {
 		return root;
 	}

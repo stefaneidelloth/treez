@@ -22,7 +22,7 @@ public class ModelPathValidatorTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ModelPathValidatorTest.class);
+	private static final Logger LOG = Logger.getLogger(ModelPathValidatorTest.class);
 
 	//#region ATTRIBUTES
 

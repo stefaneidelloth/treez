@@ -43,7 +43,8 @@ public enum LengthUnit {
 	private String equivalentString;
 
 	/**
-	 * The conversion factor to calculate the length in px (assuming the default resolution of 96 dpi)
+	 * The conversion factor to calculate the length in px (assuming the default
+	 * resolution of 96 dpi)
 	 */
 	private double conversionFactor;
 
@@ -62,15 +63,13 @@ public enum LengthUnit {
 
 	/**
 	 * Gets the LengthUnit for the given equivalent string
-	 *
-	 * @param unitString
-	 * @return
 	 */
 	public static LengthUnit get(String unitString) {
 		Objects.requireNonNull(unitString, "UnitString must not be null");
 		for (LengthUnit unit : LengthUnit.values()) {
 			String currentUnitString = unit.equivalentString;
-			boolean isWantedUnit = unitString.toLowerCase().equals(currentUnitString);
+			boolean isWantedUnit = unitString.toLowerCase()
+					.equals(currentUnitString);
 			if (isWantedUnit) {
 				return unit;
 			}
@@ -90,9 +89,8 @@ public enum LengthUnit {
 	//#region ACCESSORS
 
 	/**
-	 * Returns the conversion factor for calculating length in px (assuming the default resolution of 96 dpi)
-	 *
-	 * @return
+	 * Returns the conversion factor for calculating length in px (assuming the
+	 * default resolution of 96 dpi)
 	 */
 	public double getConversionFactor() {
 		return conversionFactor;

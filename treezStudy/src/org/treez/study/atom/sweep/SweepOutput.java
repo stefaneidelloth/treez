@@ -2,7 +2,6 @@ package org.treez.study.atom.sweep;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.atom.base.AtomCodeAdaption;
@@ -16,23 +15,12 @@ import org.treez.study.Activator;
  */
 public class SweepOutput extends OutputAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SweepOutput.class);
-
 	//#region ATTRIBUTES
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public SweepOutput(String name) {
 		super(name);
 
@@ -65,10 +53,6 @@ public class SweepOutput extends OutputAtom {
 		Image image = Activator.getImage("sweep.png");
 		return image;
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

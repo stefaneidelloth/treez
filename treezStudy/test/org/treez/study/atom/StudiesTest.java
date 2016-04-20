@@ -13,7 +13,7 @@ public class StudiesTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(StudiesTest.class);
+	private static final Logger LOG = Logger.getLogger(StudiesTest.class);
 
 	//#region SETUP
 

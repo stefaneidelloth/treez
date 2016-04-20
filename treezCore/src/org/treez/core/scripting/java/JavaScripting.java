@@ -24,10 +24,7 @@ import org.treez.core.scripting.ModelProvider;
  */
 public class JavaScripting extends AbstractScripting {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(JavaScripting.class);
+	private static final Logger LOG = Logger.getLogger(JavaScripting.class);
 
 	//#region ATTRIBUTES
 
@@ -40,9 +37,6 @@ public class JavaScripting extends AbstractScripting {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	public JavaScripting() {
 
 	}
@@ -60,7 +54,7 @@ public class JavaScripting extends AbstractScripting {
 	@SuppressWarnings("checkstyle:illegalcatch")
 	public void execute(String javaCode) {
 
-		//sysLog.debug("Executing following java code: \n" + javaCode);
+		//LOG.debug("Executing following java code: \n" + javaCode);
 
 		//get an instance of the JavaCompiler.
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -97,7 +91,7 @@ public class JavaScripting extends AbstractScripting {
 
 		} catch (Exception exception) {
 			String message = "Could not create InMemoryClassFileManager.";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 			throw new IllegalArgumentException(message, exception);
 		}
 
@@ -135,7 +129,7 @@ public class JavaScripting extends AbstractScripting {
 		} catch (SecurityException | IllegalStateException
 				| IOException exception) {
 			String message = "Could not create memory file manager and memory class loader.";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 			throw new IllegalArgumentException(message, exception);
 		}
 		return memoryClassLoader;
@@ -190,7 +184,7 @@ public class JavaScripting extends AbstractScripting {
 		List<JavaFileObject> javaFileObjects = fileManager.getJavaFileObjects();
 
 		//create CompilationTask
-		LoggingWriter compileLogger = new LoggingWriter(sysLog, Level.ERROR);
+		LoggingWriter compileLogger = new LoggingWriter(LOG, Level.ERROR);
 		DiagnosticListener<? super JavaFileObject> diagnosticListener = null;
 		Iterable<String> classes = null;
 		CompilationTask compilationTask = compiler.getTask(compileLogger,
@@ -205,7 +199,7 @@ public class JavaScripting extends AbstractScripting {
 		} catch (Exception exception) {
 			String message = "Could not compile class "
 					+ fileManager.getFullClassName();
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 			throw new IllegalArgumentException(message, exception);
 		}
 
@@ -224,7 +218,7 @@ public class JavaScripting extends AbstractScripting {
 					+ " indentify Eclipse plugin dependencies. A line 'import org.treez.model.atom.Models;' "
 					+ "tells Treez for example that the Eclipse plugin 'org.treez.model' needs to"
 					+ " be included in the class path.";
-			sysLog.error(message);
+			LOG.error(message);
 			throw new IllegalArgumentException(message);
 		}
 
@@ -243,7 +237,7 @@ public class JavaScripting extends AbstractScripting {
 			modelProvider = (ModelProvider) instance;
 		} catch (ClassCastException exception) {
 			String message = "Could not cast the scripted java class to a ModelProvider.";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 		}
 		return modelProvider;
 	}
@@ -263,7 +257,7 @@ public class JavaScripting extends AbstractScripting {
 				root = modelProvider.createModel();
 			} catch (Exception exception) {
 				String message = "Could not retrive model from scripted java class. Please check the method 'createModel'.";
-				sysLog.error(message, exception);
+				LOG.error(message, exception);
 			}
 		}
 		return root;
@@ -287,31 +281,31 @@ public class JavaScripting extends AbstractScripting {
 		//get compiled class
 		Class<?> clazz = null;
 		try {
-			//sysLog.debug("Loading class " + fullClassName);
+			//LOG.debug("Loading class " + fullClassName);
 			clazz = classLoader.loadClass(fullClassName);
-			//sysLog.debug("Loaded class " + fullClassName);
+			//LOG.debug("Loaded class " + fullClassName);
 		} catch (ClassNotFoundException exception) {
 			String message = "Could not load class " + fullClassName;
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 		}
 
 		//create object instance
 		Object objectInstance = null;
 		if (clazz != null) {
 			try {
-				//sysLog.debug("Creating object instance for class " +
+				//LOG.debug("Creating object instance for class " +
 				//fullClassName);
 				objectInstance = clazz.newInstance();
-				//sysLog.debug("Created object instance for class " +
+				//LOG.debug("Created object instance for class " +
 				//fullClassName);
 			} catch (InstantiationException exception) {
 				String message = "Could not instanciate an object from the class "
 						+ fullClassName;
-				sysLog.error(message, exception);
+				LOG.error(message, exception);
 			} catch (IllegalAccessException e) {
 				String message = "Could not instanciate an object from the class "
 						+ fullClassName;
-				sysLog.error(message, e);
+				LOG.error(message, e);
 			}
 		}
 

@@ -15,11 +15,6 @@ public class JavaFxWrapperForSwt extends FXCanvas {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 */
 	public JavaFxWrapperForSwt(Composite parent) {
 		super(parent, SWT.NONE);
 	}
@@ -35,8 +30,9 @@ public class JavaFxWrapperForSwt extends FXCanvas {
 	 */
 	public void setContent(Node plotter) {
 		AnchorPane root = new AnchorPane();
-		root.setPrefHeight(200);
-		root.setPrefWidth(200);
+		final int prefferedSize = 200;
+		root.setPrefHeight(prefferedSize);
+		root.setPrefWidth(prefferedSize);
 		root.getChildren().add(plotter);
 		Scene scene = new Scene(root);
 

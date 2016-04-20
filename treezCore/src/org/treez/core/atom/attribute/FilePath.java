@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -24,12 +23,6 @@ import org.treez.core.atom.base.annotation.IsParameter;
  * Allows the user to choose a file path
  */
 public class FilePath extends AbstractAttributeAtom<String> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FilePath.class);
 
 	//#region ATTRIBUTES
 
@@ -56,64 +49,60 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "true")
 	private Boolean validatePath;
 
-	/**
-	 * Container
-	 */
 	private Composite container;
 
-	/**
-	 * Container for enabled check box and label
-	 */
 	private Composite checkBoxAndLabelContainer;
 
-	/**
-	 * If this is true, an additional enabled check box will be shown
-	 */
 	private boolean showEnabledCheckBox = false;
 
-	/**
-	 * The label control
-	 */
 	private Label labelComposite;
 
-	/**
-	 * Sub container for rest
-	 */
 	private Composite subContainer;
 
-	/**
-	 * The select button
-	 */
 	private Label selectButton;
 
-	/**
-	 * The open button
-	 */
 	private Label openButton;
 
-	/**
-	 * The text field
-	 */
 	private Text textField = null;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FilePath(String name) {
 		super(name);
 		label = name;
 	}
 
+	public FilePath(String name, String defaultPath) {
+		super(name);
+		label = name;
+		setDefaultValue(defaultPath);
+		set(defaultPath);
+
+	}
+
+	public FilePath(String name, String label, String defaultPath) {
+		super(name);
+		setLabel(label);
+		setDefaultValue(defaultPath);
+		set(defaultPath);
+
+	}
+
+	public FilePath(String name, String label, String defaultPath,
+			Boolean validatePath) {
+		super(name);
+
+		setLabel(label);
+		setDefaultValue(defaultPath);
+		set(defaultPath);
+		setValidatePath(validatePath);
+
+	}
+
 	/**
 	 * Copy constructor
-	 *
-	 * @param filePathToCopy
 	 */
 	protected FilePath(FilePath filePathToCopy) {
 		super(filePathToCopy);
@@ -127,76 +116,23 @@ public class FilePath extends AbstractAttributeAtom<String> {
 		validatePath = filePathToCopy.validatePath;
 	}
 
-	/**
-	 * Constructor with default filePath
-	 *
-	 * @param name
-	 * @param defaultPath
-	 */
-	public FilePath(String name, String defaultPath) {
-		super(name);
-		label = name;
-		setDefaultValue(defaultPath);
-		set(defaultPath);
-
-	}
-
-	/**
-	 * Constructor with label and default filePath
-	 *
-	 * @param name
-	 * @param label
-	 * @param defaultPath
-	 */
-	public FilePath(String name, String label, String defaultPath) {
-		super(name);
-		setLabel(label);
-		setDefaultValue(defaultPath);
-		set(defaultPath);
-
-	}
-
-	/**
-	 * Constructor with label, default filePath and validation flag
-	 *
-	 * @param name
-	 * @param label
-	 * @param defaultPath
-	 * @param validatePath
-	 */
-	public FilePath(String name, String label, String defaultPath, Boolean validatePath) {
-		super(name);
-
-		setLabel(label);
-		setDefaultValue(defaultPath);
-		set(defaultPath);
-		setValidatePath(validatePath);
-
-	}
-
 	//#end region
 
 	//#region METHODS
-
-	//#region COPY
 
 	@Override
 	public FilePath copy() {
 		return new FilePath(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("browse.png");
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -208,7 +144,8 @@ public class FilePath extends AbstractAttributeAtom<String> {
 
 		container = createVerticalContainer(parent, toolkit);
 
-		checkBoxAndLabelContainer = createHorizontalContainer(container, toolkit);
+		checkBoxAndLabelContainer = createHorizontalContainer(container,
+				toolkit);
 
 		//label
 		labelComposite = toolkit.createLabel(checkBoxAndLabelContainer, label);
@@ -282,9 +219,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 		//create error decoration for text field
 		String errorMessage = "Invalid file path";
 		final TextFieldErrorDecoration errorDecoration = new TextFieldErrorDecoration(
-				textField,
-				errorMessage,
-				container);
+				textField, errorMessage, container);
 
 		//path validation
 
@@ -333,7 +268,8 @@ public class FilePath extends AbstractAttributeAtom<String> {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				FileDialog fileDialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
+				FileDialog fileDialog = new FileDialog(
+						Display.getCurrent().getActiveShell(), SWT.MULTI);
 
 				fileDialog.setFilterPath(defaultValue);
 
@@ -357,7 +293,8 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	 * @param errorDecoration
 	 * @param text
 	 */
-	private void validateFilePath(final TextFieldErrorDecoration errorDecoration, String text) {
+	private void validateFilePath(
+			final TextFieldErrorDecoration errorDecoration, String text) {
 
 		boolean isValid = FileHelper.isValidFilePath(text);
 		if (isValid) {
@@ -411,45 +348,27 @@ public class FilePath extends AbstractAttributeAtom<String> {
 		showEnabledCheckBox = state;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultFilePath
-	 */
 	public void setDefaultValue(String defaultFilePath) {
 		this.defaultValue = defaultFilePath;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
@@ -474,7 +393,8 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Get file extension names as comma separated list, e.g. 'TestFile, ImageFile'
+	 * Get file extension names as comma separated list, e.g. 'TestFile,
+	 * ImageFile'
 	 *
 	 * @return the extensionNames
 	 */
@@ -483,7 +403,8 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Set file extension names as comma separated list, e.g. 'TestFile, ImageFile'
+	 * Set file extension names as comma separated list, e.g. 'TestFile,
+	 * ImageFile'
 	 *
 	 * @param extensionNames
 	 *            the extensionNames to set
@@ -493,7 +414,8 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * If set to false the file path is not validated/no error decoration is shown
+	 * If set to false the file path is not validated/no error decoration is
+	 * shown
 	 *
 	 * @param validatePath
 	 */
@@ -502,11 +424,6 @@ public class FilePath extends AbstractAttributeAtom<String> {
 
 	}
 
-	/**
-	 * Sets the background color
-	 *
-	 * @param backgroundColor
-	 */
 	@Override
 	public void setBackgroundColor(Color backgroundColor) {
 

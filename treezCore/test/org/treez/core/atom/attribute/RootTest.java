@@ -12,7 +12,7 @@ public class RootTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(RootTest.class);
+	private static final Logger LOG = Logger.getLogger(RootTest.class);
 
 	//#region SETUP
 

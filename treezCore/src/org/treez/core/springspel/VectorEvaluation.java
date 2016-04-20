@@ -16,10 +16,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
  */
 public class VectorEvaluation {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(VectorEvaluation.class);
+	private static final Logger LOG = Logger.getLogger(VectorEvaluation.class);
 
 	//#region ATTRIBUTES
 
@@ -31,9 +28,6 @@ public class VectorEvaluation {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	public VectorEvaluation() {
 
 		//create parser
@@ -60,7 +54,6 @@ public class VectorEvaluation {
 			rangeMethod = this.getClass().getDeclaredMethod("range",
 					new Class[]{Number.class, Number.class, Number.class});
 		} catch (NoSuchMethodException | SecurityException e) {
-			//TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		context.registerFunction("range", rangeMethod);
@@ -152,7 +145,7 @@ public class VectorEvaluation {
 		} else {
 			String message = "Could not parse the value string '" + valueString
 					+ "' to a double list. Returning  a list containing a single Double.NaN value.";
-			sysLog.warn(message);
+			LOG.warn(message);
 			List<Double> nanList = new ArrayList<>();
 			nanList.add(Double.NaN);
 			return nanList;
@@ -210,7 +203,7 @@ public class VectorEvaluation {
 		} else {
 			String message = "Could not parse the value string '" + valueString
 					+ "' to an Integer list. Returning  a list containing a single null value.";
-			sysLog.warn(message);
+			LOG.warn(message);
 			List<Integer> nanList = new ArrayList<>();
 			nanList.add(null);
 			return nanList;

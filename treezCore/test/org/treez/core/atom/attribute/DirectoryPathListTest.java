@@ -12,7 +12,7 @@ public class DirectoryPathListTest extends AbstractAttributeAtomConstructionTest
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(DirectoryPathListTest.class);
+	private static final Logger LOG = Logger.getLogger(DirectoryPathListTest.class);
 
 	//#region SETUP
 

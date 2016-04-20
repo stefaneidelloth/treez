@@ -3,31 +3,16 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents fill styles
- */
 public enum FillStyleValue {
 
 	//#region VALUES
 
-	/**
-	 *
-	 */
 	SOLID("solid"),
 
-	/**
-	 *
-	 */
 	VERTICAL("vertical"),
 
-	/**
-	 *
-	 */
 	HORIZONTAL("horizontal"),
 
-	/**
-	 *
-	 */
 	CROSS("cross");
 
 	//#end region
@@ -55,7 +40,7 @@ public enum FillStyleValue {
 
 	/**
 	 * Returns a set of all fill styles as strings
-	 * 
+	 *
 	 * @return
 	 */
 	public static List<String> getAllStringValues() {

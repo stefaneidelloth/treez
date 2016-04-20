@@ -2,7 +2,6 @@ package org.treez.model.atom;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
@@ -24,21 +23,10 @@ import org.treez.model.atom.genericInput.GenericInputModel;
  */
 public class Models extends AbstractModel {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings({ "hiding", "unused" })
-	private static Logger sysLog = Logger.getLogger(Models.class);
-
 	//#region ATTRIBUTES
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Models(String name) {
 		super(name);
 		setRunnable();

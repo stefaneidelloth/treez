@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,12 +34,6 @@ import org.treez.core.utils.Utils;
  */
 public class ModelPath extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ModelPath.class);
-
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "File path:")
@@ -61,19 +54,10 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "false")
 	private boolean hasToBeEnabled;
 
-	/**
-	 * Content container
-	 */
 	private Composite contentContainer;
 
-	/**
-	 * Sub container for (text field and button) or combo box
-	 */
 	private Composite subContainer;
 
-	/**
-	 * The label
-	 */
 	private CustomLabel labelComposite;
 
 	/**
@@ -81,9 +65,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	 */
 	private CustomLabel rootLabel;
 
-	/**
-	 * The text field
-	 */
 	private Text textField = null;
 
 	/**
@@ -128,68 +109,23 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public ModelPath(String name) {
 		super(name);
 		setLabel(name);
 	}
 
-	/**
-	 * Copy constructor
-	 *
-	 * @param modelPathToCopy
-	 */
-	private ModelPath(ModelPath modelPathToCopy) {
-		super(modelPathToCopy);
-		label = modelPathToCopy.label;
-		selectionType = modelPathToCopy.selectionType;
-		defaultValue = modelPathToCopy.defaultValue;
-		tooltip = modelPathToCopy.tooltip;
-		targetClassNames = modelPathToCopy.targetClassNames;
-		hasToBeEnabled = modelPathToCopy.hasToBeEnabled;
-
-		//TODO: replace with path to be able to copy them here
-		modelEntryAtom = null;
-		relativeRoot = null;
-
-	}
-
-	/**
-	 * Constructor with alternative model entry point
-	 *
-	 * @param name
-	 * @param modelEntryAtom
-	 *            : used as entry point for the tree navigation
-	 */
 	public ModelPath(String name, AbstractAtom modelEntryAtom) {
 		super(name);
 		setLabel(name);
 		setModelEntryAtom(modelEntryAtom);
 	}
 
-	/**
-	 * Constructor with selection type
-	 *
-	 * @param name
-	 * @param selectionType
-	 */
 	public ModelPath(String name, ModelPathSelectionType selectionType) {
 		super(name);
 		setLabel(label);
 		setSelectionType(selectionType);
 	}
 
-	/**
-	 * Constructor with selection type and alternative model entry point
-	 *
-	 * @param name
-	 * @param modelEntryAtom
-	 * @param selectionType
-	 */
 	public ModelPath(String name, AbstractAtom modelEntryAtom,
 			ModelPathSelectionType selectionType) {
 		super(name);
@@ -198,13 +134,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setModelEntryAtom(modelEntryAtom);
 	}
 
-	/**
-	 * Constructor that uses another ModelPath as root.
-	 *
-	 * @param name
-	 * @param atomType
-	 * @param parentModelPath
-	 */
 	public ModelPath(String name, ModelPath parentModelPath,
 			Class<?> atomType) {
 		super(name);
@@ -225,12 +154,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 	}
 
-	/**
-	 * Constructor that uses another ModelPath as root.
-	 *
-	 * @param name
-	 * @param parentModelPath
-	 */
 	public ModelPath(String name, ModelPath parentModelPath,
 			Class<?>[] atomTypes) {
 		super(name);
@@ -256,13 +179,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 	}
 
-	/**
-	 * Constructor with selection type and default model path
-	 *
-	 * @param name
-	 * @param selectionType
-	 * @param defaultPath
-	 */
 	public ModelPath(String name, ModelPathSelectionType selectionType,
 			String defaultPath) {
 		super(name);
@@ -272,15 +188,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setSelectionType(selectionType);
 	}
 
-	/**
-	 * Constructor with selection type, alternative model entry point and
-	 * default model path
-	 *
-	 * @param name
-	 * @param modelEntryAtom
-	 * @param selectionType
-	 * @param defaultPath
-	 */
 	public ModelPath(String name, AbstractAtom modelEntryAtom,
 			ModelPathSelectionType selectionType, String defaultPath) {
 		super(name);
@@ -291,15 +198,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setModelEntryAtom(modelEntryAtom);
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param defaultPath
-	 * @param atomType
-	 * @param selectionType
-	 * @param modelEntryAtom
-	 */
 	public ModelPath(String name, String defaultPath, Class<?> atomType,
 			ModelPathSelectionType selectionType, AbstractAtom modelEntryAtom,
 			boolean hasToBeEnabled) {
@@ -313,15 +211,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setHasToBeEnabled(hasToBeEnabled);
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param defaultPath
-	 * @param atomTypes
-	 * @param selectionType
-	 * @param modelEntryAtom
-	 */
 	public ModelPath(String name, String defaultPath, Class<?>[] atomTypes,
 			ModelPathSelectionType selectionType, AbstractAtom modelEntryAtom,
 			boolean hasToBeEnabled) {
@@ -341,17 +230,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setHasToBeEnabled(hasToBeEnabled);
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param label
-	 * @param defaultPath
-	 * @param atomType
-	 * @param selectionType
-	 * @param modelEntryAtom
-	 * @param relativeRoot
-	 */
 	public ModelPath(String name, String label, String defaultPath,
 			Class<?> atomType, ModelPathSelectionType selectionType,
 			AbstractAtom modelEntryAtom, AbstractAtom relativeRoot) {
@@ -365,18 +243,32 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setModelRelativeRoot(relativeRoot);
 	}
 
+	/**
+	 * Copy constructor
+	 */
+	private ModelPath(ModelPath modelPathToCopy) {
+		super(modelPathToCopy);
+		label = modelPathToCopy.label;
+		selectionType = modelPathToCopy.selectionType;
+		defaultValue = modelPathToCopy.defaultValue;
+		tooltip = modelPathToCopy.tooltip;
+		targetClassNames = modelPathToCopy.targetClassNames;
+		hasToBeEnabled = modelPathToCopy.hasToBeEnabled;
+
+		//TODO: replace with path to be able to copy them here
+		modelEntryAtom = null;
+		relativeRoot = null;
+
+	}
+
 	//#end region
 
 	//#region METHODS
-
-	//#region COPY
 
 	@Override
 	public ModelPath copy() {
 		return new ModelPath(this);
 	}
-
-	//#end region
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
@@ -455,9 +347,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		return subContainer;
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("root.png");
@@ -844,11 +733,6 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 	}
 
-	/**
-	 * Sets the value
-	 *
-	 * @param value
-	 */
 	@Override
 	public void set(String value) {
 		if (value != attributeValue) {
@@ -877,63 +761,35 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		return path;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultFilePath
-	 */
 	public void setDefaultValue(String defaultFilePath) {
 		this.defaultValue = defaultFilePath;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * Get selection type
-	 *
-	 * @return
-	 */
 	public ModelPathSelectionType getSelectionType() {
 		return selectionType;
 	}
 
-	/**
-	 * Set selection type
-	 *
-	 * @param selectionType
-	 */
 	public void setSelectionType(ModelPathSelectionType selectionType) {
 		this.selectionType = selectionType;
 	}
@@ -956,16 +812,10 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		this.modelEntryAtom = modelEntryAtom;
 	}
 
-	/**
-	 * @param relativeRoot
-	 */
 	public void setModelRelativeRoot(AbstractAtom relativeRoot) {
 		this.relativeRoot = relativeRoot;
 	}
 
-	/**
-	 * @param state
-	 */
 	public void setHasToBeEnabled(boolean state) {
 		this.hasToBeEnabled = state;
 	}

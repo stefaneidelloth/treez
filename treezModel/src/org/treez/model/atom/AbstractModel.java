@@ -19,10 +19,7 @@ import org.treez.model.output.ModelOutput;
  */
 public class AbstractModel extends AdjustableAtom implements Model {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(AbstractModel.class);
+	private static final Logger LOG = Logger.getLogger(AbstractModel.class);
 
 	//#region ATTRIBUTES
 
@@ -41,11 +38,6 @@ public class AbstractModel extends AdjustableAtom implements Model {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractModel(String name) {
 		super(name);
 	}
@@ -76,7 +68,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	 */
 	protected void assignModelInput(ModelInput modelInput) {
 
-		sysLog.info("Assigning model input for " + this.getClass().getSimpleName() + " '" + getName() + "'");
+		LOG.info("Assigning model input for " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
 		if (modelInput != null) {
 
@@ -115,7 +107,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	@Override
 	public ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor) {
 
-		sysLog.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
+		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
 		ModelOutput modelOutput = createEmptyModelOutput();
 		for (AbstractAtom child : getChildAtoms()) {
@@ -171,7 +163,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 			variableAbstractAtom = getChildFromRoot(variableModelPath);
 		} catch (IllegalArgumentException exception) {
 			String message = "Could not find a variable field for the model path '" + variableModelPath + "'.";
-			sysLog.error(message);
+			LOG.error(message);
 			return null;
 		}
 
@@ -182,7 +174,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 			String simpleClassName = variableAbstractAtom.getClass().getSimpleName();
 			String message = "Could not cast the variable with model path '" + variableAbstractAtom
 					+ "' to AttributeAtom<Quantity>. Its simple class name is '" + simpleClassName + "'.";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 			return null;
 		}
 		return variableAtom;
@@ -205,14 +197,14 @@ public class AbstractModel extends AdjustableAtom implements Model {
 					return modelOutput;
 				} else {
 					String message = "The found child '" + child.getName() + "' is not a model.";
-					sysLog.error(message);
+					LOG.error(message);
 					throw new IllegalStateException(message);
 				}
 			}
 		}
 
 		String message = "Could not find a child of wanted class '" + wantedClass.getSimpleName() + "'.";
-		sysLog.error(message);
+		LOG.error(message);
 		throw new IllegalStateException(message);
 	}
 
@@ -246,9 +238,6 @@ public class AbstractModel extends AdjustableAtom implements Model {
 		isManualModel = true;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getStudyId() {
 		return studyId;

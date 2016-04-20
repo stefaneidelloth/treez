@@ -1,7 +1,5 @@
 package org.treez.core.data.column;
 
-import org.apache.log4j.Logger;
-
 /**
  * Column types for the TableEditor
  */
@@ -25,12 +23,6 @@ public enum ColumnType {
 	//#end region
 
 	//#region ATTRIBUTES
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ColumnType.class);
 
 	/**
 	 * An alternative string value for the enum
@@ -73,7 +65,7 @@ public enum ColumnType {
 	public static ColumnType getType(String type) {
 		for (ColumnType columnType : values()) {
 			String value = columnType.getValue();
-			//sysLog.debug("testing for column type " + value);
+			//LOG.debug("testing for column type " + value);
 			boolean isWantedType = value.equals(type);
 			if (isWantedType) {
 				return columnType;

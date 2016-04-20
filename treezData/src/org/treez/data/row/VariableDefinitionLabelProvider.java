@@ -22,11 +22,6 @@ public class VariableDefinitionLabelProvider extends StyledCellLabelProvider {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param header
-	 */
 	public VariableDefinitionLabelProvider(String header) {
 		super();
 		this.header = header;

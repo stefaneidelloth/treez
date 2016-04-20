@@ -27,34 +27,16 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 	 */
 	public final Attribute<String> number = new Wrap<>();
 
-	/**
-	 * Line type
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 * Line width
-	 */
 	public final Attribute<String> width = new Wrap<>();
 
-	/**
-	 * Tick length
-	 */
 	public final Attribute<String> length = new Wrap<>();
 
-	/**
-	 * Line style
-	 */
 	public final Attribute<String> style = new Wrap<>();
 
-	/**
-	 * Line transparency
-	 */
 	public final Attribute<String> transparency = new Wrap<>();
 
-	/**
-	 * Hide
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	//#end region

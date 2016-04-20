@@ -5,7 +5,7 @@ import org.treez.core.utils.Utils;
 /**
  * Modifies the output path for the Executable
  */
-class ExecutableOutputPathModifier {
+public class ExecutableOutputPathModifier {
 
 	//#region ATTRIBUTES
 
@@ -15,11 +15,6 @@ class ExecutableOutputPathModifier {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param executable
-	 */
 	public ExecutableOutputPathModifier(Executable executable) {
 		this.executable = executable;
 	}

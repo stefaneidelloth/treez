@@ -1,6 +1,5 @@
 package org.treez.core.treeview;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocumentListener;
 
@@ -9,13 +8,6 @@ import org.eclipse.jface.text.IDocumentListener;
  *
  */
 public class TreeViewDocumentListener implements IDocumentListener {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(TreeViewDocumentListener.class);
 
 	//#region ATTRIBUTES
 
@@ -28,11 +20,6 @@ public class TreeViewDocumentListener implements IDocumentListener {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param treeViewProvider
-	 */
 	TreeViewDocumentListener(TreeViewProvider treeViewProvider) {
 		this.treeViewProvider = treeViewProvider;
 	}
@@ -43,7 +30,8 @@ public class TreeViewDocumentListener implements IDocumentListener {
 
 	@Override
 	public void documentAboutToBeChanged(DocumentEvent event) {
-		treeViewProvider.getTreeViewCodeConverter().checkActiveDocumentAndBuildTreeFromCode();
+		treeViewProvider.getTreeViewCodeConverter()
+				.checkActiveDocumentAndBuildTreeFromCode();
 	}
 
 	@Override

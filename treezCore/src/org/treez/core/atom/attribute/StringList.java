@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,12 +24,6 @@ import org.treez.core.swt.CustomLabel;
  * Allows to edit a list of strings
  */
 public class StringList extends AbstractAttributeAtom<List<String>> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(StringList.class);
 
 	//#region ATTRIBUTES
 
@@ -61,11 +54,6 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public StringList(String name) {
 		super(name);
 		label = name;
@@ -74,8 +62,6 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param atomToCopy
 	 */
 	protected StringList(StringList atomToCopy) {
 		super(atomToCopy);
@@ -97,18 +83,11 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 		treezList.setShowHeader(false);
 	}
 
-	//#region COPY
-
 	@Override
 	public StringList copy() {
 		return new StringList(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("column.png");
@@ -227,16 +206,10 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 
 	//#region LABEL
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -259,18 +232,12 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 
 	//#region DEFAULT VALUE
 
-	/**
-	 * @return
-	 */
 	@Override
 	public List<String> getDefaultValue() {
 		List<String> stringValues = valueStringToList(defaultValueString);
 		return stringValues;
 	}
 
-	/**
-	 * @param defaultValueString
-	 */
 	public void setDefaultValue(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
 	}

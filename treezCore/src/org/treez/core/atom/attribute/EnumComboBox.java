@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,48 +19,27 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-/**
- * Allows the user to choose a line style
- */
 public class EnumComboBox<T extends EnumValueProvider<?>>
 		extends
 			AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(EnumComboBox.class);
-
 	//#region ATTRIBUTES
 
-	@IsParameter(defaultValue = "My Line Style:")
+	@IsParameter(defaultValue = "My Enum value:")
 	private String label;
 
-	@IsParameter(defaultValue = "solid")
+	@IsParameter(defaultValue = "error")
 	private String defaultValue;
 
 	@IsParameter(defaultValue = "")
 	private String tooltip;
 
-	/**
-	 * Container for label and check box
-	 */
 	private Composite contentContainer;
 
-	/**
-	 * The label
-	 */
 	private CustomLabel labelComposite;
 
-	/**
-	 * The combo box
-	 */
 	private Combo comboBox;
 
-	/**
-	 * The image label
-	 */
 	private Label imageLabel;
 
 	/**
@@ -73,11 +51,6 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public EnumComboBox(T enumInstance, String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name);
@@ -85,11 +58,6 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 		setDefaultValue(enumInstance);
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public EnumComboBox(T enumInstance, String name, String label) {
 		super(name);
 		this.label = label;
@@ -99,8 +67,6 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param lineStyleToCopy
 	 */
 	private EnumComboBox(EnumComboBox<T> lineStyleToCopy) {
 		super(lineStyleToCopy);
@@ -116,28 +82,16 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public EnumComboBox<T> copy() {
 		return new EnumComboBox<T>(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("combobox.png");
 	}
 
-	/**
-	 * Creates the composite on a given parent
-	 *
-	 * @param parent
-	 */
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
 			Composite parent, Refreshable treeViewerRefreshable) {
@@ -240,31 +194,19 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		boolean isAllowedValue = enumInstance.getValues()
 				.contains(defaultValue);
@@ -277,42 +219,23 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 
 	}
 
-	/**
-	 * Sets the default line style
-	 *
-	 * @param enumValue
-	 */
 	public void setDefaultValue(T enumValue) {
 		setDefaultValue(enumValue.toString());
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * Get value as string
-	 *
-	 * @return the value
-	 */
 	@Override
 	public String get() {
 		return super.get();
 	}
 
-	/**
-	 * @return
-	 */
 	public T getEnumValue() {
 		String value = get();
 		@SuppressWarnings("unchecked")
@@ -320,12 +243,6 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 		return enumValue;
 	}
 
-	/**
-	 * Set value
-	 *
-	 * @param value
-	 *            the filePath to set
-	 */
 	@Override
 	public void set(String value) {
 		super.set(value);

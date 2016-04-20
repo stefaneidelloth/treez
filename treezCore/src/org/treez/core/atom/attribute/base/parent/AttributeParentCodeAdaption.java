@@ -13,17 +13,8 @@ import org.treez.core.atom.base.AtomCodeAdaption;
  */
 public class AttributeParentCodeAdaption extends AtomCodeAdaption {
 
-	//#region ATTRIBUTES
-
-	//#end region
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param atom
-	 */
 	public AttributeParentCodeAdaption(AbstractAttributeParentAtom atom) {
 		super(atom);
 	}
@@ -57,8 +48,8 @@ public class AttributeParentCodeAdaption extends AtomCodeAdaption {
 				AttributeAtomCodeAdaption<?> codeAdaption = attributeAtom
 						.createCodeAdaption(scriptType);
 				extendedContainer = codeAdaption
-						.extendAttributeCodeContainerForModelParent(intermediateAtom,
-								parentContainer);
+						.extendAttributeCodeContainerForModelParent(
+								intermediateAtom, parentContainer);
 
 			} else {
 

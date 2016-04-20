@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.treez.model,
  org.treez.study,
  org.treez.data,
- org.treez.javafxd3
+ org.treez.javafxd3,
+ org.apache.log4j
 Bundle-Vendor: Stefan Eidelloth
 
 

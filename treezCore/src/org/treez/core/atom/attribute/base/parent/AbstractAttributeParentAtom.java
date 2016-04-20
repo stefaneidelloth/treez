@@ -14,29 +14,21 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 /**
  * Abstract base class for all AttributeAtom Containers and Attribute Atoms.
  */
-public abstract class AbstractAttributeParentAtom extends AbstractUiSynchronizingAtom {
-
-	//#region ATTRIBUTES
-
-	//#end region
+public abstract class AbstractAttributeParentAtom
+		extends
+			AbstractUiSynchronizingAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractAttributeParentAtom(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param attributeParentAtomToCopy
 	 */
-	public AbstractAttributeParentAtom(AbstractAttributeParentAtom attributeParentAtomToCopy) {
+	public AbstractAttributeParentAtom(
+			AbstractAttributeParentAtom attributeParentAtomToCopy) {
 		super(attributeParentAtomToCopy);
 	}
 
@@ -50,41 +42,47 @@ public abstract class AbstractAttributeParentAtom extends AbstractUiSynchronizin
 	}
 
 	@Override
-	public AttributeParentCodeAdaption createCodeAdaption(ScriptType scriptType) {
+	public AttributeParentCodeAdaption createCodeAdaption(
+			ScriptType scriptType) {
 
 		AttributeParentCodeAdaption codeAdaption;
 		switch (scriptType) {
-		case JAVA:
-			codeAdaption = new AttributeParentCodeAdaption(this);
-			break;
-		default:
-			String message = "The ScriptType " + scriptType + " is not yet implemented.";
-			throw new IllegalStateException(message);
+			case JAVA :
+				codeAdaption = new AttributeParentCodeAdaption(this);
+				break;
+			default :
+				String message = "The ScriptType " + scriptType
+						+ " is not yet implemented.";
+				throw new IllegalStateException(message);
 		}
 
 		return codeAdaption;
 	}
 
 	/**
-	 * Enables or disables the property atom. This can be used for example by the class ComboBoxEnableTarget if the
-	 * inheriting class provides a meaningful implementation
+	 * Enables or disables the property atom. This can be used for example by
+	 * the class ComboBoxEnableTarget if the inheriting class provides a
+	 * meaningful implementation
 	 *
 	 * @param enable
 	 */
 	public void setEnabled(@SuppressWarnings("unused") boolean enable) {
-		throw new IllegalStateException("The method 'enable' has to be overridden by the inheriting class");
+		throw new IllegalStateException(
+				"The method 'enable' has to be overridden by the inheriting class");
 	}
 
 	/**
-	 * Tries to find the the child AttributeAtom for the given model path and returns it. If the given model path is
-	 * wrong an IllegalArgumentException is thrown.
+	 * Tries to find the the child AttributeAtom for the given model path and
+	 * returns it. If the given model path is wrong an IllegalArgumentException
+	 * is thrown.
 	 *
 	 * @param <K>
 	 * @param modelPath
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public <K extends AbstractAttributeAtom<?>> K getAttributeAtom(String modelPath) throws IllegalArgumentException {
+	public <K extends AbstractAttributeAtom<?>> K getAttributeAtom(
+			String modelPath) throws IllegalArgumentException {
 
 		AbstractAtom root = getRoot();
 
@@ -95,10 +93,13 @@ public abstract class AbstractAttributeParentAtom extends AbstractUiSynchronizin
 				K propertyAtom = (K) child;
 				return propertyAtom;
 			} catch (IllegalArgumentException | ClassCastException exception) {
-				throw new IllegalArgumentException("Could not get attribute atom '" + modelPath + "'.", exception);
+				throw new IllegalArgumentException(
+						"Could not get attribute atom '" + modelPath + "'.",
+						exception);
 			}
 		} else {
-			throw new IllegalArgumentException("Could not get attribute atom '" + modelPath + "' due to missing root.");
+			throw new IllegalArgumentException("Could not get attribute atom '"
+					+ modelPath + "' due to missing root.");
 		}
 	}
 
@@ -108,10 +109,12 @@ public abstract class AbstractAttributeParentAtom extends AbstractUiSynchronizin
 	 * @return
 	 */
 	@Override
-	protected List<Object> createContextMenuActions(final TreeViewerRefreshable treeViewerRefreshable) {
+	protected List<Object> createContextMenuActions(
+			final TreeViewerRefreshable treeViewerRefreshable) {
 		ArrayList<Object> actions = new ArrayList<>();
 
-		List<Object> superActions = super.createContextMenuActions(treeViewerRefreshable);
+		List<Object> superActions = super.createContextMenuActions(
+				treeViewerRefreshable);
 		actions.addAll(superActions);
 
 		return actions;

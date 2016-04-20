@@ -18,18 +18,11 @@ import org.treez.core.scripting.ScriptType;
  */
 public class RegionsAtomCodeAdaption extends AdjustableAtomCodeAdaption {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(RegionsAtomCodeAdaption.class);
+	private static final Logger LOG = Logger
+			.getLogger(RegionsAtomCodeAdaption.class);
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param atom
-	 */
 	public RegionsAtomCodeAdaption(AbstractAtom atom) {
 		super(atom);
 	}
@@ -42,23 +35,25 @@ public class RegionsAtomCodeAdaption extends AdjustableAtomCodeAdaption {
 	 * Creates a code container that contains the code for all children of the
 	 * atom that corresponds to this code adaption. Inserts a region for each
 	 * child.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
 	protected CodeContainer createCodeContainerForChildAtoms() {
 
 		//get child node adaptions
-		List<TreeNodeAdaption> childNodes = atom.createTreeNodeAdaption().getChildren();
+		List<TreeNodeAdaption> childNodes = atom.createTreeNodeAdaption()
+				.getChildren();
 
 		//loop through the child nodes and create code container
 		CodeContainer allChildrenCodeContainer = new CodeContainer(scriptType);
 		for (TreeNodeAdaption childNode : childNodes) {
 
 			String childName = childNode.getName();
-			sysLog.debug("creating code container for child " + childName);
+			LOG.debug("creating code container for child " + childName);
 			Adaptable childAdaptable = childNode.getAdaptable();
-			CodeAdaption childCodeAdaption = childAdaptable.createCodeAdaption(ScriptType.JAVA);
+			CodeAdaption childCodeAdaption = childAdaptable
+					.createCodeAdaption(ScriptType.JAVA);
 
 			//add region start
 			allChildrenCodeContainer.extendBulkWithEmptyLine();
@@ -66,9 +61,9 @@ public class RegionsAtomCodeAdaption extends AdjustableAtomCodeAdaption {
 			allChildrenCodeContainer.extendBulk(regionStartLine);
 			allChildrenCodeContainer.extendBulkWithEmptyLine();
 
-			//extend with child code container			
-			allChildrenCodeContainer = childCodeAdaption.buildCodeContainer(allChildrenCodeContainer,
-					Optional.ofNullable(null));
+			//extend with child code container
+			allChildrenCodeContainer = childCodeAdaption.buildCodeContainer(
+					allChildrenCodeContainer, Optional.ofNullable(null));
 
 			//add region end
 			String regionEndLine = "\t\t//#end region";
@@ -76,7 +71,8 @@ public class RegionsAtomCodeAdaption extends AdjustableAtomCodeAdaption {
 		}
 
 		//post process the container
-		allChildrenCodeContainer = postProcessAllChildrenCodeContainer(allChildrenCodeContainer);
+		allChildrenCodeContainer = postProcessAllChildrenCodeContainer(
+				allChildrenCodeContainer);
 
 		return allChildrenCodeContainer;
 	}

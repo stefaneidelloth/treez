@@ -2,7 +2,6 @@ package org.treez.core.atom.attribute;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
@@ -19,27 +18,14 @@ import org.treez.core.treeview.action.TreeViewerAction;
  */
 public class AttributeRoot extends AbstractAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(AttributeRoot.class);
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AttributeRoot(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param rootToCopy
 	 */
 	private AttributeRoot(AttributeRoot rootToCopy) {
 		super(rootToCopy);
@@ -62,8 +48,9 @@ public class AttributeRoot extends AbstractAtom {
 	 * Returns the control adaption for this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, Refreshable treeViewRefreshable) {
-		//sysLog.debug("get root control");
+	public AbstractControlAdaption createControlAdaption(Composite parent,
+			Refreshable treeViewRefreshable) {
+		//LOG.debug("get root control");
 		return new EmptyControlAdaption(parent, this, "");
 	}
 
@@ -71,14 +58,13 @@ public class AttributeRoot extends AbstractAtom {
 	 * Creates the context menu actions
 	 */
 	@Override
-	protected ArrayList<Object> createContextMenuActions(final TreeViewerRefreshable treeViewerRefreshable) {
+	protected ArrayList<Object> createContextMenuActions(
+			final TreeViewerRefreshable treeViewerRefreshable) {
 
 		ArrayList<Object> actions = new ArrayList<>();
 
-		actions.add(new TreeViewerAction(
-				"Add Page",
-				Activator.getImage("Page.png"),
-				treeViewerRefreshable,
+		actions.add(new TreeViewerAction("Add Page",
+				Activator.getImage("Page.png"), treeViewerRefreshable,
 				() -> addPage(treeViewerRefreshable)));
 
 		return actions;
@@ -99,7 +85,8 @@ public class AttributeRoot extends AbstractAtom {
 	 * @param treeViewer
 	 */
 	void addPage(TreeViewerRefreshable treeViewer) {
-		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myPage");
+		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this,
+				"myPage");
 		createPage(name);
 		createTreeNodeAdaption().expand(treeViewer);
 	}

@@ -27,59 +27,26 @@ public class AxisLabel implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Label font
-	 */
 	public final Attribute<String> font = new Wrap<>();
 
-	/**
-	 * Label size
-	 */
 	public final Attribute<String> size = new Wrap<>();
 
-	/**
-	 * Label color
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 * Label text italic style
-	 */
 	public final Attribute<Boolean> italic = new Wrap<>();
 
-	/**
-	 * Label text bold style
-	 */
 	public final Attribute<Boolean> bold = new Wrap<>();
 
-	/**
-	 * Label text underline
-	 */
 	public final Attribute<Boolean> underline = new Wrap<>();
 
-	/**
-	 * Label at edge
-	 */
 	//public final Attribute<Boolean> atEdge = new Wrap<>();
 
-	/**
-	 * Label rotation
-	 */
 	public final Attribute<String> rotate = new Wrap<>();
 
-	/**
-	 * Label offset
-	 */
 	public final Attribute<String> labelOffset = new Wrap<>();
 
-	/**
-	 * Label position
-	 */
 	public final Attribute<String> position = new Wrap<>();
 
-	/**
-	 * Hide
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	//#end region

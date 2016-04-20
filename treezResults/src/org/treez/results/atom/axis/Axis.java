@@ -3,7 +3,6 @@ package org.treez.results.atom.axis;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -19,12 +18,6 @@ import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Axis extends GraphicsPropertiesPage {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Axis.class);
 
 	//#region ATTRIBUTES
 
@@ -64,21 +57,10 @@ public class Axis extends GraphicsPropertiesPage {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Axis(String name) {
 		super(name);
 	}
 
-	/**
-	 * Constructor with direction
-	 *
-	 * @param name
-	 * @param direction
-	 */
 	public Axis(String name, Direction direction) {
 		super(name);
 		//set value for axis direction

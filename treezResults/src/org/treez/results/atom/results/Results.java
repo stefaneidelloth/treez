@@ -2,7 +2,6 @@ package org.treez.results.atom.results;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Refreshable;
@@ -20,19 +19,8 @@ import org.treez.results.atom.page.Page;
  */
 public class Results extends AdjustableAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Results.class);
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Results(String name) {
 		super(name);
 		setRunnable();
@@ -57,17 +45,11 @@ public class Results extends AdjustableAtom {
 		setModel(root);
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("results.png");
 	}
 
-	/**
-	 * Creates the context menu actions for this atom
-	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
 
@@ -99,24 +81,12 @@ public class Results extends AdjustableAtom {
 
 	//#region CREATE CHILD ATOMS
 
-	/**
-	 * Creates a Data child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Data createData(String name) {
 		Data child = new Data(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a Page child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Page createPage(String name) {
 		Page child = new Page(name);
 		addChild(child);

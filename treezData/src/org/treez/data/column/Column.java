@@ -24,26 +24,14 @@ import org.treez.data.table.Table;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Column extends AdjustableAtom {
 
-	// #region ATTRIBUTES
+	private static final Logger LOG = Logger.getLogger(Column.class);
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(Column.class);
+	//#region ATTRIBUTES
 
-	/**
-	 * Header
-	 */
 	public final Attribute<String> header = new Wrap<>();
 
-	/**
-	 * Description
-	 */
 	public final Attribute<String> description = new Wrap<>();
 
-	/**
-	 * The column type
-	 */
 	public final Attribute<String> columnType = new Wrap<>();
 
 	/**
@@ -52,27 +40,16 @@ public class Column extends AdjustableAtom {
 	@SuppressWarnings("unused")
 	public final Attribute<String> enumValues = new Wrap<>();
 
-	// #end region
+	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Column(String name) {
 		super(name);
-		sysLog.debug("creating column " + name);
+		LOG.debug("creating column " + name);
 		createColumnAtomModel();
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param type
-	 */
 	public Column(String name, ColumnType type) {
 		super(name);
 		createColumnAtomModel();
@@ -82,12 +59,6 @@ public class Column extends AdjustableAtom {
 
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param type
-	 */
 	public Column(String name, ColumnType type, String description) {
 		super(name);
 		createColumnAtomModel();
@@ -98,12 +69,6 @@ public class Column extends AdjustableAtom {
 		this.description.set(description);
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param columnType
-	 */
 	public Column(String name, String columnType) {
 		super(name);
 		createColumnAtomModel();
@@ -113,9 +78,6 @@ public class Column extends AdjustableAtom {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param name
-	 * @param columnType
 	 */
 	private Column(Column columnToCopy) {
 		super(columnToCopy);
@@ -124,9 +86,9 @@ public class Column extends AdjustableAtom {
 
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	@Override
 	public Column copy() {
@@ -155,9 +117,6 @@ public class Column extends AdjustableAtom {
 
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("column.png");
@@ -229,11 +188,6 @@ public class Column extends AdjustableAtom {
 		}
 	}
 
-	/**
-	 * Returns the column type
-	 *
-	 * @return
-	 */
 	public ColumnType getColumnType() {
 		ColumnType columnTypeEnumValue = ColumnType.getType(columnType.get());
 		return columnTypeEnumValue;

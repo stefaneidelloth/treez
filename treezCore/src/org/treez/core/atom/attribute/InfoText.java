@@ -21,10 +21,7 @@ import org.treez.core.swt.CustomLabel;
  */
 public class InfoText extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(InfoText.class);
+	private static final Logger LOG = Logger.getLogger(InfoText.class);
 
 	//#region ATTRIBUTES
 
@@ -37,20 +34,12 @@ public class InfoText extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "")
 	private String tooltip;
 
-	/**
-	 * The text field
-	 */
 	private Text labelField = null;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public InfoText(String name) {
 		super(name);
 		label = name;
@@ -58,8 +47,6 @@ public class InfoText extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param infoTextToCopy
 	 */
 	private InfoText(InfoText infoTextToCopy) {
 		super(infoTextToCopy);
@@ -72,18 +59,11 @@ public class InfoText extends AbstractAttributeAtom<String> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public InfoText copy() {
 		return new InfoText(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("infoText.png");
@@ -148,7 +128,7 @@ public class InfoText extends AbstractAttributeAtom<String> {
 					labelField.setText(value);
 				}
 			} catch (SWTException exception) {
-				sysLog.warn("Could not update InfoText control", exception);
+				LOG.warn("Could not update InfoText control", exception);
 			}
 		}
 	}
@@ -186,46 +166,28 @@ public class InfoText extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
-	public void setTooltip(String tooltip) {
+	void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 

@@ -22,7 +22,7 @@ public class VariableListTest
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(VariableListTest.class);
+	private static final Logger LOG = Logger.getLogger(VariableListTest.class);
 
 	//#region SETUP
 
@@ -59,7 +59,7 @@ public class VariableListTest
 			//note: here you can set a break point to check if the selected variable fields
 			//are correctly returned
 
-			sysLog.info("finished");
+			LOG.info("finished");
 		});
 
 	}

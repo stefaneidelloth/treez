@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,12 +25,6 @@ import org.treez.core.utils.Utils;
  */
 public class LineStyle extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(LineStyle.class);
-
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "Line Style:")
@@ -43,14 +36,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "")
 	private String tooltip;
 
-	/**
-	 * The combo box
-	 */
 	private ImageCombo styleCombo;
 
-	/**
-	 * The image label
-	 */
 	private Label imageLabel;
 
 	/**
@@ -62,22 +49,11 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public LineStyle(String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name);
 	}
 
-	/**
-	 * Constructor with default value
-	 *
-	 * @param name
-	 * @param defaultStyle
-	 */
 	public LineStyle(String name, String defaultStyle) {
 		this(name);
 
@@ -92,8 +68,6 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param lineStyleToCopy
 	 */
 	private LineStyle(LineStyle lineStyleToCopy) {
 		super(lineStyleToCopy);
@@ -108,28 +82,16 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public LineStyle copy() {
 		return new LineStyle(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("line_style.png");
 	}
 
-	/**
-	 * Creates the composite on a given parent
-	 *
-	 * @param parent
-	 */
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
 			Composite parent, Refreshable treeViewerRefreshable) {
@@ -246,54 +208,31 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * Sets the default line style
-	 *
-	 * @param lineStyleValue
-	 */
 	public void setDefaultValue(LineStyleValue lineStyleValue) {
 		setDefaultValue(lineStyleValue.toString());
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
@@ -308,12 +247,6 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 		return super.get();
 	}
 
-	/**
-	 * Set line style
-	 *
-	 * @param style
-	 *            the filePath to set
-	 */
 	@Override
 	public void set(String style) {
 		super.set(style);
@@ -321,8 +254,6 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Get predefined line styles
-	 *
-	 * @return the colorsHex
 	 */
 	public List<String> getLineStyles() {
 		return lineStyles;

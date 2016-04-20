@@ -16,15 +16,17 @@ public final class ModelPathValidator {
 	/**
 	 * Private Constructor that prevents construction.
 	 */
-	private ModelPathValidator() {}
+	private ModelPathValidator() {
+	}
 
 	//#end region
 
 	//#region METHODS
 
 	/**
-	 * Returns true if the given path string is a valid path of the given root atom. The path has to start with the name
-	 * of the given atom. If the name of the root atom is "model", the path could for example be
+	 * Returns true if the given path string is a valid path of the given root
+	 * atom. The path has to start with the name of the given atom. If the name
+	 * of the root atom is "model", the path could for example be
 	 * model.page.section.textfield
 	 *
 	 * @param path
@@ -40,7 +42,8 @@ public final class ModelPathValidator {
 
 		if (pathStartsWithRootName) {
 
-			String childPath = path.substring(rootNameLength + 1, path.length());
+			String childPath = path.substring(rootNameLength + 1,
+					path.length());
 
 			try {
 				AbstractAtom targetAtom = root.getChild(childPath);
@@ -60,10 +63,6 @@ public final class ModelPathValidator {
 		return true;
 
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

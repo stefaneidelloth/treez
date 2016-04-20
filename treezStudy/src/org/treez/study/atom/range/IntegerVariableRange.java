@@ -2,7 +2,6 @@ package org.treez.study.atom.range;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
@@ -18,17 +17,8 @@ import org.treez.study.Activator;
  */
 public class IntegerVariableRange extends AbstractVariableRange<Integer> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings({ "hiding", "unused" })
-	private static Logger sysLog = Logger.getLogger(IntegerVariableRange.class);
-
 	//#region ATTRIBUTES
 
-	/**
-	 * Used to enter the range
-	 */
 	private IntegerVariableListField range;
 
 	//#end region
@@ -48,9 +38,6 @@ public class IntegerVariableRange extends AbstractVariableRange<Integer> {
 
 	//#region METHODS
 
-	/**
-	 * Creates the underlying model
-	 */
 	@Override
 	protected void createVariableRangeModel() {
 		// root, page and section

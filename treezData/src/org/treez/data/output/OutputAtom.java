@@ -2,7 +2,6 @@ package org.treez.data.output;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
@@ -20,12 +19,6 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 public class OutputAtom extends AbstractUiSynchronizingAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(OutputAtom.class);
-
 	//#region ATTRIBUTES
 
 	/**
@@ -37,23 +30,12 @@ public class OutputAtom extends AbstractUiSynchronizingAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public OutputAtom(String name) {
 		super(name);
 		expandedNodes = new ArrayList<String>();
 		baseImage = provideDefaultBaseImage();
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param baseImage
-	 */
 	public OutputAtom(String name, Image baseImage) {
 		super(name);
 		expandedNodes = new ArrayList<String>();
@@ -62,8 +44,6 @@ public class OutputAtom extends AbstractUiSynchronizingAtom {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param rootOutputToCopy
 	 */
 	private OutputAtom(OutputAtom rootOutputToCopy) {
 		super(rootOutputToCopy);
@@ -74,22 +54,15 @@ public class OutputAtom extends AbstractUiSynchronizingAtom {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public OutputAtom copy() {
 		return new OutputAtom(this);
 	}
 
-	//#end region
-
-	/**
-	 * Returns the control adaption for this atom
-	 */
 	@Override
 	public AbstractControlAdaption createControlAdaption(Composite parent, Refreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
-		//sysLog.debug("get root control");
+		//LOG.debug("get root control");
 		return new EmptyControlAdaption(parent, this, "");
 	}
 
@@ -98,9 +71,6 @@ public class OutputAtom extends AbstractUiSynchronizingAtom {
 		return new AtomCodeAdaption(this);
 	}
 
-	/**
-	 * Creates the context menu actions
-	 */
 	@Override
 	protected ArrayList<Object> createContextMenuActions(final TreeViewerRefreshable treeViewer) {
 
@@ -108,18 +78,11 @@ public class OutputAtom extends AbstractUiSynchronizingAtom {
 		return actions;
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image image = Activator.getOverlayImageStatic(baseImage, "modelOutput.png");
 		return image;
 	}
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 
 	protected Image provideDefaultBaseImage() {
 		Image image = Activator.getImage("modelOutput.png");

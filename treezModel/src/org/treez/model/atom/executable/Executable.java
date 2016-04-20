@@ -38,119 +38,50 @@ import org.treez.model.output.ModelOutput;
 @SuppressWarnings({ "checkstyle:visibilitymodifier", "checkstyle:classfanoutcomplexity" })
 public class Executable extends AbstractModel implements FilePathProvider {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(Executable.class);
+	private static final Logger LOG = Logger.getLogger(Executable.class);
 
 	//#region ATTRIBUTES
 
-	/**
-	 *
-	 */
 	public final Attribute<String> executablePath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> inputArguments = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> inputPath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> outputArguments = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> outputPath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	private String modifiedOutputPath;
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> copyInputFile = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> includeDateInFile = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> includeDateInFolder = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> includeDateInSubFolder = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> includeStudyIndexInFile = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> includeStudyIndexInFolder = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> includeStudyIndexInSubFolder = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> logArguments = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> logFilePath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> commandInfo = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> executionStatusInfo = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> studyIndexInfo = new Wrap<>();
-
-	//#region execution status
-
-	@SuppressWarnings("unused")
-	private boolean executionIsRunning = false;
-
-	//#end region
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Executable(String name) {
 		super(name);
 		setRunnable();
@@ -330,7 +261,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	private void refreshStatus() {
 		this.runUiJobNonBlocking(() -> {
 			String infoTextMessage = buildCommand();
-			//sysLog.debug("Updating info text: " + infoTextMessage);
+			//LOG.debug("Updating info text: " + infoTextMessage);
 			commandInfo.set(infoTextMessage);
 
 			Wrap<String> infoTextWrap = (Wrap<String>) executionStatusInfo;
@@ -347,7 +278,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	public ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor) {
 
 		String startMessage = "Running " + this.getClass().getSimpleName() + " '" + getName() + "'.";
-		sysLog.info(startMessage);
+		LOG.info(startMessage);
 
 		//initialize progress monitor
 		final int totalWork = 3;
@@ -370,7 +301,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		//create command
 		String command = buildCommand();
-		sysLog.info("Executing " + command);
+		LOG.info("Executing " + command);
 
 		//execute command
 		ExecutableExecutor executor = new ExecutableExecutor(this);
@@ -408,7 +339,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			String studyId = getStudyId();
 			currentIndex = Integer.parseInt(studyId);
 		} catch (NumberFormatException exception) {
-			sysLog.warn("Could not interpret last studyId as Integer. "
+			LOG.warn("Could not interpret last studyId as Integer. "
 					+ "Starting with 1 for the next study index of the executable.");
 		}
 		int newIndex = currentIndex + 1;
@@ -443,6 +374,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	/**
 	 * Copies input file to output folder and modifies the file name
 	 */
+	@SuppressWarnings("checkstyle:illegalcatch")
 	private void copyInputFileToOutputFolder() {
 		String inputFilePath = inputPath.get();
 		File inputFile = new File(inputFilePath);
@@ -451,7 +383,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			try {
 				destinationPath = getOutputPathToCopyInputFile();
 			} catch (Exception exception) {
-				sysLog.warn("Input file is not copied to output folder since output folder is not known.");
+				LOG.warn("Input file is not copied to output folder since output folder is not known.");
 			}
 			if (destinationPath != null) {
 				copyInputFileToOutputFolder(inputFile, destinationPath);
@@ -473,7 +405,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			FileUtils.copyFile(inputFile, destinationFile);
 		} catch (IOException exception) {
 			String message = "Could not copy input file to output folder";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 
 		}
 	}
@@ -525,7 +457,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			ModelOutput modelOutput = runChildModel(TableImport.class, refreshable, monitor);
 			return modelOutput;
 		} else {
-			sysLog.info("No data has been imported since there is no DataImport child.");
+			LOG.info("No data has been imported since there is no DataImport child.");
 			ModelOutput emptyModelOutput = createEmptyModelOutput();
 			return emptyModelOutput;
 		}

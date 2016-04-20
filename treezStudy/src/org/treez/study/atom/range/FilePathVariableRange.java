@@ -3,7 +3,6 @@ package org.treez.study.atom.range;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.FilePathList;
@@ -18,39 +17,25 @@ import org.treez.study.Activator;
  */
 public class FilePathVariableRange extends AbstractVariableRange<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings({ "hiding", "unused" })
-	private static Logger sysLog = Logger.getLogger(FilePathVariableRange.class);
-
-	// #region ATTRIBUTES
+	//#region ATTRIBUTES
 
 	/**
 	 * Used to edit a list of Strings
 	 */
 	private FilePathList range;
 
-	// #end region
+	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FilePathVariableRange(String name) {
 		super(name);
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
-	/**
-	 * Creates the underlying model
-	 */
 	@Override
 	protected void createVariableRangeModel() {
 		// root, page and section
@@ -84,9 +69,6 @@ public class FilePathVariableRange extends AbstractVariableRange<String> {
 		setModel(root);
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image baseImage = Activator.getImage("filePathVariableRange.png");
@@ -94,11 +76,11 @@ public class FilePathVariableRange extends AbstractVariableRange<String> {
 		return image;
 	}
 
-	// #end region
+	//#end region
 
-	// #region ACCESSORS
+	//#region ACCESSORS
 
-	// #region RANGE VALUES
+	//#region RANGE VALUES
 
 	/**
 	 * Returns the range as a list of quantities
@@ -121,7 +103,7 @@ public class FilePathVariableRange extends AbstractVariableRange<String> {
 		range.setValue(valueString);
 	}
 
-	// #end region
+	//#end region
 
 	//#region TYPE
 
@@ -132,6 +114,6 @@ public class FilePathVariableRange extends AbstractVariableRange<String> {
 
 	//#end region
 
-	// #end region
+	//#end region
 
 }

@@ -19,7 +19,7 @@ public class ShapeToSvgConverter extends AbstractNodeToSvgConverter<Shape> {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(ShapeToSvgConverter.class);
+	private static final Logger LOG = Logger.getLogger(ShapeToSvgConverter.class);
 
 	//#region ATTRIBUTES
 
@@ -157,7 +157,7 @@ public class ShapeToSvgConverter extends AbstractNodeToSvgConverter<Shape> {
 			if (hasOneStroke) {
 				styleContent = styleContent + "stroke:" + strokes.get(0) + ";";
 			} else {
-				sysLog.warn("Could not determine stroke.");
+				LOG.warn("Could not determine stroke.");
 			}
 		}
 		return styleContent;
@@ -175,7 +175,7 @@ public class ShapeToSvgConverter extends AbstractNodeToSvgConverter<Shape> {
 					styleContent = styleContent + "stroke-width:" + strokeWidth + ";";
 				}
 			} else {
-				sysLog.warn("Could not determine stroke width.");
+				LOG.warn("Could not determine stroke width.");
 			}
 		}
 		return styleContent;
@@ -190,7 +190,7 @@ public class ShapeToSvgConverter extends AbstractNodeToSvgConverter<Shape> {
 				styleContent = styleContent + "stroke-alignment:" + strokeAlignment + ";";
 				String message = "The svg stroke-alignment (JavaFx: StrokeType) is set to '" + strokeAlignment + "'.\n"
 						+ "This svg property is relativly new and might not yet be supported by your svg viewer.";
-				sysLog.warn(message);
+				LOG.warn(message);
 			}
 		}
 		return styleContent;

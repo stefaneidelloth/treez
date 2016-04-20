@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
@@ -12,12 +11,6 @@ import org.treez.core.atom.base.annotation.IsParameter;
  * An item example
  */
 public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(CheckBoxEnableTarget.class);
 
 	//#region ATTRIBUTES
 
@@ -32,15 +25,13 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 	//#region CONSTRUCTORS
 
 	/**
-	 * Constructor
-	 *
-	 * @param name
 	 * @param enableValue
 	 *            the boolean value for which the target is enabled
 	 * @param targetPath
 	 *            the model path to the target whose enabled state is controlled
 	 */
-	public CheckBoxEnableTarget(String name, Boolean enableValue, String targetPath) {
+	public CheckBoxEnableTarget(String name, Boolean enableValue,
+			String targetPath) {
 		super(name);
 		setValue(enableValue);
 		setTargetPath(targetPath);
@@ -48,10 +39,9 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param checkBoxEnableTargetToCopy
 	 */
-	private CheckBoxEnableTarget(CheckBoxEnableTarget checkBoxEnableTargetToCopy) {
+	private CheckBoxEnableTarget(
+			CheckBoxEnableTarget checkBoxEnableTargetToCopy) {
 		super(checkBoxEnableTargetToCopy);
 		value = checkBoxEnableTargetToCopy.value;
 		targetPath = checkBoxEnableTargetToCopy.targetPath;
@@ -79,7 +69,8 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 	}
 
 	@Override
-	public void createAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public void createAtomControl(Composite parent,
+			Refreshable treeViewerRefreshable) {
 
 	}
 
@@ -87,36 +78,18 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 
 	//#region ACCESSORS
 
-	/**
-	 * Set target path
-	 *
-	 * @param targetPath
-	 */
 	private void setTargetPath(String targetPath) {
 		this.targetPath = targetPath;
 	}
 
-	/**
-	 * Get target path
-	 *
-	 * @return
-	 */
 	public String getTargetPath() {
 		return targetPath;
 	}
 
-	/**
-	 * @return
-	 */
 	public Boolean getValue() {
 		return value;
 	}
 
-	/**
-	 * Set value
-	 *
-	 * @param value
-	 */
 	public void setValue(Boolean value) {
 		this.value = value;
 	}

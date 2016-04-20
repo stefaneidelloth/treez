@@ -28,10 +28,7 @@ import org.treez.data.table.VariableDefinitionTable;
  */
 public class VariableDefinition extends AbstractUiSynchronizingAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(VariableDefinition.class);
+	private static final Logger LOG = Logger.getLogger(VariableDefinition.class);
 
 	//#region ATTRIBUTES
 
@@ -54,11 +51,6 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public VariableDefinition(String name) {
 		super(name);
 		initialize();
@@ -66,8 +58,6 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param name
 	 */
 	private VariableDefinition(VariableDefinition variableDefinitionToCopy) {
 		super(variableDefinitionToCopy);
@@ -80,14 +70,10 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public VariableDefinition copy() {
 		return new VariableDefinition(this);
 	}
-
-	//#end region
 
 	/**
 	 * Initializes this VariableDefinition
@@ -141,7 +127,7 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 				"Add Atom",
 				Activator.getImage(ISharedImages.IMG_OBJ_ADD),
 				treeViewer,
-				() -> sysLog.debug("add")));
+				() -> LOG.debug("add")));
 
 		return actions;
 	}
@@ -154,7 +140,7 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 	 * @param description
 	 */
 	public void define(String name, String definition, String description) {
-		//sysLog.debug("define");
+		//LOG.debug("define");
 		VariableDefinitionRow newRow = new VariableDefinitionRow(this, name, definition, description);
 
 		int rowIndex = Math.max(0, getRowCount() - 1); //insert before empty row if empty row exists
@@ -196,47 +182,22 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 
 	//#region ACCESSORS
 
-	/**
-	 * Gets the table
-	 *
-	 * @return
-	 */
 	public TreezTable getTable() {
 		return table;
 	}
 
-	/**
-	 * Gets the evaluator
-	 *
-	 * @return
-	 */
 	public VariableDefinitionEvaluator getEvaluator() {
 		return evaluator;
 	}
 
-	/**
-	 * Returns the variable definition rows
-	 *
-	 * @return
-	 */
 	public List<Row> getRows() {
 		return definitionRows;
 	}
 
-	/**
-	 * Returns the number of the variable definition rows
-	 *
-	 * @return
-	 */
 	public int getRowCount() {
 		return getRows().size();
 	}
 
-	/**
-	 * Sets all definition rows
-	 *
-	 * @param definitionRows
-	 */
 	public void setDefinitionRows(List<Row> definitionRows) {
 		this.definitionRows = definitionRows;
 		updateTable();

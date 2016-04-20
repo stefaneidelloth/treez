@@ -27,28 +27,16 @@ public class TreezComboBoxCellEditor extends CellEditor {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * The list of items
-	 */
 	private List<String> items;
 
-	/**
-	 * The selected item
-	 */
 	private String selectedItem;
 
-	/**
-	 * The combo box
-	 */
 	private Combo comboBox;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	public TreezComboBoxCellEditor(Composite parent,
 			List<String> availableItems) {
 		super(parent);
@@ -202,14 +190,11 @@ public class TreezComboBoxCellEditor extends CellEditor {
 		if ((activationEvent.eventType == ColumnViewerEditorActivationEvent.MOUSE_CLICK_SELECTION
 				|| activationEvent.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION)) {
 			dropDown = true;
-		} else
-			if (activationEvent.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) {
+		} else if (activationEvent.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) {
 			dropDown = true;
-		} else
-				if (activationEvent.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC) {
+		} else if (activationEvent.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC) {
 			dropDown = true;
-		} else
-					if (activationEvent.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL) {
+		} else if (activationEvent.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL) {
 			dropDown = true;
 		}
 

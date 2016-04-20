@@ -44,101 +44,51 @@ import org.treez.model.tableImport.TextDataTableImporter;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class TableImport extends AbstractModel implements TableSourceInformation {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(TableImport.class);
+	private static final Logger LOG = Logger.getLogger(TableImport.class);
 
 	//#region ATTRIBUTES
 
-	/**
-	 *
-	 */
 	public final Attribute<String> sourceType = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> linkSource = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> rowLimit = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> inheritSourceFilePath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> sourceFilePath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> columnSeparator = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> host = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> port = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> user = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> password = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> schema = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> table = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> resultTableModelPath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> appendData = new Wrap<>();
 
 	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public TableImport(String name) {
 		super(name);
 		setRunnable();
 		createTableImportModel();
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	/**
 	 * Creates the model for this atom
@@ -152,27 +102,27 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		String relativeHelpContextId = "tableImport";
 		String absoluteHelpContextId = Activator.getAbsoluteHelpContextIdStatic(relativeHelpContextId);
 
-		//source type section -----------------------------------------
-		Section sourceTypeSection = dataPage.createSection("sourceTypeSection", absoluteHelpContextId);
-		sourceTypeSection.setTitle("Source type");
-		sourceTypeSection.createSectionAction("action", "Import data", () -> execute(treeViewRefreshable));
+		createSourceTypeSection(dataPage, absoluteHelpContextId);
+		createSourceDataSection(dataPage, absoluteHelpContextId);
+		createTargetSection(dataPage, absoluteHelpContextId);
+		setModel(root);
+	}
 
-		//source type
-		ComboBox sourceTypeCheck = sourceTypeSection.createComboBox(sourceType, "sourceType", TableSourceType.CSV);
-		sourceTypeCheck.setLabel("Source type");
-		sourceTypeCheck.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
+	private void createTargetSection(Page dataPage, String absoluteHelpContextId) {
+		Section targetSection = dataPage.createSection("target", absoluteHelpContextId);
 
-		//if true, the target table is linked to the original source
-		//pro: for huge tables only the first few rows need to be initialized and the
-		//remaining data can be loaded lazily.
-		//con: if the source is replaced/changed/deleted, e.g. in a sweep, the
-		//link might not give meaningful data.
-		CheckBox linkSourceCheck = sourceTypeSection.createCheckBox(linkSource, "linkSource", false);
-		linkSourceCheck.setLabel("Link source");
-		TextField rowLimitField = sourceTypeSection.createTextField(rowLimit, "rowLimit", "1000");
-		rowLimitField.setLabel("Row limit");
+		//target result table (must already exist for manual execution of the TableImport)
+		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
+		ModelPath resultTable = targetSection.createModelPath(resultTableModelPath, this, null, Table.class,
+				selectionType, this, false);
+		resultTable.setLabel("Result table");
 
-		//source data section -------------------------------------------
+		//append check box (if true, existing data is not deleted and new data is appended)
+		CheckBox appendDataCheck = targetSection.createCheckBox(appendData, "appendData", false);
+		appendDataCheck.setLabel("Append data");
+	}
+
+	private void createSourceDataSection(Page dataPage, String absoluteHelpContextId) {
 		Section sourceDataSection = dataPage.createSection("sourceDataSection", absoluteHelpContextId);
 		sourceDataSection.setTitle("Source data");
 
@@ -207,20 +157,27 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		//table name (e.g. name of Excel sheet or SqLite table )
 		TextField tableField = sourceDataSection.createTextField(table, "table", "Sheet1");
 		tableField.setLabel("Table name");
+	}
 
-		//target section -----------------------------------------
-		Section targetSection = dataPage.createSection("target", absoluteHelpContextId);
+	private void createSourceTypeSection(Page dataPage, String absoluteHelpContextId) {
+		Section sourceTypeSection = dataPage.createSection("sourceTypeSection", absoluteHelpContextId);
+		sourceTypeSection.setTitle("Source type");
+		sourceTypeSection.createSectionAction("action", "Import data", () -> execute(treeViewRefreshable));
 
-		//target result table (must already exist for manual execution of the TableImport)
-		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		ModelPath resultTable = targetSection.createModelPath(resultTableModelPath, this, null, Table.class,
-				selectionType, this, false);
-		resultTable.setLabel("Result table");
+		//source type
+		ComboBox sourceTypeCheck = sourceTypeSection.createComboBox(sourceType, "sourceType", TableSourceType.CSV);
+		sourceTypeCheck.setLabel("Source type");
+		sourceTypeCheck.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
 
-		//append check box (if true, existing data is not deleted and new data is appended)
-		CheckBox appendDataCheck = targetSection.createCheckBox(appendData, "appendData", false);
-		appendDataCheck.setLabel("Append data");
-		setModel(root);
+		//if true, the target table is linked to the original source
+		//pro: for huge tables only the first few rows need to be initialized and the
+		//remaining data can be loaded lazily.
+		//con: if the source is replaced/changed/deleted, e.g. in a sweep, the
+		//link might not give meaningful data.
+		CheckBox linkSourceCheck = sourceTypeSection.createCheckBox(linkSource, "linkSource", false);
+		linkSourceCheck.setLabel("Link source");
+		TextField rowLimitField = sourceTypeSection.createTextField(rowLimit, "rowLimit", "1000");
+		rowLimitField.setLabel("Row limit");
 	}
 
 	@Override
@@ -347,7 +304,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	@Override
 	public ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor) {
 
-		sysLog.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
+		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
 		// import table data
 		TableData tableData = importTableData();
@@ -535,9 +492,6 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		}
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("tableImport.png");
@@ -548,29 +502,19 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
-
 		// no actions available right now
-
 		return actions;
 	}
 
-	/**
-	 * Returns the code adaption
-	 */
 	@Override
 	public CodeAdaption createCodeAdaption(ScriptType scriptType) {
 		return new AdjustableAtomCodeAdaption(this);
 	}
 
-	// #end region
+	//#end region
 
-	// #region ACCESSORS
+	//#region ACCESSORS
 
-	//#region SOURCE TYPE
-
-	/**
-	 * @return
-	 */
 	@Override
 	public TableSourceType getSourceType() {
 		Wrap<String> sourceTypeWrap = (Wrap<String>) sourceType;
@@ -579,22 +523,12 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		return type;
 	}
 
-	/**
-	 * @param sourceTypeEnum
-	 */
 	public void setSourceType(TableSourceType sourceTypeEnum) {
 		Wrap<String> sourceTypeWrap = (Wrap<String>) sourceType;
 		ComboBox combo = (ComboBox) sourceTypeWrap.getAttribute();
 		combo.setValue(sourceTypeEnum);
 	}
 
-	//#end region
-
-	//#region ROW LIMIT
-
-	/**
-	 * @return
-	 */
 	public int getRowLimit() {
 		String rowLimitString = rowLimit.get();
 		int rowLimitInt;
@@ -607,100 +541,44 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		return rowLimitInt;
 	}
 
-	/**
-	 * @param maxRows
-	 */
 	public void setRowLimit(int maxRows) {
 		rowLimit.set("" + maxRows);
 	}
 
-	//#end region
-
-	//#region SOURCE FILE PATH
-
-	/**
-	 * @return
-	 */
 	@Override
 	public String getSourceFilePath() {
 		return sourceFilePath.get();
 	}
 
-	//#end region
-
-	//#region HOST
-
-	/**
-	 * @return
-	 */
 	@Override
 	public String getHost() {
 		return host.get();
 	}
 
-	//#end region
-
-	//#region PORT
-
-	/**
-	 * @return
-	 */
 	@Override
 	public String getPort() {
 		return port.get();
 	}
 
-	//#end region
-
-	//#region USER
-
-	/**
-	 * @return
-	 */
 	@Override
 	public String getUser() {
 		return user.get();
 	}
 
-	//#end region
-
-	//#region PASSWORD
-
-	/**
-	 * @return
-	 */
 	@Override
 	public String getPassword() {
 		return password.get();
 	}
 
-	//#end region
-
-	//#region SCHEMA
-
-	/**
-	 * @return
-	 */
 	@Override
 	public String getSchema() {
 		return schema.get();
 	}
 
-	//#end region
-
-	//#region TABLE NAME
-
-	/**
-	 * @return
-	 */
 	@Override
 	public String getTable() {
 		return table.get();
 	}
-
-	//#end region
-
-	//#region LINKED SOURCE
 
 	@Override
 	public boolean isLinked() {
@@ -709,7 +587,5 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	}
 
 	//#end region
-
-	// #end region
 
 }

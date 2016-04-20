@@ -1,7 +1,5 @@
 package org.treez.model;
 
-import org.apache.log4j.Logger;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.AbstractActivator;
@@ -10,12 +8,6 @@ import org.treez.core.AbstractActivator;
  * Activates the plugin
  */
 public class Activator extends AbstractActivator {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Activator.class);
 
 	//#region ATTRIBUTES
 
@@ -29,18 +21,15 @@ public class Activator extends AbstractActivator {
 	 */
 	private static AbstractActivator instance;
 
-	// #end region
+	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * The constructor
-	 */
 	public Activator() {
 		super();
 	}
 
-	// #end region
+	//#end region
 
 	//#region METHODS
 
@@ -81,15 +70,6 @@ public class Activator extends AbstractActivator {
 	}
 
 	/**
-	 * Returns the preference store
-	 *
-	 * @return
-	 */
-	public static IPreferenceStore getPreferenceStoreStatic() {
-		return getInstance().getPreferenceStore();
-	}
-
-	/**
 	 * Returns the absolute help context id for the given relative help context id
 	 *
 	 * @param relativeHelpContextId
@@ -102,7 +82,7 @@ public class Activator extends AbstractActivator {
 
 	//#end region
 
-	// #region ACCESSORS
+	//#region ACCESSORS
 
 	/**
 	 * Overloads the parent method

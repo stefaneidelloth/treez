@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ComboBox;
@@ -23,35 +22,24 @@ import org.treez.study.Activator;
  */
 public class BooleanVariableRange extends AbstractVariableRange<Boolean> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings({ "hiding", "unused" })
-	private static Logger sysLog = Logger.getLogger(BooleanVariableRange.class);
-
-	// #region ATTRIBUTES
+	//#region ATTRIBUTES
 
 	/**
 	 * Used to select the value range
 	 */
 	private Attribute<String> range = new Wrap<>();
 
-	// #end region
+	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public BooleanVariableRange(String name) {
 		super(name);
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	/**
 	 * Creates the underlying model

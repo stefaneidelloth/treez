@@ -12,7 +12,7 @@ public class CheckBoxTest extends AbstractAttributeAtomConstructionTest<Boolean>
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(CheckBoxTest.class);
+	private static final Logger LOG = Logger.getLogger(CheckBoxTest.class);
 
 	//#region SETUP
 

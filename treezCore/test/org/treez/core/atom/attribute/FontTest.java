@@ -12,7 +12,7 @@ public class FontTest extends AbstractAttributeAtomConstructionTest<String> {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FontTest.class);
+	private static final Logger LOG = Logger.getLogger(FontTest.class);
 
 	//#region SETUP
 

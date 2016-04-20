@@ -12,7 +12,7 @@ public class ColorMapTest extends AbstractAttributeAtomConstructionTest<String> 
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ColorMapTest.class);
+	private static final Logger LOG = Logger.getLogger(ColorMapTest.class);
 
 	//#region SETUP
 

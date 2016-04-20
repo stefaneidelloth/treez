@@ -3,7 +3,6 @@ package org.treez.results.atom.page;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -34,32 +33,14 @@ import org.treez.results.atom.graph.Graph;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Page extends GraphicsAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Page.class);
-
 	//#region ATTRIBUTES
 
-	/**
-	 * Width
-	 */
 	public final Attribute<String> width = new Wrap<>();
 
-	/**
-	 * Height
-	 */
 	public final Attribute<String> height = new Wrap<>();
 
-	/**
-	 * Color
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 * If this is true the page is hidden.
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	private JavaFxD3Browser browser;
@@ -72,11 +53,6 @@ public class Page extends GraphicsAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Page(String name) {
 		super(name);
 		setRunnable();
@@ -274,12 +250,6 @@ public class Page extends GraphicsAtom {
 
 	//#region CREATE CHILD ATOMS
 
-	/**
-	 * Creates a Graph child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Graph createGraph(String name) {
 		Graph child = new Graph(name);
 		addChild(child);

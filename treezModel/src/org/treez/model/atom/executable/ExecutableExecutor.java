@@ -15,12 +15,9 @@ import org.apache.log4j.Logger;
 /**
  * Helper class that actually executes the executable
  */
-class ExecutableExecutor {
+public class ExecutableExecutor {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(ExecutableExecutor.class);
+	private static final Logger LOG = Logger.getLogger(ExecutableExecutor.class);
 
 	//#region ATTRIBUTES
 
@@ -44,11 +41,6 @@ class ExecutableExecutor {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param executable
-	 */
 	public ExecutableExecutor(Executable executable) {
 		this.executable = executable;
 	}
@@ -71,8 +63,8 @@ class ExecutableExecutor {
 		errorMessages = "";
 		outputMessages = "";
 
-		outputStream = new LoggingOutputStream(sysLog, Level.INFO);
-		errorStream = new LoggingOutputStream(sysLog, Level.ERROR);
+		outputStream = new LoggingOutputStream(LOG, Level.INFO);
+		errorStream = new LoggingOutputStream(LOG, Level.ERROR);
 
 		CommandLine cmdLine = CommandLine.parse(command);
 
@@ -131,7 +123,7 @@ class ExecutableExecutor {
 				executor.execute(cmdLine, executionResultHandler);
 			} catch (Exception exception) {
 				String message = "Could not execut command " + command;
-				sysLog.error(message, exception);
+				LOG.error(message, exception);
 				exceptionMessage = exception.getMessage();
 			}
 		};
@@ -174,7 +166,7 @@ class ExecutableExecutor {
 
 			} catch (InterruptedException exception) {
 				String message = "Could not wait for command execution to be finish " + command;
-				sysLog.error(message, exception);
+				LOG.error(message, exception);
 				exceptionMessage = exception.getMessage();
 			}
 		}
@@ -204,7 +196,7 @@ class ExecutableExecutor {
 			statusMessage = "Finished execution";
 		}
 		executable.executionStatusInfo.set(statusMessage);
-		sysLog.info(statusMessage);
+		LOG.info(statusMessage);
 
 	}
 
@@ -212,16 +204,10 @@ class ExecutableExecutor {
 
 		String statusMessage = "Process execution failed:";
 		issueMessage = statusMessage;
-		sysLog.error(statusMessage, exception);
+		LOG.error(statusMessage, exception);
 		executable.runUiJobNonBlocking(() -> executable.executionStatusInfo.set(statusMessage));
 	}
 
-	/**
-	 * Closes the streams
-	 *
-	 * @param out
-	 * @param err
-	 */
 	private static void closeStreams(OutputStream out, OutputStream err) {
 		try {
 			out.flush();

@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,12 +24,6 @@ import org.treez.core.swt.CustomLabel;
  */
 public class FillStyle extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FillStyle.class);
-
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "My Symbol Style:")
@@ -42,19 +35,10 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "")
 	private String tooltip;
 
-	/**
-	 * The combo box
-	 */
 	private ImageCombo styleCombo = null;
 
-	/**
-	 * The image label
-	 */
 	private Label imageLabel = null;
 
-	/**
-	 * Prefix for the image file names
-	 */
 	private static final String IMAGE_PREFIX = "fill_";
 
 	/**
@@ -67,32 +51,16 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FillStyle(String name) {
 		super(name);
 		label = name;
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FillStyle(String name, String label) {
 		super(name);
 		this.label = label;
 	}
 
-	/**
-	 * Constructor with default value
-	 *
-	 * @param name
-	 * @param defaultStyle
-	 */
 	public FillStyle(String name, String label, String defaultStyle) {
 		super(name);
 		this.label = label;
@@ -108,8 +76,6 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param fillStyleToCopy
 	 */
 	private FillStyle(FillStyle fillStyleToCopy) {
 		super(fillStyleToCopy);
@@ -117,6 +83,10 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 		defaultValue = fillStyleToCopy.defaultValue;
 		tooltip = fillStyleToCopy.tooltip;
 	}
+
+	//#end region
+
+	//#region METHODS
 
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
@@ -131,32 +101,16 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 		});
 	}
 
-	//#end region
-
-	//#region METHODS
-
-	//#region COPY
-
 	@Override
 	public FillStyle copy() {
 		return new FillStyle(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("fill_cross.png");
 	}
 
-	/**
-	 * Creates the composite on a given parent
-	 *
-	 * @param parent
-	 */
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
 			Composite parent, Refreshable treeViewerRefreshable) {
@@ -262,74 +216,40 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * Sets the default fill style
-	 *
-	 * @param style
-	 */
 	public void setDefaultValue(FillStyleValue style) {
 		setDefaultValue(style.toString());
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * Get fill style as string
-	 *
-	 * @return the value
-	 */
 	@Override
 	public String get() {
 		return super.get();
 	}
 
-	/**
-	 * Set fill style
-	 *
-	 * @param style
-	 *            the value to set
-	 */
 	@Override
 	public void set(String style) {
 		super.set(style);
@@ -337,8 +257,6 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Get predefined fill styles
-	 *
-	 * @return the fill styles
 	 */
 	public List<String> getFillStyles() {
 		return FILL_STYLES;

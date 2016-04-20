@@ -12,10 +12,8 @@ import org.treez.core.scripting.java.file.CompiledJavaFileContainer;
  */
 public class InMemoryClassLoader extends ClassLoader {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(InMemoryClassLoader.class);
+	private static final Logger LOG = Logger
+			.getLogger(InMemoryClassLoader.class);
 
 	//#region ATTRIBUTES
 
@@ -25,12 +23,6 @@ public class InMemoryClassLoader extends ClassLoader {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param classObject
-	 */
 	public InMemoryClassLoader(BundleClassLoader parent,
 			CompiledJavaFileContainer classObject) {
 		super(parent);
@@ -45,7 +37,7 @@ public class InMemoryClassLoader extends ClassLoader {
 	@Override
 	@SuppressWarnings("checkstyle:illegalcatch")
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		//sysLog.debug("Finding class " + name);
+		//LOG.debug("Finding class " + name);
 
 		byte[] b = classObject.getBytes();
 		Class<?> clazz = super.defineClass(name, classObject.getBytes(), 0,
@@ -54,8 +46,8 @@ public class InMemoryClassLoader extends ClassLoader {
 		if (clazz == null) {
 			String message = "Could not find class with MemoryClassLoader: '"
 					+ name + "'";
-			sysLog.error(message);
-			sysLog.debug("Classes of parent class loader:");
+			LOG.error(message);
+			LOG.debug("Classes of parent class loader:");
 			ClassLoader parentClassLoader = this.getParent();
 			java.lang.reflect.Field field;
 			try {
@@ -66,7 +58,7 @@ public class InMemoryClassLoader extends ClassLoader {
 				Vector<Class<?>> classes = (Vector<Class<?>>) field
 						.get(parentClassLoader);
 				for (Class<?> clazzz : classes) {
-					sysLog.debug(clazzz.getName());
+					LOG.debug(clazzz.getName());
 				}
 			} catch (Exception e) {
 				throw new IllegalStateException(

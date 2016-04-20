@@ -12,7 +12,7 @@ public class ComboBoxTest extends AbstractAttributeAtomConstructionTest<String> 
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ComboBoxTest.class);
+	private static final Logger LOG = Logger.getLogger(ComboBoxTest.class);
 
 	//#region SETUP
 

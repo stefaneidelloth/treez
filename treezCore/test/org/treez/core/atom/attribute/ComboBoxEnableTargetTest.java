@@ -12,7 +12,7 @@ public class ComboBoxEnableTargetTest extends AbstractAttributeContainerAtomCons
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ComboBoxEnableTargetTest.class);
+	private static final Logger LOG = Logger.getLogger(ComboBoxEnableTargetTest.class);
 
 	//#region SETUP
 

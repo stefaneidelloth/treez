@@ -12,7 +12,7 @@ public class TextFieldTest extends AbstractAttributeAtomConstructionTest<String>
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(TextFieldTest.class);
+	private static final Logger LOG = Logger.getLogger(TextFieldTest.class);
 
 	//#region SETUP
 

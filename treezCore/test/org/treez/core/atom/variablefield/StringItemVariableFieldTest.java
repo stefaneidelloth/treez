@@ -15,10 +15,10 @@ public class StringItemVariableFieldTest
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
+	private static final Logger LOG = Logger
 			.getLogger(StringItemVariableFieldTest.class);
 
-	// #region SETUP
+	//#region SETUP
 
 	/**
 	 * Load entities from the database.
@@ -38,10 +38,10 @@ public class StringItemVariableFieldTest
 
 	}
 
-	// #end region
+	//#end region
 
-	// #region TESTS
+	//#region TESTS
 
-	// #end region
+	//#end region
 
 }

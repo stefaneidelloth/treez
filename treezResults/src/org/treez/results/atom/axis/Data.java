@@ -27,24 +27,12 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Label
-	 */
 	public final Attribute<String> label = new Wrap<>();
 
-	/**
-	 * Min
-	 */
 	public final Attribute<String> min = new Wrap<>();
 
-	/**
-	 * Max
-	 */
 	public final Attribute<String> max = new Wrap<>();
 
-	/**
-	 * Log
-	 */
 	public final Attribute<Boolean> log = new Wrap<>();
 
 	/**
@@ -52,44 +40,20 @@ public class Data implements GraphicsPropertiesPageFactory {
 	 */
 	//public final Attribute<String> mode = new Wrap<>();
 
-	/**
-	 * Data scale
-	 */
 	//public final Attribute<String> datascale = new Wrap<>();
 
-	/**
-	 * Direction
-	 */
 	public final Attribute<String> direction = new Wrap<>();
 
-	/**
-	 * Lower position
-	 */
 	//public final Attribute<String> lowerPosition = new Wrap<>();
 
-	/**
-	 * Upper position
-	 */
 	//public final Attribute<String> upperPosition = new Wrap<>();
 
-	/**
-	 * Other position
-	 */
 	//public final Attribute<String> otherPosition = new Wrap<>();
 
-	/**
-	 * Match
-	 */
 	//public final Attribute<String> match = new Wrap<>();
 
-	/**
-	 * Hides the axis
-	 */
 	public Attribute<Boolean> hide = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//private Attribute<String> autoRange = new Wrap<>();
 
 	/**
@@ -97,14 +61,8 @@ public class Data implements GraphicsPropertiesPageFactory {
 	 */
 	public Attribute<Boolean> autoMirror = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//private Attribute<Boolean> reflect = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//private Attribute<Boolean> outerTicks = new Wrap<>();
 
 	private QuantitativeScale<?> scale;
@@ -411,9 +369,6 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public boolean hasQuantitativeScale() {
 		if (scale != null) {
 			return true;
@@ -422,9 +377,6 @@ public class Data implements GraphicsPropertiesPageFactory {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	public Scale<?> getScale() {
 		if (scale != null) {
 			return scale;

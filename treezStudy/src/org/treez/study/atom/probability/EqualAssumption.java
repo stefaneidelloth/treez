@@ -2,7 +2,6 @@ package org.treez.study.atom.probability;
 
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.FunctionPlotter;
@@ -23,40 +22,20 @@ import org.treez.study.Activator;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class EqualAssumption extends AbstractAssumption {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(EqualAssumption.class);
-
 	//#region ATTRIBUTES
 
-	/**
-	 * Function plotter
-	 */
 	public final Attribute<String> functionPlotter = new Wrap<>();
 
 	private FunctionPlotter plotter;
 
-	/**
-	 * Min value
-	 */
 	public final Attribute<String> min = new Wrap<>();
 
-	/**
-	 * Max value
-	 */
 	public final Attribute<String> max = new Wrap<>();
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public EqualAssumption(String name) {
 		super(name);
 		createNormalAssumptionModel();

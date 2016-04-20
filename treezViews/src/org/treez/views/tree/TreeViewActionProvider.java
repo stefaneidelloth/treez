@@ -1,6 +1,5 @@
 package org.treez.views.tree;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -46,12 +45,6 @@ import org.treez.views.tree.rootAtom.Root;
  */
 @SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class TreeViewActionProvider implements ActionProviderRefreshable {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(TreeViewActionProvider.class);
 
 	//#region ATTRIBUTES
 
@@ -121,16 +114,14 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param treezView
-	 * @param treeViewProvider
-	 */
 	public TreeViewActionProvider(TreezView treezView, TreeViewProvider treeViewProvider) {
 		this.treezView = treezView;
 		this.treeViewProvider = treeViewProvider;
 	}
+
+	//#end region
+
+	//#region METHODS
 
 	@Override
 	public void provideActions() {
@@ -145,10 +136,6 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 		assignTreeNodePropertyDisplayAction();
 
 	}
-
-	//#end region
-
-	//#region METHODS
 
 	//#region CREATE ACTIONS (WITHOUT ASSIGNING THEM)
 
@@ -333,7 +320,7 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 		});
 
 		treeViewer.addSelectionChangedListener((event) -> {
-			//sysLog.debug("selection changed");
+			//LOG.debug("selection changed");
 			boolean isLeftClick = (lastMouseButton == 1);
 			if (isLeftClick) {
 				TreeItem[] treeItems = treeViewer.getTree().getSelection();
@@ -459,7 +446,7 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		contentComposite.setLayoutData(gridData);
 
-		//sysLog.debug("selection changed. update control");
+		//LOG.debug("selection changed. update control");
 		//create content for property view
 		@SuppressWarnings("unused")
 		Control propertyControl = adaptable.createControlAdaption(contentComposite, treeViewer);
@@ -574,11 +561,6 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 
 	//#region ACCESSORS
 
-	/**
-	 * Returns the drill down adapter
-	 *
-	 * @return
-	 */
 	public DrillDownAdapter getDrillDownAdapter() {
 		return drillDownAdapter;
 	}

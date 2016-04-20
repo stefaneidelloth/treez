@@ -32,10 +32,7 @@ import org.treez.core.utils.Utils;
  */
 public class ModelPathTreeSelectionWindow implements TreezView {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger
+	private static final Logger LOG = Logger
 			.getLogger(ModelPathTreeSelectionWindow.class);
 
 	//#region ATTRIBUTES
@@ -66,9 +63,6 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	@SuppressWarnings("checkstyle:magicnumber")
 	public ModelPathTreeSelectionWindow() {
 
@@ -140,7 +134,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	 * node
 	 */
 	public void okAction() {
-		sysLog.debug("ok");
+		LOG.debug("ok");
 
 		//get selected node
 		TreeItem[] selectedTreeItems = treeViewProvider.getTreeViewer()
@@ -153,7 +147,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 					.getData();
 			String currentModelPath = selectedAtom.createTreeNodeAdaption()
 					.getTreePath();
-			sysLog.debug(currentModelPath);
+			LOG.debug(currentModelPath);
 
 			//save the selected model path in the modelPath of this dialog to
 			//return it
@@ -173,7 +167,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	 * node
 	 */
 	public void cancelAction() {
-		sysLog.debug("cancel");
+		LOG.debug("cancel");
 		//set result to the default path that was originally given to the
 		//dialog
 		ModelPathTreeSelectionWindow.this.modelPath = ModelPathTreeSelectionWindow.this.defaultPath;
@@ -197,13 +191,11 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 
 	@Override
 	public IViewSite getSite() {
-		//TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public IViewSite getViewSite() {
-		//TODO Auto-generated method stub
 		return null;
 	}
 

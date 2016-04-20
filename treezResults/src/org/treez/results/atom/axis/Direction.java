@@ -30,11 +30,6 @@ public enum Direction {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param directionString
-	 */
 	Direction(String directionString) {
 		this.directionString = directionString;
 	}

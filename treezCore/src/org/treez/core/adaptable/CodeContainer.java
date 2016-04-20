@@ -13,11 +13,7 @@ import org.treez.core.scripting.ScriptType;
 /**
  * Represents a container for several parts of code. The container might be
  * altered in an iterative process while it is passed around. After finishing
- * that process the different parts of the code can be put together.
- *
- */
-/**
- * @author eis
+ * that process the different parts of the code can be put together. *
  */
 public class CodeContainer {
 

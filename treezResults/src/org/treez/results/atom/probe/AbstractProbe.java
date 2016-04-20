@@ -19,22 +19,10 @@ import org.treez.data.table.Table;
  */
 public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(AbstractProbe.class);
-
-	//#region ATTRIBUTES
-
-	//#end region
+	private static final Logger LOG = Logger.getLogger(AbstractProbe.class);
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractProbe(String name) {
 		super(name);
 		setRunnable();
@@ -69,7 +57,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 
 		String identifier = this.getClass().getSimpleName() + " '" + getName() + "'";
 
-		sysLog.info("Running " + identifier + "...");
+		LOG.info("Running " + identifier + "...");
 
 		//control flag
 		boolean continueProbe = false;
@@ -97,7 +85,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 			});
 		}
 
-		sysLog.info("Finished " + identifier + ".");
+		LOG.info("Finished " + identifier + ".");
 
 		return table;
 	}
@@ -193,10 +181,6 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	}
 
 	protected abstract Image provideBaseImage();
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

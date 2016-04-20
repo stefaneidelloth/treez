@@ -19,10 +19,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 public class TreeNodeMenuManager extends MenuManager {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(TreeNodeMenuManager.class);
+	private static final Logger LOG = Logger.getLogger(TreeNodeMenuManager.class);
 
 	//#region ATTRIBUTES
 
@@ -35,11 +32,6 @@ public class TreeNodeMenuManager extends MenuManager {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param treeViewer
-	 */
 	public TreeNodeMenuManager(TreeViewerRefreshable treeViewer) {
 		super();
 		this.treeViewer = treeViewer;
@@ -77,7 +69,7 @@ public class TreeNodeMenuManager extends MenuManager {
 					treeNode.fillContextMenu(treeViewer, manager);
 				} catch (Exception exception) {
 					String message = "Could not create context menu for " + treeNode.getTreePath();
-					sysLog.error(message, exception);
+					LOG.error(message, exception);
 				}
 			}
 		};
@@ -96,7 +88,7 @@ public class TreeNodeMenuManager extends MenuManager {
 		List<IContributionItem> filteredItems = new ArrayList<IContributionItem>();
 		for (IContributionItem item : items) {
 
-			//sysLog.debug("context menu item:" + item.getId());
+			//LOG.debug("context menu item:" + item.getId());
 
 			if (item != null && item.getId() != null && item.getId().startsWith("org.treez")) {
 

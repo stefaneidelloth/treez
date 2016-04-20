@@ -31,12 +31,6 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param treezTable
-	 */
 	public TableControlAdaption(Composite parent, TreezTable treezTable) {
 		super(parent, treezTable);
 		createControl(parent, treezTable);
@@ -208,10 +202,6 @@ public class TableControlAdaption extends AbstractControlAdaption {
 	public void optimizeColumnWidths() {
 		tableViewer.optimizeColumnWidths();
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

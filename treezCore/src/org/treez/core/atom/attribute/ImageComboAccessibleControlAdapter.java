@@ -9,7 +9,9 @@ import org.eclipse.swt.graphics.Rectangle;
 /**
  * AccessibleControlAdapter for the ImageCombo
  */
-public class ImageComboAccessibleControlAdapter extends AccessibleControlAdapter {
+public class ImageComboAccessibleControlAdapter
+		extends
+			AccessibleControlAdapter {
 
 	//#region ATTRIBUTES
 
@@ -65,10 +67,6 @@ public class ImageComboAccessibleControlAdapter extends AccessibleControlAdapter
 	public void getValue(AccessibleControlEvent e) {
 		e.result = parent.getText();
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

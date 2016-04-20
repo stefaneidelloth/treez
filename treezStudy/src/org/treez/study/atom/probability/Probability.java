@@ -3,7 +3,6 @@ package org.treez.study.atom.probability;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.events.ModifyEvent;
@@ -28,12 +27,6 @@ import org.treez.study.atom.AbstractParameterVariation;
  * definition space.
  */
 public class Probability extends AbstractParameterVariation {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Probability.class);
 
 	//#region ATTRIBUTES
 

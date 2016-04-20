@@ -17,10 +17,8 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(AtomTreeNodeAdaption.class);
+	private static final Logger LOG = Logger
+			.getLogger(AtomTreeNodeAdaption.class);
 
 	//#region ATTRIBUTES
 
@@ -33,11 +31,6 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param correspondingAtomAdaptable
-	 */
 	public AtomTreeNodeAdaption(AbstractAtom correspondingAtomAdaptable) {
 		this.atomAdaptable = correspondingAtomAdaptable;
 	}
@@ -113,7 +106,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 				continueTrials = false;
 			} catch (ClassCastException exception) {
 				//do nothing
-				//sysLog.info("", exception);
+				//LOG.info("", exception);
 			}
 
 			if (continueTrials) {
@@ -124,14 +117,14 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 					continueTrials = false;
 				} catch (ClassCastException exception) {
 					//do nothing
-					//sysLog.info("", exception);
+					//LOG.info("", exception);
 				}
 
 				if (continueTrials) {
 					//throw exception if it did not work
 					String message = "The menu entry has to be IAction or IContributionItem but is "
 							+ item.getClass().getSimpleName();
-					sysLog.error(message);
+					LOG.error(message);
 					throw new IllegalArgumentException(message);
 				}
 
@@ -153,12 +146,12 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 		TreeNodeAdaption treeNode = getAdaptable().createTreeNodeAdaption();
 		String itemName = treeNode.getName();
 		List<TreeNodeAdaption> childNodes = treeNode.getChildren();
-		sysLog.info("Expanding " + itemName
+		LOG.info("Expanding " + itemName
 				+ " with following children ---------------------:");
 		for (TreeNodeAdaption childNode : childNodes) {
-			sysLog.info(childNode.getName());
+			LOG.info(childNode.getName());
 		}
-		sysLog.info(
+		LOG.info(
 				"-------------------------------------------------------------------------");
 
 	}

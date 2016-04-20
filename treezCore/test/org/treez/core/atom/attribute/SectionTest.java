@@ -12,7 +12,7 @@ public class SectionTest extends AbstractAttributeContainerAtomConstructonTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SectionTest.class);
+	private static final Logger LOG = Logger.getLogger(SectionTest.class);
 
 	//#region SETUP
 

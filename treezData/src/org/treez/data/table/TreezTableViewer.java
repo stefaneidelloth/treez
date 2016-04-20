@@ -43,12 +43,9 @@ import org.treez.data.row.RowHeaderRenderer;
  */
 public class TreezTableViewer extends GridTableViewer {
 
-	//#region ATTRIBUTES
+	private static final Logger LOG = Logger.getLogger(TreezTableViewer.class);
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(TreezTableViewer.class);
+	//#region ATTRIBUTES
 
 	/**
 	 * Separators for clip board
@@ -66,12 +63,6 @@ public class TreezTableViewer extends GridTableViewer {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param table
-	 */
 	public TreezTableViewer(Composite parent, TreezTable table) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		this.table = table;
@@ -124,7 +115,7 @@ public class TreezTableViewer extends GridTableViewer {
 			@Override
 			public void handleEvent(Event event) {
 
-				//sysLog.debug("Key event-----------");
+				//LOG.debug("Key event-----------");
 
 				if (event.stateMask == SWT.CTRL && event.keyCode == 'c') {
 					copy();
@@ -217,7 +208,7 @@ public class TreezTableViewer extends GridTableViewer {
 		TextTransfer textTransfer = TextTransfer.getInstance();
 		cb.setContents(new Object[] { copyString }, new Transfer[] { textTransfer });
 
-		sysLog.debug(copyString);
+		LOG.debug(copyString);
 	}
 
 	/**
@@ -244,13 +235,13 @@ public class TreezTableViewer extends GridTableViewer {
 	 */
 	void paste() {
 
-		sysLog.debug("paste");
+		LOG.debug("paste");
 		//get clip board text
 		Clipboard cb = new Clipboard(Display.getCurrent());
 		TextTransfer textTransfer = TextTransfer.getInstance();
 		String text = (String) cb.getContents(textTransfer);
 
-		sysLog.debug(text);
+		LOG.debug(text);
 
 		//get row index
 		int rowIndex = table.getRows().size() - 2;
@@ -358,7 +349,7 @@ public class TreezTableViewer extends GridTableViewer {
 	 */
 	public void addRow(int rowIndex) {
 
-		sysLog.debug("add row with index " + rowIndex);
+		LOG.debug("add row with index " + rowIndex);
 
 		if (rowIndex > -1) {
 			Row currentRow = table.getRows().get(rowIndex);
@@ -425,9 +416,4 @@ public class TreezTableViewer extends GridTableViewer {
 	}
 
 	//#end region
-
-	//#region ACCESSORS
-
-	//#end region
-
 }

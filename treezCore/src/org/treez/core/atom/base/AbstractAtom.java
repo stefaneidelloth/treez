@@ -46,10 +46,7 @@ public abstract class AbstractAtom
 			Adaptable,
 			Copiable<AbstractAtom> {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(AbstractAtom.class);
+	private static final Logger LOG = Logger.getLogger(AbstractAtom.class);
 
 	//#region ATTRIBUTES
 
@@ -109,7 +106,7 @@ public abstract class AbstractAtom
 	 * @param name
 	 */
 	public AbstractAtom(String name) {
-		//sysLog.debug("Creating abstract atom " + name);
+		//LOG.debug("Creating abstract atom " + name);
 		this.name = name;
 		this.children = new ArrayList<AbstractAtom>();
 		initAttributesWithIsParameterAnnotationValues();
@@ -117,8 +114,6 @@ public abstract class AbstractAtom
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param abstractAtomToCopy
 	 */
 	public AbstractAtom(AbstractAtom abstractAtomToCopy) {
 		this.name = abstractAtomToCopy.name;
@@ -133,11 +128,6 @@ public abstract class AbstractAtom
 
 	//#region COPY
 
-	/**
-	 * Copies the abstract atom
-	 *
-	 * @return
-	 */
 	@Override
 	public abstract AbstractAtom copy();
 
@@ -246,12 +236,12 @@ public abstract class AbstractAtom
 		boolean foundAnIsParameterAnnotation = false;
 		Field[] attributes = atomClass.getDeclaredFields();
 		for (Field attribute : attributes) {
-			//sysLog.debug("Existing attribute: " + attribute.getName());
+			//LOG.debug("Existing attribute: " + attribute.getName());
 			attribute.setAccessible(true);
 			boolean isParameterAnnotated = IsParameters.isAnnotated(attribute);
 			if (isParameterAnnotated) {
 				foundAnIsParameterAnnotation = true;
-				//sysLog.debug("The field " + field.getName() + " is
+				//LOG.debug("The field " + field.getName() + " is
 				//annotated.");
 				String valueString = IsParameters
 						.getDefaultValueString(attribute);
@@ -262,7 +252,7 @@ public abstract class AbstractAtom
 				} catch (Exception exception) {
 					String message = "Could not set attribute value for "
 							+ attribute.getName();
-					sysLog.error(message, exception);
+					LOG.error(message, exception);
 					throw new IllegalStateException(message, exception);
 				}
 			}
@@ -301,7 +291,7 @@ public abstract class AbstractAtom
 				} catch (Exception exception) {
 					String message = "Could not execute child '"
 							+ child.getName() + "' of '" + getName() + "'.";
-					sysLog.error(message, exception);
+					LOG.error(message, exception);
 				}
 			}
 		}
@@ -553,11 +543,11 @@ public abstract class AbstractAtom
 	 * @param child
 	 */
 	public void addChild(AbstractAtom child) {
-		//sysLog.debug("add child to " + getName());
+		//LOG.debug("add child to " + getName());
 		AbstractAtom oldParent = child.getParentAtom();
 		child.setParentAtom(this);
 
-		//sysLog.debug("parent set");
+		//LOG.debug("parent set");
 
 		children.add(child);
 		if (oldParent != null) {
@@ -669,7 +659,7 @@ public abstract class AbstractAtom
 		} catch (Exception exception) {
 			String message = "Could not create child atom for class "
 					+ atomClass.getSimpleName();
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 			throw new IllegalArgumentException(message, exception);
 		}
 
@@ -974,38 +964,18 @@ public abstract class AbstractAtom
 		return parentAtom;
 	}
 
-	/**
-	 * Sets the parent atom
-	 *
-	 * @param parent
-	 */
 	public void setParentAtom(AbstractAtom parent) {
 		this.parentAtom = parent;
 	}
 
-	/**
-	 * Returns the child AbstractAtoms
-	 *
-	 * @return
-	 */
 	public List<AbstractAtom> getChildAtoms() {
 		return children;
 	}
 
-	/**
-	 * Sets the help id
-	 *
-	 * @param helpId
-	 */
 	public void setHelpId(String helpId) {
 		this.helpId = helpId;
 	}
 
-	/**
-	 * Returns the help id
-	 *
-	 * @return
-	 */
 	public String getHelpId() {
 		return helpId;
 	}

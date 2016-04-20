@@ -2,7 +2,6 @@ package org.treez.study.atom;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Refreshable;
@@ -23,21 +22,10 @@ import org.treez.study.atom.sweep.Sweep;
  */
 public class Studies extends AdjustableAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Studies.class);
-
 	//#region ATTRIBUTES
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Studies(String name) {
 		super(name);
 		setRunnable();
@@ -135,48 +123,24 @@ public class Studies extends AdjustableAtom {
 
 	//#region CREATE CHILD ATOMS
 
-	/**
-	 * Creates a Sweep child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Sweep createSweep(String name) {
 		Sweep child = new Sweep(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a Picking child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Picking createPicking(String name) {
 		Picking child = new Picking(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a Sensitivity child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Sensitivity createSensitivity(String name) {
 		Sensitivity child = new Sensitivity(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a Probability child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Probability createProbability(String name) {
 		Probability child = new Probability(name);
 		addChild(child);

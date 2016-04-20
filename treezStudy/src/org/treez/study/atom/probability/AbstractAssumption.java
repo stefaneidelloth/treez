@@ -2,7 +2,6 @@ package org.treez.study.atom.probability;
 
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -23,12 +22,6 @@ import org.treez.study.Activator;
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class AbstractAssumption extends AdjustableAtom {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(AbstractAssumption.class);
 
 	//#region ATTRIBUTES
 
@@ -57,11 +50,6 @@ public class AbstractAssumption extends AdjustableAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractAssumption(String name) {
 		super(name);
 		createAbstractAssumptionModel();

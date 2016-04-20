@@ -35,11 +35,7 @@ import org.treez.results.Activator;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class PickingProbe extends AbstractProbe {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(PickingProbe.class);
+	private static final Logger LOG = Logger.getLogger(PickingProbe.class);
 
 	//#region ATTRIBUTES
 
@@ -51,14 +47,8 @@ public class PickingProbe extends AbstractProbe {
 
 	private static final String DOMAIN_TYPE_TIME_SERIES_COLUMN = "Time series from column";
 
-	/**
-	 * domain type
-	 */
 	public final Attribute<String> domainType = new Wrap<>();
 
-	/**
-	 * domain label
-	 */
 	public final Attribute<String> domainLabel = new Wrap<>();
 
 	/**
@@ -73,40 +63,20 @@ public class PickingProbe extends AbstractProbe {
 
 	//probe section
 
-	/**
-	 * probe name
-	 */
 	public final Attribute<String> probeLabel = new Wrap<>();
 
-	/**
-	 * picking output model path
-	 */
 	public final Attribute<String> pickingOutput = new Wrap<>();
 
-	/**
-	 * first probe table model path
-	 */
 	public final Attribute<String> firstProbeTable = new Wrap<>();
 
-	/**
-	 * probe column index
-	 */
 	public final Attribute<Integer> probeColumnIndex = new Wrap<>();
 
-	/**
-	 * probe row index
-	 */
 	public final Attribute<Integer> probeRowIndex = new Wrap<>();
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public PickingProbe(String name) {
 		super(name);
 		createPickingProbeModel();
@@ -244,7 +214,7 @@ public class PickingProbe extends AbstractProbe {
 	@SuppressWarnings({ "checkstyle:executablestatementcount", "checkstyle:javancss" })
 	protected void createTableColumns(Table table) {
 
-		sysLog.info("Creating table columns...");
+		LOG.info("Creating table columns...");
 
 		//determine column names, types and legends
 		List<ColumnBlueprint> columnBlueprints = new ArrayList<>();
@@ -262,7 +232,7 @@ public class PickingProbe extends AbstractProbe {
 
 		createColumns(table, columnBlueprints);
 
-		sysLog.info("Created table columns.");
+		LOG.info("Created table columns.");
 
 	}
 
@@ -399,7 +369,7 @@ public class PickingProbe extends AbstractProbe {
 	@Override
 	protected void collectProbeDataAndFillTable(Table table) {
 
-		sysLog.info("Filling probe table...");
+		LOG.info("Filling probe table...");
 
 		boolean isTimeSeries = isTimeSeries();
 
@@ -423,14 +393,14 @@ public class PickingProbe extends AbstractProbe {
 			/*
 			//get y information
 			String yLabelString = yLabel.get();
-
+			
 			//get tuple information
 			String tupleyPath = tupleList.get();
 			List<?> tupleListValues = getTupleValues(tupleyPath);
-
+			
 			//column names
 			List<String> columnNames = createColumnNames(timeLabelString, yLabelString, tupleListValues);
-
+			
 			*/
 
 			//get sweep output path
@@ -452,7 +422,7 @@ public class PickingProbe extends AbstractProbe {
 
 		}
 
-		sysLog.info("Filled probe table.");
+		LOG.info("Filled probe table.");
 
 	}
 

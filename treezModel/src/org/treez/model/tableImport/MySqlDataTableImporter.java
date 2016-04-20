@@ -1,8 +1,5 @@
 package org.treez.model.tableImport;
 
-/**
- * @author eis
- */
 public final class MySqlDataTableImporter {
 
 	//#region CONSTRUCTORS

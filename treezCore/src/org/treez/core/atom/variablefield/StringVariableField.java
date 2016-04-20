@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -15,27 +14,14 @@ import org.treez.core.atom.variablelist.AbstractVariableListField;
  */
 public class StringVariableField extends AbstractVariableField<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(StringVariableField.class);
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public StringVariableField(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param fieldToCopy
 	 */
 	private StringVariableField(StringVariableField fieldToCopy) {
 		super(fieldToCopy);
@@ -45,18 +31,11 @@ public class StringVariableField extends AbstractVariableField<String> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public StringVariableField copy() {
 		return new StringVariableField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideBaseImage() {
 		return Activator.getImage("stringVariable.png");
@@ -138,17 +117,11 @@ public class StringVariableField extends AbstractVariableField<String> {
 
 	//#region DEFAULT VALUE
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return getDefaultValueString();
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		if (defaultValue == null) {
 			setDefaultValueString("");

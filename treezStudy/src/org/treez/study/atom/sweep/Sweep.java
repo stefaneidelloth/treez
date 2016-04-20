@@ -49,18 +49,10 @@ import org.treez.study.atom.range.StringVariableRange;
 @SuppressWarnings({ "checkstyle:visibilitymodifier", "checkstyle:classfanoutcomplexity" })
 public class Sweep extends AbstractParameterVariation {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(Sweep.class);
+	private static final Logger LOG = Logger.getLogger(Sweep.class);
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Sweep(String name) {
 		super(name);
 		createSweepModel();
@@ -70,9 +62,6 @@ public class Sweep extends AbstractParameterVariation {
 
 	//#region METHODS
 
-	/**
-	 * Creates the underlying model
-	 */
 	private void createSweepModel() {
 		// root, page and section
 		AttributeRoot root = new AttributeRoot("root");
@@ -148,7 +137,7 @@ public class Sweep extends AbstractParameterVariation {
 		this.treeViewRefreshable = refreshable;
 
 		String startMessage = "Executing sweep '" + getName() + "'";
-		sysLog.info(startMessage);
+		LOG.info(startMessage);
 
 		//create ModelInput generator
 		String sweepModelPath = Sweep.this.createTreeNodeAdaption().getTreePath();
@@ -156,7 +145,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		//get variable ranges
 		List<AbstractVariableRange<?>> variableRanges = inputGenerator.getEnabledVariableRanges(this);
-		sysLog.info("Number of variable ranges: " + variableRanges.size());
+		LOG.info("Number of variable ranges: " + variableRanges.size());
 
 		//check if all variable ranges reference enabled variables
 		boolean allReferencedVariablesAreActive = checkIfAllREferencedVariablesAreActive(variableRanges);
@@ -173,7 +162,7 @@ public class Sweep extends AbstractParameterVariation {
 			List<AbstractVariableRange<?>> variableRanges) {
 		//get total number of simulations
 		int numberOfSimulations = inputGenerator.getNumberOfSimulations(variableRanges);
-		sysLog.info("Number of total simulations: " + numberOfSimulations);
+		LOG.info("Number of total simulations: " + numberOfSimulations);
 
 		//initialize progress monitor
 		monitor.beginTask("", numberOfSimulations);
@@ -208,7 +197,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		//show end message
 		logAndShowSweepEndMessage();
-		sysLog.info("The sweep outout is located at " + sweepOutputAtomPath);
+		LOG.info("The sweep outout is located at " + sweepOutputAtomPath);
 		monitor.done();
 	}
 
@@ -270,9 +259,9 @@ public class Sweep extends AbstractParameterVariation {
 				return false;
 			}
 
-			VariableField variableField;
+			VariableField<?> variableField;
 			try {
-				variableField = (VariableField) variableAtom;
+				variableField = (VariableField<?>) variableAtom;
 			} catch (ClassCastException exception) {
 				String message = "Could not cast atom '" + variableAtom.createTreeNodeAdaption().getTreePath()
 						+ "' to a VariableField.";
@@ -324,7 +313,7 @@ public class Sweep extends AbstractParameterVariation {
 		} catch (IOException exception) {
 			String message = "The specified exportStudyInfoPath '" + filePath
 					+ "' is not valid. Export of study info is skipped.";
-			sysLog.error(message);
+			LOG.error(message);
 		}
 
 	}
@@ -352,7 +341,7 @@ public class Sweep extends AbstractParameterVariation {
 			OutputAtom sweepOutputAtom = new OutputAtom(sweepOutputAtomName, provideImage());
 			AbstractAtom data = this.getChildFromRoot(dataAtomPath);
 			data.addChild(sweepOutputAtom);
-			sysLog.info("Created " + sweepPutputAtomPath + " for sweep output.");
+			LOG.info("Created " + sweepPutputAtomPath + " for sweep output.");
 		}
 
 	}

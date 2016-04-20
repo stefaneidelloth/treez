@@ -1,6 +1,5 @@
 package org.treez.core.treeview;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -11,12 +10,6 @@ import org.treez.core.atom.base.AbstractAtom;
  * Custom TreeView that implements Refreshable
  */
 public class TreeViewerRefreshable extends TreeViewer implements Refreshable {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(TreeViewer.class);
 
 	//#region ATTRIBUTES
 
@@ -30,23 +23,12 @@ public class TreeViewerRefreshable extends TreeViewer implements Refreshable {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 */
 	public TreeViewerRefreshable(Composite parent,
 			Refreshable actionRefreshable) {
 		super(parent);
 		this.actionRefreshable = actionRefreshable;
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param style
-	 */
 	public TreeViewerRefreshable(Composite parent,
 			Refreshable actionRefreshable, int style) {
 		super(parent, style);
@@ -59,7 +41,7 @@ public class TreeViewerRefreshable extends TreeViewer implements Refreshable {
 
 	@Override
 	public synchronized void refresh() {
-		//sysLog.info("Refreshing tree view");
+		//LOG.info("Refreshing tree view");
 
 		//		Display display = Display.getCurrent();
 		//		if (display == null || display.isDisposed()) {

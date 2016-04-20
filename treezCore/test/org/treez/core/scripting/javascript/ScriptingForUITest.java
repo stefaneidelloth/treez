@@ -19,7 +19,7 @@ public class ScriptingForUITest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ScriptingForUITest.class);
+	private static final Logger LOG = Logger.getLogger(ScriptingForUITest.class);
 
 	//#region ATTRIBUTES
 

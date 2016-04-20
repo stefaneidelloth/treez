@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
@@ -21,7 +20,6 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeParentAtom;
 import org.treez.core.atom.attribute.event.AttributeAtomEvent;
 import org.treez.core.atom.copy.CopyHelper;
-import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.scripting.ScriptType;
@@ -38,14 +36,8 @@ import org.treez.core.treeview.action.TreeViewerAction;
 public abstract class AbstractAttributeAtom<T>
 		extends
 			AbstractAttributeParentAtom
-		implements Attribute<T> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(AbstractUiSynchronizingAtom.class);
+		implements
+			Attribute<T> {
 
 	//#region ATTRIBUTES
 
@@ -55,9 +47,6 @@ public abstract class AbstractAttributeAtom<T>
 	 */
 	protected static final int CHARACTER_LENGTH_LIMIT = 50;
 
-	/**
-	 * Default background color
-	 */
 	protected static final Color DEFAULT_BACKGROUND_COLOR = new Color(null, 255,
 			255, 255);
 
@@ -98,11 +87,6 @@ public abstract class AbstractAttributeAtom<T>
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractAttributeAtom(String name) {
 		super(name);
 		modifyListeners = new HashMap<>();
@@ -110,8 +94,6 @@ public abstract class AbstractAttributeAtom<T>
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param attributeAtomToCopy
 	 */
 	public AbstractAttributeAtom(AbstractAttributeAtom<T> attributeAtomToCopy) {
 		super(attributeAtomToCopy);
@@ -322,7 +304,7 @@ public abstract class AbstractAttributeAtom<T>
 
 	/**
 	 * Wraps this attribute in the AttributeWrapper that is given as Attribute
-	 * 
+	 *
 	 *
 	 * @param wrap
 	 */
@@ -369,9 +351,6 @@ public abstract class AbstractAttributeAtom<T>
 		return isEnabled;
 	}
 
-	/**
-	 * @param state
-	 */
 	@Override
 	public void setEnabled(boolean state) {
 		isEnabled = state;
@@ -397,11 +376,6 @@ public abstract class AbstractAttributeAtom<T>
 
 	}
 
-	/**
-	 * Sets the value
-	 *
-	 * @param value
-	 */
 	@Override
 	public void set(T value) {
 		if (value != attributeValue) {
@@ -416,16 +390,8 @@ public abstract class AbstractAttributeAtom<T>
 
 	//#region DEFAULT VALUE
 
-	/**
-	 * @return
-	 */
 	public abstract T getDefaultValue();
 
-	/**
-	 * Returns true if the value equals the default value
-	 *
-	 * @return
-	 */
 	public boolean hasDefaultValue() {
 		T value = get();
 		T defaultValue = getDefaultValue();
@@ -442,25 +408,14 @@ public abstract class AbstractAttributeAtom<T>
 
 	//#region INITIALIZED
 
-	/**
-	 * Returns true if this AttributeAtom has already been initialized
-	 *
-	 * @return
-	 */
 	public Boolean isInitialized() {
 		return isInitialized;
 	}
 
-	/**
-	 * Sets the initialization state to true
-	 */
 	protected void setInitialized() {
 		this.isInitialized = true;
 	}
 
-	/**
-	 * Sets the initialization state to false
-	 */
 	public void resetInitialized() {
 		this.isInitialized = false;
 	}
@@ -469,11 +424,6 @@ public abstract class AbstractAttributeAtom<T>
 
 	//#region MODIFICATION LISTENING
 
-	/**
-	 * Returns the modify listeners
-	 *
-	 * @return
-	 */
 	public Set<ModifyListener> getModifyListeners() {
 		Set<ModifyListener> listeners = new HashSet<>();
 		for (ModifyListener listener : modifyListeners.values()) {
@@ -502,11 +452,6 @@ public abstract class AbstractAttributeAtom<T>
 
 	//#region BACKGROUND COLOR
 
-	/**
-	 * Sets the background color
-	 *
-	 * @param backgroundColor
-	 */
 	public abstract void setBackgroundColor(Color backgroundColor);
 
 	//#end region

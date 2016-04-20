@@ -16,10 +16,8 @@ import org.treez.core.scripting.AbstractScripting;
  */
 public class JavaScriptScripting extends AbstractScripting {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(JavaScriptScripting.class);
+	private static final Logger LOG = Logger
+			.getLogger(JavaScriptScripting.class);
 
 	//#region ATTRIBUTES
 
@@ -29,20 +27,15 @@ public class JavaScriptScripting extends AbstractScripting {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	public JavaScriptScripting() {
 
 		ScriptEngineManager manager = new ScriptEngineManager();
 
 		//Print all available scripting languages
 		/*
-		for (ScriptEngineFactory factory :
-		    manager.getEngineFactories()) {
-		    System.out.println("Available language: " +
-		        factory.getLanguageName());
-		}
+		 * for (ScriptEngineFactory factory : manager.getEngineFactories()) {
+		 * System.out.println("Available language: " +
+		 * factory.getLanguageName()); }
 		 */
 
 		this.engine = manager.getEngineByName("JavaScript");
@@ -76,13 +69,14 @@ public class JavaScriptScripting extends AbstractScripting {
 				return (AbstractAtom) object;
 			}
 		} catch (Exception e) {
-			sysLog.debug("Could not get root", e);
+			LOG.debug("Could not get root", e);
 		}
 		return null;
 	}
 
 	private void setSourceName() {
-		IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().getActiveEditor();
 
 		if (part instanceof ITextEditor) {
 
@@ -111,11 +105,11 @@ public class JavaScriptScripting extends AbstractScripting {
 				engine.eval(code);
 			} catch (ScriptException exception) {
 				String message = "Could not evaluate script";
-				sysLog.error(message, exception);
+				LOG.error(message, exception);
 				throw new IllegalStateException(message, exception);
 			}
 		} else {
-			sysLog.error("Engine is null!");
+			LOG.error("Engine is null!");
 		}
 
 	}

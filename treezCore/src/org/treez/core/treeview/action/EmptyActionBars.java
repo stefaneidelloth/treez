@@ -8,21 +8,15 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
- * Empty dummy IActionBars for test purposes. If the tree viewer is not shown inside an eclipse plugin but is run in
- * test mode, it is not possible to get the IActionBars from Eclipse. In order to run the test without exceptions for
+ * Empty dummy IActionBars for test purposes. If the tree viewer is not shown
+ * inside an eclipse plugin but is run in test mode, it is not possible to get
+ * the IActionBars from Eclipse. In order to run the test without exceptions for
  * missing IActionBars this dummy implementation is used.
  */
 public class EmptyActionBars implements IActionBars {
 
-	//#region ATTRIBUTES
-
-	//#end region
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	public EmptyActionBars() {
 
 	}
@@ -75,10 +69,6 @@ public class EmptyActionBars implements IActionBars {
 	public void updateActionBars() {
 		//dummy test implementation
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

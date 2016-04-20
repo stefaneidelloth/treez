@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -29,16 +28,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.core.utils.Utils;
 
-/**
- * An item example
- */
 public class Page extends AbstractAttributeContainerAtom {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Page.class);
 
 	//#region ATTRIBUTES
 
@@ -53,11 +43,6 @@ public class Page extends AbstractAttributeContainerAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Page(String name) {
 		super(name);
 		title = Utils.firstToUpperCase(name); //this default title might be overridden by explicitly setting the label
@@ -65,8 +50,6 @@ public class Page extends AbstractAttributeContainerAtom {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param pageToCopy
 	 */
 	public Page(Page pageToCopy) {
 		super(pageToCopy);
@@ -78,28 +61,16 @@ public class Page extends AbstractAttributeContainerAtom {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public Page copy() {
 		return new Page(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("Page.png");
 	}
 
-	/**
-	 * Creates the context menu actions
-	 *
-	 * @return
-	 */
 	@Override
 	protected ArrayList<Object> createContextMenuActions(
 			final TreeViewerRefreshable treeViewer) {
@@ -229,11 +200,6 @@ public class Page extends AbstractAttributeContainerAtom {
 		parent.setRedraw(true);
 	}
 
-	/**
-	 * Adds a new section
-	 *
-	 * @param treeViewer
-	 */
 	void addSection(TreeViewerRefreshable treeViewer) {
 		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this,
 				"mySection");
@@ -241,12 +207,6 @@ public class Page extends AbstractAttributeContainerAtom {
 		createTreeNodeAdaption().expand(treeViewer);
 	}
 
-	/**
-	 * Create a new section
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Section createSection(String name) {
 		Section section = new Section(name);
 		addChild(section);
@@ -280,38 +240,18 @@ public class Page extends AbstractAttributeContainerAtom {
 
 	//#end region
 
-	/**
-	 * Getter for title
-	 *
-	 * @return
-	 */
 	public String getTitle() {
 		return title;
 	}
 
-	/**
-	 * Setter for title
-	 *
-	 * @param title
-	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
-	/**
-	 * Setter for layout
-	 *
-	 * @param layout
-	 */
 	public void setLayout(String layout) {
 		this.layout = layout;
 	}
 
-	/**
-	 * Getter for layout
-	 *
-	 * @return
-	 */
 	public String getLayout() {
 		return layout;
 	}

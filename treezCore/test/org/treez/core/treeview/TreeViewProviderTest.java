@@ -21,7 +21,7 @@ public class TreeViewProviderTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(TreeViewProviderTest.class);
+	private static final Logger LOG = Logger.getLogger(TreeViewProviderTest.class);
 
 	//#region ATTRIBUTES
 

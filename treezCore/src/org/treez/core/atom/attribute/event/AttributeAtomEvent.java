@@ -5,33 +5,19 @@ import org.eclipse.swt.widgets.Event;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 
 /**
- * Event that can be used to trigger ModifyListeners
- *
+ * Event that can be used to trigger ModifyListeners *
  */
 public class AttributeAtomEvent extends Event {
 
-	//#region ATTRIBUTES
-
-	//#end region
-
 	//#region CONSTRUCTORS
-	
-	/**
-	 * Constructor
-	 * 	 
-	 */
-	public AttributeAtomEvent(){
+
+	public AttributeAtomEvent() {
 		super();
 		this.data = null;
 		this.widget = new AttributeAtomEventWidget();
 	}
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param attributeAtom
-	 */
-	public AttributeAtomEvent(AbstractAttributeAtom<?> attributeAtom){
+
+	public AttributeAtomEvent(AbstractAttributeAtom<?> attributeAtom) {
 		super();
 		this.data = attributeAtom.get();
 		this.widget = new AttributeAtomEventWidget();
@@ -40,20 +26,14 @@ public class AttributeAtomEvent extends Event {
 	//#end region
 
 	//#region METHODS
-	
+
 	/**
 	 * Creates a ModifyEvent based on this AttributeAtomEvent
-	 * 
-	 * @return
 	 */
-	public ModifyEvent createModifyEvent(){
+	public ModifyEvent createModifyEvent() {
 		ModifyEvent modifyEvent = new ModifyEvent(this);
 		return modifyEvent;
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

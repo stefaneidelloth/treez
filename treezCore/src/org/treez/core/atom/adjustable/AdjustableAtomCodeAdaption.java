@@ -2,7 +2,6 @@ package org.treez.core.atom.adjustable;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.Page;
@@ -14,15 +13,6 @@ import org.treez.core.atom.base.AtomCodeAdaption;
  * CodeAdaption for atoms
  */
 public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(AdjustableAtomCodeAdaption.class);
-
-	//#end region
 
 	//#region CONSTRUCTORS
 
@@ -66,16 +56,6 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 	@SuppressWarnings("checkstyle:illegalcatch")
 	protected AdjustableAtom initializeModelIfRequired() {
 		AdjustableAtom adjustableAtom = (AdjustableAtom) atom;
-		AbstractAtom model = adjustableAtom.getModel();
-		boolean modelIsInitialized = model != null;
-		if (!modelIsInitialized) {
-			try {
-				adjustableAtom.createAjustableAtomModel();
-			} catch (Exception exception) {
-				String message = "Could not create attribute code because the underlying model could not be initialized.";
-				throw new IllegalStateException(message, exception);
-			}
-		}
 		return adjustableAtom;
 	}
 

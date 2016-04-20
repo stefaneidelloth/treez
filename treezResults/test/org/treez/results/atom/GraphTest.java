@@ -14,7 +14,7 @@ public class GraphTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(GraphTest.class);
+	private static final Logger LOG = Logger.getLogger(GraphTest.class);
 
 	//#region SETUP
 

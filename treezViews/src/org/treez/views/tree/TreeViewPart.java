@@ -17,12 +17,9 @@ import org.treez.core.treeview.action.ActionProviderRefreshable;
  */
 public class TreeViewPart extends ViewPart implements TreezView {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(TreeViewPart.class);
+	private static final Logger LOG = Logger.getLogger(TreeViewPart.class);
 
-	// #region ATTRIBUTES
+	//#region ATTRIBUTES
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -39,20 +36,15 @@ public class TreeViewPart extends ViewPart implements TreezView {
 	 */
 	private Composite contentComposite;
 
-	// #end region
+	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * The constructor.
-	 */
-	public TreeViewPart() {
-		// sysLog.debug("tree view constructor");
-	}
+	public TreeViewPart() {}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	/**
 	 * This is a callback that allows to create a jface tree treeViewer and initialize it.
@@ -72,7 +64,7 @@ public class TreeViewPart extends ViewPart implements TreezView {
 			treeViewCodeConverter = new JavaTreeViewCodeConverter(treeViewProvider);
 		} catch (Exception exception) {
 			String message = "Could not create treeViewCodeConverter";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 			return;
 		}
 		treeViewProvider.provideTreeView(null, treeViewActionProvider, treeViewCodeConverter);
@@ -97,9 +89,9 @@ public class TreeViewPart extends ViewPart implements TreezView {
 		treeViewProvider.setFocus();
 	}
 
-	// #end region
+	//#end region
 
-	// #region ACCESSORS
+	//#region ACCESSORS
 
 	/**
 	 * Provides the content composite. The content composite has to be set before by createPartControl(Composite parent)
@@ -119,6 +111,6 @@ public class TreeViewPart extends ViewPart implements TreezView {
 		this.contentComposite = contentComposite;
 	}
 
-	// #end region
+	//#end region
 
 }

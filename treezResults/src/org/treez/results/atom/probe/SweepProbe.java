@@ -28,11 +28,7 @@ import org.treez.results.Activator;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class SweepProbe extends AbstractProbe {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SweepProbe.class);
+	private static final Logger LOG = Logger.getLogger(SweepProbe.class);
 
 	//#region ATTRIBUTES
 
@@ -88,40 +84,20 @@ public class SweepProbe extends AbstractProbe {
 
 	//probe section
 
-	/**
-	 * probe name
-	 */
 	//public final Attribute<String> probeName = new Wrap<>();
 
-	/**
-	 * sweep output model path
-	 */
 	public final Attribute<String> sweepOutput = new Wrap<>();
 
-	/**
-	 * first probe table model path
-	 */
 	public final Attribute<String> firstProbeTable = new Wrap<>();
 
-	/**
-	 * probe column index
-	 */
 	public final Attribute<String> probeColumnIndex = new Wrap<>();
 
-	/**
-	 * probe row index
-	 */
 	public final Attribute<String> probeRowIndex = new Wrap<>();
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public SweepProbe(String name) {
 		super(name);
 		createSweepProbeModel();
@@ -226,7 +202,7 @@ public class SweepProbe extends AbstractProbe {
 	@SuppressWarnings({ "checkstyle:executablestatementcount", "checkstyle:javancss" })
 	protected void createTableColumns(Table table) {
 
-		sysLog.info("Creating table columns...");
+		LOG.info("Creating table columns...");
 
 		//create column blueprints
 		List<ColumnBlueprint> columnBlueprints = new ArrayList<>();
@@ -287,7 +263,7 @@ public class SweepProbe extends AbstractProbe {
 		//create columns
 		createColumns(table, columnBlueprints);
 
-		sysLog.info("Created table columns.");
+		LOG.info("Created table columns.");
 
 	}
 
@@ -331,7 +307,7 @@ public class SweepProbe extends AbstractProbe {
 	@Override
 	protected void collectProbeDataAndFillTable(Table table) {
 
-		sysLog.info("Filling probe table...");
+		LOG.info("Filling probe table...");
 
 		//get x information
 		String xLabelString = domainLabel.get();
@@ -373,7 +349,7 @@ public class SweepProbe extends AbstractProbe {
 
 		fillProbeTable(table, xRangeValues, columnNames, sweepOutputPath, relativeProbeTablePath, prefix);
 
-		sysLog.info("Filled probe table.");
+		LOG.info("Filled probe table.");
 
 	}
 

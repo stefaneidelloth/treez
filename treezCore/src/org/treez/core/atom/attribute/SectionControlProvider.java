@@ -32,10 +32,7 @@ import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
  */
 public class SectionControlProvider {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger
+	private static final Logger LOG = Logger
 			.getLogger(SectionControlProvider.class);
 
 	//#region ATTRIBUTES
@@ -55,12 +52,6 @@ public class SectionControlProvider {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param section
-	 * @param parentComposite
-	 */
 	public SectionControlProvider(Section section, Composite parentComposite,
 			Refreshable treeViewerRefreshable) {
 		this.section = section;
@@ -72,9 +63,6 @@ public class SectionControlProvider {
 
 	//#region METHODS
 
-	/**
-	 * Creates the atom control on the parentComposite
-	 */
 	public void createAtomControl() {
 
 		//create toolkit
@@ -82,7 +70,7 @@ public class SectionControlProvider {
 
 		//get default expansion state
 		boolean isExpanded = section.getExpanded();
-		//sysLog.debug("create section. expanded: " + isExpanded);
+		//LOG.debug("create section. expanded: " + isExpanded);
 
 		//define section style
 		int sectionStyle;
@@ -141,7 +129,7 @@ public class SectionControlProvider {
 			public void expansionStateChanged(ExpansionEvent e) {
 				boolean isExpanded = section.getExpanded();
 				section.setExpanded(!isExpanded);
-				sysLog.debug("Expanded:" + isExpanded);
+				LOG.debug("Expanded:" + isExpanded);
 			}
 
 		});
@@ -153,11 +141,6 @@ public class SectionControlProvider {
 
 	}
 
-	/**
-	 * Creates a tool bar for the section
-	 *
-	 * @param toolkit
-	 */
 	private void createSectionToolbar(FormToolkit toolkit) {
 		Composite toolbar = toolkit.createComposite(sectionComposite);
 		FillLayout toolbarLayout = new FillLayout();
@@ -243,7 +226,7 @@ public class SectionControlProvider {
 							treeViewerRefreshable);
 
 				} catch (Exception secondException) {
-					sysLog.error("Could not create attribute atom.",
+					LOG.error("Could not create attribute atom.",
 							secondException);
 					throw exception;
 				}
@@ -252,10 +235,6 @@ public class SectionControlProvider {
 
 		sectionContentComposite.layout(true, true);
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

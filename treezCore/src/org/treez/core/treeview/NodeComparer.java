@@ -1,4 +1,4 @@
-package org.treez.core.atom.adjustable.preferencePage.treeEditor.node;
+package org.treez.core.treeview;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -32,7 +32,8 @@ public class NodeComparer implements IElementComparer {
 		String name = ((Adaptable) element).createTreeNodeAdaption().getName();
 		final int initialOddNumber = 17;
 		final int multiplier = 31;
-		HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(initialOddNumber, multiplier);
+		HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(initialOddNumber,
+				multiplier);
 		int hashCode = hashCodeBuilder.append(name).toHashCode();
 		return hashCode;
 

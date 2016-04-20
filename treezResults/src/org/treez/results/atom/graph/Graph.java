@@ -3,7 +3,6 @@ package org.treez.results.atom.graph;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Adaptable;
@@ -24,12 +23,6 @@ import org.treez.results.atom.xyseries.XySeries;
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Graph extends GraphicsPropertiesPage {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Graph.class);
 
 	//#region ATTRIBUTES
 
@@ -56,11 +49,6 @@ public class Graph extends GraphicsPropertiesPage {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Graph(String name) {
 		super(name);
 		setRunnable();

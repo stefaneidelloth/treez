@@ -55,11 +55,7 @@ import org.treez.study.atom.AbstractParameterVariation;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Picking extends AbstractParameterVariation implements NumberRangeProvider {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Picking.class);
+	private static final Logger LOG = Logger.getLogger(Picking.class);
 
 	//#region ATTRIBUTES
 
@@ -105,11 +101,6 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Picking(String name) {
 		super(name);
 		createPickingModel();
@@ -331,7 +322,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		this.treeViewRefreshable = refreshable;
 
 		String startMessage = "Executing picking '" + getName() + "'";
-		sysLog.info(startMessage);
+		LOG.info(startMessage);
 
 		//create ModelInput generator
 		PickingModelInputGenerator inputGenerator = new PickingModelInputGenerator(this);
@@ -339,12 +330,12 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		//get samples
 		List<Sample> samples = inputGenerator.getEnabledSamples();
 		int numberOfSamples = samples.size();
-		sysLog.info("Number of samples: " + numberOfSamples);
+		LOG.info("Number of samples: " + numberOfSamples);
 
 		boolean isTimeDependentPicking = this.isTimeDependent.get();
 		if (isTimeDependentPicking) {
 			int numberOfTimeSteps = inputGenerator.getNumberOfTimeSteps();
-			sysLog.info("Number of time steps: " + numberOfTimeSteps);
+			LOG.info("Number of time steps: " + numberOfTimeSteps);
 		}
 
 		if (numberOfSamples > 0) {
@@ -417,7 +408,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 		//get total number of simulations
 		int numberOfSimulations = samples.size();
-		sysLog.info("Number of total simulations: " + numberOfSimulations);
+		LOG.info("Number of total simulations: " + numberOfSimulations);
 
 		//initialize progress monitor
 		monitor.beginTask("", numberOfSimulations);
@@ -452,7 +443,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 		//show end message
 		logAndShowSweepEndMessage();
-		sysLog.info("The picking outout is located at " + studyOutputAtomPath);
+		LOG.info("The picking outout is located at " + studyOutputAtomPath);
 		monitor.done();
 	}
 
@@ -488,7 +479,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		} catch (IOException exception) {
 			String message = "The specified exportStudyInfoPath '" + filePath
 					+ "' is not valid. Export of study info is skipped.";
-			sysLog.error(message);
+			LOG.error(message);
 		}
 
 	}
@@ -516,7 +507,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 			OutputAtom pickingOutputAtom = new OutputAtom(pickingOutputAtomName, provideImage());
 			AbstractAtom data = this.getChildFromRoot(dataAtomPath);
 			data.addChild(pickingOutputAtom);
-			sysLog.info("Created " + pickingPutputAtomPath + " for picking output.");
+			LOG.info("Created " + pickingPutputAtomPath + " for picking output.");
 		}
 	}
 

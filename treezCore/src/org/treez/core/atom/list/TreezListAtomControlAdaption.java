@@ -32,12 +32,6 @@ public class TreezListAtomControlAdaption extends AbstractControlAdaption {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param treezList
-	 */
 	public TreezListAtomControlAdaption(Composite parent,
 			TreezListAtom treezList) {
 		super(parent, treezList);

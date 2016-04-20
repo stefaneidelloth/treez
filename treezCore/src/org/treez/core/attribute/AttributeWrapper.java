@@ -10,15 +10,11 @@ public interface AttributeWrapper<T> extends Attribute<T> {
 
 	/**
 	 * Sets the wrapped Attribute
-	 *
-	 * @param attribute
 	 */
 	void setAttribute(Attribute<T> attribute);
 
 	/**
 	 * Returns the wrapped Attribute
-	 *
-	 * @return
 	 */
 	Attribute<T> getAttribute();
 

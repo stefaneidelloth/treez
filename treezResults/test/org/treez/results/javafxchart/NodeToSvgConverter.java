@@ -17,7 +17,7 @@ public class NodeToSvgConverter extends AbstractNodeToSvgConverter<Node> {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(JavaFxNodeToSvgConverter.class);
+	private static final Logger LOG = Logger.getLogger(JavaFxNodeToSvgConverter.class);
 
 	//#region CONSTRUCTORS
 
@@ -84,7 +84,7 @@ public class NodeToSvgConverter extends AbstractNodeToSvgConverter<Node> {
 			//handle special case of Node=>Parent=>Region=>Control
 			Control control = (Control) node;
 			String message = "A node of class " + node.getClass().getName() + " is a Control";
-			sysLog.info(message);
+			LOG.info(message);
 			String svgString = getSvgStringForControl(control);
 			return svgString;
 		} else {
@@ -153,14 +153,14 @@ public class NodeToSvgConverter extends AbstractNodeToSvgConverter<Node> {
 				if (isCanvas) {
 					String comment = "Warning: the Canvas class is not yet implemented";
 					String svgString = indentation + "<!--" + comment + " -->\n";
-					sysLog.warn(comment);
+					LOG.warn(comment);
 					return svgString;
 				} else {
 					//handle Node=> remaining ?xyz?
 					String classString = node.getClass().getName();
 					String comment = "Warning: the class '" + classString + "' is not yet implemented";
 					String svgString = indentation + "<!--" + comment + " -->\n";
-					sysLog.warn(comment);
+					LOG.warn(comment);
 					return svgString;
 				}
 			}

@@ -3,7 +3,6 @@ package org.treez.core.data.row;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.treez.core.atom.copy.Copiable;
@@ -15,12 +14,6 @@ import org.treez.core.utils.Utils;
  * Represents a table row
  */
 public class Row implements Copiable<Row> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Row.class);
 
 	//#region ATTRIBUTES
 
@@ -42,11 +35,6 @@ public class Row implements Copiable<Row> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param table
-	 */
 	public Row(TreezTable table) {
 		this.table = table;
 		entryMap = new HashMap<String, Object>();
@@ -54,8 +42,6 @@ public class Row implements Copiable<Row> {
 
 	/**
 	 * Copy constructor for same table
-	 *
-	 * @param row
 	 */
 	private Row(Row row) {
 		this.table = row.table;
@@ -68,9 +54,6 @@ public class Row implements Copiable<Row> {
 
 	/**
 	 * Copy constructor for new table
-	 *
-	 * @param row
-	 * @param newTable
 	 */
 	private Row(Row row, TreezTable newTable) {
 		this.table = newTable;
@@ -85,11 +68,6 @@ public class Row implements Copiable<Row> {
 
 	//#region METHODS
 
-	//#region COPY
-
-	/**
-	 * Copies the row. The new row stays in the same parent table
-	 */
 	@Override
 	public Row copy() {
 		return new Row(this);
@@ -105,8 +83,6 @@ public class Row implements Copiable<Row> {
 	public Row copyForNewTable(TreezTable newTable) {
 		return new Row(this, newTable);
 	}
-
-	//#end region
 
 	/**
 	 * Returns true if all entries of this row are empty
@@ -288,10 +264,6 @@ public class Row implements Copiable<Row> {
 		}
 	}
 
-	//#end region
-
-	//#region ACCESSORS
-
 	/**
 	 * Returns true if this row has a validation error
 	 */
@@ -313,20 +285,12 @@ public class Row implements Copiable<Row> {
 		hasValidationErrors = false;
 	}
 
-	/**
-	 * Returns the null string
-	 *
-	 * @return
-	 */
 	public String getNullString() {
 		return NULL_STRING;
 	}
 
 	/**
 	 * Returns true if the given value equals the null string
-	 *
-	 * @param label
-	 * @return
 	 */
 	public boolean isNullString(String label) {
 		boolean isNullString = NULL_STRING.equals(label);

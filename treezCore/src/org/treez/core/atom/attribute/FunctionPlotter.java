@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -14,12 +13,6 @@ import org.treez.core.swt.JavaFxWrapperForSwt;
  * Plots a functional expression
  */
 public class FunctionPlotter extends AbstractAttributeAtom<String> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FunctionPlotter.class);
 
 	//#region ATTRIBUTES
 
@@ -41,21 +34,11 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FunctionPlotter(String name) {
 		super(name);
 		title = name;
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FunctionPlotter(String name, String expression) {
 		super(name);
 		title = name;
@@ -64,8 +47,6 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param functionPlotterToCopy
 	 */
 	protected FunctionPlotter(FunctionPlotter functionPlotterToCopy) {
 		super(functionPlotterToCopy);
@@ -77,18 +58,11 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public FunctionPlotter copy() {
 		return new FunctionPlotter(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image baseImage = Activator.getImage("CheckBox.png");
@@ -152,7 +126,6 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 		if (plotter != null) {
 			plotter.showError();
 		}
-
 	}
 
 	@Override
@@ -174,49 +147,29 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return title;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.title = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultExpression;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultExpression = defaultValue;
 	}
 
-	/**
-	 * @param xMin
-	 * @param xMax
-	 */
 	public void setXDomain(Double xMin, Double xMax) {
 		if (plotter != null) {
 			plotter.setXDomain(xMin, xMax);
 		}
 	}
 
-	/**
-	 * @param yMin
-	 * @param yMax
-	 */
 	public void setYDomain(Double yMin, Double yMax) {
 		if (plotter != null) {
 			plotter.setYDomain(yMin, yMax);
@@ -226,7 +179,6 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 	@Override
 	public void setBackgroundColor(Color backgroundColor) {
 		//TODO Auto-generated method stub
-
 	}
 
 	//#end region

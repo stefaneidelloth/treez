@@ -19,10 +19,7 @@ import org.treez.javafxd3.d3.functions.MouseClickFunction;
  */
 public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(GraphicsAtom.class);
+	private static final Logger LOG = Logger.getLogger(GraphicsAtom.class);
 
 	//#region ATTRIBUTES
 
@@ -30,14 +27,8 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public GraphicsAtom(String name) {
 		super(name);
-
 	}
 
 	//#end region
@@ -65,7 +56,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 
 	/**
 	 * Binds the name of this atom to the id attribute of the given selection
-	 * 
+	 *
 	 * @param selection
 	 */
 	protected void bindNameToId(Selection selection) {
@@ -378,7 +369,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 */
 	@Override
 	public void handleMouseClick(Object context) {
-		sysLog.debug("Setting focus");
+		LOG.debug("Setting focus");
 		setFocus(this);
 	}
 

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -30,12 +29,6 @@ import org.treez.core.utils.Utils;
  */
 public class ColorChooser extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ColorChooser.class);
-
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "My Color:")
@@ -50,12 +43,12 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	private ImageCombo colorCombo = null;
 
 	/**
-	 * Predefined value names
+	 * Predefined color names
 	 */
 	private final List<String> colors = ColorValue.getAllStringValues();
 
 	/**
-	 * Predefined value values
+	 * Predefined color values
 	 */
 	private final List<String> colorsHex = ColorValue.getAllHexCodes();
 
@@ -63,22 +56,11 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public ColorChooser(String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name);
 	}
 
-	/**
-	 * Constructor with default value
-	 *
-	 * @param name
-	 * @param defaultColor
-	 */
 	public ColorChooser(String name, String defaultColor) {
 		this(name);
 		setDefaultValue(defaultColor);
@@ -86,8 +68,6 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param colorChooserToCopy
 	 */
 	private ColorChooser(ColorChooser colorChooserToCopy) {
 		super(colorChooserToCopy);
@@ -314,32 +294,22 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
 	/**
-	 * Sets the default color with the given hex color string or color name
-	 *
 	 * @param defaultColor
+	 *            :hex color string or color name
 	 */
 	public void setDefaultValue(String defaultColor) {
 
@@ -359,43 +329,22 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		this.defaultValue = attributeValue;
 	}
 
-	/**
-	 * Sets the default color
-	 *
-	 * @param colorValue
-	 */
 	public void setDefaultValue(ColorValue colorValue) {
 		setDefaultValue(colorValue.getHexCode());
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * Get value as string
-	 *
-	 * @return the value
-	 */
 	public String getColorString() {
 		return attributeValue;
 	}
 
-	/**
-	 * Get value
-	 *
-	 * @return
-	 */
 	public Color getColor() {
 		Objects.requireNonNull(attributeValue, "The value has not been set.");
 		String colorString = get();
@@ -408,11 +357,6 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		}
 	}
 
-	/**
-	 * Get value as rgb
-	 *
-	 * @return
-	 */
 	public RGB getColorRgb() {
 		Color colorObj = getColor();
 		int red = colorObj.getRed();
@@ -421,11 +365,6 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		return new RGB(red, green, blue);
 	}
 
-	/**
-	 * Sets the value with given rgb
-	 *
-	 * @param rgb
-	 */
 	public void setColorRGB(RGB rgb) {
 		String valueString = String.format("#%02x%02x%02x", rgb.red, rgb.green,
 				rgb.blue);
@@ -433,18 +372,13 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Returns the value as hex-string
-	 *
-	 * @return
+	 * Returns the color as hex-string
 	 */
 	@Override
 	public String get() {
 		return super.get();
 	}
 
-	/**
-	 * @param value
-	 */
 	@Override
 	public void set(String value) {
 		boolean isHexColor = value.substring(0, 1).equals("#");
@@ -463,7 +397,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Get predefined value names
+	 * Get predefined color names
 	 *
 	 * @return the colors
 	 */
@@ -472,7 +406,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Get predefined value hex strings
+	 * Get predefined color hex strings
 	 *
 	 * @return the colorsHex
 	 */

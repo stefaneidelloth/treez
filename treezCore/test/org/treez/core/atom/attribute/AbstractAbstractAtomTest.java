@@ -26,10 +26,7 @@ import org.treez.testutils.TestUtils;
  */
 public abstract class AbstractAbstractAtomTest {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger
+	private static final Logger LOG = Logger
 			.getLogger(AbstractAbstractAtomTest.class);
 
 	//#region ATTRIBUTES
@@ -131,7 +128,7 @@ public abstract class AbstractAbstractAtomTest {
 		String code = codeAdaption
 				.buildCodeContainer(rootContainer, injectedChildContainer)
 				.buildCode();
-		sysLog.info("Test Atom Code:\n" + code);
+		LOG.info("Test Atom Code:\n" + code);
 
 		//tree node adaption
 		assertEquals("adaptable", atom, treeNodeAdaption.getAdaptable());

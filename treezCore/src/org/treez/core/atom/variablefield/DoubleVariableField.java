@@ -3,7 +3,6 @@ package org.treez.core.atom.variablefield;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -21,27 +20,14 @@ import org.treez.core.atom.variablelist.DoubleVariableListField;
  */
 public class DoubleVariableField extends AbstractVariableField<Double> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(DoubleVariableField.class);
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public DoubleVariableField(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param fieldToCopy
 	 */
 	private DoubleVariableField(DoubleVariableField fieldToCopy) {
 		super(fieldToCopy);
@@ -51,18 +37,11 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public DoubleVariableField copy() {
 		return new DoubleVariableField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideBaseImage() {
 		return Activator.getImage("doubleVariable.png");
@@ -185,18 +164,12 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 
 	//#region DEFAULT VALUE
 
-	/**
-	 * @return
-	 */
 	@Override
 	public Double getDefaultValue() {
 		Double value = new Double(getDefaultValueString());
 		return value;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(Double defaultValue) {
 		if (defaultValue == null) {
 			setDefaultValueString("");

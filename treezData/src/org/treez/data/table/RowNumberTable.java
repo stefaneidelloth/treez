@@ -25,9 +25,6 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Serialization id
-	 */
 	private static final long serialVersionUID = -9039089014126726175L;
 
 	private JTable main;
@@ -36,11 +33,6 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param table
-	 */
 	public RowNumberTable(JTable table) {
 		main = table;
 		main.addPropertyChangeListener(this);
@@ -163,19 +155,28 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
 
 	//#end region
 
+	//#region INTERNAL CLASSES
+
 	/**
 	 * Attempt to mimic the table header renderer
 	 */
 	private static class RowNumberRenderer extends DefaultTableCellRenderer {
 
-		/**
-		 * Serialization id
-		 */
+		//#region ATTRIBUTES
+
 		private static final long serialVersionUID = 1396266162559922803L;
 
-		public RowNumberRenderer() {
+		//#end region
+
+		//#region CONSTRUCTORS
+
+		RowNumberRenderer() {
 			setHorizontalAlignment(SwingConstants.CENTER);
 		}
+
+		//#end region
+
+		//#region METHODS
 
 		@Override
 		public Component getTableCellRendererComponent(
@@ -209,5 +210,9 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
 
 			return this;
 		}
+
+		//#end region
 	}
+
+	//#end region
 }

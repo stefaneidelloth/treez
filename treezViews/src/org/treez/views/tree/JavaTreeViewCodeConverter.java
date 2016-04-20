@@ -31,12 +31,9 @@ import org.treez.views.tree.rootAtom.Root;
  */
 public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(JavaTreeViewCodeConverter.class);
+	private static final Logger LOG = Logger.getLogger(JavaTreeViewCodeConverter.class);
 
-	// #region ATTRIBUTES
+	//#region ATTRIBUTES
 
 	/**
 	 * The tree view provider this converter works for
@@ -48,22 +45,17 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 	 */
 	private String errorCode;
 
-	// #end region
+	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param treeViewProvider
-	 */
 	public JavaTreeViewCodeConverter(TreeViewProvider treeViewProvider) {
 		this.treeViewProvider = treeViewProvider;
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	/**
 	 * Checks if the currently active document is a java script and builds the tree from the script
@@ -71,7 +63,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 	@Override
 	public void checkActiveDocumentAndBuildTreeFromCode() {
 
-		sysLog.info("building tree");
+		LOG.info("building tree");
 
 		//get the file name of the currently active document
 		String fileName = treeViewProvider.getFileNameOfCurrentlyActiveDocument();
@@ -114,7 +106,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 		}
 
 		//build code
-		sysLog.debug("building " + scriptType + " code from tree");
+		LOG.debug("building " + scriptType + " code from tree");
 		buildCodeFromTree(fileName, scriptType);
 	}
 
@@ -131,7 +123,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 		if (rootAtom == null) {
 			return;
 		}
-		sysLog.info("Identified root atom '" + rootAtom.getName() + "'");
+		LOG.info("Identified root atom '" + rootAtom.getName() + "'");
 
 		//create code
 		CodeAdaption codeAdaption = rootAtom.createCodeAdaption(scriptType);
@@ -170,7 +162,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 	 */
 	private static void writeCodeToCurrentDocument(String code) {
 
-		sysLog.info("Writing code to current document.");
+		LOG.info("Writing code to current document.");
 
 		//get currently active editor
 		IEditorPart activeEditor = PlatformUI
@@ -191,11 +183,11 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 			document.replace(0, 0, code + "\n");
 		} catch (BadLocationException e) {
 			String message = "Could not write code to document";
-			sysLog.error(message, e);
+			LOG.error(message, e);
 			return;
 		}
 
-		sysLog.info("finished");
+		LOG.info("finished");
 
 	}
 
@@ -213,7 +205,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 		if (!rootExists) {
 			String message = "Number of root itmes is not 1 but " + roots.length
 					+ ". Could not get root atom from tree viewer.";
-			sysLog.error(message);
+			LOG.error(message);
 			return null;
 		}
 		TreeItem rootItem = roots[0];
@@ -225,7 +217,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 		if (!isAbstractAtom) {
 			String message = "The root object is not an AbstractAtom but " + rootObject.getClass().getSimpleName()
 					+ ". Could not get valid root from tree viewer.";
-			sysLog.error(message);
+			LOG.error(message);
 			return null;
 		}
 		AbstractAtom rootAtom = (AbstractAtom) rootObject;
@@ -249,7 +241,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 		} catch (Exception exception) {
 			executionException = exception;
 			errorCode = exception.getMessage();
-			sysLog.error("Could not execute currently active document (error code '" + errorCode + "')", exception);
+			LOG.error("Could not execute currently active document (error code '" + errorCode + "')", exception);
 		}
 
 		// update the tree view
@@ -277,13 +269,13 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 				// show an error by setting the background color of the tree
 				// view to orange
 				String message = "The root item 'root' could not be found.";
-				sysLog.debug(message);
+				LOG.debug(message);
 				treeViewProvider.visualizeErrorState(TreeErrorState.ERROR, new IllegalStateException(message));
 			}
 		}
 
 	}
 
-	// #end region
+	//#end region
 
 }

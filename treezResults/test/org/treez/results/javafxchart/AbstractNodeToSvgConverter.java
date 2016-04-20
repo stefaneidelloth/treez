@@ -23,7 +23,7 @@ public abstract class AbstractNodeToSvgConverter<T extends Node> implements Node
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(JavaFxNodeToSvgConverter.class);
+	private static final Logger LOG = Logger.getLogger(JavaFxNodeToSvgConverter.class);
 
 	//#region ATTRIBUTES
 

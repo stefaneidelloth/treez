@@ -13,7 +13,7 @@ public class DataTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(DataTest.class);
+	private static final Logger LOG = Logger.getLogger(DataTest.class);
 
 	//#region SETUP
 

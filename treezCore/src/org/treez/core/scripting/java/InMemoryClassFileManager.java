@@ -33,10 +33,7 @@ public class InMemoryClassFileManager
 		extends
 			ForwardingJavaFileManager<JavaFileManager> {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger
+	private static final Logger LOG = Logger
 			.getLogger(InMemoryClassFileManager.class);
 
 	//#region ATTRIBUTES
@@ -115,7 +112,7 @@ public class InMemoryClassFileManager
 	@Override
 	public JavaFileObject getJavaFileForOutput(Location location,
 			String className, Kind kind, FileObject sibling)
-					throws IOException {
+			throws IOException {
 
 		compiledJavaFileContainer = new CompiledJavaFileContainer(className,
 				kind);
@@ -172,11 +169,11 @@ public class InMemoryClassFileManager
 		String classLoaderType = classLoader.getClass().getSimpleName();
 		switch (classLoaderType) {
 			case "AppClassLoader" :
-				//sysLog.debug("Using AppClassLoader");
+				//LOG.debug("Using AppClassLoader");
 				//nothing to do here
 				break;
 			case "EquinoxClassLoader" :
-				//sysLog.debug("Using EquinoxClassLoader");
+				//LOG.debug("Using EquinoxClassLoader");
 				Set<String> bundleIds = javaFileToBeCompiled.getBundleIds();
 				bundleIds = extendBundleIdsWithDependencies(bundleIds);
 
@@ -198,7 +195,7 @@ public class InMemoryClassFileManager
 				throw new IllegalStateException(message);
 		}
 
-		//sysLog.debug("classpath: " + classPath);
+		//LOG.debug("classpath: " + classPath);
 
 		return classPath;
 	}
@@ -250,7 +247,7 @@ public class InMemoryClassFileManager
 			} catch (Exception exception) {
 				String message = "Could not extend classpath with bundleId "
 						+ bundleId;
-				sysLog.error(message, exception);
+				LOG.error(message, exception);
 			}
 		}
 		return newClassPath;
@@ -335,7 +332,7 @@ public class InMemoryClassFileManager
 		if (binFolder.exists()) {
 			String pluginBinSubFolderPath = pluginBinClassPath + "\\.";
 			pluginBinSubFolderPath = pluginBinSubFolderPath.replace("/", "\\");
-			//sysLog.debug("Appending to classpath: " +
+			//LOG.debug("Appending to classpath: " +
 			//pluginBinSubFolderPath);
 			newClassPath = newClassPath + ";" + pluginBinSubFolderPath;
 		}

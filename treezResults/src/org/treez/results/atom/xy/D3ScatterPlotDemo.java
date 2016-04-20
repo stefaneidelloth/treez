@@ -36,12 +36,6 @@ public class D3ScatterPlotDemo extends Application {
 
 	//#region METHODS
 
-	/**
-	 * Main
-	 *
-	 * @param args
-	 */
-
 	public static void main(String[] args) {
 		launch(args);
 	}

@@ -12,7 +12,7 @@ public class ModelPathTest extends AbstractAttributeAtomConstructionTest<String>
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ModelPathTest.class);
+	private static final Logger LOG = Logger.getLogger(ModelPathTest.class);
 
 	//#region ATTRIBUTES
 

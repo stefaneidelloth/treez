@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
@@ -23,13 +22,6 @@ import org.treez.core.swt.CustomLabel;
 public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 		implements
 			VariableField<T> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(AbstractVariableField.class);
 
 	//#region ATTRIBUTES
 

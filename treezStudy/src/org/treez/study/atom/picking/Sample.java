@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
@@ -30,12 +29,6 @@ import org.treez.study.Activator;
  * Represents a picking sample for a picking parameter variation.
  */
 public class Sample extends AdjustableAtom {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Sample.class);
 
 	//#region ATTRIBUTES
 
@@ -74,11 +67,6 @@ public class Sample extends AdjustableAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Sample(String name) {
 		super(name);
 	}
@@ -424,11 +412,6 @@ public class Sample extends AdjustableAtom {
 
 	//#region ENABLED STATE
 
-	/**
-	 * Sets the enabled state
-	 *
-	 * @param enabledState
-	 */
 	public void setEnabled(boolean enabledState) {
 		if (enabled.get() != enabledState) {
 			enabled.set(enabledState);

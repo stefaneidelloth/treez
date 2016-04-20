@@ -2,7 +2,6 @@ package org.treez.core.atom.variablelist;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -32,13 +31,6 @@ import org.treez.core.swt.CustomLabel;
 public class QuantityVariableListField
 		extends
 			AbstractVariableListField<Quantity> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(QuantityVariableListField.class);
 
 	//#region ATTRIBUTES
 
@@ -93,11 +85,6 @@ public class QuantityVariableListField
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public QuantityVariableListField(String name) {
 		super(name);
 		label = name;
@@ -106,8 +93,6 @@ public class QuantityVariableListField
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param fieldToCopy
 	 */
 	private QuantityVariableListField(QuantityVariableListField fieldToCopy) {
 		super(fieldToCopy);
@@ -124,18 +109,11 @@ public class QuantityVariableListField
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public QuantityVariableListField copy() {
 		return new QuantityVariableListField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("variable.png");
@@ -444,11 +422,6 @@ public class QuantityVariableListField
 
 	//#region VALUE STRING
 
-	/**
-	 * Gets the value string
-	 *
-	 * @return
-	 */
 	public String getValueString() {
 		return valueString;
 	}
@@ -478,11 +451,6 @@ public class QuantityVariableListField
 
 	//#region UNIT STRING
 
-	/**
-	 * Gets the unit string
-	 *
-	 * @return
-	 */
 	public String getUnitString() {
 		return unitString;
 	}
@@ -511,16 +479,10 @@ public class QuantityVariableListField
 
 	//#region VALUE LABEL
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	@Override
 	public void setLabel(String label) {
 		this.label = label;
@@ -530,9 +492,6 @@ public class QuantityVariableListField
 
 	//#region DEFAULT VALUE & UNIT
 
-	/**
-	 * @return
-	 */
 	@Override
 	public List<Quantity> getDefaultValue() {
 		List<Quantity> quantities = createQuantityList(defaultValueString,
@@ -540,9 +499,6 @@ public class QuantityVariableListField
 		return quantities;
 	}
 
-	/**
-	 * @param valueList
-	 */
 	public void setDefaultValue(List<Quantity> valueList) {
 		if (valueList.isEmpty()) {
 			setDefaultValueString("");
@@ -557,30 +513,18 @@ public class QuantityVariableListField
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	public String getDefaultValueString() {
 		return defaultValueString;
 	}
 
-	/**
-	 * @param defaultValueString
-	 */
 	public void setDefaultValueString(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getDefaultUnitString() {
 		return defaultUnitString;
 	}
 
-	/**
-	 * @param defaultUnitString
-	 */
 	public void setDefaultUnitString(String defaultUnitString) {
 		this.defaultUnitString = defaultUnitString;
 	}
@@ -589,16 +533,10 @@ public class QuantityVariableListField
 
 	//#region TOOL TIP
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}

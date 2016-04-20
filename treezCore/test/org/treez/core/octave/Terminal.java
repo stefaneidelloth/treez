@@ -51,7 +51,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(Terminal.class);
+	private static final Logger LOG = Logger.getLogger(Terminal.class);
 
 	//#region ATTRIBUTES
 
@@ -87,7 +87,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 	public Terminal(String[] args) {
 
 		PropertyConfigurator.configure("meta-inf/log4j.properties");
-		sysLog.setLevel(Level.DEBUG);
+		LOG.setLevel(Level.DEBUG);
 
 		createControl();
 
@@ -263,7 +263,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 			//open file
 			String pathInfo = atset.getAttribute(HTML.Attribute.HREF).toString();
 
-			sysLog.info(pathInfo);
+			LOG.info(pathInfo);
 
 			String[] parts;
 
@@ -311,7 +311,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 			//move cursor to end of text
 			outputTextPane.setCaretPosition(outputTextPane.getDocument().getLength());
 		} catch (BadLocationException e) {
-			sysLog.error("Could not write text to terminal");
+			LOG.error("Could not write text to terminal");
 		}
 	}
 
@@ -372,7 +372,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 			//move cursor to end of text
 			outputTextPane.setCaretPosition(outputTextPane.getDocument().getLength());
 		} catch (Exception e) {
-			sysLog.error("Could not write error text to terminal", e);
+			LOG.error("Could not write error text to terminal", e);
 		}
 	}
 
@@ -398,7 +398,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 			Document doc = outputTextPane.getDocument();
 			doc.insertString(doc.getLength(), insertText, urlAttrs);
 		} catch (BadLocationException e) {
-			sysLog.error("Could not write hyperlink to terminal.");
+			LOG.error("Could not write hyperlink to terminal.");
 		}
 	}
 
@@ -423,7 +423,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 			//move cursor to end of text
 			outputTextPane.setCaretPosition(outputTextPane.getDocument().getLength());
 		} catch (Exception e) {
-			sysLog.error("Could not write info text to terminal", e);
+			LOG.error("Could not write info text to terminal", e);
 		}
 	}
 
@@ -448,7 +448,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 
 			historyIndex = 0;
 			//} catch (Exception e) {
-			//	sysLog.debug("Could not add command to history.");
+			//	LOG.debug("Could not add command to history.");
 			//}
 
 			//run commandString as Octave Command
@@ -497,7 +497,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 		try {
 			server = new ServerSocket(4444);
 		} catch (IOException e) {
-			sysLog.error("Could not listen on port: 4444.");
+			LOG.error("Could not listen on port: 4444.");
 			writeErrorToTerminal("Could not listen on port: 4444!");
 		}
 
@@ -509,7 +509,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 				Thread t = new Thread(w);
 				t.start();
 			} catch (IOException e) {
-				sysLog.error("Accept failed: 4444");
+				LOG.error("Accept failed: 4444");
 				writeErrorToTerminal("Accept failed: 4444");
 				break;
 			}
@@ -523,7 +523,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 			server.close();
 			octaveProcess.close();
 		} catch (IOException e) {
-			sysLog.error("Octave Terminal: Could not close Server.");
+			LOG.error("Octave Terminal: Could not close Server.");
 		}
 	}
 
@@ -568,14 +568,14 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 				}//end of while(true) loop
 
 			} catch (IOException e) {
-				sysLog.error("Octave Terminal Server: Connection to in or out stream failed");
+				LOG.error("Octave Terminal Server: Connection to in or out stream failed");
 				writeErrorToTerminal("Octave Terminal Server: Connection to in or out stream failed!");
 			}
 
 			try {
 				client.close();
 			} catch (IOException e) {
-				sysLog.error("Octave Terminal Server: Failed to close Client!");
+				LOG.error("Octave Terminal Server: Failed to close Client!");
 				writeErrorToTerminal("Octave Terminal Server: Failed to close Client!");
 			}
 		}
@@ -586,7 +586,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 				//execute Octave command
 				octaveProcess.runOctaveCommand(commandString);
 			} catch (Exception e) {
-				sysLog.error("Octave could not execute " + commandString + " :\n", e);
+				LOG.error("Octave could not execute " + commandString + " :\n", e);
 				writeErrorToTerminal("Error: Octave could not run following command: \n" + commandString);
 			}
 		}

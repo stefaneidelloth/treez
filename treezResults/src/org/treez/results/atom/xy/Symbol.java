@@ -29,14 +29,8 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 	Selection symbolsSelection;
 
-	/**
-	 * Type
-	 */
 	public final Attribute<String> symbolType = new Wrap<>();
 
-	/**
-	 * Square size
-	 */
 	public final Attribute<String> size = new Wrap<>();
 
 	/**
@@ -44,69 +38,30 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 	 */
 	//public final Attribute<String> thinMarkers = new Wrap<>();
 
-	/**
-	 * Hides the symbols
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//public final Attribute<String> errorStyle = new Wrap<>();
 
-	/**
-	 * Fill color
-	 */
 	public final Attribute<String> fillColor = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//public final Attribute<String> fillStyle = new Wrap<>();
 
-	/**
-	 * Fill transparency
-	 */
 	public final Attribute<String> fillTransparency = new Wrap<>();
 
-	/**
-	 * Hides the fill
-	 */
 	public final Attribute<Boolean> hideFill = new Wrap<>();
 
-	/**
-	 * Line color
-	 */
 	public final Attribute<String> lineColor = new Wrap<>();
 
-	/**
-	 * Line width
-	 */
 	public final Attribute<String> lineWidth = new Wrap<>();
 
-	/**
-	 * Line style
-	 */
 	public final Attribute<String> lineStyle = new Wrap<>();
 
-	/**
-	 * Line transparency
-	 */
 	public final Attribute<String> lineTransparency = new Wrap<>();
 
-	/**
-	 * Hides the line
-	 */
 	public final Attribute<Boolean> hideLine = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//public final Attribute<String> colorMap = new Wrap<>();
 
-	/**
-	 *
-	 */
 	//public final Attribute<Boolean> invertMap = new Wrap<>();
 
 	//#end region
@@ -118,7 +73,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		Page symbolPage = root.createPage("symbol", "   Symbol   ");
 
-		// #region marker section
+		//#region marker section
 
 		Section symbol = symbolPage.createSection("symbol");
 
@@ -166,7 +121,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		markerBorder.createCheckBox(hideLine, "hide");
 
-		// #end region
+		//#end region
 	}
 
 	@Override

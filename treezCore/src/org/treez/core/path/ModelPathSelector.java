@@ -15,10 +15,7 @@ import org.treez.core.utils.Utils;
  */
 public final class ModelPathSelector {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(ModelPathSelector.class);
+	private static final Logger LOG = Logger.getLogger(ModelPathSelector.class);
 
 	//#region CONSTRUCTORS
 
@@ -44,7 +41,7 @@ public final class ModelPathSelector {
 	public static String selectTreePath(AbstractAtom model,
 			String targetClassNames, String defaultModelPath) {
 
-		sysLog.debug("Selecting tree path");
+		LOG.debug("Selecting tree path");
 		ModelPathTreeSelectionWindow selectionWindow = new ModelPathTreeSelectionWindow();
 		selectionWindow.selectModelPath(model, targetClassNames,
 				defaultModelPath);
@@ -121,7 +118,7 @@ public final class ModelPathSelector {
 			return false;
 		} catch (SecurityException exception) {
 			String message = "Could not access method 'isEnabled'. Returning false";
-			sysLog.warn(message, exception);
+			LOG.warn(message, exception);
 			return false;
 		}
 
@@ -132,7 +129,7 @@ public final class ModelPathSelector {
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException exception) {
 			String message = "Could not access method 'isEnabled'. Returning false";
-			sysLog.warn(message, exception);
+			LOG.warn(message, exception);
 			return false;
 		}
 

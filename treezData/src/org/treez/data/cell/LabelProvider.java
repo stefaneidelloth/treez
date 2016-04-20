@@ -11,42 +11,46 @@ import org.treez.core.utils.Utils;
 
 /**
  * Label provider for table entries
- *
  */
 public class LabelProvider extends CellLabelProvider {
-	 
-    private String header;
-    private ColumnType columnType;
 
-    /**
-     * Constructor
-     * 
-     * @param header
-     * @param columnType
-     */
-    public LabelProvider(String header, ColumnType columnType) {
-        super();
-        this.header = header;
-        this.columnType = columnType;
-    }
+	//#region ATTRIBUTES
 
-    @Override
-    public void update(ViewerCell cell) {        	        	
-    	
-    	//get element
-    	Row row = (Row) cell.getElement();
-    	
-    	//set label
-    	String value = row.getEntryAsString(header);
-    	cell.setText(value);  
-    	
-    	//set background value
-    	if (columnType == ColumnType.COLOR) {
-    		RGB rgb = Utils.convertToRGB(value);        		
-    		Color color = new Color(Display.getCurrent(), rgb.red, rgb.green, rgb.blue);
-    		cell.setBackground(color);
-    	}
-    } 
+	private String header;
+
+	private ColumnType columnType;
+
+	//#end region
+
+	//#region CONSTRUCTORS
+
+	public LabelProvider(String header, ColumnType columnType) {
+		super();
+		this.header = header;
+		this.columnType = columnType;
+	}
+
+	//#end region
+
+	//#region METHODS
+
+	@Override
+	public void update(ViewerCell cell) {
+
+		//get element
+		Row row = (Row) cell.getElement();
+
+		//set label
+		String value = row.getEntryAsString(header);
+		cell.setText(value);
+
+		//set background value
+		if (columnType == ColumnType.COLOR) {
+			RGB rgb = Utils.convertToRGB(value);
+			Color color = new Color(Display.getCurrent(), rgb.red, rgb.green, rgb.blue);
+			cell.setBackground(color);
+		}
+	}
+
+	//#end region
 }
-
-

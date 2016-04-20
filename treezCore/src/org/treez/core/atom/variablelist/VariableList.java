@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,12 +28,6 @@ import org.treez.core.swt.CustomLabel;
 public class VariableList
 		extends
 			AbstractAttributeAtom<List<VariableField<?>>> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(VariableList.class);
 
 	//#region ATTRIBUTES
 
@@ -65,22 +58,12 @@ public class VariableList
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public VariableList(String name) {
 		super(name);
 		label = name;
 		createTreezList(null);
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public VariableList(String name,
 			List<VariableField<?>> availableVariables) {
 		super(name);
@@ -90,8 +73,6 @@ public class VariableList
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param atomToCopy
 	 */
 	protected VariableList(VariableList atomToCopy) {
 		super(atomToCopy);
@@ -118,18 +99,11 @@ public class VariableList
 		treezList.setFirstRowAutoCreation(false);
 	}
 
-	//#region COPY
-
 	@Override
 	public VariableList copy() {
 		return new VariableList(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("column.png");
@@ -252,16 +226,10 @@ public class VariableList
 
 	//#region LABEL
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -300,9 +268,6 @@ public class VariableList
 
 	//#region DEFAULT VALUE
 
-	/**
-	 * @return
-	 */
 	@Override
 	public List<VariableField<?>> getDefaultValue() {
 		List<VariableField<?>> stringValues = valueStringToList(
@@ -310,9 +275,6 @@ public class VariableList
 		return stringValues;
 	}
 
-	/**
-	 * @param defaultValueString
-	 */
 	public void setDefaultValue(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
 	}
@@ -370,11 +332,6 @@ public class VariableList
 
 	}
 
-	/**
-	 * Adds a variable
-	 *
-	 * @param variableField
-	 */
 	public void addVariable(VariableField<?> variableField) {
 		String variableName = variableField.getName();
 		treezList.addRow(variableName);

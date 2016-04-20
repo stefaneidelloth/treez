@@ -2,37 +2,17 @@ package org.treez.core.atom.variablelist;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.atom.attribute.base.AttributeAtomCodeAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.utils.Utils;
 
-/**
- * Code adaption for the double variable list field
- */
 public class IntegerVariableListFieldCodeAdaption
 		extends
 			AttributeAtomCodeAdaption<List<Integer>> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(IntegerVariableListFieldCodeAdaption.class);
-
-	//#region ATTRIBUTES
-
-	//#end region
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param atom
-	 */
 	public IntegerVariableListFieldCodeAdaption(IntegerVariableListField atom) {
 		super(atom);
 	}
@@ -41,11 +21,6 @@ public class IntegerVariableListFieldCodeAdaption
 
 	//#region METHODS
 
-	/**
-	 * @param parentAtom
-	 * @param parentContainer
-	 * @return
-	 */
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
 			AbstractAtom parentAtom, CodeContainer parentContainer) {
@@ -71,7 +46,6 @@ public class IntegerVariableListFieldCodeAdaption
 
 			return extendedContainer;
 		}
-
 	}
 
 	//#end region

@@ -11,6 +11,8 @@ import org.treez.core.data.table.TreezTable;
  */
 public class EditingProvider extends EditingSupport {
 
+	//#region ATTRIBUTES
+
 	private ColumnViewer tableViewer;
 
 	private TreezTable table;
@@ -19,21 +21,22 @@ public class EditingProvider extends EditingSupport {
 
 	private CellEditor cellEditor;
 
-	/**
-	 * Constructor
-	 *
-	 * @param tableViewer
-	 * @param table
-	 * @param header
-	 * @param cellEditor
-	 */
-	public EditingProvider(ColumnViewer tableViewer, TreezTable table, String header, CellEditor cellEditor) {
+	//#end region
+
+	//#region CONSTRUCTORS
+
+	public EditingProvider(ColumnViewer tableViewer, TreezTable table,
+			String header, CellEditor cellEditor) {
 		super(tableViewer);
 		this.tableViewer = tableViewer;
 		this.table = table;
 		this.header = header;
 		this.cellEditor = cellEditor;
 	}
+
+	//#end region
+
+	//#region METHODS
 
 	@Override
 	protected boolean canEdit(Object element) {
@@ -58,4 +61,6 @@ public class EditingProvider extends EditingSupport {
 		row.setEntry(header, input);
 		tableViewer.refresh();
 	}
+
+	//#end region
 }

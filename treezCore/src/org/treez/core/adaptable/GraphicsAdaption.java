@@ -22,29 +22,14 @@ public interface GraphicsAdaption extends ControlAdaption {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	boolean isVisible();
 
-	/**
-	 * @return
-	 */
 	double getX();
 
-	/**
-	 * @return
-	 */
 	double getY();
 
-	/**
-	 * @return
-	 */
 	double getWidth();
 
-	/**
-	 * @return
-	 */
 	double getHeight();
 
 	//end region

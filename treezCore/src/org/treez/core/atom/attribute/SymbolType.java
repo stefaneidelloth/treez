@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,12 +24,6 @@ import org.treez.core.swt.CustomLabel;
  */
 public class SymbolType extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SymbolType.class);
-
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "My Symbol Style:")
@@ -42,19 +35,10 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "")
 	private String tooltip;
 
-	/**
-	 * Combo box
-	 */
 	private ImageCombo styleCombo = null;
 
-	/**
-	 * Image label
-	 */
 	private Label imageLabel = null;
 
-	/**
-	 * Prefix for the image file names
-	 */
 	private final String imagePrefix = "symbol_";
 
 	/**
@@ -66,23 +50,11 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 	//#end region
 
 	//#region CONSTRUCTORS
-
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public SymbolType(String name) {
 		super(name);
 		label = name;
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 * @param defaultStyle
-	 */
 	public SymbolType(String name, String label, String defaultStyle) {
 		super(name);
 		this.label = label;
@@ -98,8 +70,6 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param symbolStyleToCopy
 	 */
 	private SymbolType(SymbolType symbolStyleToCopy) {
 		super(symbolStyleToCopy);
@@ -112,28 +82,16 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public SymbolType copy() {
 		return new SymbolType(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("symbol_style.png");
 	}
 
-	/**
-	 * Creates the composite on a given parent
-	 *
-	 * @param parent
-	 */
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
 			Composite parent, Refreshable treeViewerRefreshable) {
@@ -258,74 +216,40 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * Sets the default line style
-	 *
-	 * @param symbolStyleValue
-	 */
 	public void setDefaultValue(SymbolStyleValue symbolStyleValue) {
 		setDefaultValue(symbolStyleValue.toString());
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * Get symbol style as string
-	 *
-	 * @return the value
-	 */
 	@Override
 	public String get() {
 		return super.get();
 	}
 
-	/**
-	 * Set symbol style
-	 *
-	 * @param style
-	 *            the value to set
-	 */
 	@Override
 	public void set(String style) {
 		super.set(style);
@@ -333,8 +257,6 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Get predefined symbol styles
-	 *
-	 * @return the symbol styles
 	 */
 	public List<String> getSymbolStyles() {
 		return symbolStyles;

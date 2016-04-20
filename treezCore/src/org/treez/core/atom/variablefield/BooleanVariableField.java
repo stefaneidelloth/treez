@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -18,12 +17,6 @@ public class BooleanVariableField extends CheckBox
 			VariableField<Boolean> {
 
 	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(BooleanVariableField.class);
-
-	/**
 	 * Background color
 	 */
 	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245,
@@ -35,19 +28,12 @@ public class BooleanVariableField extends CheckBox
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public BooleanVariableField(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param checkBoxToCopy
 	 */
 	private BooleanVariableField(BooleanVariableField checkBoxToCopy) {
 		super(checkBoxToCopy);

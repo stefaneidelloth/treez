@@ -5,8 +5,6 @@ package org.treez.core.data.table;
  */
 public enum TableSourceType {
 
-	//#region VALUES
-
 	/**
 	 * A comma separated text file
 	 */
@@ -32,13 +30,4 @@ public enum TableSourceType {
 	 */
 	ACCESS;
 
-	//#end region
-
-	//#region ATTRIBUTES
-
-	//#end region
-
-	//#region CONSTRUCTORS
-
-	//#end region
 }

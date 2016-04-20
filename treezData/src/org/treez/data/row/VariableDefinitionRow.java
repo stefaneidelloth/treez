@@ -3,7 +3,6 @@ package org.treez.data.row;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.treez.core.data.row.Row;
 import org.treez.data.evaluation.VariableDefinitionEvaluator;
 import org.treez.data.evaluation.VariableDefinitionResult;
@@ -14,12 +13,6 @@ import org.treez.data.variable.VariableDefinition;
  */
 
 public class VariableDefinitionRow extends Row {
-
-	/**
-	 * headers Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(VariableDefinitionRow.class);
 
 	//#region ATTRIBUTES
 
@@ -42,14 +35,6 @@ public class VariableDefinitionRow extends Row {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param variableDefinition
-	 * @param name
-	 * @param definition
-	 * @param description
-	 */
 	@SuppressWarnings("checkstyle:magicnumber")
 	public VariableDefinitionRow(
 			VariableDefinition variableDefinition,
@@ -82,8 +67,6 @@ public class VariableDefinitionRow extends Row {
 
 	/**
 	 * Copy constructor (creates a new variable name)
-	 * 
-	 * @param variableDefinitionRow
 	 */
 	public VariableDefinitionRow(VariableDefinitionRow variableDefinitionRow) {
 		super(variableDefinitionRow.table);
@@ -92,25 +75,25 @@ public class VariableDefinitionRow extends Row {
 		this.nameTooltip = "";
 		this.entryMap = new HashMap<>();
 
-		//set new variable name    	
+		//set new variable name
 		String oldName = variableDefinitionRow.getEntryAsString("Name");
 		String newName = variableDefinition.createNewVariableName(oldName);
 		setEntry("Name", newName);
 
-		//set and evaluate definition    	
+		//set and evaluate definition
 		setEntry("Definition", variableDefinitionRow.getEntry("Definition"));
 
-		//copy description    	
+		//copy description
 		setEntry("Description", variableDefinitionRow.getEntry("Description"));
 	}
 
 	//#end region
 
-	//#region METHODS	     
+	//#region METHODS
 
 	/**
 	 * Sets an entry of this row for the column with the given column header
-	 * 
+	 *
 	 * @param columnHeader
 	 * @param entry
 	 */
@@ -139,8 +122,8 @@ public class VariableDefinitionRow extends Row {
 			}
 
 		} else {
-			throw new IllegalArgumentException("The columnHeader " + columnHeader + " for entry " + entry
-					+ " is not valid");
+			throw new IllegalArgumentException(
+					"The columnHeader " + columnHeader + " for entry " + entry + " is not valid");
 		}
 	}
 
@@ -160,7 +143,7 @@ public class VariableDefinitionRow extends Row {
 
 	/**
 	 * Counts the number of occurrences for the given filePath in the column with given header
-	 * 
+	 *
 	 * @param header
 	 * @param value
 	 * @return
@@ -199,12 +182,6 @@ public class VariableDefinitionRow extends Row {
 		definitionTooltip = error;
 	}
 
-	/**
-	 * Returns the tool tip
-	 * 
-	 * @param header
-	 * @return
-	 */
 	public String getToolTip(String header) {
 		if (header.equals("Name")) {
 			return nameTooltip;
@@ -215,13 +192,10 @@ public class VariableDefinitionRow extends Row {
 		}
 	}
 
-	/**
-	 * @return the variableDefinition
-	 */
 	public VariableDefinition getVariableDefinition() {
 		return variableDefinition;
 	}
 
-	//#end region	
+	//#end region
 
 }

@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -17,30 +16,15 @@ public class FilePathVariableField extends FilePath
 		implements
 			VariableField<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(FilePathVariableField.class);
+	//#region ATTRIBUTES
 
-	/**
-	 * Background color
-	 */
 	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245,
 			249);
-
-	//#region ATTRIBUTES
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FilePathVariableField(String name) {
 		super(name);
 		this.setShowEnabledCheckBox(true);
@@ -48,8 +32,6 @@ public class FilePathVariableField extends FilePath
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param atomToCopy
 	 */
 	private FilePathVariableField(FilePathVariableField atomToCopy) {
 		super(atomToCopy);
@@ -68,9 +50,6 @@ public class FilePathVariableField extends FilePath
 
 	//#end region
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image baseImage = Activator.getImage("filePathVariable.png");

@@ -14,7 +14,7 @@ public class FunctionPlotterTest
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FunctionPlotterTest.class);
+	private static final Logger LOG = Logger.getLogger(FunctionPlotterTest.class);
 
 	//#region SETUP
 

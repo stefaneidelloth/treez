@@ -15,10 +15,7 @@ import org.treez.core.data.column.ColumnType;
  */
 public final class TextDataTableImporter {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(TextDataTableImporter.class);
+	private static final Logger LOG = Logger.getLogger(TextDataTableImporter.class);
 
 	//#region CONSTRUCTORS
 
@@ -111,7 +108,8 @@ public final class TextDataTableImporter {
 
 		List<List<String>> lines = new ArrayList<>();
 		int rowCount = 0;
-		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+		try (
+				BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 			String line;
 			while ((line = br.readLine()) != null && rowCount < rowLimit) {
 				String[] lineEntries = line.split(columnSeparator);
@@ -120,16 +118,12 @@ public final class TextDataTableImporter {
 			}
 		} catch (IOException exception) {
 			String message = "Could not read text file '" + filePath + "'";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 			throw new IllegalStateException(message, exception);
 		}
 
 		return lines;
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

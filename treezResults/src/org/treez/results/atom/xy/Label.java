@@ -20,54 +20,24 @@ public class Label implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 *
-	 */
 	public final Attribute<String> horizontalPosition = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> verticalPosition = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> angle = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> font = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> fontSize = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> italic = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> bold = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> underline = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	//#end region

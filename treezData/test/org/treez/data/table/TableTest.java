@@ -28,7 +28,7 @@ public class TableTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(TableTest.class);
+	private static final Logger LOG = Logger.getLogger(TableTest.class);
 
 	//#region SETUP
 

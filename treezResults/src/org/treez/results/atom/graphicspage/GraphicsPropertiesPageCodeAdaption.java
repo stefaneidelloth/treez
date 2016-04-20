@@ -17,11 +17,6 @@ public class GraphicsPropertiesPageCodeAdaption extends AdjustableAtomCodeAdapti
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param atom
-	 */
 	public GraphicsPropertiesPageCodeAdaption(GraphicsPropertiesPage atom) {
 		super(atom);
 	}

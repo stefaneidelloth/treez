@@ -2,7 +2,6 @@ package org.treez.core.scripting.java.classloader;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
@@ -13,12 +12,6 @@ import org.osgi.framework.Bundle;
  * The class loaders are created by the InMemoryClassFileManager.
  */
 public class BundleClassLoader extends ClassLoader {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(BundleClassLoader.class);
 
 	//#region ATTRIBUTES
 
@@ -32,12 +25,6 @@ public class BundleClassLoader extends ClassLoader {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param bundleIds
-	 */
 	public BundleClassLoader(ClassLoader parent, Set<String> bundleIds) {
 		super(parent);
 		this.bundleIds = bundleIds;
@@ -49,7 +36,7 @@ public class BundleClassLoader extends ClassLoader {
 
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		//sysLog.debug("Searching class '" + name + "' with BundleClassLoader.");
+		//LOG.debug("Searching class '" + name + "' with BundleClassLoader.");
 
 		//search the bundles for the requested class
 		Class<?> clazz = null;
@@ -58,9 +45,9 @@ public class BundleClassLoader extends ClassLoader {
 			boolean continueLoop = (clazz == null) && (bundle != null);
 			if (continueLoop) {
 				try {
-					//sysLog.debug("Checking bundle " + bundleId + "...");
+					//LOG.debug("Checking bundle " + bundleId + "...");
 					clazz = bundle.loadClass(name);
-					//sysLog.debug("Found class " + name + ".");
+					//LOG.debug("Found class " + name + ".");
 				} catch (ClassNotFoundException exception) {
 					//nothing to do here
 				}
@@ -70,7 +57,7 @@ public class BundleClassLoader extends ClassLoader {
 		if (clazz == null) {
 			String message = "Could not find class '" + name
 					+ "' with BundleClassLoader.";
-			//sysLog.debug(message);
+			//LOG.debug(message);
 			throw new ClassNotFoundException(message); //after throwing this, the child class loaders will continue the search.
 		}
 

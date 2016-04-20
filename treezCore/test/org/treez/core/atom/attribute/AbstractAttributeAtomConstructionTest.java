@@ -26,10 +26,7 @@ import org.treez.testutils.TestUtils;
  */
 public abstract class AbstractAttributeAtomConstructionTest<T> {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger
+	private static final Logger LOG = Logger
 			.getLogger(AbstractAttributeAtomConstructionTest.class);
 
 	//#region ATTRIBUTES
@@ -113,7 +110,7 @@ public abstract class AbstractAttributeAtomConstructionTest<T> {
 					.buildCode();
 		} catch (IllegalStateException exception) {
 			String message = "Could not build code";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 		}
 		previewWindow.setCode(code);
 
@@ -168,9 +165,9 @@ public abstract class AbstractAttributeAtomConstructionTest<T> {
 					.buildCode();
 		} catch (IllegalStateException exception) {
 			String message = "Could not build code";
-			sysLog.error(message, exception);
+			LOG.error(message, exception);
 		}
-		sysLog.info("Test Atom Code:\n" + code);
+		LOG.info("Test Atom Code:\n" + code);
 
 		//tree node adaption
 		assertEquals("adaptable", atom, treeNodeAdaption.getAdaptable());

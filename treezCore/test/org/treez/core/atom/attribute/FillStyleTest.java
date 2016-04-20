@@ -12,7 +12,7 @@ public class FillStyleTest extends AbstractAttributeAtomConstructionTest<String>
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FillStyleTest.class);
+	private static final Logger LOG = Logger.getLogger(FillStyleTest.class);
 
 	//#region SETUP
 

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -35,12 +34,6 @@ import org.treez.data.column.Columns;
  */
 public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Table.class);
-
 	//#region ATTRIBUTES
 
 	/**
@@ -67,19 +60,12 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Table(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param tableToCopy
 	 */
 	private Table(Table tableToCopy) {
 		super(tableToCopy);
@@ -91,8 +77,6 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 	//#region METHODS
 
-	//#region COPY
-
 	/**
 	 * Overrides the copy method of AbstractAtom using the copy constructor of this atom
 	 */
@@ -100,8 +84,6 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 	public Table copy() {
 		return new Table(this);
 	}
-
-	//#end region
 
 	/**
 	 * Provides an image to represent this atom
@@ -130,7 +112,7 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 			TableControlAdaption tableControlAdaption = new TableControlAdaption(parent, this);
 
 			if (rows != null) {
-				//sysLog.debug("Created new table control with " + rows.size() + " rows.");
+				//LOG.debug("Created new table control with " + rows.size() + " rows.");
 			}
 			return tableControlAdaption;
 		} else {
@@ -262,7 +244,7 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 		//fill row with data from NativeArray
 		int size = data.size();
-		//sysLog.debug("size:" + size);
+		//LOG.debug("size:" + size);
 
 		for (int columnIndex = 0; columnIndex < size; columnIndex++) {
 			String header = getHeaders().get(columnIndex);
@@ -283,11 +265,11 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 			row.setEntry(header, formattedValue);
 		}
 
-		//sysLog.debug("new row:" + row);
+		//LOG.debug("new row:" + row);
 
 		addRow(row);
 
-		//sysLog.debug("added");
+		//LOG.debug("added");
 	}
 
 	/**
@@ -363,40 +345,20 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 	//#region ACCESSORS
 
-	/**
-	 * Get rows
-	 *
-	 * @return rows
-	 */
 	@Override
 	public List<Row> getRows() {
 		return rows;
 	}
 
-	/**
-	 * Set rows
-	 *
-	 * @param rows
-	 */
 	public void setRows(List<Row> rows) {
 		this.rows = rows;
 	}
 
-	/**
-	 * Get headers
-	 *
-	 * @return the headers
-	 */
 	@Override
 	public List<String> getHeaders() {
 		return getColumns().getHeaders();
 	}
 
-	/**
-	 * Returns the Columns child
-	 *
-	 * @return
-	 */
 	public Columns getColumns() {
 		try {
 			Columns columns = getChildByClass(Columns.class);
@@ -406,11 +368,6 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 		}
 	}
 
-	/**
-	 * Adds a new column to the table. If the Columns child does not
-	 *
-	 * @param newColumn
-	 */
 	public void addColumn(Column newColumn) {
 		createColumnsIfNotExists();
 		Columns columns = getColumns();
@@ -425,11 +382,6 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 	}
 
-	/**
-	 * Returns true if a child of type Columns exists
-	 *
-	 * @return
-	 */
 	private boolean columnsExist() {
 		for (AbstractAtom currentChild : children) {
 			boolean isWantedChild = currentChild.getClass().equals(Columns.class);
@@ -441,58 +393,31 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 	}
 
-	/**
-	 * Get row separator
-	 *
-	 * @return
-	 */
 	public String getRowSeparator() {
 		return ROW_SEPARATOR;
 	}
 
-	/**
-	 * Get column separator
-	 *
-	 * @return
-	 */
 	public String getColumnSeparator() {
 		return COLUMN_SEPARATOR;
 	}
 
-	/**
-	 * Get columnType
-	 *
-	 * @return the columnType
-	 */
 	@Override
 	public ColumnType getColumnType(String header) {
 		ColumnType columnType = getColumns().getColumnType(header);
 		return columnType;
 	}
 
-	/**
-	 * Get header tool tip
-	 *
-	 * @param header
-	 * @return
-	 */
 	@Override
 	public String getColumnHeaderTooltip(String header) {
 		return getColumns().getColumnHeaderTooltip(header);
 	}
 
-	/**
-	 * Define label provider
-	 */
 	@Override
 	public CellLabelProvider getLabelProvider(String header, ColumnType columnType) {
 		CellLabelProvider labelProvider = new TreezTableNebulaLabelProvider(header, columnType);
 		return labelProvider;
 	}
 
-	/**
-	 * Define cell editor
-	 */
 	@Override
 	public CellEditor getCellEditor(String header, ColumnType columnType, Composite parent) {
 		CellEditor cellEditor = CellEditorFactory.createCellEditor(columnType, parent);
@@ -520,18 +445,10 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 		return contentClass;
 	}
 
-	/**
-	 * Deletes all rows of the table
-	 */
 	public void deleteAllRows() {
 		setRows(new ArrayList<Row>());
 	}
 
-	/**
-	 * Returns true if the column has at least one column
-	 *
-	 * @return
-	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
 	public boolean hasColumns() {
 		try {
@@ -542,11 +459,6 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 		}
 	}
 
-	/**
-	 * Returns the number of columns
-	 *
-	 * @return
-	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
 	public int getNumberOfColumns() {
 		try {

@@ -2,7 +2,6 @@ package org.treez.core.atom.adjustable;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Color;
@@ -22,34 +21,14 @@ import org.treez.core.atom.base.AbstractAtom;
  */
 public class AdjustableAtomControlAdaption extends AbstractControlAdaption {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(AdjustableAtomControlAdaption.class);
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor.
-	 *
-	 * @param parent
-	 * @param adjustableAtom
-	 */
 	public AdjustableAtomControlAdaption(Composite parent,
 			final AdjustableAtom adjustableAtom,
 			Refreshable treeViewerRefreshable) {
 		super(parent, adjustableAtom);
 
-		//Initialize the model if required
 		AbstractAtom model = adjustableAtom.getModel();
-		boolean modelIsInitialized = model != null;
-		if (!modelIsInitialized) {
-			adjustableAtom.createAjustableAtomModel();
-		}
-
-		model = adjustableAtom.getModel();
 		if (model != null) {
 			createPropertyControlFromModel(parent, model,
 					treeViewerRefreshable);

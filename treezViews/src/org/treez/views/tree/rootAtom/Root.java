@@ -2,7 +2,6 @@ package org.treez.views.tree.rootAtom;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -27,19 +26,8 @@ import org.treez.views.Activator;
  */
 public class Root extends AdjustableAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Root.class);
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Root(String name) {
 		super(name);
 		createEmptyModel();
@@ -47,8 +35,6 @@ public class Root extends AdjustableAtom {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param rootToCopy
 	 */
 	private Root(Root rootToCopy) {
 		super(rootToCopy);
@@ -58,8 +44,6 @@ public class Root extends AdjustableAtom {
 	//#end region
 
 	//#region METHODS
-
-	//#region COPY
 
 	@Override
 	public Root copy() {
@@ -81,11 +65,6 @@ public class Root extends AdjustableAtom {
 		setModel(root);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("root.png");
@@ -141,36 +120,18 @@ public class Root extends AdjustableAtom {
 
 	//#region CREATE CHILD ATOMS
 
-	/**
-	 * Creates a models child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Models createModels(String name) {
 		Models models = new Models(name);
 		addChild(models);
 		return models;
 	}
 
-	/**
-	 * Creates a studies child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Studies createStudies(String name) {
 		Studies studies = new Studies(name);
 		addChild(studies);
 		return studies;
 	}
 
-	/**
-	 * Creates a results child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Results createResults(String name) {
 		Results results = new Results(name);
 		addChild(results);

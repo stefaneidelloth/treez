@@ -12,7 +12,7 @@ public class LineStyleTest extends AbstractAttributeAtomConstructionTest<String>
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(LineStyleTest.class);
+	private static final Logger LOG = Logger.getLogger(LineStyleTest.class);
 
 	//#region SETUP
 

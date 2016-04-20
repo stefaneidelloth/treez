@@ -3,51 +3,24 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents color map values
- */
 public enum ColorMapValue {
 
 	//#region VALUES
 
-	/**
-	 *
-	 */
 	BLANK("blank"),
 
-	/**
-	 *
-	 */
 	BLUE("blue"),
 
-	/**
-	 *
-	 */
 	BLUE_GREEN("bluegreen"),
 
-	/**
-	 *
-	 */
 	BLUE_GREEN_STEP("bluegreen-step"),
 
-	/**
-	 *
-	 */
 	COMPLEMENT("complement"),
 
-	/**
-	 *
-	 */
 	COMPLEMENT_STEP("complement-step"),
 
-	/**
-	 *
-	 */
 	GREEN("green"),
 
-	/**
-	 *
-	 */
 	GREY("grey");
 
 	//#end region
@@ -75,7 +48,7 @@ public enum ColorMapValue {
 
 	/**
 	 * Returns a set of all fill styles as strings
-	 * 
+	 *
 	 * @return
 	 */
 	public static List<String> getAllStringValues() {

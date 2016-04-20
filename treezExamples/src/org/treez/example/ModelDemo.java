@@ -20,9 +20,6 @@ import org.treez.study.atom.sensitivity.Sensitivity;
 import org.treez.study.atom.sweep.Sweep;
 import org.treez.views.tree.rootAtom.Root;
 
-/**
- * @author eis
- */
 public class ModelDemo extends ModelProvider {
 
 	@SuppressWarnings({ "checkstyle:executablestatementcount", "checkstyle:javancss" })

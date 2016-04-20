@@ -17,23 +17,11 @@ public class Length {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param value
-	 * @param unit
-	 */
 	public Length(Double value, LengthUnit unit) {
 		this.value = value;
 		this.unit = unit;
 	}
 
-	/**
-	 * Constructor with unit as string
-	 *
-	 * @param value
-	 * @param unitString
-	 */
 	public Length(Double value, String unitString) {
 		this.value = value;
 		this.unit = LengthUnit.get(unitString);
@@ -76,7 +64,7 @@ public class Length {
 
 		String valueString = subStrings[0];
 		String unitString = expression.substring(valueString.length());
-		if (valueString == "") {
+		if ("".equals(valueString)) {
 			return new Length(0.0, unitString);
 		}
 		try {
@@ -140,30 +128,18 @@ public class Length {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public Double getValue() {
 		return value;
 	}
 
-	/**
-	 * @param value
-	 */
 	public void setValue(Double value) {
 		this.value = value;
 	}
 
-	/**
-	 * @return
-	 */
 	public LengthUnit getUnit() {
 		return unit;
 	}
 
-	/**
-	 * @param unit
-	 */
 	public void setUnit(LengthUnit unit) {
 		this.unit = unit;
 	}

@@ -2,7 +2,6 @@ package org.treez.core.atom.variablelist;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -25,13 +24,6 @@ import org.treez.core.swt.CustomLabel;
  * values. This is use for example by the study atom DoubleVariableRange
  */
 public class DoubleVariableListField extends AbstractVariableListField<Double> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(DoubleVariableListField.class);
 
 	//#region ATTRIBUTES
 
@@ -64,11 +56,6 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public DoubleVariableListField(String name) {
 		super(name);
 		label = name;
@@ -77,8 +64,6 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param fieldToCopy
 	 */
 	private DoubleVariableListField(DoubleVariableListField fieldToCopy) {
 		super(fieldToCopy);
@@ -93,18 +78,11 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public DoubleVariableListField copy() {
 		return new DoubleVariableListField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("doubleVariable.png");
@@ -304,11 +282,6 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	//#region VALUE STRING
 
-	/**
-	 * Gets the value string
-	 *
-	 * @return
-	 */
 	public String getValueString() {
 		return valueString;
 	}
@@ -338,16 +311,10 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	//#region VALUE LABEL
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	@Override
 	public void setLabel(String label) {
 		this.label = label;
@@ -357,18 +324,12 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	//#region DEFAULT VALUE & UNIT
 
-	/**
-	 * @return
-	 */
 	@Override
 	public List<Double> getDefaultValue() {
 		List<Double> defaultValues = createDoubleList(defaultValueString);
 		return defaultValues;
 	}
 
-	/**
-	 * @param valueList
-	 */
 	public void setDefaultValue(List<Double> valueList) {
 		if (valueList.isEmpty()) {
 			setDefaultValueString("");
@@ -379,16 +340,10 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	public String getDefaultValueString() {
 		return defaultValueString;
 	}
 
-	/**
-	 * @param defaultValueString
-	 */
 	public void setDefaultValueString(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
 	}
@@ -397,16 +352,10 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	//#region TOOL TIP
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}

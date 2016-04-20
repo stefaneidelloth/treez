@@ -28,22 +28,12 @@ import org.treez.results.atom.xy.Xy;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class XySeries extends GraphicsAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(XySeries.class);
+	private static final Logger LOG = Logger.getLogger(XySeries.class);
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Source table
-	 */
 	public final Attribute<String> sourceTable = new Wrap<>();
 
-	/**
-	 * If this is true the xy series is hidden.
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	private Selection seriesGroupSelection;
@@ -52,11 +42,6 @@ public class XySeries extends GraphicsAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public XySeries(String name) {
 		super(name);
 		setRunnable();
@@ -124,7 +109,7 @@ public class XySeries extends GraphicsAtom {
 			removeAllChildren();
 			createNewXyChildren(sourceTablePath, domainAxis, rangeAxis);
 		} else {
-			sysLog.warn("The xy series '" + this.name + "' has no source table.");
+			LOG.warn("The xy series '" + this.name + "' has no source table.");
 		}
 	}
 
@@ -201,12 +186,6 @@ public class XySeries extends GraphicsAtom {
 
 	}
 
-	/**
-	 * @param d3
-	 * @param graphSelection
-	 * @param refreshable
-	 * @return
-	 */
 	public Selection plotWithD3(D3 d3, Selection graphSelection, Refreshable refreshable) {
 		this.treeViewRefreshable = refreshable;
 
@@ -228,9 +207,6 @@ public class XySeries extends GraphicsAtom {
 		return graphSelection;
 	}
 
-	/**
-	 * @param d3
-	 */
 	public void updatePlotWithD3(D3 d3) {
 
 		for (Adaptable child : children) {

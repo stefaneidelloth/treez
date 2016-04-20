@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,12 +23,6 @@ import org.treez.core.swt.CustomLabel;
  * Allows to edit a list of strings with a combo box for each value
  */
 public class StringItemList extends AbstractAttributeAtom<List<String>> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(StringItemList.class);
 
 	//#region ATTRIBUTES
 
@@ -55,11 +48,6 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public StringItemList(String name, String availableItems) {
 		super(name);
 		label = name;
@@ -68,8 +56,6 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param atomToCopy
 	 */
 	protected StringItemList(StringItemList atomToCopy) {
 		super(atomToCopy);
@@ -93,18 +79,11 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 		treezList.setFirstRowAutoCreation(false);
 	}
 
-	//#region COPY
-
 	@Override
 	public StringItemList copy() {
 		return new StringItemList(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("column.png");
@@ -217,16 +196,10 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 
 	//#region LABEL
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -260,18 +233,12 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 
 	//#region DEFAULT VALUE
 
-	/**
-	 * @return
-	 */
 	@Override
 	public List<String> getDefaultValue() {
 		List<String> stringValues = valueStringToList(defaultValueString);
 		return stringValues;
 	}
 
-	/**
-	 * @param defaultValueString
-	 */
 	public void setDefaultValue(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
 	}
@@ -280,11 +247,6 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 
 	//#region AVAILABLE ITEMS
 
-	/**
-	 * Sets the available items
-	 *
-	 * @param availableItems
-	 */
 	public void setAvailableItems(List<String> availableItems) {
 		String itemString = String.join(",", availableItems);
 		treezList.setAvailableStringItems(itemString);

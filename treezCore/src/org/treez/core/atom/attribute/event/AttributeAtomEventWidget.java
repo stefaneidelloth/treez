@@ -6,20 +6,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 /**
- * Widget to wrap the source for AttributeAtomEvents
- *
+ * Widget to wrap the source for AttributeAtomEvents *
  */
 public class AttributeAtomEventWidget extends Widget {
-
-	//#region ATTRIBUTES
-
-	//#end region
 
 	//#region CONSTRUCTORS
 
 	AttributeAtomEventWidget() {
 		super(determineShell(), SWT.NONE);
-
 	}
 
 	//#end region
@@ -45,10 +39,6 @@ public class AttributeAtomEventWidget extends Widget {
 	protected void checkSubclass() {
 		//does nothing to allow this class
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

@@ -20,19 +20,10 @@ public class Array<T> extends JavaScriptObject {
 
 	//#region CONSTRUCTORS
 
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param webEngine
-	 * @param wrappedJsObject
-	 */
 	public Array(WebEngine webEngine, JSObject wrappedJsObject) {
 		super(webEngine);
 		setJsObject(wrappedJsObject);
-	}
-	
-	
+	}	
 
 	//#end region
 

@@ -3,7 +3,6 @@ package org.treez.model.atom.genericInput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -41,28 +40,17 @@ import org.treez.model.atom.AbstractModel;
  */
 public class GenericInputModel extends AbstractModel {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(GenericInputModel.class);
+	//#region CONSTRUCTORS
 
-	// #region CONSTRUCTORS
-
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public GenericInputModel(String name) {
 		super(name);
 		setManualModel();
 		createGenericModel();
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	/**
 	 * Creates the control adaption on the given contentComposite. You might want to clean old content on the
@@ -347,31 +335,18 @@ public class GenericInputModel extends AbstractModel {
 
 	//#end region
 
-	// #end region
+	//#end region
 
-	// #region ACCESSORS
+	//#region ACCESSORS
 
-	/**
-	 * @param variableName
-	 * @return
-	 */
 	public String getVariable(String variableName) {
 		return getAttribute("root.data.data." + variableName);
 	}
 
-	/**
-	 * @param variableName
-	 * @param valueString
-	 */
 	public void setVariable(String variableName, String valueString) {
 		setAttribute("root.data.data." + variableName, valueString);
 	}
 
-	/**
-	 * Returns all VariableFields of this generic model
-	 *
-	 * @return
-	 */
 	public List<VariableField<?>> getVariableFields() {
 		List<VariableField<?>> variableFields = new ArrayList<>();
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();
@@ -383,11 +358,6 @@ public class GenericInputModel extends AbstractModel {
 		return variableFields;
 	}
 
-	/**
-	 * Returns all enabled VariableFields of this generic model
-	 *
-	 * @return
-	 */
 	public List<VariableField<?>> getEnabledVariableFields() {
 		List<VariableField<?>> variableFields = new ArrayList<>();
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();
@@ -402,6 +372,6 @@ public class GenericInputModel extends AbstractModel {
 		return variableFields;
 	}
 
-	// #end region
+	//#end region
 
 }

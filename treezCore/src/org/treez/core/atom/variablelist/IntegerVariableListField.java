@@ -2,7 +2,6 @@ package org.treez.core.atom.variablelist;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -27,13 +26,6 @@ import org.treez.core.swt.CustomLabel;
 public class IntegerVariableListField
 		extends
 			AbstractVariableListField<Integer> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(IntegerVariableListField.class);
 
 	//#region ATTRIBUTES
 
@@ -66,11 +58,6 @@ public class IntegerVariableListField
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public IntegerVariableListField(String name) {
 		super(name);
 		label = name;
@@ -79,8 +66,6 @@ public class IntegerVariableListField
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param fieldToCopy
 	 */
 	private IntegerVariableListField(IntegerVariableListField fieldToCopy) {
 		super(fieldToCopy);
@@ -95,18 +80,11 @@ public class IntegerVariableListField
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public IntegerVariableListField copy() {
 		return new IntegerVariableListField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("integerVariable.png");
@@ -306,11 +284,6 @@ public class IntegerVariableListField
 
 	//#region VALUE STRING
 
-	/**
-	 * Gets the value string
-	 *
-	 * @return
-	 */
 	public String getValueString() {
 		return valueString;
 	}
@@ -340,16 +313,10 @@ public class IntegerVariableListField
 
 	//#region VALUE LABEL
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	@Override
 	public void setLabel(String label) {
 		this.label = label;
@@ -359,18 +326,12 @@ public class IntegerVariableListField
 
 	//#region DEFAULT VALUE
 
-	/**
-	 * @return
-	 */
 	@Override
 	public List<Integer> getDefaultValue() {
 		List<Integer> defaultValues = createIntegerList(defaultValueString);
 		return defaultValues;
 	}
 
-	/**
-	 * @param valueList
-	 */
 	public void setDefaultValue(List<Integer> valueList) {
 		if (valueList.isEmpty()) {
 			setDefaultValueString("");
@@ -381,16 +342,10 @@ public class IntegerVariableListField
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	public String getDefaultValueString() {
 		return defaultValueString;
 	}
 
-	/**
-	 * @param defaultValueString
-	 */
 	public void setDefaultValueString(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
 	}
@@ -399,16 +354,10 @@ public class IntegerVariableListField
 
 	//#region TOOL TIP
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}

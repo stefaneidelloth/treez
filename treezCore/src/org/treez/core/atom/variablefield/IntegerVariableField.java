@@ -3,7 +3,6 @@ package org.treez.core.atom.variablefield;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.graphics.Image;
@@ -23,12 +22,6 @@ import org.treez.core.atom.variablelist.IntegerVariableListField;
  * value
  */
 public class IntegerVariableField extends AbstractVariableField<Integer> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(IntegerVariableField.class);
 
 	//#region ATTRIBUTES
 
@@ -50,19 +43,12 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public IntegerVariableField(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param fieldToCopy
 	 */
 	private IntegerVariableField(IntegerVariableField fieldToCopy) {
 		super(fieldToCopy);
@@ -264,18 +250,12 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 	//#region DEFAULT VALUE
 
-	/**
-	 * @return
-	 */
 	@Override
 	public Integer getDefaultValue() {
 		Integer value = new Integer(getDefaultValueString());
 		return value;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(Integer defaultValue) {
 		if (defaultValue == null) {
 			setDefaultValueString("");
@@ -288,9 +268,6 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 	//#region MIN & MAX
 
-	/**
-	 * @param minValue
-	 */
 	public void setMinValue(Integer minValue) {
 		this.minValue = minValue;
 		if (isAvailable(valueSpinner)) {
@@ -299,9 +276,6 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 	}
 
-	/**
-	 * @param maxValue
-	 */
 	public void setMaxValue(Integer maxValue) {
 		this.maxValue = maxValue;
 		if (isAvailable(valueSpinner)) {

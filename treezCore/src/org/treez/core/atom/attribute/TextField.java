@@ -17,15 +17,9 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-/**
- * An item example
- */
 public class TextField extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(TextField.class);
+	private static final Logger LOG = Logger.getLogger(TextField.class);
 
 	//#region ATTRIBUTES
 
@@ -59,25 +53,14 @@ public class TextField extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "The value is not valid.")
 	private String errorMessage;
 
-	/**
-	 * Container for label and text field
-	 */
 	private Composite contentContainer;
 
-	/**
-	 * The text field
-	 */
 	private Text textField = null;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public TextField(String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name); //this default label might be overridden by explicitly setting the label
@@ -85,8 +68,6 @@ public class TextField extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param fieldToCopy
 	 */
 	private TextField(TextField fieldToCopy) {
 		super(fieldToCopy);
@@ -105,19 +86,11 @@ public class TextField extends AbstractAttributeAtom<String> {
 	//#end region
 
 	//#region METHODS
-
-	//#region COPY
-
 	@Override
 	public TextField copy() {
 		return new TextField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("TextField.png");
@@ -245,7 +218,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 		if (!text.matches(validationPattern)) {
 			extraMessage = " The value does not match the regular expression '"
 					+ validationPattern + "'.";
-			sysLog.debug("does not match regexp");
+			LOG.debug("does not match regexp");
 		}
 		return extraMessage;
 	}
@@ -259,7 +232,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 				if (number < minValue) {
 					extraMessage = " The value is smaller than the limit of "
 							+ minValue + ".";
-					sysLog.debug("is too small");
+					LOG.debug("is too small");
 				}
 			}
 			if (!max.equals("null")) {
@@ -267,13 +240,13 @@ public class TextField extends AbstractAttributeAtom<String> {
 				if (number > maxValue) {
 					extraMessage = " The value is larger than the limit of "
 							+ maxValue + ".";
-					sysLog.debug("is too large");
+					LOG.debug("is too large");
 				}
 			}
 		} catch (NumberFormatException e) {
 			//double, min or max could not be parsed to a number
 			extraMessage = " The number validation is active but the value could not be parsed as a number.";
-			sysLog.debug("something could not be parsed");
+			LOG.debug("something could not be parsed");
 		}
 		return extraMessage;
 	}
@@ -328,136 +301,79 @@ public class TextField extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @param width
-	 */
 	public void setPrefferedLabelWidth(int width) {
 		prefferedLabelWidth = width;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * @return
-	 */
 	public boolean isPatternValidation() {
 		return usingPatternValidation;
 	}
 
-	/**
-	 * @param patternValidation
-	 */
 	public void setPatternValidation(boolean patternValidation) {
 		this.usingPatternValidation = patternValidation;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getValidationPattern() {
 		return validationPattern;
 	}
 
-	/**
-	 * @param validationPattern
-	 */
 	public void setValidationPattern(String validationPattern) {
 		this.validationPattern = validationPattern;
 	}
 
-	/**
-	 * @return
-	 */
 	public boolean isNumberValidation() {
 		return usingNumberRangeValidation;
 	}
 
-	/**
-	 * @param numberValidation
-	 */
 	public void setNumberValidation(boolean numberValidation) {
 		this.usingNumberRangeValidation = numberValidation;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getMin() {
 		return min;
 	}
 
-	/**
-	 * @param min
-	 */
 	public void setMin(String min) {
 		this.min = min;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getMax() {
 		return max;
 	}
 
-	/**
-	 * @param max
-	 */
 	public void setMax(String max) {
 		this.max = max;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 
-	/**
-	 * @param errorMessage
-	 */
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}

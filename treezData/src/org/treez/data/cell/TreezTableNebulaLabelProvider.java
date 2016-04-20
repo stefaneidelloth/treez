@@ -49,12 +49,6 @@ public class TreezTableNebulaLabelProvider extends StyledCellLabelProvider imple
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param header
-	 * @param columnType
-	 */
 	public TreezTableNebulaLabelProvider(String header, ColumnType columnType) {
 		super();
 		this.header = header;

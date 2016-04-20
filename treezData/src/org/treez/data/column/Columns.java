@@ -31,19 +31,10 @@ import org.treez.data.Activator;
  */
 public class Columns extends AdjustableAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Columns.class);
+	private static final Logger LOG = Logger.getLogger(Columns.class);
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Columns(String name) {
 		super(name);
 		createEmptyModel();
@@ -51,8 +42,6 @@ public class Columns extends AdjustableAtom {
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param columnsToCopy
 	 */
 	private Columns(Columns columnsToCopy) {
 		super(columnsToCopy);
@@ -150,7 +139,7 @@ public class Columns extends AdjustableAtom {
 		if (!hasSameLength) {
 			String message = "The given number of columns is " + expectedHeaders.size()
 					+ " and the expected numboer of columns is " + existingHeader.size() + ".";
-			sysLog.warn(message);
+			LOG.warn(message);
 			return false;
 		}
 

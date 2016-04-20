@@ -22,7 +22,7 @@ public class DynaCompTest {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(DynaCompTest.class);
+	private static final Logger LOG = Logger.getLogger(DynaCompTest.class);
 
 	/**
 	 * Main
@@ -48,7 +48,7 @@ public class DynaCompTest {
 
 		String javaCode = src.toString();
 
-		sysLog.info(javaCode);
+		LOG.info(javaCode);
 
 		//We get an instance of JavaCompiler. Then
 		//we create a file manager
@@ -79,9 +79,9 @@ public class DynaCompTest {
 			Object instance = classLoader.loadClass(fullClassName).newInstance();
 			ModelProvider modelProvider = (ModelProvider) instance;
 			AbstractAtom root = modelProvider.createModel();
-			sysLog.info("Root: " + root.getName());
+			LOG.info("Root: " + root.getName());
 		} catch (Exception e) {
-			sysLog.error("Compilation did not work.", e);
+			LOG.error("Compilation did not work.", e);
 		}
 	}
 }

@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -20,16 +19,7 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
-/**
- * Allows the user to choose a line style
- */
 public class DirectoryPath extends AbstractAttributeAtom<String> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(DirectoryPath.class);
 
 	//#region ATTRIBUTES
 
@@ -65,14 +55,8 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 	 */
 	private Composite subContainer;
 
-	/**
-	 * The label
-	 */
 	private Label labelComposite;
 
-	/**
-	 * The text field
-	 */
 	private Text textField = null;
 
 	/**
@@ -89,20 +73,20 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public DirectoryPath(String name) {
 		super(name);
 		label = name;
 	}
 
+	public DirectoryPath(String name, String defaultDirectoryPath) {
+		super(name);
+		label = name;
+		attributeValue = defaultDirectoryPath;
+
+	}
+
 	/**
 	 * Copy constructor
-	 *
-	 * @param directoryPathToCopy
 	 */
 	protected DirectoryPath(DirectoryPath directoryPathToCopy) {
 		super(directoryPathToCopy);
@@ -113,35 +97,15 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 		showOpenButton = directoryPathToCopy.showOpenButton;
 	}
 
-	/**
-	 * Constructor with default filePath
-	 *
-	 * @param name
-	 * @param defaultDirectoryPath
-	 */
-	public DirectoryPath(String name, String defaultDirectoryPath) {
-		super(name);
-		label = name;
-		attributeValue = defaultDirectoryPath;
-
-	}
-
 	//#end region
 
 	//#region METHODS
-
-	//#region COPY
 
 	@Override
 	public DirectoryPath copy() {
 		return new DirectoryPath(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("browseDirectory.png");
@@ -349,61 +313,35 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * Sets the showEnableCheckBox flag
-	 */
 	public void setShowEnabledCheckBox(boolean state) {
 		showEnabledCheckBox = state;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultDirectoryPath
-	 */
 	public void setDefaultValue(String defaultDirectoryPath) {
 		this.defaultValue = defaultDirectoryPath;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * Sets the background color
-	 *
-	 * @param backgroundColor
-	 */
 	@Override
 	public void setBackgroundColor(Color backgroundColor) {
 

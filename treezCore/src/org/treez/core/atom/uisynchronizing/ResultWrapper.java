@@ -1,10 +1,9 @@
 package org.treez.core.atom.uisynchronizing;
 
 /**
- * This class serves as a wrapping container for results from Runnables. This is required because the values that are
- * modified by the Runnable have to be final.
- *
- * @param <T>
+ * This class serves as a wrapping container for results from Runnables. This is
+ * required because the values that are modified by the Runnable have to be
+ * final.
  */
 public class ResultWrapper<T> {
 
@@ -16,11 +15,6 @@ public class ResultWrapper<T> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param value
-	 */
 	public ResultWrapper(T value) {
 		this.value = value;
 	}
@@ -29,16 +23,10 @@ public class ResultWrapper<T> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public T getValue() {
 		return value;
 	}
 
-	/**
-	 * @param value
-	 */
 	public void setValue(T value) {
 		this.value = value;
 	}

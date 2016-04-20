@@ -11,7 +11,7 @@ public class CheckBoxEnableTargetTest extends AbstractAttributeContainerAtomCons
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(CheckBoxEnableTargetTest.class);
+	private static final Logger LOG = Logger.getLogger(CheckBoxEnableTargetTest.class);
 
 	//#region SETUP
 

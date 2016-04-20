@@ -12,7 +12,7 @@ public class FilePathTest extends AbstractAttributeAtomConstructionTest<String> 
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FilePathTest.class);
+	private static final Logger LOG = Logger.getLogger(FilePathTest.class);
 
 	//#region SETUP
 

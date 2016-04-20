@@ -10,17 +10,11 @@ import org.eclipse.swt.widgets.Composite;
  */
 public interface ControlAdaption extends Adaption {
 
-	//#region ACCESSORS
-
 	/**
 	 * Returns the Composite on which this ControlAdaption is shown. (This might
 	 * be a general Composite or for example the GraphicsAdaption of the parent
 	 * adaptable). Returns null if no parent Composite exists.
-	 *
-	 * @return
 	 */
 	Composite getParentComposite();
-
-	//end region
 
 }

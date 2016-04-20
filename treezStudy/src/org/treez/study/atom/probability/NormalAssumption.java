@@ -2,7 +2,6 @@ package org.treez.study.atom.probability;
 
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.FunctionPlotter;
@@ -23,40 +22,20 @@ import org.treez.study.Activator;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class NormalAssumption extends AbstractAssumption {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(NormalAssumption.class);
-
 	//#region ATTRIBUTES
 
-	/**
-	 * Function plotter
-	 */
 	public final Attribute<String> functionPlotter = new Wrap<>();
 
 	private FunctionPlotter plotter;
 
-	/**
-	 * Mean value
-	 */
 	public final Attribute<String> mean = new Wrap<>();
 
-	/**
-	 * Standard deviation
-	 */
 	public final Attribute<String> standardDeviation = new Wrap<>();
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public NormalAssumption(String name) {
 		super(name);
 		createNormalAssumptionModel();

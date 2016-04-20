@@ -25,54 +25,24 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Font
-	 */
 	public final Attribute<String> font = new Wrap<>();
 
-	/**
-	 * Size
-	 */
 	public final Attribute<String> size = new Wrap<>();
 
-	/**
-	 * Color
-	 */
 	public final Attribute<String> color = new Wrap<>();
 
-	/**
-	 * Format
-	 */
 	public final Attribute<String> format = new Wrap<>();
 
-	/**
-	 * Italic style
-	 */
 	public final Attribute<Boolean> italic = new Wrap<>();
 
-	/**
-	 * Bold style
-	 */
 	public final Attribute<Boolean> bold = new Wrap<>();
 
-	/**
-	 * Underline style
-	 */
 	public final Attribute<Boolean> underline = new Wrap<>();
 
-	/**
-	 * Rotation
-	 */
 	public final Attribute<String> rotate = new Wrap<>();
 
-	/**
-	 * Offset
-	 */
 	public final Attribute<String> offset = new Wrap<>();
 
-	/**
-	 * Hide
-	 */
 	public final Attribute<Boolean> hide = new Wrap<>();
 
 	private Double tickLabelHeight = null;
@@ -215,16 +185,10 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public Double getTickLabelHeight() {
 		return tickLabelHeight;
 	}
 
-	/**
-	 * @return
-	 */
 	public Double getTickLabelWidth() {
 		return tickLabelWidth;
 	}

@@ -42,10 +42,7 @@ import org.treez.model.atom.genericInput.GenericInputModel;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class InputFileGenerator extends AdjustableAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(InputFileGenerator.class);
+	private static final Logger LOG = Logger.getLogger(InputFileGenerator.class);
 
 	//#region ATTRIBUTES
 
@@ -57,45 +54,22 @@ public class InputFileGenerator extends AdjustableAtom {
 
 	private static final String UNIT_TAG = "<unit>";
 
-	/**
-	 *
-	 */
 	public final Attribute<String> templateFilePath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> sourceModel = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> nameExpression = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> valueExpression = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<String> inputFilePath = new Wrap<>();
 
-	/**
-	 *
-	 */
 	public final Attribute<Boolean> deleteUnassignedRows = new Wrap<>();
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public InputFileGenerator(String name) {
 		super(name);
 		setRunnable();
@@ -161,7 +135,7 @@ public class InputFileGenerator extends AdjustableAtom {
 	@Override
 	public void execute(Refreshable refreshable) {
 
-		sysLog.info("Executing " + this.getClass().getSimpleName() + " '" + getName() + "'");
+		LOG.info("Executing " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
 		//delete old input file (=the output of this atom) if it exists
 		File inputFile = new File(inputFilePath.get());
@@ -219,7 +193,7 @@ public class InputFileGenerator extends AdjustableAtom {
 			//get expression to inject
 			if (valueString == null) {
 				String message = "Value for variable '" + variableName + "' is null.";
-				sysLog.warn(message);
+				LOG.warn(message);
 				valueString = "null";
 			}
 
@@ -233,8 +207,8 @@ public class InputFileGenerator extends AdjustableAtom {
 			}
 
 			//inject expression into template
-			sysLog.info("Template placeholder to replace: '" + placeholderExpression + "'");
-			sysLog.info("Expression to inject: '" + injectedExpression + "'");
+			LOG.info("Template placeholder to replace: '" + placeholderExpression + "'");
+			LOG.info("Expression to inject: '" + injectedExpression + "'");
 			resultString = resultString.replace(placeholderExpression, injectedExpression);
 
 		}
@@ -272,7 +246,7 @@ public class InputFileGenerator extends AdjustableAtom {
 		if (!removedLines.isEmpty()) {
 			String message = "Some rows with unassigned variable place holders have been removed from the input file:\n"
 					+ String.join("\n", removedLines);
-			sysLog.info(message);
+			LOG.info(message);
 		}
 		return newResultString;
 	}

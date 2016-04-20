@@ -25,7 +25,7 @@ public class Xy extends GraphicsPropertiesPage {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Xy.class);
+	private static final Logger LOG = Logger.getLogger(Xy.class);
 
 	//#region ATTRIBUTES
 
@@ -63,21 +63,16 @@ public class Xy extends GraphicsPropertiesPage {
 
 	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Xy(String name) {
 		super(name);
 		//setRunnable();
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	@Override
 	protected void createPropertyPageFactories() {
@@ -201,18 +196,12 @@ public class Xy extends GraphicsPropertiesPage {
 		return xyDataString;
 	}
 
-	/**
-	 * @return
-	 */
 	public QuantitativeScale<?> getXScale() {
 		Axis xAxisAtom = getXAxis();
 		QuantitativeScale<?> scale = (QuantitativeScale<?>) xAxisAtom.getScale();
 		return scale;
 	}
 
-	/**
-	 * @return
-	 */
 	public QuantitativeScale<?> getYScale() {
 		Axis yAxisAtom = getYAxis();
 		QuantitativeScale<?> scale = (QuantitativeScale<?>) yAxisAtom.getScale();
@@ -245,6 +234,6 @@ public class Xy extends GraphicsPropertiesPage {
 		return yDataValues;
 	}
 
-	// #end region
+	//#end region
 
 }

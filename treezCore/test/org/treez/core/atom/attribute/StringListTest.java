@@ -14,7 +14,7 @@ public class StringListTest extends AbstractAttributeAtomConstructionTest<List<S
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(StringListTest.class);
+	private static final Logger LOG = Logger.getLogger(StringListTest.class);
 
 	//#region SETUP
 

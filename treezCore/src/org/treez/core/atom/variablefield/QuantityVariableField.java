@@ -3,7 +3,6 @@ package org.treez.core.atom.variablefield;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -29,13 +28,6 @@ import org.treez.core.swt.CustomLabel;
  */
 public class QuantityVariableField extends AbstractVariableField<Quantity> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger
-			.getLogger(QuantityVariableField.class);
-
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "1")
@@ -57,19 +49,12 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public QuantityVariableField(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param fieldToCopy
 	 */
 	private QuantityVariableField(QuantityVariableField fieldToCopy) {
 		super(fieldToCopy);
@@ -81,18 +66,11 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public QuantityVariableField copy() {
 		return new QuantityVariableField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideBaseImage() {
 		Image baseImage = Activator.getImage("quantityVariable.png");
@@ -377,11 +355,6 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 
 	//#region UNIT STRING
 
-	/**
-	 * Gets the unit string
-	 *
-	 * @return
-	 */
 	public String getUnitString() {
 		return unitString;
 	}
@@ -410,9 +383,6 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 
 	//#region DEFAULT VALUE & UNIT
 
-	/**
-	 * @return
-	 */
 	@Override
 	public Quantity getDefaultValue() {
 		Quantity quantity = new Quantity(getDefaultValueString(),
@@ -420,9 +390,6 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 		return quantity;
 	}
 
-	/**
-	 * @param quantity
-	 */
 	public void setDefaultValue(Quantity quantity) {
 		if (quantity == null) {
 			setDefaultValueString("");
@@ -433,16 +400,10 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	public String getDefaultUnitString() {
 		return defaultUnitString;
 	}
 
-	/**
-	 * @param defaultUnitString
-	 */
 	public void setDefaultUnitString(String defaultUnitString) {
 		this.defaultUnitString = defaultUnitString;
 	}

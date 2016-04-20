@@ -14,7 +14,7 @@ public class VectorEvaluationTest {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(VectorEvaluationTest.class);
+	private static final Logger LOG = Logger.getLogger(VectorEvaluationTest.class);
 
 	/**
 	 * tests the vector evaluation
@@ -36,7 +36,7 @@ public class VectorEvaluationTest {
 
 		//show result
 		String displayString = VectorEvaluation.doubleListToDisplayString(vectorList1);
-		sysLog.info("Result1: " + displayString);
+		LOG.info("Result1: " + displayString);
 
 		//define expression
 		String vectorExpression2 = "range(0.0,3.0,1.0)";
@@ -46,7 +46,7 @@ public class VectorEvaluationTest {
 
 		//show result
 		String displayString2 = VectorEvaluation.doubleListToDisplayString(vectorList2);
-		sysLog.info("Result2: " + displayString2);
+		LOG.info("Result2: " + displayString2);
 
 		//define expression
 		String vectorExpression3 = "{0.0, 10.0, 15.0, 20.0}";
@@ -56,7 +56,7 @@ public class VectorEvaluationTest {
 
 		//show result
 		String displayString3 = VectorEvaluation.doubleListToDisplayString(vectorList3);
-		sysLog.info("Result3: " + displayString3);
+		LOG.info("Result3: " + displayString3);
 
 	}
 

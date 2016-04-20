@@ -3,7 +3,6 @@ package org.treez.study.atom.range;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ModelPath;
@@ -19,35 +18,24 @@ import org.treez.study.Activator;
  */
 public class StringItemVariableRange extends AbstractVariableRange<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings({ "hiding", "unused" })
-	private static Logger sysLog = Logger.getLogger(StringItemVariableRange.class);
-
-	// #region ATTRIBUTES
+	//#region ATTRIBUTES
 
 	/**
 	 * Used to edit a list of Strings
 	 */
 	private StringItemList range;
 
-	// #end region
+	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public StringItemVariableRange(String name) {
 		super(name);
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	/**
 	 * Creates the underlying model
@@ -114,11 +102,11 @@ public class StringItemVariableRange extends AbstractVariableRange<String> {
 		return image;
 	}
 
-	// #end region
+	//#end region
 
-	// #region ACCESSORS
+	//#region ACCESSORS
 
-	// #region RANGE VALUES
+	//#region RANGE VALUES
 
 	/**
 	 * Returns the range as a list of quantities
@@ -141,7 +129,7 @@ public class StringItemVariableRange extends AbstractVariableRange<String> {
 		range.setValue(valueString);
 	}
 
-	// #end region
+	//#end region
 
 	//#region TYPE
 
@@ -152,6 +140,6 @@ public class StringItemVariableRange extends AbstractVariableRange<String> {
 
 	//#end region
 
-	// #end region
+	//#end region
 
 }

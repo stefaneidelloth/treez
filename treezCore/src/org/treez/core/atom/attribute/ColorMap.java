@@ -2,7 +2,6 @@ package org.treez.core.atom.attribute;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,12 +23,6 @@ import org.treez.core.swt.CustomLabel;
  */
 public class ColorMap extends AbstractAttributeAtom<String> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ColorMap.class);
-
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "My Color Map:")
@@ -41,14 +34,8 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 	@IsParameter(defaultValue = "")
 	private String tooltip;
 
-	/**
-	 * Image label
-	 */
 	private Label imageLabel = null;
 
-	/**
-	 * The combo box
-	 */
 	private ImageCombo styleCombo = null;
 
 	/**
@@ -57,7 +44,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 	private final String imagePrefix = "color_map_";
 
 	/**
-	 * Predefined symbol styles
+	 * Predefined colors
 	 */
 	private final List<String> colorMaps = ColorMapValue.getAllStringValues();
 
@@ -65,34 +52,11 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public ColorMap(String name) {
 		super(name);
 		label = name;
 	}
 
-	/**
-	 * Copy constructor
-	 *
-	 * @param colorMapToCopy
-	 */
-	private ColorMap(ColorMap colorMapToCopy) {
-		super(colorMapToCopy);
-		label = colorMapToCopy.label;
-		defaultValue = colorMapToCopy.defaultValue;
-		tooltip = colorMapToCopy.tooltip;
-	}
-
-	/**
-	 * Constructor with default value
-	 *
-	 * @param name
-	 * @param defaultStyle
-	 */
 	public ColorMap(String name, String defaultStyle) {
 		super(name);
 		label = name;
@@ -101,26 +65,30 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 		if (isColorMap) {
 			attributeValue = defaultStyle;
 		} else {
-			throw new IllegalArgumentException("The specified color map '" + defaultStyle + "' is not known.");
+			throw new IllegalArgumentException("The specified color map '"
+					+ defaultStyle + "' is not known.");
 		}
+	}
+
+	/**
+	 * Copy constructor
+	 */
+	private ColorMap(ColorMap colorMapToCopy) {
+		super(colorMapToCopy);
+		label = colorMapToCopy.label;
+		defaultValue = colorMapToCopy.defaultValue;
+		tooltip = colorMapToCopy.tooltip;
 	}
 
 	//#end region
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public ColorMap copy() {
 		return new ColorMap(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("color_map_grey.png");
@@ -128,11 +96,10 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Creates the composite on a given parent
-	 *
-	 * @param parent
 	 */
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<String> createAttributeAtomControl(
+			Composite parent, Refreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -152,7 +119,8 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container,
+				currentLabel);
 		final int prefferedLabelWidth = 80;
 		labelComposite.setPrefferedWidth(prefferedLabelWidth);
 
@@ -167,7 +135,8 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 		//set predefined color map
 		final List<String> currentColorMaps = getColorMaps();
 		for (String styleString : currentColorMaps) {
-			styleCombo.add(styleString, Activator.getImage(imagePrefix + styleString + ".png"));
+			styleCombo.add(styleString,
+					Activator.getImage(imagePrefix + styleString + ".png"));
 		}
 
 		//initialize selected item
@@ -193,7 +162,8 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent, FormToolkit toolkit, GridData fillHorizontal) {
+	private static Composite createContainer(Composite parent,
+			FormToolkit toolkit, GridData fillHorizontal) {
 		Composite container = toolkit.createComposite(parent);
 		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.horizontalSpacing = 10;
@@ -209,7 +179,8 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 			int index = colorMaps.indexOf(currentStyle);
 			if (styleCombo.getSelectionIndex() != index) {
 				styleCombo.select(index);
-				imageLabel.setImage(Activator.getImage(imagePrefix + currentStyle + ".png"));
+				imageLabel.setImage(Activator
+						.getImage(imagePrefix + currentStyle + ".png"));
 			}
 		}
 	}
@@ -218,54 +189,31 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * Sets the default color map
-	 *
-	 * @param colorMapValue
-	 */
 	public void setDefaultValue(ColorMapValue colorMapValue) {
 		setDefaultValue(colorMapValue.toString());
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
@@ -281,7 +229,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Set color map
+	 * Set color map with string
 	 *
 	 * @param value
 	 */
@@ -292,17 +240,15 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 
 	/**
 	 * Get predefined color maps
-	 *
-	 * @return the color map
 	 */
 	public List<String> getColorMaps() {
 		return colorMaps;
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(
+			org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
-
 	}
 
 	//#end region

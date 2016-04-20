@@ -3,7 +3,6 @@ package org.treez.study.atom.range;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.CheckBox;
@@ -27,22 +26,10 @@ import org.treez.study.atom.Study;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public abstract class AbstractVariableRange<T> extends AdjustableAtom implements VariableRange<T> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(AbstractVariableRange.class);
+	//#region ATTRIBUTES
 
-	// #region ATTRIBUTES
-
-	/**
-	 * The section
-	 */
 	protected Section data;
 
-	/**
-	 * The enabled state check box
-	 */
 	public Attribute<Boolean> enabled = new Wrap<>(new CheckBox("enabled", true));
 
 	/**
@@ -56,23 +43,18 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	 */
 	protected String sourceModelModelPath = null;
 
-	// #end region
+	//#end region
 
-	// #region CONSTRUCTORS
+	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractVariableRange(String name) {
 		super(name);
 		createVariableRangeModel();
 	}
 
-	// #end region
+	//#end region
 
-	// #region METHODS
+	//#region METHODS
 
 	/**
 	 * Creates the underlying model
@@ -200,11 +182,11 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 		return image;
 	}
 
-	// #end region
+	//#end region
 
-	// #region ACCESSORS
+	//#region ACCESSORS
 
-	// #region SOURCE VARIABLE
+	//#region SOURCE VARIABLE
 
 	/**
 	 * @param sourceVariableModelPath
@@ -242,7 +224,7 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 		return sourceVariableModelPath.get();
 	}
 
-	// #end region
+	//#end region
 
 	//#region ENABLED STATE
 
@@ -271,8 +253,8 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	@Override
 	public abstract List<T> getRange();
 
-	// #end region
+	//#end region
 
-	// #end region
+	//#end region
 
 }

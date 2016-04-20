@@ -14,7 +14,7 @@ public class FilePathListTest extends AbstractAttributeAtomConstructionTest<List
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(FilePathListTest.class);
+	private static final Logger LOG = Logger.getLogger(FilePathListTest.class);
 
 	//#region SETUP
 

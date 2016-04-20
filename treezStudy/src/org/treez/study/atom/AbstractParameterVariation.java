@@ -19,10 +19,7 @@ import org.treez.results.atom.results.Results;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public abstract class AbstractParameterVariation extends AdjustableAtom implements Study {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(AbstractParameterVariation.class);
+	private static final Logger LOG = Logger.getLogger(AbstractParameterVariation.class);
 
 	//#region ATTRIBUTES
 
@@ -55,11 +52,6 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractParameterVariation(String name) {
 		super(name);
 		setRunnable();
@@ -79,7 +71,7 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 			Results results = new Results("results");
 			AbstractAtom root = this.getRoot();
 			root.addChild(results);
-			sysLog.info("Created " + resultAtomPath + " for sweep output.");
+			LOG.info("Created " + resultAtomPath + " for sweep output.");
 		}
 	}
 
@@ -95,7 +87,7 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 			Data data = new Data(dataAtomName);
 			AbstractAtom results = this.getChildFromRoot(resultAtomPath);
 			results.addChild(data);
-			sysLog.info("Created " + dataAtomPath + " for sweep output.");
+			LOG.info("Created " + dataAtomPath + " for sweep output.");
 		}
 	}
 
@@ -179,7 +171,7 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 		//log start message
 		String message = "-- " + currentDateString + " --- Simulation " + counter + " of " + numberOfSimulations
 				+ " -------- " + endTimeString + " --";
-		sysLog.info(message);
+		LOG.info(message);
 
 	}
 
@@ -193,7 +185,7 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 		//log message
 		String message = "-- " + finalDateString + " -------- Completed! --------------------------------";
-		sysLog.info(message);
+		LOG.info(message);
 		Utils.showMessage("Completed!");
 	}
 

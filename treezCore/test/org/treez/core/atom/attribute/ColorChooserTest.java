@@ -12,7 +12,7 @@ public class ColorChooserTest extends AbstractAttributeAtomConstructionTest<Stri
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ColorChooserTest.class);
+	private static final Logger LOG = Logger.getLogger(ColorChooserTest.class);
 
 	//#region SETUP
 

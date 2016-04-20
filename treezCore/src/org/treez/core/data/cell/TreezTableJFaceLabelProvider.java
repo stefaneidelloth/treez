@@ -50,12 +50,6 @@ public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param header
-	 * @param columnType
-	 */
 	public TreezTableJFaceLabelProvider(String header, ColumnType columnType) {
 		super();
 		this.header = header;

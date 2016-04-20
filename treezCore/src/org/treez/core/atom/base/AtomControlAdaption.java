@@ -28,19 +28,11 @@ import org.treez.core.atom.base.annotation.IsParameters;
  */
 public class AtomControlAdaption extends AbstractControlAdaption {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(AtomControlAdaption.class);
+	private static final Logger LOG = Logger
+			.getLogger(AtomControlAdaption.class);
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param adaptable
-	 */
 	public AtomControlAdaption(Composite parent, final Adaptable adaptable) {
 		super(parent, adaptable);
 		setLayout();
@@ -73,13 +65,13 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 		List<Field> allAttributes = getAllAttributes(adaptable);
 
 		for (final Field attribute : allAttributes) {
-			//sysLog.debug("Creating control for attribute: " +
+			//LOG.debug("Creating control for attribute: " +
 			//attribute.getName());
 			attribute.setAccessible(true);
 			boolean isAnnotated = attribute
 					.isAnnotationPresent(IsParameter.class);
 			if (isAnnotated) {
-				//sysLog.debug("The attribute " + attribute.getName() + " is
+				//LOG.debug("The attribute " + attribute.getName() + " is
 				//annotated.");
 				createAttributeControl(attribute);
 			}
@@ -145,14 +137,14 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 		//get the default value as string
 		String defaultValueString = IsParameters
 				.getDefaultValueString(attribute);
-				//sysLog.debug("default value: " + defaultValueString);
+		//LOG.debug("default value: " + defaultValueString);
 
 		//get the current value of the attribute as string
 		//(if the attribute is an Enum or Boolean, the value will be converted
 		//to a string)
 		String valueString = IsParameters.getCurrentValueString(attribute,
 				adaptable);
-				//sysLog.debug("current value: " + valueString);
+		//LOG.debug("current value: " + valueString);
 
 		//initialize the value with the default value if the current value is
 		//null
@@ -237,7 +229,7 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 						.getAdaptable();
 				IsParameters.setAttributeValue(attribute, attributeParent,
 						valueString);
-				//sysLog.debug("Set attribute '" + attribute.getName() + "' to
+				//LOG.debug("Set attribute '" + attribute.getName() + "' to
 				//new value " + valueString);
 			}
 
@@ -276,11 +268,11 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 				Button checkBox = (Button) event.widget;
 				boolean value = checkBox.getSelection();
 
-				//sysLog.debug("new checkbox value: " + value);
+				//LOG.debug("new checkbox value: " + value);
 				try {
 					field.set(getAdaptable(), value);
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					sysLog.error("Could not set value.");
+					LOG.error("Could not set value.");
 				}
 			}
 
@@ -318,7 +310,7 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 				try {
 					field.set(getAdaptable(), value);
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					sysLog.error("Could not set value.");
+					LOG.error("Could not set value.");
 				}
 			}
 		};

@@ -1,6 +1,5 @@
 package org.treez.core;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
@@ -11,9 +10,6 @@ public class Activator extends AbstractActivator {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * The plug-in ID
-	 */
 	public static final String PLUGIN_ID = "org.treez.core";
 
 	/**
@@ -25,9 +21,6 @@ public class Activator extends AbstractActivator {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * The constructor
-	 */
 	public Activator() {
 		super();
 	}
@@ -77,15 +70,6 @@ public class Activator extends AbstractActivator {
 		return getInstance().getImageDescriptorFromInstance(name);
 	}
 
-	/**
-	 * Returns the preference store
-	 *
-	 * @return
-	 */
-	public static IPreferenceStore getPreferenceStoreStatic() {
-		return getInstance().getPreferenceStore();
-	}
-
 	//#end region
 
 	//#region ACCESSORS
@@ -105,7 +89,8 @@ public class Activator extends AbstractActivator {
 	 */
 	public static AbstractActivator getInstance() {
 		if (instance == null) {
-			throw new IllegalStateException("Activator has not yet been created. Call constructor first.");
+			throw new IllegalStateException(
+					"Activator has not yet been created. Call constructor first.");
 		}
 		return instance;
 	}

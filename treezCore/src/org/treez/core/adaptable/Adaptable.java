@@ -11,13 +11,9 @@ import org.treez.core.scripting.ScriptType;
  */
 public interface Adaptable {
 
-	//#region METHODS
-
 	/**
 	 * Creates a tree node adaption. The tree node adaption represents the atom
 	 * as a node in a tree structure.
-	 *
-	 * @return
 	 */
 	TreeNodeAdaption createTreeNodeAdaption();
 
@@ -25,18 +21,12 @@ public interface Adaptable {
 	 * Creates a code adaption. The code adaption can be shown in a code view.
 	 * Further more, the code adaption is able to create code that represents
 	 * the atom.
-	 *
-	 * @param scriptType
-	 * @return
 	 */
 	CodeAdaption createCodeAdaption(ScriptType scriptType);
 
 	/**
 	 * Creates a graphics adaption. The GraphicsAdaption can be shown in a
 	 * graphics view
-	 *
-	 * @param parent
-	 * @return
 	 */
 	GraphicsAdaption createGraphicsAdaption(Composite parent);
 
@@ -44,14 +34,8 @@ public interface Adaptable {
 	 * Creates an AbstractControlAdaption on the given parent Composite. Before
 	 * (re-) creating the ControlAdaption with this method you might want to
 	 * clear old content of the parent composite.
-	 *
-	 * @param parent
-	 * @param refreshableTreeViewer
-	 * @return
 	 */
 	AbstractControlAdaption createControlAdaption(Composite parent,
 			Refreshable refreshableTreeViewer);
-
-	//#end region
 
 }

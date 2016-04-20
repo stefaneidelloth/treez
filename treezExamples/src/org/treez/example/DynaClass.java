@@ -5,10 +5,6 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.scripting.ModelProvider;
 import org.treez.data.variable.VariableDefinition;
 
-/**
- * @author eis
- *
- */
 public class DynaClass extends ModelProvider {
 
 	@Override

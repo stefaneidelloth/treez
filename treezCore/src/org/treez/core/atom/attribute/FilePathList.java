@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import org.apache.log4j.Logger;
 import org.treez.core.atom.list.TreezListAtom;
 import org.treez.core.data.column.ColumnType;
 
@@ -9,27 +8,14 @@ import org.treez.core.data.column.ColumnType;
  */
 public class FilePathList extends StringList {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings({ "hiding", "unused" })
-	private static Logger sysLog = Logger.getLogger(FilePathList.class);
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public FilePathList(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param atomToCopy
 	 */
 	protected FilePathList(FilePathList atomToCopy) {
 		super(atomToCopy);

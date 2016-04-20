@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,16 +20,7 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-/**
- * An item example
- */
 public class CheckBox extends AbstractAttributeAtom<Boolean> {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(CheckBox.class);
 
 	//#region ATTRIBUTES
 
@@ -68,21 +58,11 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public CheckBox(String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name); //this default label might be overridden by explicitly setting the label
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public CheckBox(String name, boolean state) {
 		super(name);
 		label = name;
@@ -91,8 +71,6 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param checkBoxToCopy
 	 */
 	protected CheckBox(CheckBox checkBoxToCopy) {
 		super(checkBoxToCopy);
@@ -260,54 +238,31 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * @param label
-	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	/**
-	 * @param tooltip
-	 */
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public Boolean getDefaultValue() {
 		return defaultValue;
 	}
 
-	/**
-	 * @param defaultValue
-	 */
 	public void setDefaultValue(boolean defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * Sets the background color
-	 *
-	 * @param color
-	 */
 	@Override
 	public void setBackgroundColor(Color color) {
 		if (isAvailable(contentContainer)) {
@@ -321,6 +276,7 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 			valueCheckBox.setBackground(color);
 		}
 	}
+
 	//#end region
 
 }

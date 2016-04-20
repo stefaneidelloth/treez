@@ -3,31 +3,16 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents line styles
- */
 public enum ErrorBarStyleValue {
 
 	//#region VALUES
 
-	/**
-	 *
-	 */
 	BAR("bar"),
 
-	/**
-	 *
-	 */
 	BAR_BOX("barbox"),
 
-	/**
-	 *
-	 */
 	BAR_CURVE("barcurve"),
 
-	/**
-	 *
-	 */
 	BAR_DIAMOND("bardiamond");
 
 	//#end region
@@ -55,7 +40,7 @@ public enum ErrorBarStyleValue {
 
 	/**
 	 * Returns a set of error bar styles as strings
-	 * 
+	 *
 	 * @return
 	 */
 	public static List<String> getAllStringValues() {

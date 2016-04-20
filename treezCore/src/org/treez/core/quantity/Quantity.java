@@ -27,23 +27,11 @@ public class Quantity implements Copiable<Quantity> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor with string
-	 *
-	 * @param value
-	 * @param unit
-	 */
 	public Quantity(String value, String unit) {
 		this.value = value;
 		this.unit = unit;
 	}
 
-	/**
-	 * Constructor with double value
-	 *
-	 * @param value
-	 * @param unit
-	 */
 	public Quantity(Double value, String unit) {
 		this.value = "" + value;
 		this.unit = unit;
@@ -51,8 +39,6 @@ public class Quantity implements Copiable<Quantity> {
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param quantityToCopy
 	 */
 	public Quantity(Quantity quantityToCopy) {
 		this.value = quantityToCopy.value;
@@ -63,14 +49,10 @@ public class Quantity implements Copiable<Quantity> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public Quantity copy() {
 		return new Quantity(this);
 	}
-
-	//#end region
 
 	/**
 	 * Creates a list of Quantity for the given list of Double values and the
@@ -128,11 +110,6 @@ public class Quantity implements Copiable<Quantity> {
 
 	//#region ACCESSORS
 
-	/**
-	 * Gets the value
-	 *
-	 * @return
-	 */
 	public String getValue() {
 		return value;
 	}
@@ -141,11 +118,6 @@ public class Quantity implements Copiable<Quantity> {
 		return Double.parseDouble(value);
 	}
 
-	/**
-	 * Gets the unit
-	 *
-	 * @return
-	 */
 	public String getUnit() {
 		return unit;
 	}

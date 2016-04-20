@@ -12,12 +12,15 @@ import org.eclipse.swt.graphics.GC;
 @SuppressWarnings("restriction")
 public class RowHeaderRenderer extends DefaultRowHeaderRenderer {
 
-	/**
-	 * Constructor
-	 */
+	//#region CONSTRUCTORS
+
 	public RowHeaderRenderer() {
 		super();
 	}
+
+	//#end region
+
+	//#region METHODS
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
@@ -65,5 +68,7 @@ public class RowHeaderRenderer extends DefaultRowHeaderRenderer {
 		gc.setBackground(oldBackground);
 		gc.setForeground(oldForeground);
 	}
+
+	//#end region
 
 }

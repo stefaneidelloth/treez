@@ -17,12 +17,6 @@ public class VariableDefinitionControlAdaption extends TableControlAdaption {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 * @param variableDefinition
-	 */
 	public VariableDefinitionControlAdaption(Composite parent, VariableDefinition variableDefinition) {
 		super(parent, variableDefinition.getTable());
 		this.variableDefinition = variableDefinition;
@@ -30,16 +24,12 @@ public class VariableDefinitionControlAdaption extends TableControlAdaption {
 
 	//#end region
 
-	//#region METHODS		
+	//#region METHODS
 
 	@Override
 	public Adaptable getAdaptable() {
 		return variableDefinition;
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

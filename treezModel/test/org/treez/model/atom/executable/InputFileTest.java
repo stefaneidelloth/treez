@@ -13,7 +13,7 @@ public class InputFileTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(InputFileTest.class);
+	private static final Logger LOG = Logger.getLogger(InputFileTest.class);
 
 	//#region SETUP
 

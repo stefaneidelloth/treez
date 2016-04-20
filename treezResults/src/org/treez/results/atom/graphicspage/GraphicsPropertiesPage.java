@@ -3,7 +3,6 @@ package org.treez.results.atom.graphicspage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -17,12 +16,6 @@ import org.treez.javafxd3.d3.core.Selection;
  */
 public abstract class GraphicsPropertiesPage extends GraphicsAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(GraphicsPropertiesPage.class);
-
 	//#region ATTRIBUTES
 
 	/**
@@ -34,11 +27,6 @@ public abstract class GraphicsPropertiesPage extends GraphicsAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public GraphicsPropertiesPage(String name) {
 		super(name);
 		setRunnable();
@@ -105,9 +93,6 @@ public abstract class GraphicsPropertiesPage extends GraphicsAtom {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public List<GraphicsPropertiesPageFactory> getPropertyPageFactories() {
 		return propertyPageFactories;
 	}

@@ -22,44 +22,20 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * x data
-	 */
 	public final Attribute<String> xData = new Wrap<>();
 
-	/**
-	 * y data
-	 */
 	public final Attribute<String> yData = new Wrap<>();
 
-	/**
-	 * legend text
-	 */
 	public final Attribute<String> legendText = new Wrap<>();
 
-	/**
-	 * labels
-	 */
 	//public final Attribute<String> labels = new Wrap<>();
 
-	/**
-	 * scale markers
-	 */
 	//public final Attribute<String> scaleMarkers = new Wrap<>();
 
-	/**
-	 * x axis
-	 */
 	public final Attribute<String> xAxis = new Wrap<>();
 
-	/**
-	 * y axis
-	 */
 	public final Attribute<String> yAxis = new Wrap<>();
 
-	/**
-	 * color markers
-	 */
 	//public final Attribute<String> colorMarkers = new Wrap<>();
 
 	//#end region

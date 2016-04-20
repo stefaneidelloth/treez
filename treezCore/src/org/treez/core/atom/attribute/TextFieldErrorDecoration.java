@@ -32,13 +32,6 @@ public class TextFieldErrorDecoration extends ControlDecoration
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parentControl
-	 * @param parent
-	 * @param message
-	 */
 	public TextFieldErrorDecoration(Control parentControl, String message,
 			Composite parent) {
 		super(parentControl, SWT.RIGHT, parent);
@@ -50,8 +43,6 @@ public class TextFieldErrorDecoration extends ControlDecoration
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param decorationToCopy
 	 */
 	private TextFieldErrorDecoration(
 			TextFieldErrorDecoration decorationToCopy) {
@@ -67,20 +58,11 @@ public class TextFieldErrorDecoration extends ControlDecoration
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public TextFieldErrorDecoration copy() {
 		return new TextFieldErrorDecoration(this);
 	}
 
-	//#end region
-
-	/**
-	 * Initializes this decoration
-	 *
-	 * @param message
-	 */
 	private void initialize(String message) {
 		this.setDescriptionText(message);
 		this.setMarginWidth(1);

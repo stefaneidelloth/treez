@@ -17,7 +17,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.treez.core.adaptable.Adaptable;
-import org.treez.core.atom.adjustable.preferencePage.treeEditor.node.NodeComparer;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.error.ErrorAtom;
 import org.treez.core.scripting.ScriptType;
@@ -29,10 +28,7 @@ import org.treez.core.treeview.action.EmptyActionBars;
  */
 public class TreeViewProvider {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(TreeViewProvider.class);
+	private static final Logger LOG = Logger.getLogger(TreeViewProvider.class);
 
 	//#region ATTRIBUTES
 
@@ -71,11 +67,6 @@ public class TreeViewProvider {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param treezView
-	 */
 	public TreeViewProvider(TreezView treezView) {
 		this.treezView = treezView;
 
@@ -155,7 +146,7 @@ public class TreeViewProvider {
 		try {
 			workbench = PlatformUI.getWorkbench();
 		} catch (Exception error) {
-			sysLog.warn("Could not get workbench.");
+			LOG.warn("Could not get workbench.");
 		}
 
 		if (workbench != null) {
@@ -163,7 +154,7 @@ public class TreeViewProvider {
 				workbench.getHelpSystem().setHelp(treeViewer.getControl(),
 						HELP_CONTEXT_ID);
 			} catch (Exception error) {
-				sysLog.warn("Could not set help id for treeViewer control.");
+				LOG.warn("Could not set help id for treeViewer control.");
 			}
 		}
 	}
@@ -236,7 +227,7 @@ public class TreeViewProvider {
 		try {
 			treeViewer.setExpandedElements(expandedObjects);
 		} catch (Exception e) {
-			sysLog.warn("Could not automatically expand nodes.");
+			LOG.warn("Could not automatically expand nodes.");
 		}
 	}
 
@@ -309,7 +300,7 @@ public class TreeViewProvider {
 				site.registerContextMenu(menuMgr, currentTreeViewer);
 			}
 		} else {
-			sysLog.warn("Could not register context menu");
+			LOG.warn("Could not register context menu");
 		}
 
 	}
@@ -332,9 +323,6 @@ public class TreeViewProvider {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public IActionBars getActionBars() {
 
 		String parentType = treezView.getClass().getSimpleName();
@@ -344,38 +332,24 @@ public class TreeViewProvider {
 			return bars;
 		} else {
 			//return dummy action bars for test purposes
-			sysLog.warn("Could not get action bars.");
+			LOG.warn("Could not get action bars.");
 			IActionBars actionBars = createDummyActionBars();
 			return actionBars;
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	public TreeViewContentProvider getContentProvider() {
 		return contentProvider;
 	}
 
-	/**
-	 * Return the treeViewer
-	 *
-	 * @return
-	 */
 	public TreeViewerRefreshable getTreeViewer() {
 		return treeViewer;
 	}
 
-	/**
-	 * @return
-	 */
 	public TreeViewCodeConverter getTreeViewCodeConverter() {
 		return treeViewCodeConverter;
 	}
 
-	/**
-	 * @return
-	 */
 	public Composite getContentComposite() {
 		return contentComposite;
 	}

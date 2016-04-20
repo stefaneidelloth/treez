@@ -12,7 +12,7 @@ public class ErrorBarStyleTest extends AbstractAttributeAtomConstructionTest<Str
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ErrorBarStyleTest.class);
+	private static final Logger LOG = Logger.getLogger(ErrorBarStyleTest.class);
 
 	//#region SETUP
 

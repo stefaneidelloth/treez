@@ -2,7 +2,6 @@ package org.treez.results.atom.data;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -27,21 +26,10 @@ import org.treez.results.atom.probe.SweepProbe;
  */
 public class Data extends AdjustableAtom {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Data.class);
-
 	//#region ATTRIBUTES
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Data(String name) {
 		super(name);
 		AttributeRoot emptyModel = new AttributeRoot("root");

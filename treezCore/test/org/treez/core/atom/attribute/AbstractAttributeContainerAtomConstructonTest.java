@@ -30,7 +30,7 @@ public abstract class AbstractAttributeContainerAtomConstructonTest {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(AbstractAttributeContainerAtomConstructonTest.class);
+	private static final Logger LOG = Logger.getLogger(AbstractAttributeContainerAtomConstructonTest.class);
 
 	//#region ATTRIBUTES
 
@@ -141,7 +141,7 @@ public abstract class AbstractAttributeContainerAtomConstructonTest {
 		//code adaption
 		assertEquals("adaptable", atom, codeAdaption.buildCodeContainer(null, null).buildCode());
 		String code = codeAdaption.buildCodeContainer(null, null).buildCode();
-		sysLog.info("Test Atom Code:\n" + code);
+		LOG.info("Test Atom Code:\n" + code);
 
 		//tree node adaption
 		assertEquals("adaptable", atom, treeNodeAdaption.getAdaptable());

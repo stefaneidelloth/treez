@@ -20,10 +20,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class Utils {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(Utils.class);
+	private static final Logger LOG = Logger.getLogger(Utils.class);
 
 	//#region CONSTRUCTORS
 
@@ -60,7 +57,7 @@ public final class Utils {
 
 			return new RGB(red, green, blue);
 		} catch (IllegalArgumentException e) {
-			sysLog.error("Could not convert " + colorString + " to a value.\n"
+			LOG.error("Could not convert " + colorString + " to a value.\n"
 					+ e.getMessage());
 			return new RGB(0, 0, 0);
 		}
@@ -145,7 +142,7 @@ public final class Utils {
 	 */
 	public static void showMessage(String message) {
 
-		sysLog.info(message);
+		LOG.info(message);
 
 		Runnable showMessageRunnable = () -> {
 			Display currentDisplay = Display.getCurrent();
@@ -167,7 +164,7 @@ public final class Utils {
 		if (display != null) {
 			display.syncExec(showMessageRunnable);
 		} else {
-			sysLog.info(message);
+			LOG.info(message);
 		}
 	}
 

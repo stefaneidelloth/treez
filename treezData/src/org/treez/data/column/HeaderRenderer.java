@@ -12,12 +12,13 @@ import org.eclipse.swt.graphics.Point;
  */
 public class HeaderRenderer extends DefaultColumnHeaderRenderer {
 
-	/**
-	 * Constructor
-	 */
-	public HeaderRenderer() {
-		//
-	}
+	//#region CONSTRUCTORS
+
+	public HeaderRenderer() {}
+
+	//#end region
+
+	//#region METHODS
 
 	@Override
 	public boolean notify(int event, Point point, Object value) {
@@ -91,5 +92,7 @@ public class HeaderRenderer extends DefaultColumnHeaderRenderer {
 		int height = p.y;
 		return new Point(width, height);
 	}
+
+	//#end region
 
 }

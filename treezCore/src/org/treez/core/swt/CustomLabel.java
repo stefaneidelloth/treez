@@ -31,13 +31,6 @@ public class CustomLabel extends Composite {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param toolkit
-	 * @param parent
-	 * @param text
-	 */
 	public CustomLabel(FormToolkit toolkit, Composite parent, String text) {
 		super(parent, SWT.NONE);
 		setGridLayoutWithoutMargins(this);
@@ -147,53 +140,31 @@ public class CustomLabel extends Composite {
 
 	//#region ACCESSORS
 
-	/**
-	 * Sets the text
-	 *
-	 * @param text
-	 */
 	public void setText(String text) {
 		label.setText(text);
 	}
 
-	/**
-	 * Returns the text
-	 *
-	 * @return
-	 */
 	public String getText() {
 		return label.getText();
 	}
 
-	/**
-	 * Sets the background color
-	 */
 	@Override
 	public void setBackground(Color color) {
 		super.setBackground(color);
 		label.setBackground(color);
 	}
 
-	/**
-	 * Sets the foreground color
-	 */
 	@Override
 	public void setForeground(Color color) {
 		super.setForeground(color);
 		label.setForeground(color);
 	}
 
-	/**
-	 * Return the size
-	 */
 	@Override
 	public Point getSize() {
 		return label.getSize();
 	}
 
-	/**
-	 * Return the bounds
-	 */
 	@Override
 	public Rectangle getBounds() {
 		return label.getBounds();

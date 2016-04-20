@@ -1,8 +1,5 @@
 package org.treez.model.tableImport;
 
-/**
- * @author eis
- */
 public final class AccessDataTableImporter {
 
 	//#region CONSTRUCTORS
@@ -24,10 +21,6 @@ public final class AccessDataTableImporter {
 	public static TableData importData(String filePath, String password, String tableName, int rowLimit) {
 		return null;
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

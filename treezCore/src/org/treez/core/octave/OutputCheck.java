@@ -14,10 +14,7 @@ import org.apache.log4j.Logger;
  */
 public class OutputCheck extends TimerTask {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(OutputCheck.class);
+	private static final Logger LOG = Logger.getLogger(OutputCheck.class);
 
 	//#region ATTRIBUTES
 
@@ -29,7 +26,8 @@ public class OutputCheck extends TimerTask {
 	/**
 	 * regular expression pattern for the octave row label
 	 */
-	private final Pattern octaveLabelPattern = Pattern.compile("octave:\\d+\\>");
+	private final Pattern octaveLabelPattern = Pattern
+			.compile("octave:\\d+\\>");
 
 	/**
 	 * Number of characters before line number
@@ -55,11 +53,6 @@ public class OutputCheck extends TimerTask {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param octaveProcess
-	 */
 	public OutputCheck(OctaveProcess octaveProcess) {
 		this.octaveProcess = octaveProcess;
 		this.rawOctaveOutputText = "";
@@ -101,7 +94,8 @@ public class OutputCheck extends TimerTask {
 			postprocessErrors();
 
 		} catch (Exception e) {
-			throw new IllegalStateException("Octave output handling failed!", e);
+			throw new IllegalStateException("Octave output handling failed!",
+					e);
 		}
 	}
 
@@ -117,7 +111,7 @@ public class OutputCheck extends TimerTask {
 				octaveProcess.handleErrorOutput(errorText);
 				rawOctaveErrorText = "";
 			} catch (Exception e) {
-				sysLog.error("Could not postprocess error", e);
+				LOG.error("Could not postprocess error", e);
 				throw e;
 			}
 		}
@@ -129,7 +123,7 @@ public class OutputCheck extends TimerTask {
 	@SuppressWarnings("checkstyle:illegalcatch")
 	private void postprocessOutput() {
 
-		//sysLog.debug("postprocess output");
+		//LOG.debug("postprocess output");
 
 		if (rawOctaveOutputText.length() > 0) {
 
@@ -138,30 +132,34 @@ public class OutputCheck extends TimerTask {
 				String outputText = trimOctaveSeparator(rawOctaveOutputText);
 				outputText = outputText.trim();
 
-				//sysLog.debug("output:\n#'" + outputText + "'#" );
+				//LOG.debug("output:\n#'" + outputText + "'#" );
 
 				List<OctaveLabelInformation> lineInfo = extractLabelInformation();
 				int numberOfLabels = lineInfo.size();
 				switch (numberOfLabels) {
-				case 0:
-					//sysLog.debug("0 labels");
-					octaveProcess.handleOutput(outputText);
-					break;
-				case 1:
-					//sysLog.debug("1 labels");
-					octaveProcess.setCurrentLineNumber(lineInfo.get(0).getLineNumber());
-					outputText = trimOctaveLabel(outputText, lineInfo.get(0));
-					octaveProcess.handleOutput(outputText);
-					break;
-				default:
-					sysLog.warn("Several octave labels. Following output is not handled:\n" + rawOctaveOutputText);
-					//throw new IllegalStateException("Cannot handle several outputs at once. "+
-					//"The output handling code has to be corrected for\n" + rawOctaveOutputText);
+					case 0 :
+						//LOG.debug("0 labels");
+						octaveProcess.handleOutput(outputText);
+						break;
+					case 1 :
+						//LOG.debug("1 labels");
+						octaveProcess.setCurrentLineNumber(
+								lineInfo.get(0).getLineNumber());
+						outputText = trimOctaveLabel(outputText,
+								lineInfo.get(0));
+						octaveProcess.handleOutput(outputText);
+						break;
+					default :
+						LOG.warn(
+								"Several octave labels. Following output is not handled:\n"
+										+ rawOctaveOutputText);
+						//throw new IllegalStateException("Cannot handle several outputs at once. "+
+						//"The output handling code has to be corrected for\n" + rawOctaveOutputText);
 				}
 
 				rawOctaveOutputText = "";
 			} catch (Exception e) {
-				sysLog.error("Could not postprocess output", e);
+				LOG.error("Could not postprocess output", e);
 				throw e;
 			}
 
@@ -173,14 +171,16 @@ public class OutputCheck extends TimerTask {
 	 */
 	private List<OctaveLabelInformation> extractLabelInformation() {
 
-		Matcher patternMatcher = octaveLabelPattern.matcher(rawOctaveOutputText);
+		Matcher patternMatcher = octaveLabelPattern
+				.matcher(rawOctaveOutputText);
 		List<OctaveLabelInformation> labelInfoList = new ArrayList<>();
 		while (patternMatcher.find()) {
 			int startIndex = patternMatcher.start();
 			int endIndex = patternMatcher.end();
-			int lineNumber = Integer.parseInt(rawOctaveOutputText.substring(startIndex + octaveLabelPatternPreLength,
-					endIndex - 1));
-			labelInfoList.add(new OctaveLabelInformation(lineNumber, startIndex, endIndex));
+			int lineNumber = Integer.parseInt(rawOctaveOutputText.substring(
+					startIndex + octaveLabelPatternPreLength, endIndex - 1));
+			labelInfoList.add(new OctaveLabelInformation(lineNumber, startIndex,
+					endIndex));
 		}
 
 		return labelInfoList;
@@ -193,9 +193,11 @@ public class OutputCheck extends TimerTask {
 	 * @param outputInfo
 	 * @return
 	 */
-	private static String trimOctaveLabel(String outputText, OctaveLabelInformation outputInfo) {
+	private static String trimOctaveLabel(String outputText,
+			OctaveLabelInformation outputInfo) {
 
-		String trimmedOutput = outputText.substring(0, outputInfo.getStartIndex()).trim();
+		String trimmedOutput = outputText
+				.substring(0, outputInfo.getStartIndex()).trim();
 
 		return trimmedOutput;
 
@@ -223,7 +225,7 @@ public class OutputCheck extends TimerTask {
 		outputAvailable = octaveProcess.getOutputStream().available() > 0;
 		if (!outputAvailable) {
 			outputAvailable = octaveProcess.getErrorStream().available() > 0;
-			//sysLog.debug("error available:" + outputAvailable);
+			//LOG.debug("error available:" + outputAvailable);
 		}
 		return outputAvailable;
 	}
@@ -236,7 +238,8 @@ public class OutputCheck extends TimerTask {
 	@SuppressWarnings("checkstyle:magicnumber")
 	private void readOctaveOutput() throws IOException {
 
-		boolean outputAvailable = octaveProcess.getOutputStream().available() > 0;
+		boolean outputAvailable = octaveProcess.getOutputStream()
+				.available() > 0;
 		if (outputAvailable) {
 
 			byte[] bufferArray = new byte[128];
@@ -251,9 +254,10 @@ public class OutputCheck extends TimerTask {
 
 	@SuppressWarnings("checkstyle:magicnumber")
 	private void readOctaveErrorOutput() throws IOException {
-		//sysLog.debug("read octave error output");
+		//LOG.debug("read octave error output");
 
-		boolean outputIsAvailable = octaveProcess.getErrorStream().available() > 0;
+		boolean outputIsAvailable = octaveProcess.getErrorStream()
+				.available() > 0;
 		if (outputIsAvailable) {
 			byte[] bufferArray = new byte[128];
 			octaveProcess.getErrorStream().read(bufferArray); //puts output in bufferArray
@@ -263,32 +267,39 @@ public class OutputCheck extends TimerTask {
 	}
 
 	/**
-	 * Waits in steps of WAITING_TIME until the size of the available octave output stays constant
+	 * Waits in steps of WAITING_TIME until the size of the available octave
+	 * output stays constant
 	 *
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	private void waitForConstantOutputSize() throws IOException, InterruptedException {
+	private void waitForConstantOutputSize()
+			throws IOException, InterruptedException {
 		int outputSizeBeforeWaiting = 0;
 		int outputSizeAfterWaiting = 1;
 		while (outputSizeBeforeWaiting < outputSizeAfterWaiting) {
-			outputSizeBeforeWaiting = octaveProcess.getOutputStream().available();
+			outputSizeBeforeWaiting = octaveProcess.getOutputStream()
+					.available();
 			Thread.sleep(WAIT_TIME);
-			outputSizeAfterWaiting = octaveProcess.getOutputStream().available();
+			outputSizeAfterWaiting = octaveProcess.getOutputStream()
+					.available();
 		}
 	}
 
 	/**
-	 * Waits in steps of WAIT_TIME until the size of the available octave error output stays constant
+	 * Waits in steps of WAIT_TIME until the size of the available octave error
+	 * output stays constant
 	 *
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	private void waitForConstantErrorOutputSize() throws IOException, InterruptedException {
+	private void waitForConstantErrorOutputSize()
+			throws IOException, InterruptedException {
 		int outputSizeBeforeWaiting = 0;
 		int outputSizeAfterWaiting = 1;
 		while (outputSizeBeforeWaiting < outputSizeAfterWaiting) {
-			outputSizeBeforeWaiting = octaveProcess.getErrorStream().available();
+			outputSizeBeforeWaiting = octaveProcess.getErrorStream()
+					.available();
 			Thread.sleep(WAIT_TIME);
 			outputSizeAfterWaiting = octaveProcess.getErrorStream().available();
 		}

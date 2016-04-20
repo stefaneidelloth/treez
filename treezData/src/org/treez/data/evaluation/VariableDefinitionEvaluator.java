@@ -15,10 +15,7 @@ import org.treez.core.quantity.Quantity;
  */
 public class VariableDefinitionEvaluator {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(VariableDefinitionEvaluator.class);
+	private static final Logger LOG = Logger.getLogger(VariableDefinitionEvaluator.class);
 
 	//#region ATTRIBUTES
 
@@ -45,9 +42,6 @@ public class VariableDefinitionEvaluator {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 */
 	public VariableDefinitionEvaluator() {
 		if (VariableDefinitionEvaluator.octave == null) {
 			VariableDefinitionEvaluator.octave = createOctaveProcess();
@@ -90,7 +84,7 @@ public class VariableDefinitionEvaluator {
 			public void handleOutput(String outputString) {
 				//raw octave result is not used here
 				/*
-				 * sysLog.debug("*** Octave raw output:***********************\n"
+				 * LOG.debug("*** Octave raw output:***********************\n"
 				 * + outputString +
 				 * "\n********************************************");
 				 */
@@ -103,7 +97,7 @@ public class VariableDefinitionEvaluator {
 				octaveError = errorString;
 
 				/*
-				 * sysLog.debug("*** Octave raw error:***********************\n"
+				 * LOG.debug("*** Octave raw error:***********************\n"
 				 * + errorString +
 				 * "\n********************************************");
 				 */
@@ -134,7 +128,7 @@ public class VariableDefinitionEvaluator {
 	 */
 	public VariableDefinitionResult evaluate(String variableName, String definitionString) {
 
-		//sysLog.debug("evaluating definition " + defintionString);
+		//LOG.debug("evaluating definition " + defintionString);
 		if (definitionString.isEmpty()) {
 
 			//create new empty result
@@ -182,7 +176,7 @@ public class VariableDefinitionEvaluator {
 		String errorString = "";
 		String expression = variableName + " = " + definition;
 
-		sysLog.debug("evaluating expression '" + expression + "'");
+		LOG.debug("evaluating expression '" + expression + "'");
 
 		resultQuantity = octave.evalQuantity(expression); //errors are written to octaveError, see octaveHandler
 		if (!octaveError.isEmpty()) {
@@ -320,7 +314,7 @@ public class VariableDefinitionEvaluator {
 			}
 			return result;
 		} catch (Exception e) {
-			sysLog.warn("Could not parse '" + valueString + "' as Double.");
+			LOG.warn("Could not parse '" + valueString + "' as Double.");
 			return "NaN";
 		}
 
@@ -334,7 +328,7 @@ public class VariableDefinitionEvaluator {
 	 */
 	private static String postprocessUnit(String unit) {
 		String newUnit = unit;
-		//sysLog.debug("Unit: '" + unit + "'");
+		//LOG.debug("Unit: '" + unit + "'");
 
 		newUnit = newUnit.replace("^1]", "]"); // [m^1] => [m]
 

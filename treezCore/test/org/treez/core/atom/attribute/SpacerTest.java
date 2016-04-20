@@ -12,7 +12,7 @@ public class SpacerTest extends AbstractAttributeContainerAtomConstructonTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(SpacerTest.class);
+	private static final Logger LOG = Logger.getLogger(SpacerTest.class);
 
 	//#region SETUP
 

@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -10,16 +9,7 @@ import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
-/**
- * An item example
- */
 public class Spacer extends AbstractAttributeContainerAtom {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(Spacer.class);
 
 	//#region ATTRIBUTES
 
@@ -33,19 +23,12 @@ public class Spacer extends AbstractAttributeContainerAtom {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Spacer(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param spacerToCopy
 	 */
 	private Spacer(Spacer spacerToCopy) {
 		super(spacerToCopy);
@@ -57,25 +40,19 @@ public class Spacer extends AbstractAttributeContainerAtom {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public Spacer copy() {
 		return new Spacer(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("Spacer.png");
 	}
 
 	@Override
-	public void createAtomControl(Composite parent, Refreshable treeViewerRefreshable) {
+	public void createAtomControl(Composite parent,
+			Refreshable treeViewerRefreshable) {
 
 		//get data
 		String currentWidth = getWidth();
@@ -105,30 +82,18 @@ public class Spacer extends AbstractAttributeContainerAtom {
 
 	//#region ACCESSORS
 
-	/**
-	 * @return
-	 */
 	public String getWidth() {
 		return width;
 	}
 
-	/**
-	 * @param width
-	 */
 	public void setWidth(String width) {
 		this.width = width;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getHeight() {
 		return height;
 	}
 
-	/**
-	 * @param height
-	 */
 	public void setHeight(String height) {
 		this.height = height;
 	}

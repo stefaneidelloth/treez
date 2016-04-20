@@ -15,10 +15,7 @@ import org.treez.core.quantity.Quantity;
  */
 public class OctaveProcess {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(OctaveProcess.class);
+	private static final Logger LOG = Logger.getLogger(OctaveProcess.class);
 
 	//#region ATTRIBUTES
 
@@ -68,12 +65,9 @@ public class OctaveProcess {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * @param octavePath
-	 * @param processHandler
-	 */
 	@SuppressWarnings("checkstyle:magicnumber")
-	public OctaveProcess(String octavePath, OctaveProcessHandler processHandler) {
+	public OctaveProcess(String octavePath,
+			OctaveProcessHandler processHandler) {
 
 		this.octavePath = octavePath;
 		this.processHandler = processHandler;
@@ -115,7 +109,7 @@ public class OctaveProcess {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
-			sysLog.error("Could not get sleep");
+			LOG.error("Could not get sleep");
 		}
 	}
 
@@ -123,14 +117,20 @@ public class OctaveProcess {
 	private void connectToOctaveStreams() {
 		try {
 			//Connect to Octave input, output and error stream
-			printwriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(process.getOutputStream())), true);
+			printwriter = new PrintWriter(
+					new BufferedWriter(
+							new OutputStreamWriter(process.getOutputStream())),
+					true);
 			outputStream = process.getInputStream();
-			outputReader = new BufferedReader(new InputStreamReader(outputStream));
+			outputReader = new BufferedReader(
+					new InputStreamReader(outputStream));
 			errorStream = process.getErrorStream();
-			errorReader = new BufferedReader(new InputStreamReader(errorStream));
+			errorReader = new BufferedReader(
+					new InputStreamReader(errorStream));
 
 		} catch (Exception e) {
-			throw new IllegalStateException("Error connecting to Octave streams: \n" + e);
+			throw new IllegalStateException(
+					"Error connecting to Octave streams: \n" + e);
 		}
 
 	}
@@ -144,7 +144,8 @@ public class OctaveProcess {
 		try {
 			process = runtime.exec(octavePath);
 		} catch (Exception e) {
-			throw new IllegalStateException("Could not start octave.exe at " + octavePath, e);
+			throw new IllegalStateException(
+					"Could not start octave.exe at " + octavePath, e);
 		}
 	}
 
@@ -173,7 +174,7 @@ public class OctaveProcess {
 	}
 
 	void handleErrorOutput(String errorText) {
-		sysLog.error(errorText);
+		LOG.error(errorText);
 		if (processHandler != null) {
 			processHandler.handleError(errorText);
 		}
@@ -202,7 +203,7 @@ public class OctaveProcess {
 				sleep(WAIT_TIME);
 			}
 		} catch (Exception e) {
-			sysLog.error("Could not execute Octave Command\n" + command + "\n", e);
+			LOG.error("Could not execute Octave Command\n" + command + "\n", e);
 		}
 
 	}
@@ -239,14 +240,15 @@ public class OctaveProcess {
 			return outputText;
 
 		} catch (Exception e) {
-			sysLog.error("Could not execute Octave Command\n" + command + "\n", e);
+			LOG.error("Could not execute Octave Command\n" + command + "\n", e);
 			return "";
 		}
 
 	}
 
 	/**
-	 * Executes a given octave command and returns the result without assignment part, e.g ans = 66 => a = 1 => 1
+	 * Executes a given octave command and returns the result without assignment
+	 * part, e.g ans = 66 => a = 1 => 1
 	 *
 	 * @param command
 	 * @return
@@ -285,9 +287,9 @@ public class OctaveProcess {
 
 		final String valueLineSeparator = "\n";
 
-		//sysLog.debug("Evaluating '" + command + "'.");
+		//LOG.debug("Evaluating '" + command + "'.");
 		String result = eval(command);
-		//sysLog.debug("Result: '" + result + "'.");
+		//LOG.debug("Result: '" + result + "'.");
 		String value = "";
 		String unit = "";
 		if (result.contains(LINE_SEPARATOR)) {
@@ -301,7 +303,8 @@ public class OctaveProcess {
 			for (int lineIndex = 1; lineIndex < lines.length; lineIndex++) {
 				value = value + lines[lineIndex].trim() + valueLineSeparator;
 			}
-			value = value.substring(0, value.length() - valueLineSeparator.length());
+			value = value.substring(0,
+					value.length() - valueLineSeparator.length());
 
 		} else {
 			value = result;

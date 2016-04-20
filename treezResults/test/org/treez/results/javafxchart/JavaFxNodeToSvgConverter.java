@@ -23,7 +23,7 @@ public final class JavaFxNodeToSvgConverter {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(JavaFxNodeToSvgConverter.class);
+	private static final Logger LOG = Logger.getLogger(JavaFxNodeToSvgConverter.class);
 
 	//#region ATTRIBUTES
 
@@ -104,7 +104,7 @@ public final class JavaFxNodeToSvgConverter {
 					Boolean visible = (Boolean) cssMetaData.getInitialValue(null);
 					if (visible != null) {
 						svgNodeProperties.setVisibility(SvgVisibility.HIDDEN);
-						sysLog.info("Set visibility from css:" + visible);
+						LOG.info("Set visibility from css:" + visible);
 					}
 				}
 				break;
@@ -114,7 +114,7 @@ public final class JavaFxNodeToSvgConverter {
 					String fxShape = (String) cssMetaData.getInitialValue(null);
 					if (fxShape != null) {
 						svgNodeProperties.setPathShape(fxShape);
-						sysLog.info("Set fx-shape from css:" + fxShape);
+						LOG.info("Set fx-shape from css:" + fxShape);
 					}
 				}
 				break;
@@ -125,7 +125,7 @@ public final class JavaFxNodeToSvgConverter {
 					Double opacity = (Double) cssMetaData.getInitialValue(null);
 					if (opacity != null) {
 						svgNodeProperties.setOpacity(opacity);
-						sysLog.info("Set opacity from css:" + opacity);
+						LOG.info("Set opacity from css:" + opacity);
 					}
 				}
 				break;
@@ -137,7 +137,7 @@ public final class JavaFxNodeToSvgConverter {
 					if (xObj != null) {
 						double x = (double) xObj;
 						svgNodeProperties.setX(x);
-						sysLog.info("Set x from css:" + x);
+						LOG.info("Set x from css:" + x);
 					}
 				}
 				break;
@@ -149,7 +149,7 @@ public final class JavaFxNodeToSvgConverter {
 					if (yObj != null) {
 						Double y = (double) yObj;
 						svgNodeProperties.setY(y);
-						sysLog.info("Set y from css:" + y);
+						LOG.info("Set y from css:" + y);
 					}
 				}
 				break;
@@ -160,7 +160,7 @@ public final class JavaFxNodeToSvgConverter {
 					if (xScaleObj != null) {
 						double xScale = (double) xScaleObj;
 						svgNodeProperties.setXScale(xScale);
-						sysLog.info("Set xScale from css:" + xScale);
+						LOG.info("Set xScale from css:" + xScale);
 					}
 				}
 				break;
@@ -171,7 +171,7 @@ public final class JavaFxNodeToSvgConverter {
 					if (yScaleObj != null) {
 						double yScale = (double) yScaleObj;
 						svgNodeProperties.setXScale(yScale);
-						sysLog.info("Set yScale from css:" + yScale);
+						LOG.info("Set yScale from css:" + yScale);
 					}
 				}
 				break;
@@ -182,7 +182,7 @@ public final class JavaFxNodeToSvgConverter {
 					if (rotationObj != null) {
 						double rotation = (double) rotationObj;
 						svgNodeProperties.setXScale(rotation);
-						sysLog.info("Set rotation from css:" + rotation);
+						LOG.info("Set rotation from css:" + rotation);
 					}
 				}
 				break;
@@ -195,7 +195,7 @@ public final class JavaFxNodeToSvgConverter {
 						if (fillColor != null) {
 							String fill = paintToColorString(fillColor);
 							svgNodeProperties.setFill(fill);
-							sysLog.info("Set fill from css:" + fill);
+							LOG.info("Set fill from css:" + fill);
 						}
 					} catch (NullPointerException exception) {}
 				}
@@ -204,11 +204,11 @@ public final class JavaFxNodeToSvgConverter {
 			case "-fx-region-background":
 				//background properties (fill color)
 				//if (svgNodeProperties.getFill() == null) {
-				sysLog.info("region background css data ##############");
+				LOG.info("region background css data ##############");
 				List<CssMetaData<? extends Styleable, ?>> subCssMetaDataList = cssMetaData.getSubProperties();
 				for (CssMetaData<? extends Styleable, ?> subCssMetaData : subCssMetaDataList) {
 					SubCssMetaData<?> subData = (SubCssMetaData<?>) subCssMetaData;
-					sysLog.info(subData);
+					LOG.info(subData);
 					String subProperty = subData.getProperty();
 					switch (subProperty) {
 					case "-fx-background-color":
@@ -218,7 +218,7 @@ public final class JavaFxNodeToSvgConverter {
 							//if (fillColor != null) {
 							String fill = paintToColorString(fillColor);
 							svgNodeProperties.setFill(fill);
-							sysLog.info("Set fill from css:" + fill);
+							LOG.info("Set fill from css:" + fill);
 							//}
 						} catch (NullPointerException exception) {}
 						break;
@@ -232,10 +232,10 @@ public final class JavaFxNodeToSvgConverter {
 				//border properties (stroke color)
 				//if (svgNodeProperties.getFill() == null) {
 				subCssMetaDataList = cssMetaData.getSubProperties();
-				sysLog.info("region border css data ##############");
+				LOG.info("region border css data ##############");
 				for (CssMetaData<? extends Styleable, ?> subCssMetaData : subCssMetaDataList) {
 					SubCssMetaData<?> subData = (SubCssMetaData<?>) subCssMetaData;
-					sysLog.info(subData);
+					LOG.info(subData);
 					String subProperty = subData.getProperty();
 					switch (subProperty) {
 					case "-fx-border-color":
@@ -247,7 +247,7 @@ public final class JavaFxNodeToSvgConverter {
 							//if (fillColor != null) {
 							String stroke = paintToColorString((Color) strokeColor);
 							svgNodeProperties.setStroke(stroke);
-							sysLog.info("Set stroke from css:" + stroke);
+							LOG.info("Set stroke from css:" + stroke);
 							//}
 						} catch (NullPointerException exception) {}
 						break;
@@ -260,7 +260,7 @@ public final class JavaFxNodeToSvgConverter {
 								if (strokeWidth != null) {
 
 									svgNodeProperties.setStrokeWidth(strokeWidth);
-									sysLog.info("Set strokeWidth from css:" + strokeWidth);
+									LOG.info("Set strokeWidth from css:" + strokeWidth);
 								}
 							}
 						} catch (NullPointerException exception) {}
@@ -279,7 +279,7 @@ public final class JavaFxNodeToSvgConverter {
 						if (fillColor != null) {
 							String fill = paintToColorString(fillColor);
 							svgNodeProperties.setFill(fill);
-							sysLog.info("Set fill from css:" + fill);
+							LOG.info("Set fill from css:" + fill);
 						}
 					} catch (NullPointerException exception) {}
 				}
@@ -290,7 +290,7 @@ public final class JavaFxNodeToSvgConverter {
 					Double rectRadius = (Double) cssMetaData.getInitialValue(null);
 					if (rectRadius != null) {
 						svgNodeProperties.setFillRadius(rectRadius);
-						sysLog.info("Set rect radius from css:" + rectRadius);
+						LOG.info("Set rect radius from css:" + rectRadius);
 					}
 				}
 				break;
@@ -302,7 +302,7 @@ public final class JavaFxNodeToSvgConverter {
 						if (strokeColor != null) {
 							String stroke = paintToColorString(strokeColor);
 							svgNodeProperties.setStroke(stroke);
-							sysLog.info("Set stroke from css:" + stroke);
+							LOG.info("Set stroke from css:" + stroke);
 						}
 					} catch (NullPointerException exception) {}
 				}
@@ -319,7 +319,7 @@ public final class JavaFxNodeToSvgConverter {
 						if (strokeColor != null) {
 							String stroke = paintToColorString(strokeColor);
 							svgNodeProperties.setStroke(stroke);
-							sysLog.info("Set stroke from css:" + stroke);
+							LOG.info("Set stroke from css:" + stroke);
 						}
 					} catch (NullPointerException exception) {}
 				}
@@ -331,7 +331,7 @@ public final class JavaFxNodeToSvgConverter {
 					Double strokeWidth = (Double) cssMetaData.getInitialValue(null);
 					if (strokeWidth != null) {
 						svgNodeProperties.setStrokeWidth(strokeWidth);
-						sysLog.info("Set stroke width from css:" + strokeWidth);
+						LOG.info("Set stroke width from css:" + strokeWidth);
 					}
 				}
 				break;
@@ -340,7 +340,7 @@ public final class JavaFxNodeToSvgConverter {
 					String fontSize = (String) cssMetaData.getInitialValue(null);
 					if (fontSize != null) {
 						svgNodeProperties.setFontSize(fontSize);
-						sysLog.info("Set font size from css:" + fontSize);
+						LOG.info("Set font size from css:" + fontSize);
 					}
 				}
 

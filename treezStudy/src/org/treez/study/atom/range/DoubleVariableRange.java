@@ -2,7 +2,6 @@ package org.treez.study.atom.range;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
@@ -18,12 +17,6 @@ import org.treez.study.Activator;
  */
 public class DoubleVariableRange extends AbstractVariableRange<Double> {
 
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings({ "hiding", "unused" })
-	private static Logger sysLog = Logger.getLogger(DoubleVariableRange.class);
-
 	//#region ATTRIBUTES
 
 	/**
@@ -35,11 +28,6 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public DoubleVariableRange(String name) {
 		super(name);
 	}
@@ -48,9 +36,6 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 
 	//#region METHODS
 
-	/**
-	 * Creates the underlying model
-	 */
 	@Override
 	protected void createVariableRangeModel() {
 		// root, page and section
@@ -81,9 +66,6 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 		setModel(root);
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image baseImage = Activator.getImage("doubleVariableRange.png");

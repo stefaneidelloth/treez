@@ -39,38 +39,10 @@ public class HashMapModelInput implements ModelInput {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param parentStuyModelPath
-	 */
 	public HashMapModelInput(String parentStuyModelPath) {
 		this.id = getNextId();
 		modelInputMap = new HashMap<>();
 		this.parentStuyModelPath = parentStuyModelPath;
-	}
-
-	/**
-	 * Returns the next id and increases the id counter.
-	 *
-	 * @return
-	 */
-	private static long getNextId() {
-		long currentId = nextId;
-		nextId++;
-		return currentId;
-	}
-
-	/**
-	 * Resets the id counter.
-	 */
-	public static void resetIdCounter() {
-		nextId = 1;
-	}
-
-	@Override
-	public void increaseId() {
-		this.id = getNextId();
 	}
 
 	/**
@@ -89,7 +61,25 @@ public class HashMapModelInput implements ModelInput {
 
 	//#region METHODS
 
-	//#region COPY
+	/**
+	 * Returns the next id and increases the id counter.
+	 *
+	 * @return
+	 */
+	private static long getNextId() {
+		long currentId = nextId;
+		nextId++;
+		return currentId;
+	}
+
+	public static void resetIdCounter() {
+		nextId = 1;
+	}
+
+	@Override
+	public void increaseId() {
+		this.id = getNextId();
+	}
 
 	@Override
 	public HashMapModelInput copy() {
@@ -121,7 +111,20 @@ public class HashMapModelInput implements ModelInput {
 		return modelInput;
 	}
 
+	@Override
+	public void add(String variableModelPath, java.lang.Object quantity) {
+		modelInputMap.put(variableModelPath, quantity);
+	}
+
+	@Override
+	public boolean containsVariableModelPath(String variableModelPath) {
+		boolean pathExists = modelInputMap.keySet().contains(variableModelPath);
+		return pathExists;
+	}
+
 	//#end region
+
+	//#region ACCESSORS
 
 	@Override
 	public String getId() {
@@ -144,17 +147,6 @@ public class HashMapModelInput implements ModelInput {
 	public List<String> getAllVariableModelPaths() {
 		List<String> allPaths = new ArrayList<>(modelInputMap.keySet());
 		return allPaths;
-	}
-
-	@Override
-	public boolean containsVariableModelPath(String variableModelPath) {
-		boolean pathExists = modelInputMap.keySet().contains(variableModelPath);
-		return pathExists;
-	}
-
-	@Override
-	public void add(String variableModelPath, java.lang.Object quantity) {
-		modelInputMap.put(variableModelPath, quantity);
 	}
 
 	//#end region

@@ -9,10 +9,6 @@ public class ActionSeparator extends Separator {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 */
 	public ActionSeparator() {
 		super();
 		setId("org.treez.core.separator");

@@ -22,20 +22,12 @@ import org.treez.study.atom.Study;
  */
 public class Sensitivity extends AdjustableAtom implements Study {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger.getLogger(Sensitivity.class);
+	private static final Logger LOG = Logger.getLogger(Sensitivity.class);
 
 	//#region ATTRIBUTES
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public Sensitivity(String name) {
 		super(name);
 		AttributeRoot emptyModel = new AttributeRoot("root");
@@ -75,8 +67,11 @@ public class Sensitivity extends AdjustableAtom implements Study {
 
 		List<Object> actions = new ArrayList<>();
 
-		actions.add(new TreeViewerAction("Add page", Activator.getImage("add.png"), treeViewer, () -> sysLog
-				.debug("add page")));
+		actions.add(new TreeViewerAction(
+				"Add page",
+				Activator.getImage("add.png"),
+				treeViewer,
+				() -> LOG.debug("add page")));
 
 		return actions;
 	}

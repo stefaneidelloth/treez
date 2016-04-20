@@ -19,7 +19,7 @@ public final class TestUtils {
 	/**
 	 * Logger for this class
 	 */
-	private static Logger sysLog = Logger.getLogger(TestUtils.class);
+	private static final Logger LOG = Logger.getLogger(TestUtils.class);
 
 	//#region CONSTRUCTORS
 
@@ -80,7 +80,7 @@ public final class TestUtils {
 
 			try {
 				URL imageUrl = imageUri.toURL();
-				sysLog.debug("Loading test image from " + imageUrl);
+				LOG.debug("Loading test image from " + imageUrl);
 				ImageDescriptor imageDescriptor = ImageDescriptor
 						.createFromURL(imageUrl);
 				Image image = imageDescriptor.createImage();

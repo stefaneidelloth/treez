@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute.base;
 
-import org.apache.log4j.Logger;
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.atom.attribute.base.parent.AttributeParentCodeAdaption;
 import org.treez.core.atom.base.AbstractAtom;
@@ -13,23 +12,8 @@ import org.treez.core.quantity.Quantity;
  */
 public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 
-	/**
-	 * Logger for this class
-	 */
-	private static Logger sysLog = Logger
-			.getLogger(AttributeAtomCodeAdaption.class);
-
-	//#region ATTRIBUTES
-
-	//#end region
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param atom
-	 */
 	public AttributeAtomCodeAdaption(AbstractAttributeAtom<T> atom) {
 		super(atom);
 	}

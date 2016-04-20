@@ -10,12 +10,15 @@ import org.eclipse.swt.graphics.GC;
  */
 public class EmptyHeaderRenderer extends DefaultColumnHeaderRenderer {
 
-	/**
-	 * Constructor
-	 */
+	//#region CONSTRUCTORS
+
 	public EmptyHeaderRenderer() {
 		super();
 	}
+
+	//#end region
+
+	//#region METHODS
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
@@ -41,5 +44,7 @@ public class EmptyHeaderRenderer extends DefaultColumnHeaderRenderer {
 		gc.setBackground(oldBackground);
 		gc.setForeground(oldForeground);
 	}
+
+	//#end region
 
 }

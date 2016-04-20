@@ -13,7 +13,7 @@ public class ExecutableTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static Logger sysLog = Logger.getLogger(ExecutableTest.class);
+	private static final Logger LOG = Logger.getLogger(ExecutableTest.class);
 
 	//#region SETUP
 

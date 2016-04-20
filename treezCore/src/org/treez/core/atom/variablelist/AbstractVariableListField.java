@@ -14,25 +14,14 @@ public abstract class AbstractVariableListField<T>
 		extends
 			AbstractAttributeAtom<List<T>> {
 
-	//#region ATTRIBUTES
-
-	//#end region
-
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public AbstractVariableListField(String name) {
 		super(name);
 	}
 
 	/**
 	 * Copy Constructor
-	 *
-	 * @param abstractVariableListFieldToCopy
 	 */
 	public AbstractVariableListField(
 			AbstractVariableListField<T> abstractVariableListFieldToCopy) {
@@ -64,11 +53,6 @@ public abstract class AbstractVariableListField<T>
 	@Override
 	public abstract void set(List<T> valueList);
 
-	/**
-	 * Sets the label
-	 *
-	 * @param newLabel
-	 */
 	public abstract void setLabel(String newLabel);
 
 	//#end region
