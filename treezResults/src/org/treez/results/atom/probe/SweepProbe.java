@@ -272,7 +272,7 @@ public class SweepProbe extends AbstractProbe {
 		boolean firstFamilyIsSpecified = firstFamilyPath != null && !"".equals(firstFamilyPath);
 		List<?> firstFamilyRangeValues = null;
 		if (firstFamilyIsSpecified) {
-			VariableRange<?> firstFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(firstFamilyPath);
+			VariableRange<?> firstFamilyRangeAtom = this.getChildFromRoot(firstFamilyPath);
 			firstFamilyRangeValues = firstFamilyRangeAtom.getRange();
 		}
 		return firstFamilyRangeValues;
@@ -283,7 +283,7 @@ public class SweepProbe extends AbstractProbe {
 		boolean secondFamilyIsSpecified = secondFamilyPath != null && !"".equals(secondFamilyPath);
 		List<?> secondFamilyRangeValues = null;
 		if (secondFamilyIsSpecified) {
-			VariableRange<?> secondFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(secondFamilyPath);
+			VariableRange<?> secondFamilyRangeAtom = this.getChildFromRoot(secondFamilyPath);
 			secondFamilyRangeValues = secondFamilyRangeAtom.getRange();
 		}
 		return secondFamilyRangeValues;
@@ -294,7 +294,7 @@ public class SweepProbe extends AbstractProbe {
 		boolean xIsSpecified = !"".equals(xPath);
 		Class<?> xType = null;
 		if (xIsSpecified) {
-			VariableRange<?> xRangeAtom = (VariableRange<?>) this.getChildFromRoot(xPath);
+			VariableRange<?> xRangeAtom = this.getChildFromRoot(xPath);
 			xType = xRangeAtom.getType();
 		}
 		return xType;
@@ -317,7 +317,7 @@ public class SweepProbe extends AbstractProbe {
 
 		List<?> xRangeValues = null;
 		if (xIsSpecified) {
-			xRangeAtom = (VariableRange<?>) this.getChildFromRoot(xPath);
+			xRangeAtom = this.getChildFromRoot(xPath);
 			xRangeValues = xRangeAtom.getRange();
 		}
 
@@ -450,7 +450,7 @@ public class SweepProbe extends AbstractProbe {
 	private Object getProbeValue(String probeTablePath, int rowIndex, int columnIndex) {
 
 		//get probe table
-		Table probeTable = (Table) this.getChildFromRoot(probeTablePath);
+		Table probeTable = this.getChildFromRoot(probeTablePath);
 
 		//get probe value
 		String columnHeader = probeTable.getHeaders().get(columnIndex);

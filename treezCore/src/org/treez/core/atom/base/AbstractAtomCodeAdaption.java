@@ -115,7 +115,7 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 
 		//Create code container for the children of the atom and check if it is empty.
 		//Instead of actual variable names place holders will be used. Those
-		//place holders need to be replaced after the actual variable names are known.
+		//place holders need to be replaced after the variable names are known.
 		CodeContainer childContainer = createCodeContainerForChildAtoms();
 		boolean childContainerHasEmptyBulk = childContainer.hasEmptyBulk();
 

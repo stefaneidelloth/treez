@@ -210,26 +210,26 @@ public class Xy extends GraphicsPropertiesPage {
 
 	private Axis getXAxis() {
 		String xAxisPath = data.xAxis.get();
-		Axis xAxisAtom = (Axis) getChildFromRoot(xAxisPath);
+		Axis xAxisAtom = getChildFromRoot(xAxisPath);
 		return xAxisAtom;
 	}
 
 	private Axis getYAxis() {
 		String yAxisPath = data.yAxis.get();
-		Axis yAxisAtom = (Axis) getChildFromRoot(yAxisPath);
+		Axis yAxisAtom = getChildFromRoot(yAxisPath);
 		return yAxisAtom;
 	}
 
 	private List<Object> getXData() {
 		String xDataPath = data.xData.get();
-		org.treez.data.column.Column xDataColumn = (org.treez.data.column.Column) getChildFromRoot(xDataPath);
+		org.treez.data.column.Column xDataColumn = getChildFromRoot(xDataPath);
 		List<Object> xDataValues = xDataColumn.getValues();
 		return xDataValues;
 	}
 
 	private List<Object> getYData() {
 		String yDataPath = data.yData.get();
-		org.treez.data.column.Column yDataColumn = (org.treez.data.column.Column) getChildFromRoot(yDataPath);
+		org.treez.data.column.Column yDataColumn = getChildFromRoot(yDataPath);
 		List<Object> yDataValues = yDataColumn.getValues();
 		return yDataValues;
 	}

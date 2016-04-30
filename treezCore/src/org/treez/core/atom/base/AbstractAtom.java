@@ -608,7 +608,7 @@ public abstract class AbstractAtom
 	 * @param childPathStartingWithRoot
 	 * @return
 	 */
-	public AbstractAtom getChildFromRoot(String childPathStartingWithRoot)
+	public <T> T getChildFromRoot(String childPathStartingWithRoot)
 			throws IllegalArgumentException {
 
 		final int rootLength = 5; //"root."
@@ -628,7 +628,19 @@ public abstract class AbstractAtom
 			String childPath = childPathStartingWithRoot.substring(rootLength,
 					length);
 			AbstractAtom root = getRoot();
-			return root.getChild(childPath);
+			AbstractAtom child = root.getChild(childPath);
+			if (child == null) {
+				return null;
+			}
+
+			try {
+				@SuppressWarnings("unchecked")
+				T castedChild = (T) child;
+				return castedChild;
+			} catch (ClassCastException exception) {
+				throw new IllegalArgumentException(
+						"Could not cast child to wanted type", exception);
+			}
 		} else {
 			throw new IllegalArgumentException(
 					"The path has to start with 'root.' but is '"

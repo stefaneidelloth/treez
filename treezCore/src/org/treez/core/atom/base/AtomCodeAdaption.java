@@ -74,7 +74,7 @@ public class AtomCodeAdaption extends AbstractAtomCodeAdaption {
 	//#region CREATION CODE
 
 	/**
-	 * Builds code for creating the atom without using a variable names
+	 * Builds code for creating the atom without using a variable name
 	 *
 	 * @return
 	 */

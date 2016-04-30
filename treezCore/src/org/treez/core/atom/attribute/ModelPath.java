@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -33,6 +34,8 @@ import org.treez.core.utils.Utils;
  * Allows the user to choose a model path
  */
 public class ModelPath extends AbstractAttributeAtom<String> {
+
+	private static final Logger LOG = Logger.getLogger(ModelPath.class);
 
 	//#region ATTRIBUTES
 
@@ -397,6 +400,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 			});
 		}
 
+		//initialize combo box
 		if (isAvailable(combo)) {
 			combo.setEnabled(isEnabled());
 			combo.setItems(availableTargetPathsArray);
@@ -467,6 +471,11 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 			}
 			int currentIndex = availableTargetPaths.indexOf(currentModelPath);
 			combo.select(currentIndex);
+			if (currentIndex < 0) {
+				String message = "Could not select model path '"
+						+ currentModelPath + "'.";
+				LOG.warn(message);
+			}
 		}
 	}
 

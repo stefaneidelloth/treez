@@ -1,7 +1,9 @@
 package org.treez.data.column;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
@@ -165,6 +167,74 @@ public class Column extends AdjustableAtom {
 
 		return valueList;
 
+	}
+
+	public List<Double> getDoubleValues() {
+		List<Object> valueObjects = getValues();
+		switch (getColumnType()) {
+		case BOOLEAN:
+			return getDoubleValuesFromBooleans(valueObjects);
+		case COLOR:
+			return getDoubleValuesFromColors(valueObjects);
+		case DOUBLE:
+			return getDoubleValuesFromNumbers(valueObjects);
+		case ENUM:
+			return getDoubleValuesFromEnums(valueObjects);
+		case INTEGER:
+			return getDoubleValuesFromNumbers(valueObjects);
+		case TEXT:
+			return getDoubleValuesFromStrings(valueObjects);
+		default:
+			String message = "Unknown column type " + getColumnType();
+			throw new IllegalStateException(message);
+		}
+	}
+
+	private static List<Double> getDoubleValuesFromBooleans(List<Object> valueObjects) {
+		List<Double> values = valueObjects.stream().map(element -> {
+			Boolean bool = (Boolean) element;
+			if (bool) {
+				return 1.0;
+			} else {
+				return 0.0;
+			}
+		}).collect(Collectors.toList());
+		return values;
+	}
+
+	private static List<Double> getDoubleValuesFromColors(List<Object> valueObjects) {
+
+		List<Double> values = valueObjects.stream().map(element -> {
+			Color color = (Color) element;
+			int rgb = color.getRGB();
+			return new Double(rgb);
+		}).collect(Collectors.toList());
+		return values;
+	}
+
+	private static List<Double> getDoubleValuesFromNumbers(List<Object> valueObjects) {
+		List<Double> values = valueObjects.stream().map(element -> {
+			Number number = (Number) element;
+			return number.doubleValue();
+		}).collect(Collectors.toList());
+		return values;
+	}
+
+	private static List<Double> getDoubleValuesFromEnums(List<Object> valueObjects) {
+		List<Double> values = valueObjects.stream().map(element -> {
+			Enum<?> enumeration = (Enum<?>) element;
+			int ordinal = enumeration.ordinal();
+			return new Double(ordinal);
+		}).collect(Collectors.toList());
+		return values;
+	}
+
+	private static List<Double> getDoubleValuesFromStrings(List<Object> valueObjects) {
+		List<Double> values = valueObjects.stream().map(element -> {
+			String stringValue = (String) element;
+			return Double.parseDouble(stringValue);
+		}).collect(Collectors.toList());
+		return values;
 	}
 
 	/**

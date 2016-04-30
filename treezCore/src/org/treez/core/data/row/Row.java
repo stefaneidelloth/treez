@@ -73,6 +73,29 @@ public class Row implements Copiable<Row> {
 		return new Row(this);
 	}
 
+	@Override
+	public String toString() {
+		String rowCommand = "addRow(";
+
+		Iterable<Object> values = entryMap.values();
+		boolean valueAdded = false;
+		for (Object value : values) {
+			valueAdded = true;
+			boolean isString = value instanceof String;
+			if (isString) {
+				rowCommand += "\"" + value + "\", ";
+			} else {
+				rowCommand += value.toString() + ", ";
+			}
+		}
+
+		if (valueAdded) {
+			rowCommand = rowCommand.substring(0, rowCommand.length() - 2);
+		}
+		rowCommand += ");";
+		return rowCommand;
+	}
+
 	/**
 	 * Copies the row for a new table (use this if you copy the complete parent
 	 * table)

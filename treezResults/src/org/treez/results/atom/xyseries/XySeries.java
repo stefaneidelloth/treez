@@ -52,9 +52,6 @@ public class XySeries extends GraphicsAtom {
 
 	//#region METHODS
 
-	/**
-	 * Creates the treez model for this atom
-	 */
 	private void createModel() {
 
 		//root
@@ -80,17 +77,11 @@ public class XySeries extends GraphicsAtom {
 
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("xySeries.png");
 	}
 
-	/**
-	 * Creates the context menu actions for this atom
-	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
 
@@ -102,10 +93,12 @@ public class XySeries extends GraphicsAtom {
 		treeViewRefreshable = refreshable;
 
 		String sourceTablePath = sourceTable.get();
-		Axis domainAxis = getOrCreateDomainAxis();
-		Axis rangeAxis = getOrCreateRangeAxis();
 		boolean sourceIsSpecified = sourceTablePath != null && !"".equals(sourceTablePath);
 		if (sourceIsSpecified) {
+			Table foundSourceTable = this.getChildFromRoot(sourceTablePath);
+
+			Axis domainAxis = getOrCreateDomainAxis(foundSourceTable);
+			Axis rangeAxis = getOrCreateRangeAxis(foundSourceTable);
 			removeAllChildren();
 			createNewXyChildren(sourceTablePath, domainAxis, rangeAxis);
 		} else {
@@ -114,21 +107,23 @@ public class XySeries extends GraphicsAtom {
 	}
 
 	private void createNewXyChildren(String sourceTablePath, Axis domainAxis, Axis rangeAxis) {
-		Table foundSourceTable = (Table) this.getChildFromRoot(sourceTablePath);
+		Table foundSourceTable = this.getChildFromRoot(sourceTablePath);
 		int numberOfColumns = foundSourceTable.getNumberOfColumns();
 		int numberOfPlots = numberOfColumns - 1;
 		Columns columns = foundSourceTable.getColumns();
+		String columnsName = columns.getName();
 		List<String> columnHeaders = columns.getHeaders();
 		String domainColumnName = columnHeaders.get(0);
 		for (int rangeColumnIndex = 1; rangeColumnIndex <= numberOfPlots; rangeColumnIndex++) {
 			String rangeColumnName = columnHeaders.get(rangeColumnIndex);
 			Column rangeColumn = columns.getColumn(rangeColumnName);
 			String rangeLegend = rangeColumn.description.get();
-			createXyChild(sourceTablePath, domainAxis, domainColumnName, rangeAxis, rangeColumnName, rangeLegend);
+			createNewXyChild(sourceTablePath, columnsName, domainAxis, domainColumnName, rangeAxis, rangeColumnName,
+					rangeLegend);
 		}
 	}
 
-	private Axis getOrCreateDomainAxis() {
+	private Axis getOrCreateDomainAxis(Table sourceTable) {
 		List<Axis> axisList = getAllAxisFromParentGraph();
 		if (axisList.size() > 0) {
 			Axis domainAxis = axisList.get(0);
@@ -136,19 +131,81 @@ public class XySeries extends GraphicsAtom {
 		} else {
 			Graph graph = (Graph) this.getParentAtom();
 			Axis domainAxis = graph.createAxis("xAxis");
+			double[] domainAxisLimits = getDomainLimits(sourceTable);
+			domainAxis.data.min.set("" + domainAxisLimits[0]);
+			domainAxis.data.max.set("" + domainAxisLimits[1]);
 			return domainAxis;
 		}
 	}
 
-	private Axis getOrCreateRangeAxis() {
+	private static double[] getDomainLimits(Table sourceTable) {
+		Columns columns = sourceTable.getColumns();
+		int numberOfColumns = columns.getNumberOfColumns();
+		if (numberOfColumns > 0) {
+			Column domainColumn = sourceTable.getColumns().getColumnByIndex(0);
+			List<Double> domainValues = domainColumn.getDoubleValues();
+			return getLimits(domainValues, Double.MAX_VALUE, Double.MIN_VALUE);
+		} else {
+			double[] limits = { 0, 1 };
+			return limits;
+		}
+
+	}
+
+	private static double[] getLimits(List<Double> domainValues, double initialMin, double initialMax) {
+
+		if (domainValues.isEmpty()) {
+			double[] limits = { 0, 1 };
+			return limits;
+		}
+
+		double min = initialMin;
+		double max = initialMax;
+		for (Double value : domainValues) {
+			if (value < min) {
+				min = value;
+			}
+
+			if (value > max) {
+				max = value;
+			}
+		}
+
+		double[] limits = { min, max };
+		return limits;
+	}
+
+	private Axis getOrCreateRangeAxis(Table sourceTable) {
 		List<Axis> axisList = getAllAxisFromParentGraph();
 		if (axisList.size() > 1) {
-			Axis domainAxis = axisList.get(1);
-			return domainAxis;
+			Axis rangeAxis = axisList.get(1);
+			return rangeAxis;
 		} else {
 			Graph graph = (Graph) this.getParentAtom();
-			Axis domainAxis = graph.createAxis("yAxis");
-			return domainAxis;
+			Axis rangeAxis = graph.createAxis("yAxis");
+			rangeAxis.data.direction.set("vertical");
+			double[] rangeAxisLimits = getRangeLimits(sourceTable);
+			rangeAxis.data.min.set("" + rangeAxisLimits[0]);
+			rangeAxis.data.max.set("" + rangeAxisLimits[1]);
+			return rangeAxis;
+		}
+	}
+
+	private static double[] getRangeLimits(Table sourceTable) {
+
+		Columns columns = sourceTable.getColumns();
+		int numberOfColumns = columns.getNumberOfColumns();
+		if (numberOfColumns > 1) {
+			double[] limits = { Double.MAX_VALUE, Double.MIN_VALUE };
+			for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
+				Column rangeColumn = columns.getColumnByIndex(columnIndex);
+				List<Double> rangeValues = rangeColumn.getDoubleValues();
+				limits = getLimits(rangeValues, limits[0], limits[1]);
+			}
+			return limits;
+		} else {
+			double[] limits = { 0, 1 };
+			return limits;
 		}
 	}
 
@@ -158,8 +215,9 @@ public class XySeries extends GraphicsAtom {
 		return childAxis;
 	}
 
-	private void createXyChild(
+	private void createNewXyChild(
 			String sourceTablePath,
+			String columnsName,
 			Axis domainAxis,
 			String domainColumnName,
 			Axis rangeAxis,
@@ -171,13 +229,13 @@ public class XySeries extends GraphicsAtom {
 		String xAxisPath = domainAxis.createTreeNodeAdaption().getTreePath();
 		xy.data.xAxis.set(xAxisPath);
 
-		String xValuePath = sourceTablePath + ".columns." + domainColumnName;
+		String xValuePath = sourceTablePath + "." + columnsName + "." + domainColumnName;
 		xy.data.xData.set(xValuePath);
 
 		String yAxisPath = rangeAxis.createTreeNodeAdaption().getTreePath();
 		xy.data.yAxis.set(yAxisPath);
 
-		String yValuePath = sourceTablePath + ".columns." + rangeColumnName;
+		String yValuePath = sourceTablePath + "." + columnsName + "." + rangeColumnName;
 		xy.data.yData.set(yValuePath);
 
 		xy.data.legendText.set(rangeLegend);

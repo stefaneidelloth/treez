@@ -271,7 +271,7 @@ public class PickingProbe extends AbstractProbe {
 		String domainColumnModelPath = domainColumnPath.get();
 		boolean timeIsSpecified = !"".equals(domainColumnModelPath);
 		if (timeIsSpecified) {
-			Column column = (Column) this.getChildFromRoot(domainColumnModelPath);
+			Column column = this.getChildFromRoot(domainColumnModelPath);
 			ColumnType columnType = column.getColumnType();
 
 			int numberOfDomainValues = column.getValues().size();
@@ -312,7 +312,7 @@ public class PickingProbe extends AbstractProbe {
 		String firstProbeTableModelPath = firstProbeTable.get();
 		boolean probeTableSpecified = !"".equals(firstProbeTableModelPath);
 		if (probeTableSpecified) {
-			Table table = (Table) this.getChildFromRoot(firstProbeTableModelPath);
+			Table table = this.getChildFromRoot(firstProbeTableModelPath);
 			Columns columns = table.getColumns();
 			int columnIndex = this.probeColumnIndex.get();
 			Column probeColumn = columns.getColumnByIndex(columnIndex);
@@ -337,7 +337,7 @@ public class PickingProbe extends AbstractProbe {
 		String domainColumnModelPath = domainColumnPath.get();
 		boolean timeIsSpecified = !"".equals(domainColumnModelPath);
 		if (timeIsSpecified) {
-			Column column = (Column) this.getChildFromRoot(domainColumnModelPath);
+			Column column = this.getChildFromRoot(domainColumnModelPath);
 			ColumnType columnType = column.getColumnType();
 			return columnType;
 		} else {
@@ -350,7 +350,7 @@ public class PickingProbe extends AbstractProbe {
 		boolean pickingIsSpecified = !"".equals(pickingModelPath);
 		Class<?> domainColumnType = null;
 		if (pickingIsSpecified) {
-			NumberRangeProvider picking = (NumberRangeProvider) this.getChildFromRoot(pickingModelPath);
+			NumberRangeProvider picking = this.getChildFromRoot(pickingModelPath);
 			domainColumnType = picking.getRangeType();
 			if (domainColumnType == null) {
 				String message = "The picking '" + pickingModelPath + "' that is used for the picking probe '"
@@ -386,7 +386,7 @@ public class PickingProbe extends AbstractProbe {
 
 			List<?> timeRangeValues = null;
 			if (timeIsSpecified) {
-				timeRangeAtom = (VariableRange<?>) this.getChildFromRoot(timePath);
+				timeRangeAtom = this.getChildFromRoot(timePath);
 				timeRangeValues = timeRangeAtom.getRange();
 			}
 
@@ -477,7 +477,7 @@ public class PickingProbe extends AbstractProbe {
 			String domainColumnModelPath = domainColumnPath.get();
 			boolean timeIsSpecified = !"".equals(domainColumnModelPath);
 			if (timeIsSpecified) {
-				Column column = (Column) this.getChildFromRoot(domainColumnModelPath);
+				Column column = this.getChildFromRoot(domainColumnModelPath);
 				List<?> domainRange = column.getValues();
 				List<Number> domainNumberRange = new ArrayList<>();
 				for (Object domainValue : domainRange) {
@@ -536,7 +536,7 @@ public class PickingProbe extends AbstractProbe {
 	private Object getProbeValue(String probeTablePath, int rowIndex, int columnIndex) {
 
 		//get probe table
-		Table probeTable = (Table) this.getChildFromRoot(probeTablePath);
+		Table probeTable = this.getChildFromRoot(probeTablePath);
 
 		//get probe value
 		String columnHeader = probeTable.getHeaders().get(columnIndex);

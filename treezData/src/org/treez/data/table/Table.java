@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
+import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.atom.base.AbstractAtom;
@@ -21,6 +22,7 @@ import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
 import org.treez.core.data.table.TableSourceInformation;
 import org.treez.core.data.table.TreezTable;
+import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.treeview.action.TreeViewerAction;
@@ -77,25 +79,16 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 	//#region METHODS
 
-	/**
-	 * Overrides the copy method of AbstractAtom using the copy constructor of this atom
-	 */
 	@Override
 	public Table copy() {
 		return new Table(this);
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("table.png");
 	}
 
-	/**
-	 * Provides a control to represent this atom
-	 */
 	@Override
 	public AbstractControlAdaption createControlAdaption(Composite parent, Refreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
@@ -121,9 +114,6 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 
 	}
 
-	/**
-	 * Creates the context menu actions for this atom
-	 */
 	@Override
 	protected List<Object> createContextMenuActions(TreeViewerRefreshable treeViewer) {
 
@@ -144,6 +134,23 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 				() -> Table.this.createTreeNodeAdaption().delete()));
 
 		return actions;
+	}
+
+	@Override
+	public CodeAdaption createCodeAdaption(ScriptType scriptType) {
+
+		CodeAdaption codeAdaption;
+		switch (scriptType) {
+		case JAVA:
+			codeAdaption = new TableCodeAdaption(this);
+			break;
+		default:
+			String message = "The ScriptType " + scriptType + " is not yet implemented.";
+			throw new IllegalStateException(message);
+		}
+
+		return codeAdaption;
+
 	}
 
 	/**

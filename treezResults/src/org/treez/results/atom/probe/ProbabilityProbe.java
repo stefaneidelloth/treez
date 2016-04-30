@@ -203,7 +203,7 @@ public class ProbabilityProbe extends AbstractProbe {
 		boolean firstFamilyIsSpecified = !"".equals(firstFamilyPath);
 		List<?> firstFamilyRangeValues = null;
 		if (firstFamilyIsSpecified) {
-			VariableRange<?> firstFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(firstFamilyPath);
+			VariableRange<?> firstFamilyRangeAtom = this.getChildFromRoot(firstFamilyPath);
 			firstFamilyRangeValues = firstFamilyRangeAtom.getRange();
 		} else {
 			String message = "At least the first family range needs to be specified.";
@@ -217,7 +217,7 @@ public class ProbabilityProbe extends AbstractProbe {
 		boolean timeIsSpecified = !"".equals(timePath);
 		Class<?> timeType = null;
 		if (timeIsSpecified) {
-			VariableRange<?> timeRangeAtom = (VariableRange<?>) this.getChildFromRoot(timePath);
+			VariableRange<?> timeRangeAtom = this.getChildFromRoot(timePath);
 			timeType = timeRangeAtom.getType();
 		}
 		return timeType;
@@ -240,7 +240,7 @@ public class ProbabilityProbe extends AbstractProbe {
 
 		List<?> timeRangeValues = null;
 		if (timeIsSpecified) {
-			timeRangeAtom = (VariableRange<?>) this.getChildFromRoot(timePath);
+			timeRangeAtom = this.getChildFromRoot(timePath);
 			timeRangeValues = timeRangeAtom.getRange();
 		}
 
@@ -356,7 +356,7 @@ public class ProbabilityProbe extends AbstractProbe {
 		boolean firstFamilyIsSpecified = !"".equals(firstFamilyPath);
 		List<?> firstFamilyRangeValues = null;
 		if (firstFamilyIsSpecified) {
-			VariableRange<?> firstFamilyRangeAtom = (VariableRange<?>) this.getChildFromRoot(firstFamilyPath);
+			VariableRange<?> firstFamilyRangeAtom = this.getChildFromRoot(firstFamilyPath);
 			firstFamilyRangeValues = firstFamilyRangeAtom.getRange();
 		} else {
 			String message = "At least the first family range needs to be specified.";
@@ -368,7 +368,7 @@ public class ProbabilityProbe extends AbstractProbe {
 	private Object getProbeValue(String probeTablePath, int rowIndex, int columnIndex) {
 
 		//get probe table
-		Table probeTable = (Table) this.getChildFromRoot(probeTablePath);
+		Table probeTable = this.getChildFromRoot(probeTablePath);
 
 		//get probe value
 		String columnHeader = probeTable.getHeaders().get(columnIndex);
