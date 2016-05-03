@@ -98,6 +98,7 @@ Export-Package: org.apache.commons.exec;uses:="new org.apache.commons.exec",
  org.treez.core.scripting.java.file;uses:="javax.tools",
  org.treez.core.scripting.javascript,
  org.treez.core.springspel,
+ org.treez.core.standallone,
  org.treez.core.swt;
   uses:="org.eclipse.swt.graphics,
    javafx.scene,

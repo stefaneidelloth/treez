@@ -32,6 +32,7 @@ import org.treez.core.AbstractActivator;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.standallone.StandAloneWorkbench;
 import org.treez.core.treeview.TreeViewCodeConverter;
 import org.treez.core.treeview.TreeViewProvider;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -459,6 +460,7 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 
 		//update property view
 		parentComposite.layout();
+		parentComposite.getParent().layout();
 	}
 
 	private static void createFooter(Composite parent, Adaptable adaptable) {
@@ -484,19 +486,26 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 	 * @param id
 	 * @return
 	 */
+	@SuppressWarnings("restriction")
 	public static IViewPart getView(String id) {
-		IViewReference[] viewReferences = PlatformUI
-				.getWorkbench()
-				.getActiveWorkbenchWindow()
-				.getActivePage()
-				.getViewReferences();
-		for (int i = 0; i < viewReferences.length; i++) {
-			String currentId = viewReferences[i].getId();
-			if (currentId.equals(id)) {
-				return viewReferences[i].getView(false);
+
+		boolean isRunningInEclipse = AbstractActivator.isRunningInEclipse();
+		if (isRunningInEclipse) {
+			IViewReference[] viewReferences = PlatformUI
+					.getWorkbench()
+					.getActiveWorkbenchWindow()
+					.getActivePage()
+					.getViewReferences();
+			for (int i = 0; i < viewReferences.length; i++) {
+				String currentId = viewReferences[i].getId();
+				if (currentId.equals(id)) {
+					return viewReferences[i].getView(false);
+				}
 			}
+			return null;
+		} else {
+			return StandAloneWorkbench.getView(id);
 		}
-		return null;
 	}
 
 	//#end region

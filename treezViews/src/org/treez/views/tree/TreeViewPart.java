@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.part.ViewPart;
+import org.treez.core.adaptable.Adaptable;
 import org.treez.core.treeview.TreeViewCodeConverter;
 import org.treez.core.treeview.TreeViewProvider;
 import org.treez.core.treeview.TreezView;
@@ -109,6 +110,14 @@ public class TreeViewPart extends ViewPart implements TreezView {
 	 */
 	private void setContentComposite(Composite contentComposite) {
 		this.contentComposite = contentComposite;
+	}
+
+	public void setTreeContent(Adaptable invisibleRoot) {
+		treeViewProvider.updateTreeContent(invisibleRoot);
+	}
+
+	public void expandAll() {
+		treeViewProvider.expandAll();
 	}
 
 	//#end region

@@ -147,7 +147,7 @@ public class InputFileGenerator extends AdjustableAtom {
 		String templateString = readTemplateFile(templateFilePath.get());
 
 		//replace variable place holders with variable values
-		GenericInputModel sourceModelAtom = (GenericInputModel) getChildFromRoot(this.sourceModel.get());
+		GenericInputModel sourceModelAtom = getChildFromRoot(this.sourceModel.get());
 		String inputFileString = applyTemplateToSourceModel(templateString, sourceModelAtom, nameExpression.get(),
 				valueExpression.get(), deleteUnassignedRows.get());
 

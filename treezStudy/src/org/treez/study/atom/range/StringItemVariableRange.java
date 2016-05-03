@@ -83,8 +83,7 @@ public class StringItemVariableRange extends AbstractVariableRange<String> {
 		//get source variable
 		String sourcePath = sourceVariableModelPath.get();
 		if (sourcePath != null) {
-			AbstractAtom sourceAtom = this.getChildFromRoot(sourcePath);
-			StringItemVariableField stringItemVariable = (StringItemVariableField) sourceAtom;
+			StringItemVariableField stringItemVariable = this.getChildFromRoot(sourcePath);
 			List<String> availableItems = stringItemVariable.getItemList();
 			//set available items (also clears old list)
 			range.setAvailableItems(availableItems);

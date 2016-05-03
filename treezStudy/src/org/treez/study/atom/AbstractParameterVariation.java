@@ -9,6 +9,7 @@ import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.utils.Utils;
+import org.treez.model.atom.AbstractModel;
 import org.treez.model.interfaces.Model;
 import org.treez.results.atom.data.Data;
 import org.treez.results.atom.results.Results;
@@ -128,14 +129,12 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 	 */
 	protected Model getModelToRun() {
 		String modelToRunModelPathString = modelToRunModelPath.get();
-		AbstractAtom modelAtom = this.getChildFromRoot(modelToRunModelPathString);
-		boolean isModel = modelAtom instanceof Model;
-		if (isModel) {
-			Model model = (Model) modelAtom;
+		try {
+			Model model = this.getChildFromRoot(modelToRunModelPathString);
 			return model;
-		} else {
+		} catch (IllegalArgumentException exception) {
 			String message = "The model path '" + modelToRunModelPathString + "' does not point to a valid model.";
-			throw new IllegalStateException(message);
+			throw new IllegalStateException(message, exception);
 		}
 	}
 
@@ -144,18 +143,17 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 	 *
 	 * @return
 	 */
-	protected AbstractAtom getSourceModelAtom() {
+	protected AbstractModel getSourceModelAtom() {
 		String sourcePath = sourceModelPath.get();
 		if (sourcePath == null) {
 			return null;
 		}
-		AbstractAtom modelAtom = this.getChildFromRoot(sourcePath);
-		boolean isModel = modelAtom instanceof Model;
-		if (isModel) {
+		try {
+			AbstractModel modelAtom = this.getChildFromRoot(sourcePath);
 			return modelAtom;
-		} else {
+		} catch (IllegalArgumentException exception) {
 			String message = "The model path '" + sourcePath + "' does not point to a valid model.";
-			throw new IllegalStateException(message);
+			throw new IllegalStateException(message, exception);
 		}
 	}
 

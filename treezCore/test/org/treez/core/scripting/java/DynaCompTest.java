@@ -55,11 +55,11 @@ public class DynaCompTest {
 		//(our custom implementation of it)
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
-		try (StandardJavaFileManager standardfileManager = compiler.getStandardFileManager(null, null, null);
+		try (StandardJavaFileManager standardfileManager = compiler
+				.getStandardFileManager(null, null, null);
 				InMemoryClassFileManager fileManager = new InMemoryClassFileManager(
-						javaCode,
-						standardfileManager,
-						DynaCompTest.class.getClassLoader());) {
+						javaCode, standardfileManager,
+						DynaCompTest.class.getClassLoader())) {
 			//Dynamic compiling requires specifying
 			//a list of "files" to compile. In our case
 			//this is a list containing one "file" which is in our case
@@ -70,13 +70,15 @@ public class DynaCompTest {
 			//We specify a task to the compiler. Compiler should use our file
 			//manager and our list of "files".
 			//Then we run the compilation with call()
-			compiler.getTask(null, fileManager, null, null, null, jfiles).call();
+			compiler.getTask(null, fileManager, null, null, null, jfiles)
+					.call();
 
 			//Creating an instance of our compiled class and
 			//running its toString() method
 			String fullClassName = fileManager.getFullClassName();
 			ClassLoader classLoader = fileManager.getClassLoader(null);
-			Object instance = classLoader.loadClass(fullClassName).newInstance();
+			Object instance = classLoader.loadClass(fullClassName)
+					.newInstance();
 			ModelProvider modelProvider = (ModelProvider) instance;
 			AbstractAtom root = modelProvider.createModel();
 			LOG.info("Root: " + root.getName());

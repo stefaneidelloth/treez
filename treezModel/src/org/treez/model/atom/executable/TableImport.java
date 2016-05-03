@@ -427,7 +427,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		boolean isLinked = tableSourceInfo.isLinked();
 
 		//get result table
-		Table treezTable = (Table) getChildFromRoot(tableModelPath);
+		Table treezTable = getChildFromRoot(tableModelPath);
 
 		if (isLinked) {
 			checkAndPrepareSourceLinkIfRequired(tableSourceInfo, treezTable);

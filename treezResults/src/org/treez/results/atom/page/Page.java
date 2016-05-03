@@ -5,11 +5,13 @@ import java.util.Objects;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
+import org.treez.core.AbstractActivator;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -17,6 +19,7 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.standallone.StandAloneWorkbench;
 import org.treez.core.swt.JavaFxWrapperForSwt;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.TreezView;
@@ -206,6 +209,9 @@ public class Page extends GraphicsAtom {
 			//get content composite from CadView
 			Composite contentComposite = cadView.getContentComposite();
 
+			//set layout
+			contentComposite.setLayout(new FillLayout());
+
 			//delete old contents
 			for (Control child : contentComposite.getChildren()) {
 				child.dispose();
@@ -234,18 +240,24 @@ public class Page extends GraphicsAtom {
 	 * @return
 	 */
 	private static IViewPart getView(String id) {
-		IViewReference[] viewReferences = PlatformUI
-				.getWorkbench()
-				.getActiveWorkbenchWindow()
-				.getActivePage()
-				.getViewReferences();
-		for (int i = 0; i < viewReferences.length; i++) {
-			String currentId = viewReferences[i].getId();
-			if (currentId.equals(id)) {
-				return viewReferences[i].getView(false);
+
+		boolean isRunningInEclipse = AbstractActivator.isRunningInEclipse();
+		if (isRunningInEclipse) {
+			IViewReference[] viewReferences = PlatformUI
+					.getWorkbench()
+					.getActiveWorkbenchWindow()
+					.getActivePage()
+					.getViewReferences();
+			for (int i = 0; i < viewReferences.length; i++) {
+				String currentId = viewReferences[i].getId();
+				if (currentId.equals(id)) {
+					return viewReferences[i].getView(false);
+				}
 			}
+			return null;
+		} else {
+			return StandAloneWorkbench.getView(id);
 		}
-		return null;
 	}
 
 	//#region CREATE CHILD ATOMS

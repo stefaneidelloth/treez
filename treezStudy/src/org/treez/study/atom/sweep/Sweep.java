@@ -250,24 +250,15 @@ public class Sweep extends AbstractParameterVariation {
 		List<String> inactiveVariables = new ArrayList<>();
 		for (AbstractVariableRange<?> variableRange : variableRanges) {
 			String variableModelPath = variableRange.getSourceVariableModelPath();
-			AbstractAtom variableAtom;
+			VariableField<?> variableField;
 			try {
-				variableAtom = this.getChildFromRoot(variableModelPath);
+				variableField = this.getChildFromRoot(variableModelPath);
 			} catch (IllegalArgumentException exception) {
 				String message = "Could not find atom '" + variableModelPath + "'.";
 				Utils.showErrorMessage(message);
 				return false;
 			}
 
-			VariableField<?> variableField;
-			try {
-				variableField = (VariableField<?>) variableAtom;
-			} catch (ClassCastException exception) {
-				String message = "Could not cast atom '" + variableAtom.createTreeNodeAdaption().getTreePath()
-						+ "' to a VariableField.";
-				Utils.showErrorMessage(message);
-				return false;
-			}
 			boolean isEnabled = variableField.isEnabled();
 			if (!isEnabled) {
 				inactiveVariables.add(variableModelPath);

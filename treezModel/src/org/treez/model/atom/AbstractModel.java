@@ -158,26 +158,15 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	@SuppressWarnings("unchecked")
 	private AbstractAttributeAtom<Object> getVariableAtom(String variableModelPath) {
 
-		AbstractAtom variableAbstractAtom = null;
+		AbstractAttributeAtom<Object> variableAtom = null;
 		try {
-			variableAbstractAtom = getChildFromRoot(variableModelPath);
+			variableAtom = getChildFromRoot(variableModelPath);
+			return variableAtom;
 		} catch (IllegalArgumentException exception) {
 			String message = "Could not find a variable field for the model path '" + variableModelPath + "'.";
 			LOG.error(message);
 			return null;
 		}
-
-		AbstractAttributeAtom<Object> variableAtom = null;
-		try {
-			variableAtom = (AbstractAttributeAtom<Object>) variableAbstractAtom;
-		} catch (ClassCastException exception) {
-			String simpleClassName = variableAbstractAtom.getClass().getSimpleName();
-			String message = "Could not cast the variable with model path '" + variableAbstractAtom
-					+ "' to AttributeAtom<Quantity>. Its simple class name is '" + simpleClassName + "'.";
-			LOG.error(message, exception);
-			return null;
-		}
-		return variableAtom;
 	}
 
 	/**

@@ -40,6 +40,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.utils.Utils;
 import org.treez.data.output.OutputAtom;
+import org.treez.model.atom.AbstractModel;
 import org.treez.model.input.HashMapModelInput;
 import org.treez.model.input.ModelInput;
 import org.treez.model.interfaces.Model;
@@ -263,7 +264,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		AbstractAtom parent = this.getParentAtom();
 		if (parent != null) {
 			List<VariableField<?>> availableVariables = new ArrayList<>();
-			AbstractAtom sourceModel = getSourceModelAtom();
+			AbstractModel sourceModel = getSourceModelAtom();
 			if (sourceModel != null) {
 				List<AbstractAtom> children = sourceModel.getChildAtoms();
 				for (AbstractAtom child : children) {
@@ -276,7 +277,6 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 				variableList.setAvailableVariables(availableVariables);
 			}
 		}
-
 	}
 
 	/**
@@ -365,24 +365,15 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		for (String variableName : variableData.keySet()) {
 			String sourceModelPath = this.sourceModelPath.get();
 			String variableModelPath = sourceModelPath + "." + variableName;
-			AbstractAtom variableAtom;
+			VariableField<?> variableField;
 			try {
-				variableAtom = this.getChildFromRoot(variableModelPath);
+				variableField = this.getChildFromRoot(variableModelPath);
 			} catch (IllegalArgumentException exception) {
 				String message = "Could not find variable atom '" + variableModelPath + "'.";
 				Utils.showErrorMessage(message);
 				return false;
 			}
 
-			VariableField<?> variableField;
-			try {
-				variableField = (VariableField<?>) variableAtom;
-			} catch (ClassCastException exception) {
-				String message = "Could not cast variable atom '" + variableAtom.createTreeNodeAdaption().getTreePath()
-						+ "' to a VariableField.";
-				Utils.showErrorMessage(message);
-				return false;
-			}
 			boolean isEnabled = variableField.isEnabled();
 			if (!isEnabled) {
 				inactiveVariables.add(variableModelPath);
@@ -562,11 +553,9 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		String sourceModel = sourceModelPath.get();
 		if (sourceModel != null) {
 			String variablePath = sourceModel + "." + variableName;
-			AbstractAtom variableAtom = this.getChildFromRoot(variablePath);
+			VariableField<?> variableAtom = this.getChildFromRoot(variablePath);
 			if (variableAtom != null) {
-				VariableField<?> variableField = (VariableField<?>) variableAtom;
-				variableList.addVariable(variableField);
-
+				variableList.addVariable(variableAtom);
 			}
 		}
 

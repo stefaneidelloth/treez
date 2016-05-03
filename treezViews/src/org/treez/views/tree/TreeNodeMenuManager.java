@@ -57,19 +57,21 @@ public class TreeNodeMenuManager extends MenuManager {
 			public void menuAboutToShow(IMenuManager manager) {
 				//get current adaptable
 				TreeItem[] treeItems = treeViewer.getTree().getSelection();
-				TreeItem treeItem = treeItems[0];
-				Adaptable adaptable = (Adaptable) treeItem.getData();
+				if (treeItems.length > 0) {
+					TreeItem treeItem = treeItems[0];
+					Adaptable adaptable = (Adaptable) treeItem.getData();
 
-				//delete the old content of the context menu
-				manager.removeAll();
+					//delete the old content of the context menu
+					manager.removeAll();
 
-				//let the tree node of the adaptable fill the context menu
-				TreeNodeAdaption treeNode = adaptable.createTreeNodeAdaption();
-				try {
-					treeNode.fillContextMenu(treeViewer, manager);
-				} catch (Exception exception) {
-					String message = "Could not create context menu for " + treeNode.getTreePath();
-					LOG.error(message, exception);
+					//let the tree node of the adaptable fill the context menu
+					TreeNodeAdaption treeNode = adaptable.createTreeNodeAdaption();
+					try {
+						treeNode.fillContextMenu(treeViewer, manager);
+					} catch (Exception exception) {
+						String message = "Could not create context menu for " + treeNode.getTreePath();
+						LOG.error(message, exception);
+					}
 				}
 			}
 		};

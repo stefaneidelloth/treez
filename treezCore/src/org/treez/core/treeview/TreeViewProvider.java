@@ -7,8 +7,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
@@ -16,6 +15,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
+import org.treez.core.AbstractActivator;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.error.ErrorAtom;
@@ -26,6 +26,7 @@ import org.treez.core.treeview.action.EmptyActionBars;
 /**
  * Provides the tree view for the TreeViewPart
  */
+@SuppressWarnings("restriction")
 public class TreeViewProvider {
 
 	private static final Logger LOG = Logger.getLogger(TreeViewProvider.class);
@@ -99,16 +100,12 @@ public class TreeViewProvider {
 		contentComposite = treezView.getContentComposite();
 
 		//set layout
-		GridData parentData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		contentComposite.setLayout(new GridLayout(1, true));
-		contentComposite.setLayoutData(parentData);
+		contentComposite.setLayout(new FillLayout());
 
 		//create the tree viewer
 		treeViewer = new TreeViewerRefreshable(contentComposite,
 				treeViewActionProvider,
 				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		treeViewer.getControl()
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		//set the label provider that determines how the nodes are displayed
 		treeViewer.setLabelProvider(new TreeViewLabelAndImageProvider());
@@ -131,7 +128,10 @@ public class TreeViewProvider {
 		}
 
 		//set id for help system
-		setIdForHelpSystem();
+		if (AbstractActivator.isRunningInEclipse()) {
+			setIdForHelpSystem();
+		}
+
 	}
 
 	/**
@@ -229,6 +229,10 @@ public class TreeViewProvider {
 		} catch (Exception e) {
 			LOG.warn("Could not automatically expand nodes.");
 		}
+	}
+
+	public void expandAll() {
+		treeViewer.expandAll();
 	}
 
 	/**

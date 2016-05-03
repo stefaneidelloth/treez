@@ -23,14 +23,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
+import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.treez.testutils.TestUtils;
+import org.treez.core.standallone.StandAloneWorkbench;
 
 /**
  * The activator class controls the plug-in life cycle
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractActivator extends AbstractUIPlugin {
 
 	private static final Logger LOG = Logger.getLogger(AbstractActivator.class);
@@ -81,24 +83,15 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	public String getAbsolutePath() {
 
 		String pathSeparator = "\\";
-		String pluginId = getPluginId();
-		Bundle bundle = Platform.getBundle(pluginId);
 
-		boolean runningInEclipse = bundle != null;
-		if (runningInEclipse) {
+		String pluginId = getPluginId();
+
+		if (isRunningInEclipse()) {
+
+			Bundle bundle = Platform.getBundle(pluginId);
 			return getAbsoluteFilePathWithFileLocator(pathSeparator, bundle);
 		} else {
-			File file = new File("");
-			file = file.getAbsoluteFile();
-			String pathWithRelativeContent = file.getAbsolutePath();
-			IPath ipath = new org.eclipse.core.runtime.Path(
-					pathWithRelativeContent);
-			IPath absPath = ipath.makeAbsolute();
-			String pathToWorkingDirectoryAbsolute = absPath.toString()
-					+ pathSeparator;
-			pathToWorkingDirectoryAbsolute = pathToWorkingDirectoryAbsolute
-					.replace("/", pathSeparator);
-			return pathToWorkingDirectoryAbsolute;
+			return StandAloneWorkbench.getAbsolutePluginPath(pluginId);
 		}
 
 	}
@@ -176,17 +169,10 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	 */
 	public Image getImageFromIconFolder(String imageName) {
 
-		IWorkbench workbench = null;
-		try {
-			workbench = PlatformUI.getWorkbench();
-		} catch (NoClassDefFoundError error) {
-			LOG.warn("Could not get workbench.");
-		}
-
-		boolean runningAsEclipsePlugin = workbench != null;
-
 		Image image;
-		if (runningAsEclipsePlugin) {
+		if (isRunningInEclipse()) {
+
+			IWorkbench workbench = PlatformUI.getWorkbench();
 
 			//try to get image from eclipse shared images
 			image = workbench.getSharedImages().getImage(imageName);
@@ -210,12 +196,24 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 
 		} else {
 
-			//assuming test mode; try to get the image from the icons folder
-			image = TestUtils.getImage(imageName);
+			//assuming stand alone mode
+			image = StandAloneWorkbench.getImage(imageName, this);
 
 		}
 
 		return image;
+	}
+
+	@SuppressWarnings("restriction")
+	public static boolean isRunningInEclipse() {
+		boolean isRunningInEclipse = false;
+		try {
+			Workbench.getInstance();
+			isRunningInEclipse = true;
+		} catch (NoClassDefFoundError error) {
+			//nothing to do here
+		}
+		return isRunningInEclipse;
 	}
 
 	/**
@@ -223,7 +221,7 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	 *
 	 * @return
 	 */
-	protected static Image createDefaultImage() {
+	public static Image createDefaultImage() {
 		Display display = Display.getCurrent();
 		final int imageSize = 16;
 		Image image = new Image(display, imageSize, imageSize);
@@ -283,24 +281,31 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	 */
 	public static void registerAbsoluteHelpId(String helpContextId,
 			Control helpControl) {
-		IWorkbenchHelpSystem helpSystem = getHelpSystem();
-		if (helpSystem != null) {
-			helpSystem.setHelp(helpControl, helpContextId);
 
-			Display display = Display.getDefault();
-			if (display == null) {
-				display = Display.getCurrent();
+		if (isRunningInEclipse()) {
+			IWorkbenchHelpSystem helpSystem = getHelpSystem();
+			if (helpSystem != null) {
+				applzHelpId(helpContextId, helpControl, helpSystem);
+			} else {
+				throw new IllegalStateException("Could not get help system.");
 			}
+		}
+	}
 
-			if (display != null) {
-				Shell shell = display.getActiveShell();
-				if (shell != null) {
-					shell.setData("org.eclipse.ui.help", helpContextId);
-				}
+	private static void applzHelpId(String helpContextId, Control helpControl,
+			IWorkbenchHelpSystem helpSystem) {
+		helpSystem.setHelp(helpControl, helpContextId);
+
+		Display display = Display.getDefault();
+		if (display == null) {
+			display = Display.getCurrent();
+		}
+
+		if (display != null) {
+			Shell shell = display.getActiveShell();
+			if (shell != null) {
+				shell.setData("org.eclipse.ui.help", helpContextId);
 			}
-
-		} else {
-			throw new IllegalStateException("Could not get help system.");
 		}
 	}
 

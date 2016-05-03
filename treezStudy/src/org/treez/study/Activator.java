@@ -82,7 +82,7 @@ public class Activator extends AbstractActivator {
 	 */
 	public static AbstractActivator getInstance() {
 		if (instance == null) {
-			throw new IllegalStateException("Activator has not yet been created. Call constructor first.");
+			instance = new Activator();
 		}
 		return instance;
 	}

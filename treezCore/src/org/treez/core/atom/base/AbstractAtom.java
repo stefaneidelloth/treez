@@ -282,7 +282,11 @@ public abstract class AbstractAtom
 	@SuppressWarnings("checkstyle:illegalcatch")
 	protected void executeChildren(Class<?> wantedClass,
 			Refreshable treeViewerRefreshable) throws IllegalArgumentException {
-		for (AbstractAtom child : children) {
+
+		AbstractAtom[] childArray = children
+				.toArray(new AbstractAtom[children.size()]);
+
+		for (AbstractAtom child : childArray) {
 			Class<?> currentClass = child.getClass();
 			boolean hasWantedClass = wantedClass.isAssignableFrom(currentClass);
 			if (hasWantedClass) {
