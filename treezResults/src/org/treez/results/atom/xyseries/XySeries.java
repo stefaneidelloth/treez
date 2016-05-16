@@ -5,12 +5,14 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Adaptable;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.color.ColorBrewer;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.data.column.Column;
 import org.treez.data.column.Columns;
@@ -20,19 +22,27 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graph.Graph;
+import org.treez.results.atom.legend.LegendContributor;
+import org.treez.results.atom.legend.LegendContributorProvider;
 import org.treez.results.atom.xy.Xy;
 
 /**
  * Represents a series of xy plots that references a table
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class XySeries extends GraphicsAtom {
+public class XySeries extends GraphicsAtom implements LegendContributorProvider {
 
 	private static final Logger LOG = Logger.getLogger(XySeries.class);
 
 	//#region ATTRIBUTES
 
 	public final Attribute<String> sourceTable = new Wrap<>();
+
+	public final Attribute<String> domainLabel = new Wrap<>();
+
+	public final Attribute<String> rangeLabel = new Wrap<>();
+
+	public final Attribute<String> colorMap = new Wrap<>();
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -67,9 +77,14 @@ public class XySeries extends GraphicsAtom {
 		Runnable runAction = () -> execute(treeViewRefreshable);
 		section.createSectionAction("action", "Build XySeries", runAction);
 
-		section
-				.createModelPath(sourceTable, this, "", Table.class, this) //
+		section.createModelPath(sourceTable, this, "", Table.class, this) //
 				.setLabel("Source table");
+
+		section.createTextField(domainLabel, this).setLabel("Domain label");
+
+		section.createTextField(rangeLabel, this).setLabel("Range label");
+
+		section.createColorMap(colorMap, this);
 
 		section.createCheckBox(hide, "hide");
 
@@ -84,12 +99,23 @@ public class XySeries extends GraphicsAtom {
 
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
-
 		return actions;
 	}
 
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void addLegendContributors(List<LegendContributor> legendContributors) {
+		List<AbstractAtom> children = getChildAtoms();
+		for (AbstractAtom child : children) {
+			boolean isLegendContributorProvider = child instanceof LegendContributorProvider;
+			if (isLegendContributorProvider) {
+				LegendContributorProvider provider = (LegendContributorProvider) child;
+				provider.addLegendContributors(legendContributors);
+			}
+		}
+	}
+
+	@Override
+	public void execute(FocusChangingRefreshable refreshable) {
 		treeViewRefreshable = refreshable;
 
 		String sourceTablePath = sourceTable.get();
@@ -110,6 +136,22 @@ public class XySeries extends GraphicsAtom {
 		Table foundSourceTable = this.getChildFromRoot(sourceTablePath);
 		int numberOfColumns = foundSourceTable.getNumberOfColumns();
 		int numberOfPlots = numberOfColumns - 1;
+
+		final int smallMapSize = 10;
+		final int largeMapSize = 20;
+
+		int colorMapSize = smallMapSize;
+		if (numberOfPlots > smallMapSize) {
+			colorMapSize = largeMapSize;
+		}
+		if (numberOfPlots > largeMapSize) {
+			String message = "XySeries only supports up to " + largeMapSize + " plots. It can't create " + numberOfPlots
+					+ " plots.";
+			throw new IllegalStateException(message);
+		}
+
+		String[] seriesColors = ColorBrewer.Category.get(colorMapSize);
+
 		Columns columns = foundSourceTable.getColumns();
 		String columnsName = columns.getName();
 		List<String> columnHeaders = columns.getHeaders();
@@ -117,9 +159,10 @@ public class XySeries extends GraphicsAtom {
 		for (int rangeColumnIndex = 1; rangeColumnIndex <= numberOfPlots; rangeColumnIndex++) {
 			String rangeColumnName = columnHeaders.get(rangeColumnIndex);
 			Column rangeColumn = columns.getColumn(rangeColumnName);
-			String rangeLegend = rangeColumn.description.get();
+			String rangeLegend = rangeColumn.header.get();
+			String color = seriesColors[rangeColumnIndex - 1];
 			createNewXyChild(sourceTablePath, columnsName, domainAxis, domainColumnName, rangeAxis, rangeColumnName,
-					rangeLegend);
+					rangeLegend, color);
 		}
 	}
 
@@ -134,6 +177,9 @@ public class XySeries extends GraphicsAtom {
 			double[] domainAxisLimits = getDomainLimits(sourceTable);
 			domainAxis.data.min.set("" + domainAxisLimits[0]);
 			domainAxis.data.max.set("" + domainAxisLimits[1]);
+
+			domainAxis.data.label.set(domainLabel.get());
+
 			return domainAxis;
 		}
 	}
@@ -187,6 +233,8 @@ public class XySeries extends GraphicsAtom {
 			double[] rangeAxisLimits = getRangeLimits(sourceTable);
 			rangeAxis.data.min.set("" + rangeAxisLimits[0]);
 			rangeAxis.data.max.set("" + rangeAxisLimits[1]);
+
+			rangeAxis.data.label.set(rangeLabel.get());
 			return rangeAxis;
 		}
 	}
@@ -215,6 +263,7 @@ public class XySeries extends GraphicsAtom {
 		return childAxis;
 	}
 
+	@SuppressWarnings("checkstyle:parameternumber")
 	private void createNewXyChild(
 			String sourceTablePath,
 			String columnsName,
@@ -222,7 +271,8 @@ public class XySeries extends GraphicsAtom {
 			String domainColumnName,
 			Axis rangeAxis,
 			String rangeColumnName,
-			String rangeLegend) {
+			String rangeLegend,
+			String color) {
 
 		Xy xy = new Xy(rangeColumnName);
 
@@ -240,17 +290,20 @@ public class XySeries extends GraphicsAtom {
 
 		xy.data.legendText.set(rangeLegend);
 
+		xy.line.color.set(color);
+		xy.symbol.fillColor.set(color);
+		xy.symbol.hideLine.set(true);
+
 		this.addChild(xy);
 
 	}
 
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Refreshable refreshable) {
+	public Selection plotWithD3(D3 d3, Selection graphSelection, FocusChangingRefreshable refreshable) {
 		this.treeViewRefreshable = refreshable;
 
 		//remove old series group if it already exists
 		graphSelection //
-				.select("#" + name)
-				.remove();
+				.select("#" + name).remove();
 
 		//create new series group
 		seriesGroupSelection = graphSelection //

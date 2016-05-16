@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
@@ -57,8 +56,7 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 	private Combo combo;
 
 	/**
-	 * The parent composite for the attribute atom control can be stored here to
-	 * be able to refresh it.
+	 * The parent composite for the attribute atom control can be stored here to be able to refresh it.
 	 */
 	protected Composite attributeAtomParent = null;
 
@@ -94,7 +92,8 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.attributeAtomParent = parent;
 		this.treeViewRefreshable = treeViewerRefreshable;
 
@@ -151,8 +150,7 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 		combo.setLayoutData(comboFillHorizontal);
 
 		List<String> availableItems = getItemList();
-		combo.setItems(
-				availableItems.toArray(new String[availableItems.size()]));
+		combo.setItems(availableItems.toArray(new String[availableItems.size()]));
 		String value = get();
 		if (value != null) {
 			combo.setText(value);
@@ -179,15 +177,13 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Updates the enabled/disabled state of other components, dependent on the
-	 * current value
+	 * Updates the enabled/disabled state of other components, dependent on the current value
 	 *
 	 * @param currentValue
 	 */
 	@SuppressWarnings("checkstyle:linelength")
 	private void updateTargetsEnabledStates(String currentValue) {
-		List<TreeNodeAdaption> enableNodes = createTreeNodeAdaption()
-				.getChildren();
+		List<TreeNodeAdaption> enableNodes = createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption enableNode : enableNodes) {
 			org.treez.core.atom.attribute.ComboBoxEnableTarget comboBoxEnableTarget = (org.treez.core.atom.attribute.ComboBoxEnableTarget) enableNode
 					.getAdaptable();
@@ -195,8 +191,7 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 			List<String> enableValues = comboBoxEnableTarget.getItems();
 			String targetPath = comboBoxEnableTarget.getTargetPath();
 			AttributeRoot root = (AttributeRoot) getRoot();
-			AbstractAttributeAtom<?> target = (AbstractAttributeAtom<?>) root
-					.getChild(targetPath);
+			AbstractAttributeAtom<?> target = (AbstractAttributeAtom<?>) root.getChild(targetPath);
 			boolean enableTarget = enableValues.contains(currentValue);
 			if (enableTarget) {
 				target.setEnabled(true);
@@ -211,8 +206,7 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 		if (isAvailable(combo)) {
 
 			List<String> availableItems = getItemList();
-			combo.setItems(
-					availableItems.toArray(new String[availableItems.size()]));
+			combo.setItems(availableItems.toArray(new String[availableItems.size()]));
 
 			String value = get();
 			if (!combo.getText().equals(value)) {
@@ -234,9 +228,11 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 
 	}
 
+	/*
+
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
-
+	
 		addModifyListener(key, (event) -> {
 			if (event.data == null) {
 				consumer.accept(null);
@@ -244,10 +240,11 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
-
+	
 	}
+	*/
 
 	//#end region
 
@@ -262,10 +259,8 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * This method is outsourced to be able to add custom validation for
-	 * implementing classes. The String value might represent for example an
-	 * Enumeration that is only known by an anonymous implementation of this
-	 * abstract class.
+	 * This method is outsourced to be able to add custom validation for implementing classes. The String value might
+	 * represent for example an Enumeration that is only known by an anonymous implementation of this abstract class.
 	 */
 	@Override
 	public abstract void set(String value);
@@ -295,8 +290,7 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 			this.defaultValue = defaultValue;
 		} else {
 			String message = "The defaultValue '" + defaultValue
-					+ "' is not allowed since it is not contained in the items "
-					+ items;
+					+ "' is not allowed since it is not contained in the items " + items;
 			throw new IllegalArgumentException(message);
 		}
 
@@ -315,17 +309,15 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 	 * @return
 	 */
 	public <T extends Enum<T>> T getValueAsEnum(Class<T> enumClass) {
-		Objects.requireNonNull(enumClass,
-				"The given enum class must not be null.");
+		Objects.requireNonNull(enumClass, "The given enum class must not be null.");
 		String enumString = get();
 		T enumValue;
 		try {
 			enumValue = Enum.valueOf(enumClass, enumString);
 			return enumValue;
 		} catch (IllegalArgumentException | NullPointerException exception) {
-			String message = "Could not convert the current value '" + get()
-					+ "' " + "to an Enum of type '" + enumClass.getSimpleName()
-					+ "'";
+			String message = "Could not convert the current value '" + get() + "' " + "to an Enum of type '"
+					+ enumClass.getSimpleName() + "'";
 			throw new IllegalArgumentException(message, exception);
 		}
 

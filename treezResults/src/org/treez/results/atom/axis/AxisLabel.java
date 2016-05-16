@@ -1,21 +1,20 @@
 package org.treez.results.atom.axis;
 
-import java.util.function.Consumer;
-
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.wrapper.Element;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 import javafx.geometry.BoundingBox;
 
@@ -93,16 +92,13 @@ public class AxisLabel implements GraphicsPropertiesPageFactory {
 
 		//remove label group if it already exists
 		axisSelection //
-				.select("#axis-label")
-				.remove();
+				.select("#axis-label").remove();
 
 		//create new label
 		Selection label = axisSelection//
-				.append("g")
-				.attr("id", "axis-label")
-				.append("text");
+				.append("g").attr("id", "axis-label").append("text");
 
-		Consumer<String> geometryConsumer = (data) -> {
+		Consumer geometryConsumer = () -> {
 			Graph graph = (Graph) axis.getParentAtom();
 			updateLabelGeometry(axis, label, graph);
 		};
@@ -111,7 +107,7 @@ public class AxisLabel implements GraphicsPropertiesPageFactory {
 		rotate.addModificationConsumer("position", geometryConsumer);
 		labelOffset.addModificationConsumer("position", geometryConsumer);
 
-		geometryConsumer.accept(null);
+		geometryConsumer.consume();
 
 		Attribute<String> labelAttribute = axis.data.label;
 		GraphicsAtom.bindText(label, labelAttribute);

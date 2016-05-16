@@ -43,7 +43,7 @@ public final class TreezStarter {
 	//#region METHODS
 
 	public static void main(String[] args) {
-
+		initializeLogging();
 		XySeriesExample example = new XySeriesExample();
 		AbstractAtom root = example.createModel();
 		startTreez(root);
@@ -51,7 +51,6 @@ public final class TreezStarter {
 	}
 
 	public static void startTreez(AbstractAtom root) {
-		initializeLogging();
 
 		final Shell shell = createShellAndViewContainers();
 
@@ -72,6 +71,8 @@ public final class TreezStarter {
 
 		//set tree content
 		setTreeContent(root, treeView);
+
+		org.treez.core.color.ColorBrewer.drawColorRectangles(graphicsContainer);
 
 		showShell(shell);
 	}
@@ -94,7 +95,7 @@ public final class TreezStarter {
 	}
 
 	private static Shell createShellAndViewContainers() {
-		final Display display = new Display();
+		final Display display = Display.getCurrent();
 		final Shell shell = new Shell(display);
 		shell.setText("Treez");
 		shell.setImage(Activator.getImage("tree.png"));

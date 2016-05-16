@@ -19,10 +19,10 @@ public class XySeriesExample extends ModelProvider {
 
 		//#region RESULTS0
 
-		Results results0 = root.createResults("results0");
-		Data data0 = results0.createData("data0");
-		Table table0 = data0.createTable("table0");
-		Columns columns0 = table0.createColumns("columns0");
+		Results results0 = root.createResults("results");
+		Data data0 = results0.createData("data");
+		Table table0 = data0.createTable("table");
+		Columns columns0 = table0.createColumns("columns");
 		columns0.createColumn("x");
 		columns0.createColumn("y1");
 		columns0.createColumn("y2");
@@ -32,10 +32,14 @@ public class XySeriesExample extends ModelProvider {
 		table0.addRow("2", "2", "20");
 		table0.addRow("3", "3", "30");
 
-		Page page0 = results0.createPage("page0");
-		Graph graph0 = page0.createGraph("graph0");
-		XySeries xySeries0 = graph0.createXySeries("xySeries0");
-		xySeries0.sourceTable.set("root.results0.data0.table0");
+		Page page0 = results0.createPage("page");
+		Graph graph0 = page0.createGraph("graph");
+		XySeries xySeries0 = graph0.createXySeries("xySeries");
+		xySeries0.sourceTable.set("root.results.data.table");
+		xySeries0.domainLabel.set("x");
+		xySeries0.rangeLabel.set("y");
+
+		graph0.createLegend("legend");
 
 		//#end region
 

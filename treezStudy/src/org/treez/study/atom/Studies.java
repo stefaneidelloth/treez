@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
@@ -54,7 +54,7 @@ public class Studies extends AdjustableAtom {
 	 * Executes all child studies
 	 */
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 		this.treeViewRefreshable = refreshable;
 		for (AbstractAtom child : getChildAtoms()) {
 			boolean isStudy = child instanceof Study;

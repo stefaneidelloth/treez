@@ -1,11 +1,13 @@
 package org.treez.results.atom.xy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.Refreshable;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
@@ -13,50 +15,26 @@ import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
+import org.treez.results.atom.legend.LegendContributor;
 
 /**
  * Represents an xy scatter plot
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Xy extends GraphicsPropertiesPage {
-
-	/**
-	 * Logger for this class
-	 */
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(Xy.class);
+public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * The data properties of the xy plot
-	 */
 	public Data data;
 
-	/**
-	 * The marker properties of the xy plot
-	 */
 	public Symbol symbol;
 
-	/**
-	 * The line properties of the xy plot
-	 */
 	public Line line;
 
-	/**
-	 * The error bar properties of the xy plot
-	 */
 	//public ErrorBar errorBar;
 
-	/**
-	 * The area properties of the xy plot
-	 */
 	public Area area;
 
-	/**
-	 * The label properties of the xy plot
-	 */
 	//public Label label;
 
 	private Selection xySelection;
@@ -67,7 +45,6 @@ public class Xy extends GraphicsPropertiesPage {
 
 	public Xy(String name) {
 		super(name);
-		//setRunnable();
 	}
 
 	//#end region
@@ -90,21 +67,14 @@ public class Xy extends GraphicsPropertiesPage {
 		propertyPageFactories.add(symbol);
 
 		//errorBar = new ErrorBar();
-
 		//label = new Label();
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("xy.png");
 	}
 
-	/**
-	 * Creates the context menu actions
-	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
 		// no actions available right now
@@ -112,22 +82,18 @@ public class Xy extends GraphicsPropertiesPage {
 	}
 
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 		treeViewRefreshable = refreshable;
 		//Graph graph = (Graph) createTreeNodeAdaption().getParent().getAdaptable();
 		//graph.execute(refreshable);
 	}
 
-	/**
-	 * @param d3
-	 * @param graphOrXySeriesSelection
-	 */
 	@Override
 	public Selection plotWithD3(
 			D3 d3,
 			Selection graphOrXySeriesSelection,
 			Selection graphRectSelection,
-			Refreshable refreshable) {
+			FocusChangingRefreshable refreshable) {
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
@@ -153,20 +119,45 @@ public class Xy extends GraphicsPropertiesPage {
 		plotPageModels(d3);
 	}
 
-	/**
-	 * Plots the page models for the Graph (e.g. Border)
-	 *
-	 * @param d3
-	 */
 	private void plotPageModels(D3 d3) {
 		for (GraphicsPropertiesPageFactory pageModel : propertyPageFactories) {
 			xySelection = pageModel.plotWithD3(d3, xySelection, null, this);
 		}
 	}
 
-	/**
-	 * @return
-	 */
+	@Override
+	public void addLegendContributors(List<LegendContributor> legendContributors) {
+		if (providesLegendEntry()) {
+			legendContributors.add(this);
+		}
+	}
+
+	@Override
+	public boolean providesLegendEntry() {
+		return !getLegendText().isEmpty();
+	}
+
+	@Override
+	public String getLegendText() {
+		return data.legendText.get();
+	}
+
+	@Override
+	public Selection createLegendSymbolGroup(
+			D3 d3,
+			Selection parentSelection,
+			int symbolLengthInPx,
+			Refreshable refreshable) {
+		Selection symbolSelection = parentSelection //
+				.append("g") //
+				.classed("xy-legend-entry-symbol", true);
+
+		this.line.plotLegendLineWithD3(d3, symbolSelection, symbolLengthInPx);
+		this.symbol.plotLegendSymbolWithD3(d3, symbolSelection, symbolLengthInPx / 2, refreshable);
+
+		return symbolSelection;
+	}
+
 	public String getXyDataString() {
 
 		List<Object> xDataValues = getXData();
@@ -210,18 +201,27 @@ public class Xy extends GraphicsPropertiesPage {
 
 	private Axis getXAxis() {
 		String xAxisPath = data.xAxis.get();
+		if (xAxisPath == null || xAxisPath.isEmpty()) {
+			return null;
+		}
 		Axis xAxisAtom = getChildFromRoot(xAxisPath);
 		return xAxisAtom;
 	}
 
 	private Axis getYAxis() {
 		String yAxisPath = data.yAxis.get();
+		if (yAxisPath == null || yAxisPath.isEmpty()) {
+			return null;
+		}
 		Axis yAxisAtom = getChildFromRoot(yAxisPath);
 		return yAxisAtom;
 	}
 
 	private List<Object> getXData() {
 		String xDataPath = data.xData.get();
+		if (xDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
 		org.treez.data.column.Column xDataColumn = getChildFromRoot(xDataPath);
 		List<Object> xDataValues = xDataColumn.getValues();
 		return xDataValues;
@@ -229,6 +229,9 @@ public class Xy extends GraphicsPropertiesPage {
 
 	private List<Object> getYData() {
 		String yDataPath = data.yData.get();
+		if (yDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
 		org.treez.data.column.Column yDataColumn = getChildFromRoot(yDataPath);
 		List<Object> yDataValues = yDataColumn.getValues();
 		return yDataValues;

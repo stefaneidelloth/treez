@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.AtomTreeNodeAdaption;
@@ -49,7 +49,7 @@ public class AttributeRoot extends AbstractAtom {
 	 */
 	@Override
 	public AbstractControlAdaption createControlAdaption(Composite parent,
-			Refreshable treeViewRefreshable) {
+			FocusChangingRefreshable treeViewRefreshable) {
 		//LOG.debug("get root control");
 		return new EmptyControlAdaption(parent, this, "");
 	}

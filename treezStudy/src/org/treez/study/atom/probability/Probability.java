@@ -8,7 +8,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.FilePath;
@@ -139,7 +139,7 @@ public class Probability extends AbstractParameterVariation {
 	}
 
 	@Override
-	public void runStudy(Refreshable refreshable, IProgressMonitor monitor) {
+	public void runStudy(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 		//not yet implemented
 	}
 

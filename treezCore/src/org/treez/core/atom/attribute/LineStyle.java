@@ -1,7 +1,6 @@
 package org.treez.core.atom.attribute;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,7 +13,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
@@ -61,8 +60,7 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 		if (isLineStyle) {
 			attributeValue = defaultStyle;
 		} else {
-			throw new IllegalArgumentException("The specified line style '"
-					+ defaultStyle + "' is not known.");
+			throw new IllegalArgumentException("The specified line style '" + defaultStyle + "' is not known.");
 		}
 	}
 
@@ -94,7 +92,8 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -108,8 +107,7 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container,
-				currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
 		final int preferredLabelWidth = 85;
 		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
@@ -127,8 +125,7 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 		//set predefined colors
 		List<String> styles = getLineStyles();
 		for (String styleString : styles) {
-			styleCombo.add(styleString,
-					Activator.getImage(styleString + ".png"));
+			styleCombo.add(styleString, Activator.getImage(styleString + ".png"));
 		}
 
 		//initialize selected item
@@ -155,8 +152,7 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit) {
+	private static Composite createContainer(Composite parent, FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -185,12 +181,12 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
 
+	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		addModifyListener(key, (event) -> {
@@ -200,9 +196,10 @@ public class LineStyle extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
 	}
+	*/
 
 	//#end region
 

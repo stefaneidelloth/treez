@@ -1,7 +1,7 @@
 package org.treez.model.interfaces;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.model.input.ModelInput;
 import org.treez.model.output.ModelOutput;
 
@@ -29,12 +29,12 @@ public interface ParallelModel extends Model {
 	 * @returns
 	 */
 	@Override
-	ModelOutput runModel(ModelInput modelInput, Refreshable refreshable, IProgressMonitor monitor);
+	ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, IProgressMonitor monitor);
 
 	/**
 	 * Runs the model with the current model state. Can be executed in parallel with other model instances.
 	 */
 	@Override
-	ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor);
+	ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor);
 
 }

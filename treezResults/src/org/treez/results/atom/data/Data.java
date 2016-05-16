@@ -6,7 +6,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
@@ -44,7 +44,7 @@ public class Data extends AdjustableAtom {
 	 * Provides a control to represent this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, Refreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		return new EmptyControlAdaption(parent, this, "This atom represents data.");
 	}
@@ -126,7 +126,7 @@ public class Data extends AdjustableAtom {
 	}
 
 	@Override
-	public void execute(Refreshable treeViewerRefreshable) {
+	public void execute(FocusChangingRefreshable treeViewerRefreshable) {
 		treeViewRefreshable = treeViewerRefreshable;
 		executeChildren(AbstractProbe.class, treeViewRefreshable);
 	}

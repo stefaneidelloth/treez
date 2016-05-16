@@ -17,7 +17,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.FilePath;
@@ -112,7 +112,9 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	//#region METHODS
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, Refreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 		updateAvailableVariablesForVariableList();
 		AbstractControlAdaption controlAdaption = super.createControlAdaption(parent, treeViewRefreshable);
 		return controlAdaption;
@@ -163,13 +165,15 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		timeVariablePath.setLabel("Time variable");
 		timeVariablePath.setEnabled(false);
 
-		timeVariablePath.addModificationConsumer("recreateTimeRangeAtom", (variablePath) -> {
+		timeVariablePath.addModificationConsumer("recreateTimeRangeAtom", () -> {
+			String variablePath = timeVariablePath.get();
 			recreateTimeRangeAtom(timeDependentSection, variablePath);
 		});
 
 		//recreateTimeRangeAtom(timeDependentSection, timeVariablePath.get());
 
-		isTimeDependentCheckBox.addModificationConsumer("showOrHideDependentAttributes", (isSelected) -> {
+		isTimeDependentCheckBox.addModificationConsumer("showOrHideDependentAttributes", () -> {
+			boolean isSelected = isTimeDependentCheckBox.get();
 			timeVariablePath.setEnabled(isSelected);
 			if (timeRangeAtom != null) {
 				timeRangeAtom.setEnabled(isSelected);
@@ -308,7 +312,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	//#region EXECUTE
 
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 		String jobTitle = "Picking '" + getName() + "'";
 		runNonUiJob(jobTitle, (monitor) -> {
 			runStudy(refreshable, monitor);
@@ -317,7 +321,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	}
 
 	@Override
-	public void runStudy(Refreshable refreshable, IProgressMonitor monitor) {
+	public void runStudy(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 		Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
 		this.treeViewRefreshable = refreshable;
 
@@ -392,7 +396,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	}
 
 	private void doRunStudy(
-			Refreshable refreshable,
+			FocusChangingRefreshable refreshable,
 			IProgressMonitor monitor,
 			PickingModelInputGenerator inputGenerator,
 			List<Sample> samples) {
@@ -503,7 +507,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	}
 
 	private void executeTargetModel(
-			Refreshable refreshable,
+			FocusChangingRefreshable refreshable,
 			IProgressMonitor monitor,
 			int numberOfSimulations,
 			List<ModelInput> modelInputs,

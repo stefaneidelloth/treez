@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
@@ -42,7 +42,7 @@ public class Sensitivity extends AdjustableAtom implements Study {
 	 * Provides a control to represent this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, Refreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
 
 		String relativeHelpContextId = "sensitivity";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
@@ -77,7 +77,7 @@ public class Sensitivity extends AdjustableAtom implements Study {
 	}
 
 	@Override
-	public void runStudy(Refreshable refreshable, IProgressMonitor monitor) {
+	public void runStudy(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 		//not yet implemented
 	}
 

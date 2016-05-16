@@ -5,6 +5,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
@@ -12,7 +13,6 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * XY line settings
@@ -112,7 +112,7 @@ public class Line implements GraphicsPropertiesPageFactory {
 		GraphicsAtom.bindLineTransparency(lines, transparency);
 		GraphicsAtom.bindLineStyle(lines, style);
 
-		interpolation.addModificationConsumer("replot", (data) -> {
+		interpolation.addModificationConsumer("replot", () -> {
 			//if the line interpolation changes other stuff like the area
 			//has to be updated as well
 			//=> update the whole xy
@@ -120,6 +120,30 @@ public class Line implements GraphicsPropertiesPageFactory {
 		});
 
 		return xySelection;
+	}
+
+	public Selection plotLegendLineWithD3(D3 d3, Selection parentSelection, int length) {
+
+		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
+				.svg()//
+				.line();
+
+		String path = linePathGenerator.generate("[[0,0],[" + length + ",0]]");
+
+		Selection legendLine = parentSelection //
+				.append("path") //
+				.classed("legend-line", true)
+				.attr("d", path)
+				.attr("fill", "none");
+
+		//bind attributes
+		GraphicsAtom.bindDisplayToBooleanAttribute("hide", legendLine, hide);
+		GraphicsAtom.bindStringAttribute(legendLine, "stroke", color);
+		GraphicsAtom.bindStringAttribute(legendLine, "stroke-width", width);
+		GraphicsAtom.bindLineTransparency(legendLine, transparency);
+		GraphicsAtom.bindLineStyle(legendLine, style);
+
+		return parentSelection;
 	}
 
 	//#end region

@@ -291,6 +291,8 @@ public class EnteringSelection extends JavaScriptObject {
 		JSObject result = call("cast");
 		return new Array<JSObject>(webEngine, result);
 	}
+	
+	
 
 	//#end region
 }

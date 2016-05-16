@@ -1,14 +1,12 @@
 package org.treez.core.atom.attribute;
 
-import java.util.function.Consumer;
-
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
@@ -57,7 +55,8 @@ public class Label extends AbstractAttributeAtom<String> {
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -89,11 +88,13 @@ public class Label extends AbstractAttributeAtom<String> {
 		}
 	}
 
+	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		throw new IllegalStateException(
 				"Labels to not support modification listeners");
 	}
+	*/
 
 	//#end region
 
@@ -108,8 +109,7 @@ public class Label extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Returns the object that represents the property value. Might be
-	 * overridden by implementing classes.
+	 * Returns the object that represents the property value. Might be overridden by implementing classes.
 	 *
 	 * @return
 	 */

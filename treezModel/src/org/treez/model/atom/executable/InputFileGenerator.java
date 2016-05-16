@@ -15,7 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -133,7 +133,7 @@ public class InputFileGenerator extends AdjustableAtom {
 	}
 
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 
 		LOG.info("Executing " + this.getClass().getSimpleName() + " '" + getName() + "'");
 

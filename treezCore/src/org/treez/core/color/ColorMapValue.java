@@ -1,4 +1,4 @@
-package org.treez.core.atom.attribute;
+package org.treez.core.color;
 
 import java.util.ArrayList;
 import java.util.List;

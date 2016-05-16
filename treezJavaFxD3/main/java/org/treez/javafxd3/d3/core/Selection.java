@@ -8,15 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.arrays.ArrayUtils;
-import org.treez.javafxd3.d3.svg.PathDataGenerator;
-import org.treez.javafxd3.d3.wrapper.Element;
-import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
-import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.functions.DatumFunction;
 import org.treez.javafxd3.d3.functions.KeyFunction;
 import org.treez.javafxd3.d3.functions.MouseClickFunction;
+import org.treez.javafxd3.d3.svg.PathDataGenerator;
+import org.treez.javafxd3.d3.wrapper.Element;
+import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -285,6 +285,14 @@ public class Selection extends EnteringSelection {
 		}
 		String result = attrObj.toString();
 		return result;
+	}
+	
+	public Double attrAsDouble(String name){
+		String attribute = attr(name);
+		if(attribute==null){
+			return null;
+		}
+		return Double.parseDouble(attribute);
 	}
 
 	/**
@@ -2070,14 +2078,7 @@ public class Selection extends EnteringSelection {
 
 	}
 	
-	/**
-	 * Same as {@link #on(String, DatumFunction, boolean)} with false for the
-	 * useCapture flag.
-	 *
-	 * @param eventType
-	 * @param listener
-	 * @return
-	 */
+
 	public Selection onMouseClick(MouseClickFunction listener) {
 
 		assertObjectIsNotAnonymous(listener);
@@ -2098,6 +2099,8 @@ public class Selection extends EnteringSelection {
 		return new Selection(webEngine, result);
 
 	}
+	
+	
 
 	//#end region
 

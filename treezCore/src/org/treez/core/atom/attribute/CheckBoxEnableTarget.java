@@ -3,7 +3,7 @@ package org.treez.core.atom.attribute;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
@@ -70,7 +70,7 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 
 	@Override
 	public void createAtomControl(Composite parent,
-			Refreshable treeViewerRefreshable) {
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 	}
 

@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.variablefield.IntegerVariableField;
@@ -93,7 +93,7 @@ public class IntegerVariableListField
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
 	public AbstractAttributeAtom<List<Integer>> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize integer list value at the first call

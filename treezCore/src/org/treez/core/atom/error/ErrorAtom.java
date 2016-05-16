@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -57,7 +57,7 @@ public class ErrorAtom extends AbstractAtom {
 
 	@Override
 	public AbstractControlAdaption createControlAdaption(Composite parent,
-			Refreshable treeViewRefreshable) {
+			FocusChangingRefreshable treeViewRefreshable) {
 		String displayString = message + "\n"
 				+ ExceptionUtils.getStackTrace(exception);
 		return new EmptyControlAdaption(parent, this, displayString);

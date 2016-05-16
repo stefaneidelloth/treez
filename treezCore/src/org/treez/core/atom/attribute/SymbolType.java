@@ -1,7 +1,6 @@
 package org.treez.core.atom.attribute;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,7 +13,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
@@ -44,8 +43,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 	/**
 	 * Predefined symbol styles
 	 */
-	private final List<String> symbolStyles = SymbolStyleValue
-			.getAllStringValues();
+	private final List<String> symbolStyles = SymbolStyleValue.getAllStringValues();
 
 	//#end region
 
@@ -63,8 +61,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 		if (isLineStyle) {
 			attributeValue = defaultStyle;
 		} else {
-			throw new IllegalArgumentException("The specified symbol style '"
-					+ defaultStyle + "' is not known.");
+			throw new IllegalArgumentException("The specified symbol style '" + defaultStyle + "' is not known.");
 		}
 	}
 
@@ -94,7 +91,8 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -108,8 +106,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container,
-				currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
 		GridData layoutData = new GridData();
 		layoutData.horizontalAlignment = GridData.BEGINNING;
 		labelComposite.setLayoutData(layoutData);
@@ -131,8 +128,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 		//set predefined styles
 		List<String> styles = getSymbolStyles();
 		for (String styleString : styles) {
-			styleCombo.add(styleString,
-					Activator.getImage(imagePrefix + styleString + ".png"));
+			styleCombo.add(styleString, Activator.getImage(imagePrefix + styleString + ".png"));
 		}
 
 		//initialize selected item
@@ -147,8 +143,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 				int index = styleCombo.getSelectionIndex();
 				String currentStyle = styles.get(index);
 				set(currentStyle);
-				imageLabel.setImage(Activator
-						.getImage(imagePrefix + currentStyle + ".png"));
+				imageLabel.setImage(Activator.getImage(imagePrefix + currentStyle + ".png"));
 
 				//trigger modification listeners
 				triggerModificationListeners();
@@ -160,8 +155,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit) {
+	private static Composite createContainer(Composite parent, FormToolkit toolkit) {
 
 		//create container control for labels and line style
 		Composite container = toolkit.createComposite(parent);
@@ -186,19 +180,18 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 			int index = styles.indexOf(style);
 			if (styleCombo.getSelectionIndex() != index) {
 				styleCombo.select(index);
-				imageLabel.setImage(
-						Activator.getImage(imagePrefix + style + ".png"));
+				imageLabel.setImage(Activator.getImage(imagePrefix + style + ".png"));
 			}
 		}
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
 
+	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		addModifyListener(key, (event) -> {
@@ -208,9 +201,10 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
 	}
+	*/
 
 	//#end region
 

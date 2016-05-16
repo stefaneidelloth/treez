@@ -1,4 +1,4 @@
-package org.treez.results.atom.graphicspage;
+package org.treez.core.atom.graphics;
 
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.base.AbstractAtom;

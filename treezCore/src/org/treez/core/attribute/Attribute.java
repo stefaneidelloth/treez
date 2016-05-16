@@ -1,7 +1,5 @@
 package org.treez.core.attribute;
 
-import java.util.function.Consumer;
-
 /**
  * Represents an attribute
  */
@@ -23,14 +21,8 @@ public interface Attribute<T> {
 	@Override
 	String toString();
 
-	/**
-	 * Adds a modify listener
-	 */
-	void addModificationConsumer(String key, Consumer<T> listener);
+	void addModificationConsumer(String key, Consumer listener);
 
-	/**
-	 * Adds a modify listener and runs it once with null as argument
-	 */
-	void addModificationConsumerAndRun(String key, Consumer<T> listener);
+	void addModificationConsumerAndRun(String key, Consumer listener);
 
 }

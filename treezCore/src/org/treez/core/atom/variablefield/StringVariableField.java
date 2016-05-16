@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
@@ -43,7 +43,7 @@ public class StringVariableField extends AbstractVariableField<String> {
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize quantity value at the first call

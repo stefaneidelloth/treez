@@ -1,18 +1,17 @@
 package org.treez.results.atom.xy;
 
-import java.util.function.Consumer;
-
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * XY data settings
@@ -51,14 +50,12 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Class<?> targetClass = org.treez.data.column.Column.class;
 		String value = "root.data.table.columns.x";
-		data
-				.createModelPath(xData, this, value, targetClass, parent) //
+		data.createModelPath(xData, this, value, targetClass, parent) //
 				.setLabel("X data");
 
 		targetClass = org.treez.data.column.Column.class;
 		value = "root.data.table.columns.y";
-		data
-				.createModelPath(yData, this, value, targetClass, parent) //
+		data.createModelPath(yData, this, value, targetClass, parent) //
 				.setLabel("Y data");
 
 		TextField legendTextField = data.createTextField(legendText, "legendText", "");
@@ -92,7 +89,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 		//this property page factory does create an own d3 group; the work will be
 		//done by the other property page factories
 
-		Consumer<String> dataChangedConsumer = (data) -> {
+		Consumer dataChangedConsumer = () -> {
 			Xy xy = (Xy) parent;
 			xy.updatePlotWithD3(d3);
 		};

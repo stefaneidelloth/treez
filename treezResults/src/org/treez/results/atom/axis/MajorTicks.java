@@ -5,11 +5,11 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents the major tick lines
@@ -95,9 +95,9 @@ public class MajorTicks implements GraphicsPropertiesPageFactory {
 				.selectAll(".major") //
 				.selectAll("line");
 
-		number.addModificationConsumer("replotAxis", (data) -> axis.updatePlotWithD3(d3));
+		number.addModificationConsumer("replotAxis", () -> axis.updatePlotWithD3(d3));
 
-		length.addModificationConsumerAndRun("length", (data) -> {
+		length.addModificationConsumerAndRun("length", () -> {
 			boolean isHorizontal = axis.data.direction.get().equals("horizontal");
 			if (isHorizontal) {
 				primaryMajorTickLines.attr("y2", "-" + length.get());

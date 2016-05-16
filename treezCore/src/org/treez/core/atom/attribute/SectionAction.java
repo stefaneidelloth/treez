@@ -15,7 +15,7 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -132,7 +132,7 @@ public class SectionAction extends AbstractAttributeContainerAtom {
 
 	@Override
 	public void createAtomControl(Composite sectionClient,
-			Refreshable treeViewerRefreshable) {
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//toolkit
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());

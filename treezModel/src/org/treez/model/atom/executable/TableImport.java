@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
@@ -302,7 +302,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	 * @return
 	 */
 	@Override
-	public ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 
 		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 

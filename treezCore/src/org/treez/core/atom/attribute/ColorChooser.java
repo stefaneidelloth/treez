@@ -3,7 +3,6 @@ package org.treez.core.atom.attribute;
 import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
@@ -18,9 +17,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
+import org.treez.core.color.ColorValue;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
@@ -99,7 +99,8 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -142,8 +143,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		final List<String> currentColorsHex = getColorsHex();
 
 		for (String colorString : currentColors) {
-			colorCombo.add(colorString,
-					Activator.getImage(colorString + ".png"));
+			colorCombo.add(colorString, Activator.getImage(colorString + ".png"));
 		}
 		colorCombo.add("#custom#", null);
 
@@ -153,13 +153,12 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		//action
 		//listeners----------------------------------------------------------
 		//action listener for combo box
-		SelectionAdapter colorComboListener = createColorComboSelectionListener(
-				colorSelector, currentColors, currentColorsHex);
+		SelectionAdapter colorComboListener = createColorComboSelectionListener(colorSelector, currentColors,
+				currentColorsHex);
 		colorCombo.addSelectionListener(colorComboListener);
 
 		//action listener for value button
-		SelectionAdapter colorButtonListener = createColorButtonSelectionListener(
-				colorSelector);
+		SelectionAdapter colorButtonListener = createColorButtonSelectionListener(colorSelector);
 		colorButton.addSelectionListener(colorButtonListener);
 
 		return this;
@@ -167,15 +166,13 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 
 	private void createLabel(FormToolkit toolkit, Composite container) {
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container,
-				currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
 		final int prefferedLabelWidth = 85;
 		labelComposite.setPrefferedWidth(prefferedLabelWidth);
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit, GridData fillHorizontal) {
+	private static Composite createContainer(Composite parent, FormToolkit toolkit, GridData fillHorizontal) {
 		Composite container = toolkit.createComposite(parent);
 		GridLayout gridLayout = new GridLayout(5, false);
 		gridLayout.horizontalSpacing = 0;
@@ -184,8 +181,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		return container;
 	}
 
-	private void initializeSelectedItem(final List<String> currentColors,
-			final List<String> currentColorsHex) {
+	private void initializeSelectedItem(final List<String> currentColors, final List<String> currentColorsHex) {
 		String colorHex = get();
 		boolean colorExists = currentColorsHex.contains(colorHex);
 		if (colorExists) {
@@ -208,7 +204,8 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	 * @return
 	 */
 	private SelectionAdapter createColorComboSelectionListener(
-			final ColorSelector colorSelector, final List<String> currentColors,
+			final ColorSelector colorSelector,
+			final List<String> currentColors,
 			final List<String> currentColorsHex) {
 		return new SelectionAdapter() {
 
@@ -240,8 +237,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	 * @param colorSelector
 	 * @return
 	 */
-	private SelectionAdapter createColorButtonSelectionListener(
-			final ColorSelector colorSelector) {
+	private SelectionAdapter createColorButtonSelectionListener(final ColorSelector colorSelector) {
 		return new SelectionAdapter() {
 
 			@Override
@@ -277,6 +273,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 		}
 	}
 
+	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		addModifyListener(key, (event) -> {
@@ -286,9 +283,10 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
 	}
+	*/
 
 	//#end region
 
@@ -321,8 +319,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 				int index = colors.indexOf(defaultColor);
 				attributeValue = colorsHex.get(index);
 			} else {
-				throw new IllegalArgumentException("The specified value '"
-						+ defaultColor + "' is not know.");
+				throw new IllegalArgumentException("The specified value '" + defaultColor + "' is not know.");
 			}
 		}
 
@@ -352,8 +349,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 			Color color = Color.decode(colorString);
 			return color;
 		} catch (NumberFormatException exception) {
-			throw new IllegalStateException(
-					"Could not decode color value '" + colorString + "'");
+			throw new IllegalStateException("Could not decode color value '" + colorString + "'");
 		}
 	}
 
@@ -366,8 +362,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	}
 
 	public void setColorRGB(RGB rgb) {
-		String valueString = String.format("#%02x%02x%02x", rgb.red, rgb.green,
-				rgb.blue);
+		String valueString = String.format("#%02x%02x%02x", rgb.red, rgb.green, rgb.blue);
 		super.set(valueString);
 	}
 
@@ -390,8 +385,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 				String hexColor = ColorValue.getHexCode(value);
 				super.set(hexColor);
 			} else {
-				throw new IllegalArgumentException("The string '" + value
-						+ "' could not be interpreted as color.");
+				throw new IllegalArgumentException("The string '" + value + "' could not be interpreted as color.");
 			}
 		}
 	}
@@ -415,8 +409,7 @@ public class ColorChooser extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}

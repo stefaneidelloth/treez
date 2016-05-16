@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.base.AbstractAtom;
@@ -25,7 +25,7 @@ public class AdjustableAtomControlAdaption extends AbstractControlAdaption {
 
 	public AdjustableAtomControlAdaption(Composite parent,
 			final AdjustableAtom adjustableAtom,
-			Refreshable treeViewerRefreshable) {
+			FocusChangingRefreshable treeViewerRefreshable) {
 		super(parent, adjustableAtom);
 
 		AbstractAtom model = adjustableAtom.getModel();
@@ -50,7 +50,7 @@ public class AdjustableAtomControlAdaption extends AbstractControlAdaption {
 	 * @param model
 	 */
 	private static void createPropertyControlFromModel(Composite parent,
-			AbstractAtom model, Refreshable treeViewerRefreshable) {
+			AbstractAtom model, FocusChangingRefreshable treeViewerRefreshable) {
 
 		//delete old contents
 		for (Control child : parent.getChildren()) {
@@ -115,7 +115,7 @@ public class AdjustableAtomControlAdaption extends AbstractControlAdaption {
 	 * @param tabFolder
 	 */
 	private static void createTabbedPages(AbstractAtom model,
-			CTabFolder tabFolder, Refreshable treeViewerRefreshable) {
+			CTabFolder tabFolder, FocusChangingRefreshable treeViewerRefreshable) {
 		List<TreeNodeAdaption> pageNodes = model.createTreeNodeAdaption()
 				.getChildren();
 

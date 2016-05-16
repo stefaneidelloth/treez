@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.copy.CopyHelper;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.data.cell.CellEditorFactory;
@@ -141,7 +141,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	 */
 	@Override
 	public AbstractControlAdaption createControlAdaption(Composite parent,
-			Refreshable treeViewRefreshable) {
+			FocusChangingRefreshable treeViewRefreshable) {
 		//store tree view to be able to update it
 		this.treeViewRefreshable = treeViewRefreshable;
 

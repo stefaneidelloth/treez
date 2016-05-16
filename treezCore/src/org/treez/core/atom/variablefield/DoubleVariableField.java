@@ -9,14 +9,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 import org.treez.core.atom.variablelist.DoubleVariableListField;
 
 /**
- * Represents a model variable (-text field) that is used to enter a Double
- * value
+ * Represents a model variable (-text field) that is used to enter a Double value
  */
 public class DoubleVariableField extends AbstractVariableField<Double> {
 
@@ -42,6 +41,16 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 		return new DoubleVariableField(this);
 	}
 
+	/*
+	@Override
+	public void addModificationConsumer(String key, Consumer<Double> consumer) {
+	
+		addModifyListener(key, (event) -> {
+			Double doubleValue = Double.parseDouble(event.data.toString());
+			consumer.accept(doubleValue);
+		});
+	}*/
+
 	@Override
 	public Image provideBaseImage() {
 		return Activator.getImage("doubleVariable.png");
@@ -49,7 +58,8 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 
 	@Override
 	public AbstractAttributeAtom<Double> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize double value at the first call
@@ -66,8 +76,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 
 		//create container composite
 		//its layout depends on the length of the labels and values
-		Composite container = createContainerForLabelsAndTextFields(parent,
-				toolkit, useIndividualLines);
+		Composite container = createContainerForLabelsAndTextFields(parent, toolkit, useIndividualLines);
 
 		//label
 		createValueLabel(toolkit, container);
@@ -113,8 +122,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -138,25 +146,35 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	//#region VALUE
 
 	/**
-	 * Returns the Double value. This does not use the attributeValue to store
-	 * the state of this attribute atom but uses the valueString
+	 * Returns the Double value. This does not use the attributeValue to store the state of this attribute atom but uses
+	 * the valueString
 	 */
 	@Override
 	public Double get() {
-		Double value = new Double(getValueString());
-		return value;
+		String valueString = getValueString();
+		if (valueString.isEmpty()) {
+			return null;
+		}
+		try {
+			Double value = new Double(valueString);
+			return value;
+		} catch (NumberFormatException exception) {
+			//this happens  for example if "e" is entered as string value
+			return null;
+		}
 	}
 
 	@Override
 	public void set(Double value) {
+
 		disableModificationListeners();
 		if (value == null) {
 			setValueString("");
 		} else {
 			setValueString("" + value);
-
 		}
 		enableModificationListeners();
+
 		triggerModificationListeners();
 	}
 

@@ -1,18 +1,17 @@
 package org.treez.results.atom.graph;
 
-import java.util.function.Consumer;
-
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * The main settings for a graph
@@ -64,7 +63,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 		GraphicsAtom.bindStringAttribute(rectSelection, "height", height);
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideGraph", graphSelection, hide);
 
-		Consumer<String> replotGraph = (data) -> {
+		Consumer replotGraph = () -> {
 			Graph graph = (Graph) parent;
 			graph.updatePlotWithD3(d3);
 		};

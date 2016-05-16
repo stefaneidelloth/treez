@@ -1,7 +1,6 @@
 package org.treez.core.atom.attribute;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,7 +13,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
@@ -44,8 +43,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	/**
 	 * Predefined symbol styles
 	 */
-	private static final List<String> FILL_STYLES = FillStyleValue
-			.getAllStringValues();
+	private static final List<String> FILL_STYLES = FillStyleValue.getAllStringValues();
 
 	//#end region
 
@@ -69,8 +67,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 		if (isFillStyle) {
 			attributeValue = defaultStyle;
 		} else {
-			throw new IllegalArgumentException("The specified fill style '"
-					+ defaultStyle + "' is not known.");
+			throw new IllegalArgumentException("The specified fill style '" + defaultStyle + "' is not known.");
 		}
 	}
 
@@ -88,6 +85,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 
 	//#region METHODS
 
+	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		addModifyListener(key, (event) -> {
@@ -97,9 +95,9 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
-	}
+	}*/
 
 	@Override
 	public FillStyle copy() {
@@ -113,7 +111,8 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -127,8 +126,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container,
-				currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
 		final int prefferredLabelWidth = 85;
 		labelComposite.setPrefferedWidth(prefferredLabelWidth);
 
@@ -146,8 +144,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 		//set predefined styles
 		final List<String> styles = getFillStyles();
 		for (String styleString : styles) {
-			styleCombo.add(styleString,
-					Activator.getImage(IMAGE_PREFIX + styleString + ".png"));
+			styleCombo.add(styleString, Activator.getImage(IMAGE_PREFIX + styleString + ".png"));
 		}
 
 		//initialize selected item
@@ -162,8 +159,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 				int index = styleCombo.getSelectionIndex();
 				String currentStyle = styles.get(index);
 				set(currentStyle);
-				imageLabel.setImage(Activator
-						.getImage(IMAGE_PREFIX + currentStyle + ".png"));
+				imageLabel.setImage(Activator.getImage(IMAGE_PREFIX + currentStyle + ".png"));
 
 				//trigger modification listeners
 				triggerModificationListeners();
@@ -175,8 +171,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit) {
+	private static Composite createContainer(Composite parent, FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -199,15 +194,13 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 			int index = styles.indexOf(style);
 			if (styleCombo.getSelectionIndex() != index) {
 				styleCombo.select(index);
-				imageLabel.setImage(
-						Activator.getImage(IMAGE_PREFIX + style + ".png"));
+				imageLabel.setImage(Activator.getImage(IMAGE_PREFIX + style + ".png"));
 			}
 		}
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}

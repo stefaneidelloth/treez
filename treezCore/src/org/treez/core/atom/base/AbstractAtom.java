@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.IAction;
@@ -17,12 +16,14 @@ import org.eclipse.ui.ISharedImages;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.CodeAdaption;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.GraphicsAdaption;
-import org.treez.core.adaptable.Refreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.base.annotation.IsParameters;
 import org.treez.core.atom.copy.Copiable;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
+import org.treez.core.attribute.NameConsumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -30,39 +31,32 @@ import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.core.utils.Utils;
 
 /**
- * This is the main implementation of the interface Adaptable and the parent
- * class for all treez atoms. An AbstractAtom (actually its TreeNodeAdaption)
- * has parents and children. The ControlAdaption of this AbstractAtom is build
- * with the help of the annotation "IsParameter", see the class
- * AtomControlAdaption for more details. * The AttributeAtom and its deriving
- * classes give an example on how to use these annotations. * If you want to
- * create more complex atoms, also have a look at the AdjustableAtom. The
- * ControlAdaption of AdjustableAtoms is created from an underlying tree model.
- * Each implementation of this AbstractAtom should define a copy constructor and
- * use it in the method copy() that must be overridden.
+ * This is the main implementation of the interface Adaptable and the parent class for all treez atoms. An AbstractAtom
+ * (actually its TreeNodeAdaption) has parents and children. The ControlAdaption of this AbstractAtom is build with the
+ * help of the annotation "IsParameter", see the class AtomControlAdaption for more details. * The AttributeAtom and its
+ * deriving classes give an example on how to use these annotations. * If you want to create more complex atoms, also
+ * have a look at the AdjustableAtom. The ControlAdaption of AdjustableAtoms is created from an underlying tree model.
+ * Each implementation of this AbstractAtom should define a copy constructor and use it in the method copy() that must
+ * be overridden.
  */
-public abstract class AbstractAtom
-		implements
-			Adaptable,
-			Copiable<AbstractAtom> {
+public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> {
 
 	private static final Logger LOG = Logger.getLogger(AbstractAtom.class);
 
 	//#region ATTRIBUTES
 
 	/**
-	 * The name of this AbstractAtom. This name will for example be used by the
-	 * TreeNodeAdaption. In order to be able to identify an AbstractAtom by its
-	 * tree path, this name should only be used once for all children of the
-	 * parent AbstractAtom. The name might also be used in Java code for saving
-	 * the tree structure. It is recommended to use lower case names.
+	 * The name of this AbstractAtom. This name will for example be used by the TreeNodeAdaption. In order to be able to
+	 * identify an AbstractAtom by its tree path, this name should only be used once for all children of the parent
+	 * AbstractAtom. The name might also be used in Java code for saving the tree structure. It is recommended to use
+	 * lower case names.
 	 */
 	protected String name;
 
 	/**
-	 * A list of listeners that are informed on name changes
+	 * A list of consumers that are informed on name changes
 	 */
-	private List<Consumer<String>> nameListeners;
+	private List<NameConsumer> nameConsumers;
 
 	/**
 	 * The parent of this AbstractAtom
@@ -99,9 +93,8 @@ public abstract class AbstractAtom
 	//#region CONSTRUCTORS
 
 	/**
-	 * Constructor. If a derived class uses the annotation IsParameter for its
-	 * attributes, the attributes are initialized using the value provided by
-	 * that annotation.
+	 * Constructor. If a derived class uses the annotation IsParameter for its attributes, the attributes are
+	 * initialized using the value provided by that annotation.
 	 *
 	 * @param name
 	 */
@@ -137,10 +130,8 @@ public abstract class AbstractAtom
 	 * @param abstractAtomsToCopy
 	 * @return
 	 */
-	public static List<AbstractAtom> copyAbstractAtoms(
-			List<AbstractAtom> abstractAtomsToCopy) {
-		List<AbstractAtom> abstractAtoms = new ArrayList<>(
-				abstractAtomsToCopy.size());
+	public static List<AbstractAtom> copyAbstractAtoms(List<AbstractAtom> abstractAtomsToCopy) {
+		List<AbstractAtom> abstractAtoms = new ArrayList<>(abstractAtomsToCopy.size());
 		for (AbstractAtom abstractAtomToCopy : abstractAtomsToCopy) {
 			AbstractAtom abstractAtom = abstractAtomToCopy.copy();
 			abstractAtoms.add(abstractAtom);
@@ -163,13 +154,12 @@ public abstract class AbstractAtom
 
 		CodeAdaption codeAdaption;
 		switch (scriptType) {
-			case JAVA :
-				codeAdaption = new AtomCodeAdaption(this);
-				break;
-			default :
-				String message = "The ScriptType " + scriptType
-						+ " is not yet implemented.";
-				throw new IllegalStateException(message);
+		case JAVA:
+			codeAdaption = new AtomCodeAdaption(this);
+			break;
+		default:
+			String message = "The ScriptType " + scriptType + " is not yet implemented.";
+			throw new IllegalStateException(message);
 		}
 
 		return codeAdaption;
@@ -178,8 +168,7 @@ public abstract class AbstractAtom
 
 	@Override
 	public GraphicsAdaption createGraphicsAdaption(Composite parent) {
-		GraphicsAdaption graphicsAdaption = new AtomGraphicsAdaption(parent,
-				this);
+		GraphicsAdaption graphicsAdaption = new AtomGraphicsAdaption(parent, this);
 		return graphicsAdaption;
 	}
 
@@ -188,19 +177,16 @@ public abstract class AbstractAtom
 	//#region initialization of attributes with the annotation IsParameter
 
 	/**
-	 * If a derived class uses the IsParameter annotation for some of its
-	 * attributes, the values of those attributes are initialized with this
-	 * method, using the default values that are provided by the IsParameter
-	 * annotation. If the class itself does not use IsParameter annotations, but
-	 * its direct super class does, use the annotations of the direct super
-	 * class to initialize the attributes.
+	 * If a derived class uses the IsParameter annotation for some of its attributes, the values of those attributes are
+	 * initialized with this method, using the default values that are provided by the IsParameter annotation. If the
+	 * class itself does not use IsParameter annotations, but its direct super class does, use the annotations of the
+	 * direct super class to initialize the attributes.
 	 */
 	protected void initAttributesWithIsParameterAnnotationValues() {
 
 		Class<?> atomClass = this.getClass();
 
-		boolean foundAnIsParameterAnnotation = initAttributesWithAnnotationsForClass(
-				atomClass);
+		boolean foundAnIsParameterAnnotation = initAttributesWithAnnotationsForClass(atomClass);
 
 		if (!foundAnIsParameterAnnotation) {
 			//No IsParameter annotation has been found. Maybe it is a class
@@ -210,23 +196,20 @@ public abstract class AbstractAtom
 			//initialize the
 			//attributes.
 			Class<?> superClass = atomClass.getSuperclass();
-			foundAnIsParameterAnnotation = initAttributesWithAnnotationsForClass(
-					superClass);
+			foundAnIsParameterAnnotation = initAttributesWithAnnotationsForClass(superClass);
 
 			if (!foundAnIsParameterAnnotation) {
 
 				Class<?> superSuperClass = atomClass.getSuperclass();
-				foundAnIsParameterAnnotation = initAttributesWithAnnotationsForClass(
-						superSuperClass);
+				foundAnIsParameterAnnotation = initAttributesWithAnnotationsForClass(superSuperClass);
 			}
 		}
 
 	}
 
 	/**
-	 * Initializes the values of the attributes that are annotated with the
-	 * IsParameter annotation using the given class. If an IsParameter
-	 * annotation has been found, the method returns true.
+	 * Initializes the values of the attributes that are annotated with the IsParameter annotation using the given
+	 * class. If an IsParameter annotation has been found, the method returns true.
 	 *
 	 * @param atomClass
 	 * @return
@@ -243,15 +226,12 @@ public abstract class AbstractAtom
 				foundAnIsParameterAnnotation = true;
 				//LOG.debug("The field " + field.getName() + " is
 				//annotated.");
-				String valueString = IsParameters
-						.getDefaultValueString(attribute);
+				String valueString = IsParameters.getDefaultValueString(attribute);
 				try {
 					Object attributeParent = this;
-					IsParameters.setAttributeValue(attribute, attributeParent,
-							valueString);
+					IsParameters.setAttributeValue(attribute, attributeParent, valueString);
 				} catch (Exception exception) {
-					String message = "Could not set attribute value for "
-							+ attribute.getName();
+					String message = "Could not set attribute value for " + attribute.getName();
 					LOG.error(message, exception);
 					throw new IllegalStateException(message, exception);
 				}
@@ -265,12 +245,11 @@ public abstract class AbstractAtom
 	//#region actions
 
 	/**
-	 * Provide an execution method for this AbstractAtom. This method might be
-	 * overridden be deriving classes and does nothing by default. (This method
-	 * can be triggered for example with a button in the tree view.)
+	 * Provide an execution method for this AbstractAtom. This method might be overridden be deriving classes and does
+	 * nothing by default. (This method can be triggered for example with a button in the tree view.)
 	 */
 	@SuppressWarnings("unused")
-	public void execute(Refreshable treeViewerRefreshable) {
+	public void execute(FocusChangingRefreshable treeViewerRefreshable) {
 		//empty default implementation
 	}
 
@@ -280,11 +259,10 @@ public abstract class AbstractAtom
 	 * @param wantedClass
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	protected void executeChildren(Class<?> wantedClass,
-			Refreshable treeViewerRefreshable) throws IllegalArgumentException {
+	protected void executeChildren(Class<?> wantedClass, FocusChangingRefreshable treeViewerRefreshable)
+			throws IllegalArgumentException {
 
-		AbstractAtom[] childArray = children
-				.toArray(new AbstractAtom[children.size()]);
+		AbstractAtom[] childArray = children.toArray(new AbstractAtom[children.size()]);
 
 		for (AbstractAtom child : childArray) {
 			Class<?> currentClass = child.getClass();
@@ -293,8 +271,7 @@ public abstract class AbstractAtom
 				try {
 					child.execute(treeViewerRefreshable);
 				} catch (Exception exception) {
-					String message = "Could not execute child '"
-							+ child.getName() + "' of '" + getName() + "'.";
+					String message = "Could not execute child '" + child.getName() + "' of '" + getName() + "'.";
 					LOG.error(message, exception);
 				}
 			}
@@ -302,42 +279,47 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Default implementation for the creation of the context menu actions. This
-	 * method is used by the corresponding AtomTreeNodeAdaption to fill its
-	 * context menu. This default implementation only includes a dummy example
-	 * action. It should be overridden by inheriting classes.
+	 * Default implementation for the creation of the context menu actions. This method is used by the corresponding
+	 * AtomTreeNodeAdaption to fill its context menu. This default implementation only includes a dummy example action.
+	 * It should be overridden by inheriting classes.
 	 *
 	 * @param treeViewerRefreshable
 	 * @return
 	 */
-	protected List<Object> createContextMenuActions(
-			TreeViewerRefreshable treeViewerRefreshable) {
+	protected List<Object> createContextMenuActions(TreeViewerRefreshable treeViewerRefreshable) {
 
 		ArrayList<Object> actions = new ArrayList<>();
 
 		//rename
-		actions.add(
-				new TreeViewerAction("Rename", Activator.getImage("rename.png"),
-						treeViewerRefreshable, () -> rename()));
+		actions.add(new TreeViewerAction(
+				"Rename",
+				Activator.getImage("rename.png"),
+				treeViewerRefreshable,
+				() -> rename()));
 
 		//move up
 		boolean canBeMovedUp = canBeMovedUp();
 		if (canBeMovedUp) {
-			actions.add(new TreeViewerAction("Move up",
-					Activator.getImage("up.png"), treeViewerRefreshable,
+			actions.add(new TreeViewerAction(
+					"Move up",
+					Activator.getImage("up.png"),
+					treeViewerRefreshable,
 					() -> moveUp()));
 		}
 
 		//move down
 		boolean canBeMovedDown = canBeMovedDown();
 		if (canBeMovedDown) {
-			actions.add(new TreeViewerAction("Move down",
-					Activator.getImage("down.png"), treeViewerRefreshable,
+			actions.add(new TreeViewerAction(
+					"Move down",
+					Activator.getImage("down.png"),
+					treeViewerRefreshable,
 					() -> moveDown()));
 		}
 
 		//delete
-		actions.add(new TreeViewerAction("Delete",
+		actions.add(new TreeViewerAction(
+				"Delete",
 				Activator.getImage(ISharedImages.IMG_TOOL_DELETE),
 				treeViewerRefreshable,
 				() -> createTreeNodeAdaption().delete()));
@@ -354,8 +336,7 @@ public abstract class AbstractAtom
 		AbstractAtom parent = this.getParentAtom();
 		if (parent != null) {
 			List<AbstractAtom> currentChildren = parent.getChildAtoms();
-			boolean childrenExist = currentChildren != null
-					&& currentChildren.size() > 1;
+			boolean childrenExist = currentChildren != null && currentChildren.size() > 1;
 			if (childrenExist) {
 				int currentIndex = currentChildren.indexOf(this);
 				if (currentIndex > 0) {
@@ -389,8 +370,7 @@ public abstract class AbstractAtom
 		AbstractAtom parent = this.getParentAtom();
 		if (parent != null) {
 			List<AbstractAtom> currentChildren = parent.getChildAtoms();
-			boolean childrenExist = currentChildren != null
-					&& currentChildren.size() > 1;
+			boolean childrenExist = currentChildren != null && currentChildren.size() > 1;
 			if (childrenExist) {
 				int currentIndex = currentChildren.indexOf(this);
 				if (currentIndex < currentChildren.size() - 1) {
@@ -416,16 +396,14 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Refreshes the given AbstractAtom if it implements the interface
-	 * Refreshable
+	 * Refreshes the given AbstractAtom if it implements the interface Refreshable
 	 *
 	 * @param parent
 	 */
 	private static void tryToRefreshAtom(AbstractAtom parent) {
-		boolean parentIsRefreshable = Refreshable.class
-				.isAssignableFrom(parent.getClass());
+		boolean parentIsRefreshable = FocusChangingRefreshable.class.isAssignableFrom(parent.getClass());
 		if (parentIsRefreshable) {
-			Refreshable refreshableParent = (Refreshable) parent;
+			FocusChangingRefreshable refreshableParent = (FocusChangingRefreshable) parent;
 			refreshableParent.refresh();
 		}
 	}
@@ -443,27 +421,25 @@ public abstract class AbstractAtom
 	 * Shows a dialog for renaming this AbstractAtom
 	 */
 	public void rename() {
-		String newName = Utils.getInput("Please enter the new name:",
-				getName());
+		String newName = Utils.getInput("Please enter the new name:", getName());
 		setName(newName);
 	}
 
-	protected void addNameModificationListener(Consumer<String> nameConsumer) {
-		if (nameListeners == null) {
-			nameListeners = new ArrayList<>();
+	protected void addNameModificationListener(NameConsumer nameConsumer) {
+		if (nameConsumers == null) {
+			nameConsumers = new ArrayList<>();
 		}
-		nameListeners.add(nameConsumer);
+		nameConsumers.add(nameConsumer);
 	}
 
-	protected void removeNameModificationListener(
-			Consumer<String> nameConsumer) {
-		nameListeners.remove(nameConsumer);
+	protected void removeNameModificationListener(Consumer nameConsumer) {
+		nameConsumers.remove(nameConsumer);
 	}
 
 	private void triggerNameListeners(String newName) {
-		if (nameListeners != null) {
-			for (Consumer<String> listener : nameListeners) {
-				listener.accept(newName);
+		if (nameConsumers != null) {
+			for (NameConsumer listener : nameConsumers) {
+				listener.consume(newName);
 			}
 		}
 	}
@@ -473,10 +449,9 @@ public abstract class AbstractAtom
 	//#region image
 
 	/**
-	 * Returns the image for this AbstractAtom. It is used by the corresponding
-	 * AtomTreeNodeAdaption. This method might be overridden by deriving
-	 * classes. This default implementation returns the default image that is
-	 * defined by the IMAGE_KEY.
+	 * Returns the image for this AbstractAtom. It is used by the corresponding AtomTreeNodeAdaption. This method might
+	 * be overridden by deriving classes. This default implementation returns the default image that is defined by the
+	 * IMAGE_KEY.
 	 *
 	 * @return
 	 */
@@ -491,16 +466,12 @@ public abstract class AbstractAtom
 	protected static String getFieldName(Object fieldObject, Object parent) {
 		Objects.requireNonNull(fieldObject);
 
-		Field[] allPublicFieldsWithFieldsOfSuperClasses = parent.getClass()
-				.getFields();
+		Field[] allPublicFieldsWithFieldsOfSuperClasses = parent.getClass().getFields();
 
-		String fieldName = getFieldName(fieldObject, parent,
-				allPublicFieldsWithFieldsOfSuperClasses);
+		String fieldName = getFieldName(fieldObject, parent, allPublicFieldsWithFieldsOfSuperClasses);
 		if (fieldName == null) {
-			Field[] allFieldsOfCurrentClass = parent.getClass()
-					.getDeclaredFields();
-			fieldName = getFieldName(fieldObject, parent,
-					allFieldsOfCurrentClass);
+			Field[] allFieldsOfCurrentClass = parent.getClass().getDeclaredFields();
+			fieldName = getFieldName(fieldObject, parent, allFieldsOfCurrentClass);
 		}
 
 		if (fieldName != null) {
@@ -511,8 +482,7 @@ public abstract class AbstractAtom
 	}
 
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static String getFieldName(Object fieldObject, Object parent,
-			Field[] allFields) {
+	private static String getFieldName(Object fieldObject, Object parent, Field[] allFields) {
 
 		for (Field field : allFields) {
 
@@ -523,8 +493,7 @@ public abstract class AbstractAtom
 				currentFieldObject = field.get(parent);
 				field.setAccessible(isAccessible);
 			} catch (Exception e) {
-				throw new IllegalStateException(
-						"Could not determine field name.");
+				throw new IllegalStateException("Could not determine field name.");
 			}
 			boolean isWantedField = fieldObject.equals(currentFieldObject);
 			if (isWantedField) {
@@ -541,8 +510,7 @@ public abstract class AbstractAtom
 	//#region child operations
 
 	/**
-	 * Add the given AbstractAtom as a child and removes it from the old parent
-	 * if an old parent exists.
+	 * Add the given AbstractAtom as a child and removes it from the old parent if an old parent exists.
 	 *
 	 * @param child
 	 */
@@ -556,17 +524,15 @@ public abstract class AbstractAtom
 		children.add(child);
 		if (oldParent != null) {
 			//remove child from old parent
-			oldParent.createTreeNodeAdaption()
-					.removeChild(child.createTreeNodeAdaption());
+			oldParent.createTreeNodeAdaption().removeChild(child.createTreeNodeAdaption());
 		}
 	}
 
 	/**
-	 * Adds the given AbstractAtom as a child but does not set the parent of the
-	 * child. The given AbstractAtom will be listed as a child of this
-	 * AbstractAtom. If the given AbstractAtom is asked for its parent, the old
-	 * parent will be returned. This way, an AbstractAtom can be used in several
-	 * trees as a child while the "one and only real parent" is kept.
+	 * Adds the given AbstractAtom as a child but does not set the parent of the child. The given AbstractAtom will be
+	 * listed as a child of this AbstractAtom. If the given AbstractAtom is asked for its parent, the old parent will be
+	 * returned. This way, an AbstractAtom can be used in several trees as a child while the "one and only real parent"
+	 * is kept.
 	 *
 	 * @param child
 	 */
@@ -575,15 +541,14 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Get child atom with given child name/sub model path. Throws an
-	 * IllegalArgumentException if the child could not be found.
+	 * Get child atom with given child name/sub model path. Throws an IllegalArgumentException if the child could not be
+	 * found.
 	 *
 	 * @param childPath
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractAtom getChild(String childPath)
-			throws IllegalArgumentException {
+	public AbstractAtom getChild(String childPath) throws IllegalArgumentException {
 
 		boolean isPath = childPath.contains(".");
 
@@ -606,31 +571,26 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Get child atom with given child tree path. Throws an
-	 * IllegalArgumentException if the child tree path can not be found.
+	 * Get child atom with given child tree path. Throws an IllegalArgumentException if the child tree path can not be
+	 * found.
 	 *
 	 * @param childPathStartingWithRoot
 	 * @return
 	 */
-	public <T> T getChildFromRoot(String childPathStartingWithRoot)
-			throws IllegalArgumentException {
+	public <T> T getChildFromRoot(String childPathStartingWithRoot) throws IllegalArgumentException {
 
 		final int rootLength = 5; //"root."
-		boolean isTooShort = childPathStartingWithRoot.length() < rootLength
-				+ 1;
+		boolean isTooShort = childPathStartingWithRoot.length() < rootLength + 1;
 		if (isTooShort) {
 			throw new IllegalArgumentException(
-					"The path has to start with 'root.' but is '"
-							+ childPathStartingWithRoot + "'.");
+					"The path has to start with 'root.' but is '" + childPathStartingWithRoot + "'.");
 		}
 
-		boolean startsWithRoot = childPathStartingWithRoot
-				.substring(0, rootLength).equals("root.");
+		boolean startsWithRoot = childPathStartingWithRoot.substring(0, rootLength).equals("root.");
 
 		if (startsWithRoot) {
 			int length = childPathStartingWithRoot.length();
-			String childPath = childPathStartingWithRoot.substring(rootLength,
-					length);
+			String childPath = childPathStartingWithRoot.substring(rootLength, length);
 			AbstractAtom root = getRoot();
 			AbstractAtom child = root.getChild(childPath);
 			if (child == null) {
@@ -642,13 +602,11 @@ public abstract class AbstractAtom
 				T castedChild = (T) child;
 				return castedChild;
 			} catch (ClassCastException exception) {
-				throw new IllegalArgumentException(
-						"Could not cast child to wanted type", exception);
+				throw new IllegalArgumentException("Could not cast child to wanted type", exception);
 			}
 		} else {
 			throw new IllegalArgumentException(
-					"The path has to start with 'root.' but is '"
-							+ childPathStartingWithRoot + "'.");
+					"The path has to start with 'root.' but is '" + childPathStartingWithRoot + "'.");
 		}
 
 	}
@@ -660,21 +618,18 @@ public abstract class AbstractAtom
 	 * @param namePrefix
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	public void createChildAtom(Class<? extends AbstractAtom> atomClass,
-			String namePrefix) {
+	public void createChildAtom(Class<? extends AbstractAtom> atomClass, String namePrefix) {
 		Objects.requireNonNull(atomClass, "Atom class must not be null");
 		Objects.requireNonNull(namePrefix, "Name prefix must not be null");
 
-		String newName = AtomTreeNodeAdaption.createChildNameStartingWith(this,
-				namePrefix);
+		String newName = AtomTreeNodeAdaption.createChildNameStartingWith(this, namePrefix);
 		AbstractAtom newChild;
 		try {
 			Constructor<? extends AbstractAtom> atomConstructor = atomClass
-					.getConstructor(new Class[]{String.class});
-			newChild = atomConstructor.newInstance(new Object[]{newName});
+					.getConstructor(new Class[] { String.class });
+			newChild = atomConstructor.newInstance(new Object[] { newName });
 		} catch (Exception exception) {
-			String message = "Could not create child atom for class "
-					+ atomClass.getSimpleName();
+			String message = "Could not create child atom for class " + atomClass.getSimpleName();
 			LOG.error(message, exception);
 			throw new IllegalArgumentException(message, exception);
 		}
@@ -683,8 +638,7 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Returns true if the root of this atom has a child at the given child
-	 * path.
+	 * Returns true if the root of this atom has a child at the given child path.
 	 *
 	 * @param childPathStartingWithRoot
 	 * @return
@@ -699,28 +653,26 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Gets the first child atom with the given name. Throws an
-	 * IllegalArgumentException if the child could not be found.
+	 * Gets the first child atom with the given name. Throws an IllegalArgumentException if the child could not be
+	 * found.
 	 *
 	 * @param childName
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	protected AbstractAtom getChildByName(String childName)
-			throws IllegalArgumentException {
+	protected AbstractAtom getChildByName(String childName) throws IllegalArgumentException {
 		for (AbstractAtom currentChild : children) {
 			boolean isWantedChild = currentChild.getName().equals(childName);
 			if (isWantedChild) {
 				return currentChild;
 			}
 		}
-		throw new IllegalArgumentException(
-				"Could not find child '" + childName + "' in '" + name + "'.");
+		throw new IllegalArgumentException("Could not find child '" + childName + "' in '" + name + "'.");
 	}
 
 	/**
-	 * Gets the first child atom with the given class. Throws an
-	 * IllegalArugmentException if the child could not be found.
+	 * Gets the first child atom with the given class. Throws an IllegalArugmentException if the child could not be
+	 * found.
 	 *
 	 * @param clazz
 	 * @return
@@ -735,13 +687,13 @@ public abstract class AbstractAtom
 				return castedChild;
 			}
 		}
-		throw new IllegalArgumentException("Could not find a child with class'"
-				+ clazz.getSimpleName() + "' in '" + name + "'.");
+		throw new IllegalArgumentException(
+				"Could not find a child with class'" + clazz.getSimpleName() + "' in '" + name + "'.");
 	}
 
 	/**
-	 * Gets a list of all child atoms with the given class. Returns an empty
-	 * list if no child with the given class could be found.
+	 * Gets a list of all child atoms with the given class. Returns an empty list if no child with the given class could
+	 * be found.
 	 *
 	 * @param clazz
 	 * @return
@@ -760,8 +712,7 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Checks if any of the children, sub children and so on is of the class
-	 * with the given name
+	 * Checks if any of the children, sub children and so on is of the class with the given name
 	 *
 	 * @param targetClassName
 	 * @return
@@ -770,8 +721,7 @@ public abstract class AbstractAtom
 
 		//check if any of the children has the wanted type
 		for (AbstractAtom currentChild : children) {
-			boolean hasWantedType = Utils.checkIfHasWantedType(currentChild,
-					targetClassName);
+			boolean hasWantedType = Utils.checkIfHasWantedType(currentChild, targetClassName);
 			if (hasWantedType) {
 				return true;
 			}
@@ -780,8 +730,7 @@ public abstract class AbstractAtom
 		//go on and check if any of the children of the children has the wanted
 		//type
 		for (AbstractAtom currentChild : children) {
-			boolean hasWantedType = Utils.checkIfHasWantedType(currentChild,
-					targetClassName);
+			boolean hasWantedType = Utils.checkIfHasWantedType(currentChild, targetClassName);
 			if (hasWantedType) {
 				return true;
 			}
@@ -809,9 +758,8 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Removes the child with the given name if it exists. The names of the
-	 * children should be unique. Only the first child with the given name is
-	 * removed.
+	 * Removes the child with the given name if it exists. The names of the children should be unique. Only the first
+	 * child with the given name is removed.
 	 */
 	public void removeChildIfExists(String childName) {
 
@@ -862,8 +810,7 @@ public abstract class AbstractAtom
 	//#region parent operations
 
 	/**
-	 * Returns the root atom of the tree this atom is included in. Returns null
-	 * if the parent node of this atom is null.
+	 * Returns the root atom of the tree this atom is included in. Returns null if the parent node of this atom is null.
 	 *
 	 * @return
 	 */
@@ -873,8 +820,8 @@ public abstract class AbstractAtom
 		TreeNodeAdaption parentNode = this.createTreeNodeAdaption().getParent();
 
 		if (parentNode == null) {
-			throw new IllegalStateException("The AbstractAtom '"
-					+ this.getName() + "' has no parent. Could not get root.");
+			throw new IllegalStateException(
+					"The AbstractAtom '" + this.getName() + "' has no parent. Could not get root.");
 		} else {
 			//get parent atom
 			AbstractAtom parent = (AbstractAtom) parentNode.getAdaptable();
@@ -902,39 +849,36 @@ public abstract class AbstractAtom
 	 * @param wrappingAttribute
 	 * @return
 	 */
-	protected static <T> Attribute<T> getWrappedAttribute(
-			Attribute<T> wrappingAttribute) {
+	protected static <T> Attribute<T> getWrappedAttribute(Attribute<T> wrappingAttribute) {
 		Wrap<T> wrap = (Wrap<T>) wrappingAttribute;
 		Attribute<T> attribute = wrap.getAttribute();
 		return attribute;
 	}
 
 	/**
-	 * Adds a modification listener to the attribute that is wrapped by the
-	 * given wrapping attribute.
+	 * Adds a modification listener to the attribute that is wrapped by the given wrapping attribute.
 	 *
 	 * @param <T>
-	 *
 	 * @param wrappingAttribute
 	 * @param consumer
 	 */
-	protected static <T> void addModificationConsumer(String key,
-			Attribute<T> wrappingAttribute, Consumer<T> consumer) {
+	protected static <T> void addModificationConsumer(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
 		wrappedAttribute.addModificationConsumer(key, consumer);
 	}
 
 	/**
-	 * Adds a modification listener to the attribute that is wrapped by the
-	 * given wrapping attribute and executes it once
+	 * Adds a modification listener to the attribute that is wrapped by the given wrapping attribute and executes it
+	 * once
 	 *
 	 * @param <T>
-	 *
 	 * @param wrappingAttribute
 	 * @param consumer
 	 */
-	protected static <T> void addModificationConsumerAndRun(String key,
-			Attribute<T> wrappingAttribute, Consumer<T> consumer) {
+	protected static <
+			T>
+			void
+			addModificationConsumerAndRun(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
 		wrappedAttribute.addModificationConsumerAndRun(key, consumer);
 	}
@@ -946,8 +890,7 @@ public abstract class AbstractAtom
 	//#region ACCESSORS
 
 	/**
-	 * Returns the name of this atom (The name can also be accessed using the
-	 * AtomTreeNodeAdaption.)
+	 * Returns the name of this atom (The name can also be accessed using the AtomTreeNodeAdaption.)
 	 *
 	 * @return name
 	 */
@@ -956,14 +899,12 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Sets the name of this atom (The name can also be accessed using the
-	 * AtomTreeNodeAdaption)
+	 * Sets the name of this atom (The name can also be accessed using the AtomTreeNodeAdaption)
 	 *
 	 * @param name
 	 */
 	public void setName(String name) {
-		boolean isDifferentName = (name != null && !name.equals(this.name))
-				|| (name == null && this.name != null);
+		boolean isDifferentName = (name != null && !name.equals(this.name)) || (name == null && this.name != null);
 		if (isDifferentName) {
 			this.name = name;
 			triggerNameListeners(name);
@@ -971,8 +912,7 @@ public abstract class AbstractAtom
 	}
 
 	/**
-	 * Returns the parent AbstractAtom. Returns null if this AbstractAtom has no
-	 * parent AbstractAtom.
+	 * Returns the parent AbstractAtom. Returns null if this AbstractAtom has no parent AbstractAtom.
 	 *
 	 * @return
 	 */

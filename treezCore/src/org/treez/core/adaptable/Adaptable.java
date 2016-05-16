@@ -36,6 +36,6 @@ public interface Adaptable {
 	 * clear old content of the parent composite.
 	 */
 	AbstractControlAdaption createControlAdaption(Composite parent,
-			Refreshable refreshableTreeViewer);
+			FocusChangingRefreshable refreshableTreeViewer);
 
 }

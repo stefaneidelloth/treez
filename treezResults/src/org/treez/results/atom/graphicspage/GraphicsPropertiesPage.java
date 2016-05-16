@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.treez.core.adaptable.CodeAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.scripting.ScriptType;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
@@ -71,7 +72,7 @@ public abstract class GraphicsPropertiesPage extends GraphicsAtom {
 	 */
 	public abstract
 			Selection
-			plotWithD3(D3 d3, Selection parentSelection, Selection contentSelection, Refreshable refreshable);
+			plotWithD3(D3 d3, Selection parentSelection, Selection contentSelection, FocusChangingRefreshable refreshable);
 
 	/**
 	 * Updates the plot. If there are changes that can not be applied with simple bindings to the d3 selections, a

@@ -119,7 +119,7 @@ public class PickingProbe extends AbstractProbe {
 		timeColumnModelPath.setEnabled(false);
 		//timeRangePath.set("root.studies.picking.time");
 
-		domainTypeCombo.addModificationConsumerAndRun("Update label field", (data) -> {
+		domainTypeCombo.addModificationConsumerAndRun("Update label field", () -> {
 
 			domainLabelField.set("Sample");
 			domainLabelField.setEnabled(false);
@@ -393,14 +393,14 @@ public class PickingProbe extends AbstractProbe {
 			/*
 			//get y information
 			String yLabelString = yLabel.get();
-			
+
 			//get tuple information
 			String tupleyPath = tupleList.get();
 			List<?> tupleListValues = getTupleValues(tupleyPath);
-			
+
 			//column names
 			List<String> columnNames = createColumnNames(timeLabelString, yLabelString, tupleListValues);
-			
+
 			*/
 
 			//get sweep output path

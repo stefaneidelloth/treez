@@ -12,14 +12,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 import org.treez.core.atom.variablelist.IntegerVariableListField;
 
 /**
- * Represents a model variable (-text field) that is used to enter an Integer
- * value
+ * Represents a model variable (-text field) that is used to enter an Integer value
  */
 public class IntegerVariableField extends AbstractVariableField<Integer> {
 
@@ -58,18 +57,30 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public IntegerVariableField copy() {
 		return new IntegerVariableField(this);
 	}
 
-	//#end region
+	/*
+	@Override
+	public void addModificationConsumer(String key, Consumer<Integer> consumer) {
+	
+		addModifyListener(key, (event) -> {
+			if (event.data == null) {
+				consumer.accept(null);
+			} else {
+				try {
+					Integer intValue = Integer.parseInt(event.data.toString());
+					consumer.accept(intValue);
+				} catch (NumberFormatException exception) {
+					consumer.accept(null);
+				}
+			}
+		});
+	}
+	*/
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideBaseImage() {
 		return Activator.getImage("integerVariable.png");
@@ -77,7 +88,8 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 	@Override
 	public AbstractAttributeAtom<Integer> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize integer value at the first call
@@ -94,8 +106,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 		//create container composite
 		//its layout depends on the length of the labels and values
-		contentContainer = createContainerForLabelsAndTextFields(parent,
-				toolkit, useIndividualLines);
+		contentContainer = createContainerForLabelsAndTextFields(parent, toolkit, useIndividualLines);
 
 		//label
 		createValueLabel(toolkit, contentContainer);
@@ -106,19 +117,13 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 		return this;
 	}
 
-	/**
-	 * Creates the text field for the value
-	 *
-	 * @param toolkit
-	 * @param container
-	 */
 	protected void createValueSpinner(Composite container) {
 
 		valueSpinner = new Spinner(container, SWT.BORDER);
 		valueSpinner.setMinimum(minValue);
 		valueSpinner.setMaximum(maxValue);
 		Integer intValue = get();
-		valueSpinner.setData(intValue);
+		valueSpinner.setSelection(intValue);
 		valueSpinner.addModifyListener((event) -> updateValue(event));
 
 		valueSpinner.setToolTipText(tooltip);
@@ -149,22 +154,32 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 		String currentValueString = spinner.getText();
 
 		//set value expression
-		setValueString(currentValueString);
+		if (currentValueString == null) {
+			boolean valueChanged = !"".equals(this.valueString);
+			if (valueChanged) {
+				this.valueString = "";
+				setInitialized();
+				triggerModificationListeners();
+			}
+		} else {
+			boolean valueChanged = !currentValueString.equals(this.valueString);
+			if (valueChanged) {
+				this.valueString = currentValueString;
+				setInitialized();
+				triggerModificationListeners();
+			}
+		}
 
 		//release update lock
 		isUpdating = false;
 	}
 
-	/**
-	 * Sets the value string without checking it.
-	 *
-	 * @param valueString
-	 */
 	@Override
 	protected void setValueStringUnchecked(String valueString) {
 		this.valueString = valueString;
 		if (isAvailable(valueSpinner)) {
-			valueSpinner.setData(new Integer(valueString));
+			Integer intValue = Integer.parseInt(valueString);
+			valueSpinner.setSelection(intValue);
 		}
 		setInitialized();
 		triggerModificationListeners();
@@ -187,7 +202,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 		if (isAvailable(valueSpinner)) {
 			String currentValueString = getValueString();
 			if (!valueSpinner.getText().equals(currentValueString)) {
-				valueSpinner.setData(new Integer(currentValueString));
+				valueSpinner.setSelection(new Integer(currentValueString));
 			}
 		}
 	}
@@ -224,13 +239,21 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 	//#region VALUE
 
 	/**
-	 * Returns the Integer value. This does not use the attributeValue to store
-	 * the state of this attribute atom but uses the valueString
+	 * Returns the Integer value. This does not use the attributeValue to store the state of this attribute atom but
+	 * uses the valueString
 	 */
 	@Override
 	public Integer get() {
-		Integer value = new Integer(getValueString());
-		return value;
+		String valueString = getValueString();
+		if (valueString.isEmpty()) {
+			return null;
+		}
+		try {
+			Integer value = Integer.parseInt(valueString);
+			return value;
+		} catch (NumberFormatException exception) {
+			return null;
+		}
 	}
 
 	@Override
@@ -240,7 +263,6 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 			setValueString("");
 		} else {
 			setValueString("" + value);
-
 		}
 		enableModificationListeners();
 		triggerModificationListeners();

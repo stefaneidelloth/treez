@@ -6,7 +6,7 @@ import java.util.Objects;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.data.column.ColumnBlueprint;
@@ -36,7 +36,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	 * Executes the probe
 	 */
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 		Objects.requireNonNull(refreshable);
 		afterCreateControlAdaptionHook();
 		runNonUiJob("AbstractProbe: execute", (monitor) -> runProbe(refreshable, monitor));
@@ -53,7 +53,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	 * Runs the Probe to create a table with collected probe data
 	 */
 	@Override
-	public Table runProbe(Refreshable refreshable, IProgressMonitor monitor) {
+	public Table runProbe(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 
 		String identifier = this.getClass().getSimpleName() + " '" + getName() + "'";
 

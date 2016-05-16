@@ -13,9 +13,8 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.MouseClickFunction;
 
 /**
- * Parent class for the atoms that are used for plotting with javafx-d3. It
- * contains some helper methods that make it easier to bind atom attributes to
- * d3 properties.
+ * Parent class for the atoms that are used for plotting with javafx-d3. It contains some helper methods that make it
+ * easier to bind atom attributes to d3 properties.
  */
 public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 
@@ -36,8 +35,8 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	//#region METHODS
 
 	/**
-	 * Calculates an approximate text size using AWT. (The getBBox method for
-	 * SVG elements does not seem to be reliable.)
+	 * Calculates an approximate text size using AWT. (The getBBox method for SVG elements does not seem to be
+	 * reliable.)
 	 *
 	 * @param fontName
 	 * @param fontSize
@@ -46,8 +45,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	public static double estimateTextHeight(String fontName, int fontSize) {
 		String text = "Hello World";
 		AffineTransform affinetransform = new AffineTransform();
-		FontRenderContext frc = new FontRenderContext(affinetransform, true,
-				true);
+		FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
 
 		Font font = new Font(fontName, Font.PLAIN, fontSize);
 		int textheight = (int) (font.getStringBounds(text, frc).getHeight());
@@ -65,32 +63,45 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	}
 
 	/**
-	 * Binds the given Attribute to the JavaScript attribute with the given
-	 * data. A change of the attribute will change the JavaScript attribute. The
-	 * original value is trimmed and spaces are removed, e.g. " 1 cm " => "1cm".
+	 * Binds the given Attribute to the JavaScript attribute with the given data. A change of the attribute will change
+	 * the JavaScript attribute. The original value is trimmed and spaces are removed, e.g. " 1 cm " => "1cm".
 	 *
 	 * @param wrappingAttribute
 	 * @param selection
 	 * @param selectionAttributeName
 	 */
-	public static void bindStringAttribute(Selection selection,
+	public static void bindStringAttribute(
+			Selection selection,
 			String selectionAttributeName,
 			Attribute<String> wrappingAttribute) {
 
-		addModificationConsumerAndRun(selectionAttributeName, wrappingAttribute,
-				(data) -> {
-					String newValue = trim(wrappingAttribute.get());
-					selection.attr(selectionAttributeName, newValue);
-				});
+		String consumerKey = selectionAttributeName + System.currentTimeMillis();
+		addModificationConsumerAndRun(consumerKey, wrappingAttribute, () -> {
+			String newValue = trim(wrappingAttribute.get());
+			selection.attr(selectionAttributeName, newValue);
+		});
+	}
+
+	public static void bindIntegerAttribute(
+			Selection selection,
+			String selectionAttributeName,
+			Attribute<Integer> wrappingAttribute) {
+
+		String consumerKey = selectionAttributeName + System.currentTimeMillis();
+		addModificationConsumerAndRun(consumerKey, wrappingAttribute, () -> {
+			Integer newValue = wrappingAttribute.get();
+			selection.attr(selectionAttributeName, newValue);
+		});
 	}
 
 	/**
 	 * @param text
 	 * @param textAttribute
 	 */
-	public static void bindText(Selection text,
-			Attribute<String> textAttribute) {
-		addModificationConsumerAndRun("text", textAttribute, (data) -> {
+	public static void bindText(Selection text, Attribute<String> textAttribute) {
+
+		String consumerKey = "text" + +System.currentTimeMillis();
+		addModificationConsumerAndRun(consumerKey, textAttribute, () -> {
 			String newValue = textAttribute.get();
 			text.text(newValue);
 		});
@@ -100,40 +111,16 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param selection
 	 * @param aboveTransparency
 	 */
-	public static void bindTransparency(Selection selection,
-			Attribute<String> aboveTransparency) {
-		aboveTransparency.addModificationConsumer("updateTransparency",
-				(data) -> {
-					try {
-						double transparency = Double
-								.parseDouble(aboveTransparency.get());
-						double opacity = 1 - transparency;
-						selection.attr("fill-opacity", "" + opacity);
-					} catch (NumberFormatException exception) {
+	public static void bindTransparency(Selection selection, Attribute<String> aboveTransparency) {
 
-					}
-				});
-	}
-
-	/**
-	 * @param selection
-	 * @param hide
-	 * @param transparency
-	 */
-	public static void bindTransparencyToBooleanAttribute(Selection selection,
-			Attribute<Boolean> hide, Attribute<String> transparency) {
-		hide.addModificationConsumerAndRun("hideFill", (data) -> {
+		String consumerKey = "updateTransparency" + +System.currentTimeMillis();
+		aboveTransparency.addModificationConsumer(consumerKey, () -> {
 			try {
-				boolean doHide = hide.get();
-				if (doHide) {
-					selection.attr("fill-opacity", "0");
-				} else {
-					double transparencyValue = Double
-							.parseDouble(transparency.get());
-					double opacity = 1 - transparencyValue;
-					selection.attr("fill-opacity", "" + opacity);
-				}
+				double transparency = Double.parseDouble(aboveTransparency.get());
+				double opacity = 1 - transparency;
+				selection.attr("fill-opacity", "" + opacity);
 			} catch (NumberFormatException exception) {
+
 			}
 		});
 	}
@@ -141,10 +128,35 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	/**
 	 * @param selection
 	 * @param hide
+	 * @param transparency
 	 */
-	public static void bindTransparencyToBooleanAttribute(Selection selection,
-			Attribute<Boolean> hide) {
-		hide.addModificationConsumerAndRun("hideFill", (data) -> {
+	public static void bindTransparencyToBooleanAttribute(
+			Selection selection,
+			Attribute<Boolean> hide,
+			Attribute<String> transparency) {
+
+		String consumerKey = "hideFill" + +System.currentTimeMillis();
+		hide.addModificationConsumerAndRun(consumerKey, () -> {
+			try {
+				boolean doHide = hide.get();
+				if (doHide) {
+					selection.attr("fill-opacity", "0");
+				} else {
+					double transparencyValue = Double.parseDouble(transparency.get());
+					double opacity = 1 - transparencyValue;
+					selection.attr("fill-opacity", "" + opacity);
+				}
+			} catch (NumberFormatException exception) {}
+		});
+	}
+
+	/**
+	 * @param selection
+	 * @param hide
+	 */
+	public static void bindTransparencyToBooleanAttribute(Selection selection, Attribute<Boolean> hide) {
+		String consumerKey = "hideFill" + +System.currentTimeMillis();
+		hide.addModificationConsumerAndRun(consumerKey, () -> {
 			boolean doHide = hide.get();
 			if (doHide) {
 				selection.attr("fill-opacity", "0");
@@ -156,23 +168,21 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	}
 
 	/**
-	 * public void bindStringAttribute(Selection selection, String
-	 * selectionAttributeName, Attribute <String> wrappingAttribute) { //set
-	 * initial value selection.attr(selectionAttributeName,
-	 * trim(wrappingAttribute.get())); //create one way binding
-	 * addModificationConsumer(wrappingAttribute, (newValue) -> selection
-	 * .attr(selectionAttributeName, trim(newValue))); } /** If the state of the
-	 * Boolean attribute is true, the dislpay of the selection will be set to
-	 * 'none', meaning it is not visible. If the State is false, the display
+	 * public void bindStringAttribute(Selection selection, String selectionAttributeName, Attribute
+	 * <String> wrappingAttribute) { //set initial value selection.attr(selectionAttributeName,
+	 * trim(wrappingAttribute.get())); //create one way binding addModificationConsumer(wrappingAttribute, (newValue) ->
+	 * selection .attr(selectionAttributeName, trim(newValue))); } /** If the state of the Boolean attribute is true,
+	 * the dislpay of the selection will be set to 'none', meaning it is not visible. If the State is false, the display
 	 * will be set to 'inline', meaning it is visible.
 	 *
 	 * @param wrappingAttribute
 	 * @param selection
 	 */
-	public static void bindDisplayToBooleanAttribute(String key,
-			Selection selection, Attribute<Boolean> wrappingAttribute) {
+	public static
+			void
+			bindDisplayToBooleanAttribute(String key, Selection selection, Attribute<Boolean> wrappingAttribute) {
 
-		addModificationConsumerAndRun(key, wrappingAttribute, (data) -> {
+		addModificationConsumerAndRun(key, wrappingAttribute, () -> {
 			Boolean state = wrappingAttribute.get();
 			if (state) {
 				selection.attr("display", "none");
@@ -187,23 +197,27 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param leftMargin
 	 * @param topMargin
 	 */
-	public static void bindTranslationAttribute(String key, Selection selection,
-			Attribute<String> leftMargin, Attribute<String> topMargin) {
+	public static void bindTranslationAttribute(
+			String key,
+			Selection selection,
+			Attribute<String> leftMargin,
+			Attribute<String> topMargin) {
 
 		updateTranslation(selection, leftMargin, topMargin);
 
-		addModificationConsumer(key, leftMargin, (newValue) -> {
+		addModificationConsumer(key, leftMargin, () -> {
 			updateTranslation(selection, leftMargin, topMargin);
 		});
 
-		addModificationConsumer(key, topMargin, (newValue) -> {
+		addModificationConsumer(key, topMargin, () -> {
 			updateTranslation(selection, leftMargin, topMargin);
 		});
 
 	}
 
-	private static void updateTranslation(Selection selection,
-			Attribute<String> leftMargin, Attribute<String> topMargin) {
+	private static
+			void
+			updateTranslation(Selection selection, Attribute<String> leftMargin, Attribute<String> topMargin) {
 
 		try {
 			String xString = leftMargin.get();
@@ -221,12 +235,12 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param selection
 	 * @param style
 	 */
-	public static void bindLineStyle(Selection selection,
-			Attribute<String> style) {
-		style.addModificationConsumerAndRun("updateLineStyle", (data) -> {
+	public static void bindLineStyle(Selection selection, Attribute<String> style) {
+
+		String consumerKey = "updateLineStyle" + +System.currentTimeMillis();
+		style.addModificationConsumerAndRun(consumerKey, () -> {
 			String lineStyleString = style.get();
-			LineStyleValue lineStyle = LineStyleValue
-					.fromString(lineStyleString);
+			LineStyleValue lineStyle = LineStyleValue.fromString(lineStyleString);
 			String dashArray = lineStyle.getDashArray();
 			selection.style("stroke-dasharray", dashArray);
 		});
@@ -236,19 +250,18 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param selection
 	 * @param transparency
 	 */
-	public static void bindLineTransparency(Selection selection,
-			Attribute<String> transparency) {
-		transparency.addModificationConsumerAndRun("updateLineTransparency",
-				(data) -> {
-					try {
-						double lineTransparency = Double
-								.parseDouble(transparency.get());
-						double opacity = 1 - lineTransparency;
-						selection.attr("stroke-opacity", "" + opacity);
-					} catch (NumberFormatException exception) {
+	public static void bindLineTransparency(Selection selection, Attribute<String> transparency) {
 
-					}
-				});
+		String consumerKey = "updateLineTransparency" + +System.currentTimeMillis();
+		transparency.addModificationConsumerAndRun(consumerKey, () -> {
+			try {
+				double lineTransparency = Double.parseDouble(transparency.get());
+				double opacity = 1 - lineTransparency;
+				selection.attr("stroke-opacity", "" + opacity);
+			} catch (NumberFormatException exception) {
+
+			}
+		});
 	}
 
 	/**
@@ -257,16 +270,18 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param transparency
 	 */
 	public static void bindLineTransparencyToBooleanAttribute(
-			Selection selection, Attribute<Boolean> hide,
+			Selection selection,
+			Attribute<Boolean> hide,
 			Attribute<String> transparency) {
-		hide.addModificationConsumerAndRun("hideLine", (data) -> {
+
+		String consumerKey = "hideLine" + +System.currentTimeMillis();
+		hide.addModificationConsumerAndRun(consumerKey, () -> {
 			try {
 				boolean doHide = hide.get();
 				if (doHide) {
 					selection.attr("stroke-opacity", "0");
 				} else {
-					double lineTransparency = Double
-							.parseDouble(transparency.get());
+					double lineTransparency = Double.parseDouble(transparency.get());
 					double opacity = 1 - lineTransparency;
 					selection.attr("stroke-opacity", "" + opacity);
 				}
@@ -282,15 +297,15 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param rotate
 	 * @param isHorizontal
 	 */
-	public static void bindTransformRotate(Selection selection,
-			Attribute<String> rotate, boolean isHorizontal) {
-		rotate.addModificationConsumerAndRun("transformRotate", (data) -> {
+	public static void bindTransformRotate(Selection selection, Attribute<String> rotate, boolean isHorizontal) {
+
+		String consumerKey = "transformRotate" + +System.currentTimeMillis();
+		rotate.addModificationConsumerAndRun(consumerKey, () -> {
 			String angleString = rotate.get();
 			double rotation = 0;
 			try {
 				rotation = Double.parseDouble(angleString);
-			} catch (NumberFormatException exception) {
-			}
+			} catch (NumberFormatException exception) {}
 			if (!isHorizontal) {
 				final int extraVerticalRotation = 90;
 				rotation += extraVerticalRotation;
@@ -305,10 +320,10 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param text
 	 * @param italic
 	 */
-	public static void bindFontItalicStyle(Selection text,
-			Attribute<Boolean> italic) {
+	public static void bindFontItalicStyle(Selection text, Attribute<Boolean> italic) {
 
-		italic.addModificationConsumerAndRun("italic", (data) -> {
+		String consumerKey = "italic" + +System.currentTimeMillis();
+		italic.addModificationConsumerAndRun(consumerKey, () -> {
 			boolean isActive = italic.get();
 			if (isActive) {
 				text.attr("font-style", "italic");
@@ -322,10 +337,10 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param text
 	 * @param bold
 	 */
-	public static void bindFontBoldStyle(Selection text,
-			Attribute<Boolean> bold) {
+	public static void bindFontBoldStyle(Selection text, Attribute<Boolean> bold) {
 
-		bold.addModificationConsumerAndRun("bold", (data) -> {
+		String consumerKey = "bold" + +System.currentTimeMillis();
+		bold.addModificationConsumerAndRun(consumerKey, () -> {
 			boolean isActive = bold.get();
 			if (isActive) {
 				text.attr("font-weight", "bold");
@@ -339,9 +354,10 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	 * @param text
 	 * @param underline
 	 */
-	public static void bindFontUnderline(Selection text,
-			Attribute<Boolean> underline) {
-		underline.addModificationConsumerAndRun("underline", (data) -> {
+	public static void bindFontUnderline(Selection text, Attribute<Boolean> underline) {
+
+		String consumerKey = "underline" + +System.currentTimeMillis();
+		underline.addModificationConsumerAndRun(consumerKey, () -> {
 			boolean isActive = underline.get();
 			if (isActive) {
 				text.attr("text-decoration", "underline");
@@ -353,8 +369,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	}
 
 	/**
-	 * Applies toString() to the given object, trims the result and removes
-	 * spaces
+	 * Applies toString() to the given object, trims the result and removes spaces
 	 *
 	 * @param value
 	 * @return

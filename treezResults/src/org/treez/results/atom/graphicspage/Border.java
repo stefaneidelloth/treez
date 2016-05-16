@@ -1,19 +1,16 @@
-package org.treez.results.atom.graph;
+package org.treez.results.atom.graphicspage;
 
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
-/**
- * The border settings for a graph
- */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Border implements GraphicsPropertiesPageFactory {
 
@@ -52,7 +49,7 @@ public class Border implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection parentSelection, Selection rectSelection, GraphicsAtom parent) {
 
 		GraphicsAtom.bindStringAttribute(rectSelection, "stroke", color);
 		GraphicsAtom.bindStringAttribute(rectSelection, "stroke-width", width);
@@ -60,7 +57,7 @@ public class Border implements GraphicsPropertiesPageFactory {
 		GraphicsAtom.bindLineTransparency(rectSelection, transparency);
 		GraphicsAtom.bindLineTransparencyToBooleanAttribute(rectSelection, hide, transparency);
 
-		return graphSelection;
+		return parentSelection;
 	}
 
 	//#end region

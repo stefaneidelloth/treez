@@ -247,7 +247,7 @@ public class Array<T> extends JavaScriptObject {
 
 	//#end region
 
-	//#region RETRIVE ITEMS
+	//#region RETRIVE ITEMS	
 
 	public <D> D get(int index, Class<D> classObj) {
 		Object resultObj = getAsObject(index);

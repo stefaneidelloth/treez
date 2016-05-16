@@ -1,7 +1,6 @@
 package org.treez.core.atom.attribute;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -13,15 +12,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-public class EnumComboBox<T extends EnumValueProvider<?>>
-		extends
-			AbstractAttributeAtom<String> {
+public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractAttributeAtom<String> {
 
 	//#region ATTRIBUTES
 
@@ -45,24 +42,24 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 	/**
 	 * The enum that provides the available values
 	 */
-	private final T enumInstance;
+	private final T enumValueProviderInstance;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public EnumComboBox(T enumInstance, String name) {
+	public EnumComboBox(T enumValueProvider, String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name);
-		this.enumInstance = enumInstance;
-		setDefaultValue(enumInstance);
+		this.enumValueProviderInstance = enumValueProvider;
+		setDefaultValue(enumValueProvider);
 	}
 
-	public EnumComboBox(T enumInstance, String name, String label) {
+	public EnumComboBox(T enumValueProvider, String name, String label) {
 		super(name);
 		this.label = label;
-		this.enumInstance = enumInstance;
-		setDefaultValue(enumInstance);
+		this.enumValueProviderInstance = enumValueProvider;
+		setDefaultValue(enumValueProvider);
 	}
 
 	/**
@@ -70,7 +67,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 	 */
 	private EnumComboBox(EnumComboBox<T> lineStyleToCopy) {
 		super(lineStyleToCopy);
-		enumInstance = lineStyleToCopy.enumInstance;
+		enumValueProviderInstance = lineStyleToCopy.enumValueProviderInstance;
 		label = lineStyleToCopy.label;
 		defaultValue = lineStyleToCopy.defaultValue;
 		tooltip = lineStyleToCopy.tooltip;
@@ -94,7 +91,8 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -126,7 +124,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 		comboBox.setEnabled(isEnabled());
 
 		//set available values
-		List<String> values = enumInstance.getValues();
+		List<String> values = enumValueProviderInstance.getValues();
 		for (String value : values) {
 			comboBox.add(value);
 		}
@@ -141,11 +139,8 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int index = comboBox.getSelectionIndex();
-				String currentValue = enumInstance.getValues().get(index);
+				String currentValue = enumValueProviderInstance.getValues().get(index);
 				set(currentValue);
-
-				//trigger modification listeners
-				triggerModificationListeners();
 			}
 		});
 
@@ -162,7 +157,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 	@Override
 	public void refreshAttributeAtomControl() {
 		if (isAvailable(comboBox)) {
-			List<String> values = enumInstance.getValues();
+			List<String> values = enumValueProviderInstance.getValues();
 			String vale = get();
 			int index = values.indexOf(vale);
 			if (comboBox.getSelectionIndex() != index) {
@@ -172,11 +167,11 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 	}
 
+	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		addModifyListener(key, (event) -> {
@@ -186,9 +181,10 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
 	}
+	*/
 
 	//#end region
 
@@ -208,13 +204,11 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 	}
 
 	public void setDefaultValue(String defaultValue) {
-		boolean isAllowedValue = enumInstance.getValues()
-				.contains(defaultValue);
+		boolean isAllowedValue = enumValueProviderInstance.getValues().contains(defaultValue);
 		if (isAllowedValue) {
 			this.defaultValue = defaultValue;
 		} else {
-			throw new IllegalArgumentException(
-					"The specified value '" + defaultValue + "' is not known.");
+			throw new IllegalArgumentException("The specified value '" + defaultValue + "' is not known.");
 		}
 
 	}
@@ -236,10 +230,10 @@ public class EnumComboBox<T extends EnumValueProvider<?>>
 		return super.get();
 	}
 
-	public T getEnumValue() {
+	public T getValueAsEnum() {
 		String value = get();
 		@SuppressWarnings("unchecked")
-		T enumValue = (T) enumInstance.fromString(value);
+		T enumValue = (T) enumValueProviderInstance.fromString(value);
 		return enumValue;
 	}
 

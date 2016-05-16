@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.AtomControlAdaption;
 
@@ -20,14 +20,14 @@ import org.treez.core.atom.base.AtomControlAdaption;
  */
 public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 		implements
-			Refreshable {
+			FocusChangingRefreshable {
 
 	//#region ATTRIBUTES
 
 	/**
 	 * The refreshable tree view
 	 */
-	protected Refreshable treeViewRefreshable = null;
+	protected FocusChangingRefreshable treeViewRefreshable = null;
 
 	//#end region
 
@@ -51,7 +51,7 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 
 	@Override
 	public AbstractControlAdaption createControlAdaption(Composite parent,
-			Refreshable treeViewRefreshable) {
+			FocusChangingRefreshable treeViewRefreshable) {
 
 		//store refreshable tree view
 		this.treeViewRefreshable = treeViewRefreshable;

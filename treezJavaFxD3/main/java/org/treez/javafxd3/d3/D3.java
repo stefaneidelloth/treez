@@ -16,6 +16,7 @@ import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Formatter;
 import org.treez.javafxd3.d3.core.Prefix;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.core.Transform;
 import org.treez.javafxd3.d3.core.Transition;
 import org.treez.javafxd3.d3.dsv.Dsv;
 import org.treez.javafxd3.d3.dsv.DsvCallback;
@@ -31,6 +32,7 @@ import org.treez.javafxd3.d3.scales.Scales;
 import org.treez.javafxd3.d3.svg.SVG;
 import org.treez.javafxd3.d3.time.Time;
 import org.treez.javafxd3.d3.wrapper.Element;
+import org.treez.javafxd3.d3.wrapper.Inspector;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 import org.treez.javafxd3.d3.wrapper.JsArrayMixed;
 import org.treez.javafxd3.d3.wrapper.Node;
@@ -258,6 +260,12 @@ public class D3 extends JavaScriptObject {
 		JSObject result = call("transition");
 		return new Transition(webEngine, result);
 	};
+	
+	
+	public Transform transform(String transformString){
+		JSObject result = call("transform", transformString);					
+		return new Transform(webEngine, result);
+	}
 
 	// /**
 	// * Create an animated transition. In the context of
@@ -566,10 +574,12 @@ public class D3 extends JavaScriptObject {
 	 * @return the current event as a Coords object
 	 */
 	public Coords eventAsDCoords() {
-		Double x = callForDouble("event.dx");
-		Double y = callForDouble("event.dy");
-		Coords coords = new Coords(webEngine, x, y);
-		return coords;
+		Object dxObj =  eval("d3.event.dx");
+		Object dyObj =  eval("d3.event.dy");
+		Double dx = Double.parseDouble(dxObj.toString());
+		Double dy = Double.parseDouble(dyObj.toString());
+		
+		return new Coords(webEngine, dx,dy);
 	};
 
 	/**

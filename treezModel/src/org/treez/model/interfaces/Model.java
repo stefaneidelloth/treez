@@ -1,7 +1,7 @@
 package org.treez.model.interfaces;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.model.input.ModelInput;
 import org.treez.model.output.ModelOutput;
 
@@ -20,7 +20,7 @@ public interface Model {
 	 * @return
 	 * @returns an AbstractAtom that represents the results
 	 */
-	ModelOutput runModel(ModelInput modelInput, Refreshable refreshable, IProgressMonitor monitor);
+	ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, IProgressMonitor monitor);
 
 	/**
 	 * Runs this model with the current model state. The given Refreshable might be refreshed if it is not null. The
@@ -28,7 +28,7 @@ public interface Model {
 	 *
 	 * @return
 	 */
-	ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor);
+	ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor);
 
 	/**
 	 * Returns true if this Model must be run manually. A manual Model can be executed directly but is not executed by

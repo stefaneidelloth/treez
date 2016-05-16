@@ -10,7 +10,7 @@ import org.eclipse.ui.ISharedImages;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.CodeAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
 import org.treez.core.atom.copy.CopyHelper;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
@@ -102,7 +102,7 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 	 * Provides a control adaption for this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite propertyMainForm, Refreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(Composite propertyMainForm, FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		return new VariableDefinitionControlAdaption(propertyMainForm, this);
 	}

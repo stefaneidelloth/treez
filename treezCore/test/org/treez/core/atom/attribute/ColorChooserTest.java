@@ -2,6 +2,7 @@ package org.treez.core.atom.attribute;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.treez.core.color.ColorValue;
 
 /**
  * Tests the Abstract Atom by creating a simple test implementation TestAtom.

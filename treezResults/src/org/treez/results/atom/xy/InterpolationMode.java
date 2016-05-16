@@ -87,18 +87,10 @@ public enum InterpolationMode implements EnumValueProvider<InterpolationMode> {
 
 	//#region METHODS
 
-	/**
-	 * @param value
-	 * @return
-	 */
 	public static InterpolationMode fromValue(final String value) {
 		return valueOf(value.toUpperCase().replace('-', '_'));
 	}
 
-	/**
-	 * @param value
-	 * @return
-	 */
 	@Override
 	public InterpolationMode fromString(final String value) {
 		return fromValue(value);

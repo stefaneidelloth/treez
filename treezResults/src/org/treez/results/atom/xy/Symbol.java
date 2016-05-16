@@ -1,15 +1,16 @@
 package org.treez.results.atom.xy;
 
-import java.util.function.Consumer;
-
+import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.SymbolStyleValue;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
@@ -17,7 +18,6 @@ import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * XY symbol settings
@@ -157,8 +157,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		double width = Length.toPx(graph.data.width.get());
 		double height = Length.toPx(graph.data.width.get());
-		symbolsSelection
-				.append("clipPath") //
+		symbolsSelection.append("clipPath") //
 				.attr("id", clipPathId) //
 				.append("rect") //
 				.attr("x", 0) //
@@ -169,14 +168,14 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 		//bind attributes
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideSymbols", symbolsSelection, hide);
 
-		Consumer<String> replotSymbols = (data) -> {
+		Consumer replotSymbols = () -> {
 			rePlotSymbols(d3, parent);
 		};
 		symbolType.addModificationConsumer("replotSymbols", replotSymbols);
 		size.addModificationConsumer("replotSymbols", replotSymbols);
 
 		//initially plot symbols
-		replotSymbols.accept(null);
+		replotSymbols.consume();
 
 		//see method replotWithD3
 		return xySelection;
@@ -185,8 +184,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 	private void rePlotSymbols(D3 d3, GraphicsAtom parent) {
 
 		//remove old symbols
-		symbolsSelection
-				.selectAll("path") //
+		symbolsSelection.selectAll("path") //
 				.remove();
 
 		//get symbol type and plot new symbols
@@ -217,8 +215,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 		QuantitativeScale<?> xScale = xy.getXScale();
 		QuantitativeScale<?> yScale = xy.getYScale();
 
-		symbolsSelection
-				.selectAll("path") //
+		symbolsSelection.selectAll("path") //
 				.data(xyDataString) //
 				.enter() //
 				.append("path") //
@@ -237,6 +234,58 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 		GraphicsAtom.bindLineStyle(symbolsSelection, lineStyle);
 
 		GraphicsAtom.bindStringAttribute(symbolsSelection, "stroke-width", lineWidth);
+	}
+
+	public void plotLegendSymbolWithD3(D3 d3, Selection parentSelection, int xSymbol, Refreshable refreshable) {
+
+		symbolType.addModificationConsumer("replotLegendSymbol", () -> refreshable.refresh());
+		size.addModificationConsumer("replotLegendSymbol", () -> refreshable.refresh());
+		plotLegendSymbols(d3, parentSelection, xSymbol);
+	}
+
+	private void plotLegendSymbols(D3 d3, Selection parentSelection, int xSymbol) {
+
+		parentSelection //
+				.select(".legend-symbol") //
+				.remove();
+
+		String symbolTypeString = symbolType.get();
+		boolean isNoneSymbol = symbolTypeString.equals(SymbolStyleValue.NONE.toString());
+		if (!isNoneSymbol) {
+
+			SymbolType symbolTypeValue = SymbolType.fromString(symbolTypeString);
+			int symbolSquareSize = Integer.parseInt(size.get());
+
+			//symbol path generator
+			org.treez.javafxd3.d3.svg.Symbol symbol = d3 //
+					.svg() //
+					.symbol() //
+					.size(symbolSquareSize) //
+					.type(symbolTypeValue);
+
+			String symbolDString = symbol.generate();
+
+			//create symbol
+			Selection legendSymbol = parentSelection //
+					.append("path") //
+					.classed("legend-symbol", true) //
+					.attr("transform", "translate(" + xSymbol + ",0)") //
+					.attr("d", symbolDString);
+
+			//bind attributes
+			GraphicsAtom.bindStringAttribute(legendSymbol, "fill", fillColor);
+			GraphicsAtom.bindTransparency(legendSymbol, fillTransparency);
+			GraphicsAtom.bindTransparencyToBooleanAttribute(legendSymbol, hideFill, fillTransparency);
+
+			GraphicsAtom.bindStringAttribute(legendSymbol, "stroke", lineColor);
+			GraphicsAtom.bindLineTransparency(legendSymbol, lineTransparency);
+			GraphicsAtom.bindLineTransparencyToBooleanAttribute(legendSymbol, hideLine, lineTransparency);
+
+			GraphicsAtom.bindLineStyle(legendSymbol, lineStyle);
+
+			GraphicsAtom.bindStringAttribute(legendSymbol, "stroke-width", lineWidth);
+
+		}
 	}
 
 	//#end region

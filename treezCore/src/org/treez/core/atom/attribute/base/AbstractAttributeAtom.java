@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -16,11 +15,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeParentAtom;
 import org.treez.core.atom.attribute.event.AttributeAtomEvent;
 import org.treez.core.atom.copy.CopyHelper;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -28,27 +28,20 @@ import org.treez.core.treeview.action.ActionSeparator;
 import org.treez.core.treeview.action.TreeViewerAction;
 
 /**
- * Abstract base class for all AttributeAtoms. See the package description for
- * more information.
+ * Abstract base class for all AttributeAtoms. See the package description for more information.
  *
  * @param <T>
  */
-public abstract class AbstractAttributeAtom<T>
-		extends
-			AbstractAttributeParentAtom
-		implements
-			Attribute<T> {
+public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAtom implements Attribute<T> {
 
 	//#region ATTRIBUTES
 
 	/**
-	 * This size is used to determine if form elements should be displayed in a
-	 * single line or in extra lines
+	 * This size is used to determine if form elements should be displayed in a single line or in extra lines
 	 */
 	protected static final int CHARACTER_LENGTH_LIMIT = 50;
 
-	protected static final Color DEFAULT_BACKGROUND_COLOR = new Color(null, 255,
-			255, 255);
+	protected static final Color DEFAULT_BACKGROUND_COLOR = new Color(null, 255, 255, 255);
 
 	/**
 	 * The attribute value that is managed by this AttributeAtom
@@ -56,25 +49,21 @@ public abstract class AbstractAttributeAtom<T>
 	protected T attributeValue = null;
 
 	/**
-	 * If this is true, the AttributeAtom has already been initialized and the
-	 * attribute value can be obtained
+	 * If this is true, the AttributeAtom has already been initialized and the attribute value can be obtained
 	 */
 	private Boolean isInitialized = false;
 
 	/**
-	 * Listener that will react on modifications of the the attribute value.
-	 * (The bindings of that listeners have to be considered in the
-	 * implementations of the AttributeAtom, e.g. by calling
-	 * triggerModificationListeners) In order to avoid duplicate lambda
-	 * expressions, the listeners are managed as a map.
+	 * Listener that will react on modifications of the the attribute value. (The bindings of that listeners have to be
+	 * considered in the implementations of the AttributeAtom, e.g. by calling triggerModificationListeners) In order to
+	 * avoid duplicate lambda expressions, the listeners are managed as a map.
 	 */
 	private Map<String, ModifyListener> modifyListeners = null;
 
 	/**
-	 * If this is true, the modifyListeners are informed when the method
-	 * triggerModificationListeners is called. If it is false, the
-	 * modifyListener will not be informed. This can be used to avoid that the
-	 * modifyListeners are informed several times.
+	 * If this is true, the modifyListeners are informed when the method triggerModificationListeners is called. If it
+	 * is false, the modifyListener will not be informed. This can be used to avoid that the modifyListeners are
+	 * informed several times.
 	 */
 	private boolean modifyListenersEnabled = true;
 
@@ -99,8 +88,7 @@ public abstract class AbstractAttributeAtom<T>
 		super(attributeAtomToCopy);
 		//modify listeners are not copied
 		modifyListeners = new HashMap<>();
-		attributeValue = CopyHelper
-				.copyAttributeValue(attributeAtomToCopy.attributeValue);
+		attributeValue = CopyHelper.copyAttributeValue(attributeAtomToCopy.attributeValue);
 		isInitialized = new Boolean(attributeAtomToCopy.isInitialized);
 		modifyListenersEnabled = attributeAtomToCopy.modifyListenersEnabled;
 
@@ -111,35 +99,32 @@ public abstract class AbstractAttributeAtom<T>
 	//#region METHODS
 
 	/**
-	 * Creates the control for the AttributeAtom. A control for the parameters
-	 * of the AttributeAtom can be created with the method ControlAdaption
-	 * getControlAdaption(Composite parent) which is inherited from AbstractAtom
+	 * Creates the control for the AttributeAtom. A control for the parameters of the AttributeAtom can be created with
+	 * the method ControlAdaption getControlAdaption(Composite parent) which is inherited from AbstractAtom
 	 *
 	 * @param parent
 	 * @return
 	 */
 	public abstract AbstractAttributeAtom<T> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable);
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable);
 
 	/**
-	 * Refreshes the control of the AttributeAtom after the attribute value has
-	 * been set by calling setValue()
+	 * Refreshes the control of the AttributeAtom after the attribute value has been set by calling setValue()
 	 */
 	public abstract void refreshAttributeAtomControl();
 
 	@Override
-	public AttributeAtomCodeAdaption<T> createCodeAdaption(
-			ScriptType scriptType) {
+	public AttributeAtomCodeAdaption<T> createCodeAdaption(ScriptType scriptType) {
 
 		AttributeAtomCodeAdaption<T> codeAdaption;
 		switch (scriptType) {
-			case JAVA :
-				codeAdaption = new AttributeAtomCodeAdaption<T>(this);
-				break;
-			default :
-				String message = "The ScriptType " + scriptType
-						+ " is not yet implemented.";
-				throw new IllegalStateException(message);
+		case JAVA:
+			codeAdaption = new AttributeAtomCodeAdaption<T>(this);
+			break;
+		default:
+			String message = "The ScriptType " + scriptType + " is not yet implemented.";
+			throw new IllegalStateException(message);
 		}
 
 		return codeAdaption;
@@ -151,33 +136,37 @@ public abstract class AbstractAttributeAtom<T>
 	 * @return
 	 */
 	@Override
-	protected List<Object> createContextMenuActions(
-			final TreeViewerRefreshable treeViewerRefreshable) {
+	protected List<Object> createContextMenuActions(final TreeViewerRefreshable treeViewerRefreshable) {
 		ArrayList<Object> actions = new ArrayList<>();
 
 		//reset
-		actions.add(
-				new TreeViewerAction("Reset", Activator.getImage("reset.png"),
-						treeViewerRefreshable, () -> resetToDefaultValue()));
+		actions.add(new TreeViewerAction(
+				"Reset",
+				Activator.getImage("reset.png"),
+				treeViewerRefreshable,
+				() -> resetToDefaultValue()));
 
 		//disable
 		if (isEnabled) {
-			actions.add(new TreeViewerAction("Disable",
-					Activator.getImage("disable.png"), treeViewerRefreshable,
+			actions.add(new TreeViewerAction(
+					"Disable",
+					Activator.getImage("disable.png"),
+					treeViewerRefreshable,
 					() -> setEnabled(false)));
 		}
 
 		//enable
 		if (!isEnabled) {
-			actions.add(new TreeViewerAction("Enable",
-					Activator.getImage("enable.png"), treeViewerRefreshable,
+			actions.add(new TreeViewerAction(
+					"Enable",
+					Activator.getImage("enable.png"),
+					treeViewerRefreshable,
 					() -> setEnabled(true)));
 		}
 
 		actions.add(new ActionSeparator());
 
-		List<Object> superActions = super.createContextMenuActions(
-				treeViewerRefreshable);
+		List<Object> superActions = super.createContextMenuActions(treeViewerRefreshable);
 		actions.addAll(superActions);
 
 		return actions;
@@ -191,8 +180,7 @@ public abstract class AbstractAttributeAtom<T>
 	}
 
 	/**
-	 * Adds a modify listener to be able to listen to changes of the attribute
-	 * value
+	 * Adds a modify listener to be able to listen to changes of the attribute value
 	 *
 	 * @param listener
 	 */
@@ -205,8 +193,7 @@ public abstract class AbstractAttributeAtom<T>
 	 */
 	public synchronized void triggerModificationListeners() {
 		if (this.modifyListenersEnabled) {
-			ModifyEvent modifyEvent = new AttributeAtomEvent(this)
-					.createModifyEvent();
+			ModifyEvent modifyEvent = new AttributeAtomEvent(this).createModifyEvent();
 			Set<ModifyListener> listeners = getModifyListeners();
 			for (ModifyListener listener : listeners) {
 				listener.modifyText(modifyEvent);
@@ -220,8 +207,7 @@ public abstract class AbstractAttributeAtom<T>
 	 * @param contentContainer
 	 */
 	@SuppressWarnings("checkstyle:magicnumber")
-	protected static void createLayoutForSingleLine(Composite contentContainer,
-			int marginWidth) {
+	protected static void createLayoutForSingleLine(Composite contentContainer, int marginWidth) {
 
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -236,13 +222,11 @@ public abstract class AbstractAttributeAtom<T>
 	}
 
 	/**
-	 * Creates a container layout where the controls are put into individual
-	 * lines
+	 * Creates a container layout where the controls are put into individual lines
 	 *
 	 * @param contentContainer
 	 */
-	protected static void createLayoutForIndividualLines(
-			Composite contentContainer, int marginWidth) {
+	protected static void createLayoutForIndividualLines(Composite contentContainer, int marginWidth) {
 
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -258,8 +242,7 @@ public abstract class AbstractAttributeAtom<T>
 
 	}
 
-	protected static Composite createVerticalContainer(Composite parent,
-			FormToolkit toolkit) {
+	protected static Composite createVerticalContainer(Composite parent, FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -273,8 +256,7 @@ public abstract class AbstractAttributeAtom<T>
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	protected static Composite createHorizontalContainer(Composite parent,
-			FormToolkit toolkit) {
+	protected static Composite createHorizontalContainer(Composite parent, FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -305,7 +287,6 @@ public abstract class AbstractAttributeAtom<T>
 	/**
 	 * Wraps this attribute in the AttributeWrapper that is given as Attribute
 	 *
-	 *
 	 * @param wrap
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
@@ -315,25 +296,21 @@ public abstract class AbstractAttributeAtom<T>
 			wrapper = (Wrap<T>) wrap;
 			wrapper.setAttribute(this);
 		} catch (Exception exception) {
-			String message = "Could not wrap " + this.toString() + " in "
-					+ wrap.toString();
+			String message = "Could not wrap " + this.toString() + " in " + wrap.toString();
 			throw new IllegalArgumentException(message, exception);
 		}
 
 	}
 
 	@Override
-	public void addModificationConsumer(String key, Consumer<T> consumer) {
-
-		throw new IllegalStateException("not yet implemented");
-		//addModifyListener(key,	(event) -> consumer.accept(event.data.toString()));
+	public void addModificationConsumer(String key, Consumer consumer) {
+		addModifyListener(key, (event) -> consumer.consume());
 	}
 
 	@Override
-	public void addModificationConsumerAndRun(String key,
-			Consumer<T> consumer) {
+	public void addModificationConsumerAndRun(String key, Consumer consumer) {
 		addModificationConsumer(key, consumer);
-		consumer.accept(null);
+		consumer.consume();
 	}
 
 	//#end region
@@ -361,8 +338,7 @@ public abstract class AbstractAttributeAtom<T>
 	//#region VALUE
 
 	/**
-	 * Returns the object that represents the property value. Might be
-	 * overridden by implementing classes.
+	 * Returns the object that represents the property value. Might be overridden by implementing classes.
 	 *
 	 * @return
 	 */
@@ -433,16 +409,14 @@ public abstract class AbstractAttributeAtom<T>
 	}
 
 	/**
-	 * Enables the triggering of the modification listeners with the method
-	 * triggerModificationListeners()
+	 * Enables the triggering of the modification listeners with the method triggerModificationListeners()
 	 */
 	public void enableModificationListeners() {
 		this.modifyListenersEnabled = true;
 	}
 
 	/**
-	 * Disables the triggering of the modification listeners with the method
-	 * triggerModificationListeners()
+	 * Disables the triggering of the modification listeners with the method triggerModificationListeners()
 	 */
 	public void disableModificationListeners() {
 		this.modifyListenersEnabled = false;

@@ -1,7 +1,6 @@
 package org.treez.core.atom.attribute;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -13,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
@@ -49,8 +48,7 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	private Button valueCheckBox;
 
 	/**
-	 * The parent composite for the attribute atom control can be stored here to
-	 * be able to refresh it.
+	 * The parent composite for the attribute atom control can be stored here to be able to refresh it.
 	 */
 	protected Composite attributeAtomParent = null;
 
@@ -105,7 +103,8 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
 	public AbstractAttributeAtom<Boolean> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.attributeAtomParent = parent;
 		this.treeViewRefreshable = treeViewerRefreshable;
 
@@ -196,15 +195,13 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 	}
 
 	/**
-	 * Updates the enabled/disabled state of other components, dependent on the
-	 * current value
+	 * Updates the enabled/disabled state of other components, dependent on the current value
 	 *
 	 * @param currentValue
 	 */
 	@SuppressWarnings("checkstyle:linelength")
 	private void updateTargetsEnabledStates(Boolean currentValue) {
-		List<TreeNodeAdaption> enableNodes = createTreeNodeAdaption()
-				.getChildren();
+		List<TreeNodeAdaption> enableNodes = createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption enableNode : enableNodes) {
 			org.treez.core.atom.attribute.CheckBoxEnableTarget enableProperty = (org.treez.core.atom.attribute.CheckBoxEnableTarget) enableNode
 					.getAdaptable();
@@ -212,8 +209,7 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 			Boolean enableValue = enableProperty.getValue();
 			String targetPath = enableProperty.getTargetPath();
 			AttributeRoot root = (AttributeRoot) getRoot();
-			AbstractAttributeAtom<?> target = (AbstractAttributeAtom<?>) root
-					.getChild(targetPath);
+			AbstractAttributeAtom<?> target = (AbstractAttributeAtom<?>) root.getChild(targetPath);
 			boolean enableTarget = enableValue.equals(currentValue);
 			if (enableTarget) {
 				target.setEnabled(true);
@@ -223,6 +219,8 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 		}
 	}
 
+	/*
+	
 	@Override
 	public void addModificationConsumer(String key,
 			Consumer<Boolean> consumer) {
@@ -233,6 +231,8 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 			}
 		});
 	}
+
+	*/
 
 	//#end region
 

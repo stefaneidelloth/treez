@@ -1,11 +1,11 @@
 package org.treez.core.treeview.action;
 
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 
 /**
  * Provides actions, e.g. for a tree view
  */
-public interface ActionProviderRefreshable extends Refreshable {
+public interface ActionProviderRefreshable extends FocusChangingRefreshable {
 
 	/**
 	 * Provides actions

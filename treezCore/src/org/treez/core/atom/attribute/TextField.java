@@ -1,7 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import java.util.function.Consumer;
-
 import org.apache.log4j.Logger;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
@@ -11,7 +9,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
@@ -98,7 +96,8 @@ public class TextField extends AbstractAttributeAtom<String> {
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		initializeValue();
 
@@ -113,8 +112,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, contentContainer,
-				currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, contentContainer, currentLabel);
 		labelComposite.setPrefferedWidth(prefferedLabelWidth);
 
 		//text field
@@ -142,7 +140,9 @@ public class TextField extends AbstractAttributeAtom<String> {
 		//when a page is updated
 
 		final TextFieldErrorDecoration errorDecoration = new TextFieldErrorDecoration(
-				textField, errorMessage, contentContainer);
+				textField,
+				errorMessage,
+				contentContainer);
 
 		ModifyListener modifyListener = (event) -> {
 
@@ -195,8 +195,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 	 * @param errorDecoration
 	 * @param text
 	 */
-	private void validateText(final TextFieldErrorDecoration errorDecoration,
-			String text) {
+	private void validateText(final TextFieldErrorDecoration errorDecoration, String text) {
 
 		String extraMessage = "";
 
@@ -216,8 +215,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 	private String validateTextWidthPattern(String text) {
 		String extraMessage = "";
 		if (!text.matches(validationPattern)) {
-			extraMessage = " The value does not match the regular expression '"
-					+ validationPattern + "'.";
+			extraMessage = " The value does not match the regular expression '" + validationPattern + "'.";
 			LOG.debug("does not match regexp");
 		}
 		return extraMessage;
@@ -230,16 +228,14 @@ public class TextField extends AbstractAttributeAtom<String> {
 			if (!min.equals("null")) {
 				double minValue = Double.parseDouble(min);
 				if (number < minValue) {
-					extraMessage = " The value is smaller than the limit of "
-							+ minValue + ".";
+					extraMessage = " The value is smaller than the limit of " + minValue + ".";
 					LOG.debug("is too small");
 				}
 			}
 			if (!max.equals("null")) {
 				double maxValue = Double.parseDouble(max);
 				if (number > maxValue) {
-					extraMessage = " The value is larger than the limit of "
-							+ maxValue + ".";
+					extraMessage = " The value is larger than the limit of " + maxValue + ".";
 					LOG.debug("is too large");
 				}
 			}
@@ -252,7 +248,8 @@ public class TextField extends AbstractAttributeAtom<String> {
 	}
 
 	private void showOrHideErrorDecoration(
-			final TextFieldErrorDecoration errorDecoration, String text,
+			final TextFieldErrorDecoration errorDecoration,
+			String text,
 			String extraMessage) {
 		if (extraMessage.isEmpty()) {
 			errorDecoration.hide();
@@ -281,12 +278,12 @@ public class TextField extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
 
+	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		addModifyListener(key, (event) -> {
@@ -296,6 +293,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 			}
 		});
 	}
+	*/
 
 	//#end region
 

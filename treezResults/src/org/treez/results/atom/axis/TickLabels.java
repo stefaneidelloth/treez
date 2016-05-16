@@ -1,19 +1,18 @@
 package org.treez.results.atom.axis;
 
-import java.util.function.Consumer;
-
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.wrapper.Element;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 import javafx.geometry.BoundingBox;
 
@@ -90,9 +89,7 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 
 		//get tick labels
 		Selection tickLabels = axisSelection //
-				.selectAll(".primary")
-				.selectAll(".tick")
-				.selectAll("text");
+				.selectAll(".primary").selectAll(".tick").selectAll("text");
 
 		//remove default shift
 		Axis axis = (Axis) parent;
@@ -102,14 +99,14 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 		}
 
 		//update label geometry
-		Consumer<String> geometryConsumer = (data) -> {
+		Consumer geometryConsumer = () -> {
 			updateLabelGeometry(tickLabels, isHorizontal);
 		};
 		rotate.addModificationConsumer("position", geometryConsumer);
 		offset.addModificationConsumer("position", geometryConsumer);
 		size.addModificationConsumer("position", geometryConsumer);
 
-		geometryConsumer.accept(null);
+		geometryConsumer.consume();
 
 		//bind attributes
 		GraphicsAtom.bindStringAttribute(tickLabels, "font-family", font);
@@ -120,7 +117,7 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 		GraphicsAtom.bindFontUnderline(tickLabels, underline);
 		GraphicsAtom.bindTransparencyToBooleanAttribute(tickLabels, hide);
 
-		format.addModificationConsumer("replotAxis", (data) -> axis.updatePlotWithD3(d3));
+		format.addModificationConsumer("replotAxis", () -> axis.updatePlotWithD3(d3));
 
 		return axisSelection;
 	}

@@ -1,7 +1,7 @@
 package org.treez.core.atom.attribute.base.parent;
 
 import org.eclipse.swt.widgets.Composite;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 
 /**
  * Abstract base class for all AttributeAtom Containers and Attribute Atoms.
@@ -46,7 +46,7 @@ public abstract class AbstractAttributeContainerAtom
 	 * @param parent
 	 */
 	public abstract void createAtomControl(Composite parent,
-			Refreshable treeViewerRefreshable);
+			FocusChangingRefreshable treeViewerRefreshable);
 
 	//#end region
 

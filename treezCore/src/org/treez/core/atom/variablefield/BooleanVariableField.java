@@ -4,7 +4,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
@@ -43,18 +43,11 @@ public class BooleanVariableField extends CheckBox
 
 	//#region METHODS
 
-	//#region COPY
-
 	@Override
 	public BooleanVariableField copy() {
 		return new BooleanVariableField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image baseImage = Activator.getImage("booleanVariable.png");
@@ -71,7 +64,7 @@ public class BooleanVariableField extends CheckBox
 
 	@Override
 	public AbstractAttributeAtom<Boolean> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		super.createAttributeAtomControl(parent, treeViewerRefreshable);

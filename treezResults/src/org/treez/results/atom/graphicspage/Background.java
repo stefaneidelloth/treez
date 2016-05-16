@@ -1,19 +1,16 @@
-package org.treez.results.atom.graph;
+package org.treez.results.atom.graphicspage;
 
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
-/**
- * The background settings for a graph
- */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Background implements GraphicsPropertiesPageFactory {
 
@@ -48,11 +45,11 @@ public class Background implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection parentSelection, Selection rectSelection, GraphicsAtom parent) {
 
 		GraphicsAtom.bindStringAttribute(rectSelection, "fill", color);
 
-		transparency.addModificationConsumerAndRun("updateTransparency", (data) -> {
+		transparency.addModificationConsumerAndRun("updateTransparency", () -> {
 			try {
 				double fillTransparency = Double.parseDouble(transparency.get());
 				double opacity = 1 - fillTransparency;
@@ -60,7 +57,7 @@ public class Background implements GraphicsPropertiesPageFactory {
 			} catch (NumberFormatException exception) {}
 		});
 
-		hide.addModificationConsumerAndRun("hideFill", (data) -> {
+		hide.addModificationConsumerAndRun("hideFill", () -> {
 			try {
 				boolean doHide = hide.get();
 				if (doHide) {
@@ -75,7 +72,7 @@ public class Background implements GraphicsPropertiesPageFactory {
 			}
 		});
 
-		return graphSelection;
+		return parentSelection;
 	}
 
 	//#end region

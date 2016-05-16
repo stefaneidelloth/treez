@@ -19,7 +19,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.AtomTreeNodeAdaption;
@@ -93,7 +93,7 @@ public class Page extends AbstractAttributeContainerAtom {
 
 	@Override
 	public void createAtomControl(Composite tabFolderComposite,
-			Refreshable treeViewerRefreshable) {
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//get toolkit
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
@@ -150,7 +150,7 @@ public class Page extends AbstractAttributeContainerAtom {
 	 * @param parent
 	 */
 	private void createPageContent(Composite parent,
-			Refreshable treeViewerRefreshable) {
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//disable drawing to avoid flickering
 		parent.setRedraw(false);

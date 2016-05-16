@@ -2,11 +2,14 @@ package org.treez.core.atom.attribute;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.treez.core.color.ColorMapValue;
 
 /**
  * Tests the ColorMap
  */
-public class ColorMapTest extends AbstractAttributeAtomConstructionTest<String> {
+public class ColorMapTest
+		extends
+			AbstractAttributeAtomConstructionTest<String> {
 
 	/**
 	 * Logger for this class

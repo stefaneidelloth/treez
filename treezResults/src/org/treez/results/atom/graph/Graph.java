@@ -6,15 +6,18 @@ import java.util.Objects;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Adaptable;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
+import org.treez.results.atom.graphicspage.Background;
+import org.treez.results.atom.graphicspage.Border;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
+import org.treez.results.atom.legend.Legend;
 import org.treez.results.atom.xy.Xy;
 import org.treez.results.atom.xyseries.XySeries;
 
@@ -26,19 +29,10 @@ public class Graph extends GraphicsPropertiesPage {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Main properties, e.g. width & height
-	 */
 	public Data data;
 
-	/**
-	 * The properties of the background
-	 */
 	public Background background;
 
-	/**
-	 * The properties of the border
-	 */
 	public Border border;
 
 	private Selection graphGroupSelection;
@@ -70,17 +64,11 @@ public class Graph extends GraphicsPropertiesPage {
 		propertyPageFactories.add(border);
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("graph.png");
 	}
 
-	/**
-	 * Creates the context menu actions
-	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
 
@@ -103,11 +91,19 @@ public class Graph extends GraphicsPropertiesPage {
 		Action addXy = new AddChildAtomTreeViewerAction(Xy.class, "xy", Activator.getImage("xy.png"), this, treeViewer);
 		actions.add(addXy);
 
+		Action addLegend = new AddChildAtomTreeViewerAction(
+				Legend.class,
+				"legend",
+				Activator.getImage("legend.png"),
+				this,
+				treeViewer);
+		actions.add(addLegend);
+
 		return actions;
 	}
 
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 
 		executeChildren(XySeries.class, treeViewRefreshable);
 
@@ -125,7 +121,7 @@ public class Graph extends GraphicsPropertiesPage {
 	 * @return
 	 */
 	@Override
-	public Selection plotWithD3(D3 d3, Selection pageSelection, Selection pageRectSelection, Refreshable refreshable) {
+	public Selection plotWithD3(D3 d3, Selection pageSelection, Selection pageRectSelection, FocusChangingRefreshable refreshable) {
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
@@ -148,72 +144,25 @@ public class Graph extends GraphicsPropertiesPage {
 		return graphGroupSelection;
 	}
 
-	/**
-	 * Updates the Graph
-	 */
 	@Override
 	public void updatePlotWithD3(D3 d3) {
 		plotPageModels(d3);
 		plotChildren(d3);
 	}
 
-	/**
-	 * Plots the page models for the Graph (e.g. Border)
-	 *
-	 * @param d3
-	 */
 	private void plotPageModels(D3 d3) {
 		for (GraphicsPropertiesPageFactory pageModel : propertyPageFactories) {
 			graphGroupSelection = pageModel.plotWithD3(d3, graphGroupSelection, rectSelection, this);
 		}
 	}
 
-	/**
-	 * Plots the children (e.g. Axis, Xy) of the graph
-	 *
-	 * @param d3
-	 */
 	private void plotChildren(D3 d3) {
 		plotAxis(d3);
 		plotXySeries(d3);
 		plotXy(d3);
+		plotLegend(d3);
 	}
 
-	/**
-	 * Plots all child XySeries
-	 *
-	 * @param d3
-	 */
-	private void plotXySeries(D3 d3) {
-		for (Adaptable child : children) {
-			Boolean isXySeries = child.getClass().equals(XySeries.class);
-			if (isXySeries) {
-				XySeries xySeries = (XySeries) child;
-				xySeries.plotWithD3(d3, graphGroupSelection, this.treeViewRefreshable);
-			}
-		}
-	}
-
-	/**
-	 * Plots all child Xy
-	 *
-	 * @param d3
-	 */
-	private void plotXy(D3 d3) {
-		for (Adaptable child : children) {
-			Boolean isXy = child.getClass().equals(Xy.class);
-			if (isXy) {
-				Xy xy = (Xy) child;
-				xy.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
-			}
-		}
-	}
-
-	/**
-	 * Plots all child Axis
-	 *
-	 * @param d3
-	 */
 	private void plotAxis(D3 d3) {
 		for (Adaptable child : children) {
 			Boolean isAxis = child.getClass().equals(Axis.class);
@@ -224,42 +173,60 @@ public class Graph extends GraphicsPropertiesPage {
 		}
 	}
 
+	private void plotXySeries(D3 d3) {
+		for (Adaptable child : children) {
+			Boolean isXySeries = child.getClass().equals(XySeries.class);
+			if (isXySeries) {
+				XySeries xySeries = (XySeries) child;
+				xySeries.plotWithD3(d3, graphGroupSelection, this.treeViewRefreshable);
+			}
+		}
+	}
+
+	private void plotXy(D3 d3) {
+		for (Adaptable child : children) {
+			Boolean isXy = child.getClass().equals(Xy.class);
+			if (isXy) {
+				Xy xy = (Xy) child;
+				xy.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
+			}
+		}
+	}
+
+	private void plotLegend(D3 d3) {
+		for (Adaptable child : children) {
+			Boolean isLegend = child.getClass().equals(Legend.class);
+			if (isLegend) {
+				Legend legend = (Legend) child;
+				legend.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
+			}
+		}
+	}
+
 	//#end region
 
 	//#region CREATE CHILD ATOMS
 
-	/**
-	 * Creates an Axis child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Axis createAxis(String name) {
 		Axis child = new Axis(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates an XySeries child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public XySeries createXySeries(String name) {
 		XySeries child = new XySeries(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates an Xy child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Xy createXy(String name) {
 		Xy child = new Xy(name);
+		addChild(child);
+		return child;
+	}
+
+	public Legend createLegend(String name) {
+		Legend child = new Legend(name);
 		addChild(child);
 		return child;
 	}

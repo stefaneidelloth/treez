@@ -14,7 +14,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.FilePath;
@@ -120,7 +120,7 @@ public class Sweep extends AbstractParameterVariation {
 	 * Executes the sweep
 	 */
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 		String jobTitle = "Sweep '" + getName() + "'";
 		runNonUiJob(jobTitle, (monitor) -> {
 			runStudy(refreshable, monitor);
@@ -132,7 +132,7 @@ public class Sweep extends AbstractParameterVariation {
 	 * Runs the study
 	 */
 	@Override
-	public void runStudy(Refreshable refreshable, IProgressMonitor monitor) {
+	public void runStudy(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 		Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
 		this.treeViewRefreshable = refreshable;
 
@@ -156,7 +156,7 @@ public class Sweep extends AbstractParameterVariation {
 	}
 
 	private void doRunStudy(
-			Refreshable refreshable,
+			FocusChangingRefreshable refreshable,
 			IProgressMonitor monitor,
 			SweepModelInputGenerator inputGenerator,
 			List<AbstractVariableRange<?>> variableRanges) {
@@ -202,7 +202,7 @@ public class Sweep extends AbstractParameterVariation {
 	}
 
 	private void executeTargetModel(
-			Refreshable refreshable,
+			FocusChangingRefreshable refreshable,
 			IProgressMonitor monitor,
 			int numberOfSimulations,
 			List<ModelInput> modelInputs,

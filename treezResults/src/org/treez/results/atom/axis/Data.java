@@ -1,15 +1,15 @@
 package org.treez.results.atom.axis;
 
-import java.util.function.Consumer;
-
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
@@ -17,7 +17,6 @@ import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.scales.Scales;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents the main settings of an axis
@@ -119,17 +118,17 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Axis parentAxis = (Axis) parent;
 		Graph graph = (Graph) parentAxis.getParentAtom();
-		Consumer<String> replotGraph = (data) -> {
+		Consumer replotGraph = () -> {
 			graph.updatePlotWithD3(d3);
 		};
 
 		direction.addModificationConsumer("replotAxis", replotGraph);
 		min.addModificationConsumer("replotAxis", replotGraph);
 		max.addModificationConsumer("replotAxis", replotGraph);
-		log.addModificationConsumer("replotAxis", (data) -> replotGraph.accept(null));
+		log.addModificationConsumer("replotAxis", replotGraph);
 
 		//hint: the auto mirror option will be considered by the other plot pages
-		autoMirror.addModificationConsumer("replotAxis", (data) -> replotGraph.accept(null));
+		autoMirror.addModificationConsumer("replotAxis", replotGraph);
 
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideAxis", axisSelection, hide);
 

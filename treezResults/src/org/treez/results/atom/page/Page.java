@@ -13,7 +13,7 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
 import org.treez.core.AbstractActivator;
 import org.treez.core.adaptable.Adaptable;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.graphics.GraphicsAtom;
@@ -130,7 +130,7 @@ public class Page extends GraphicsAtom {
 	 * Creates a graphical representation of this page and shows it in the CadAdaption view
 	 */
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 		treeViewRefreshable = refreshable;
 
 		executeChildren(Graph.class, treeViewRefreshable);
@@ -155,7 +155,7 @@ public class Page extends GraphicsAtom {
 	 * @param refreshable
 	 * @return
 	 */
-	public Selection plotWithD3(D3 d3, Selection svgSelection, Refreshable refreshable) {
+	public Selection plotWithD3(D3 d3, Selection svgSelection, FocusChangingRefreshable refreshable) {
 		this.treeViewRefreshable = refreshable;
 
 		//remove old page group if it already exists

@@ -1,7 +1,7 @@
 package org.treez.results.atom.probe;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.data.table.Table;
 
 /**
@@ -20,6 +20,6 @@ public interface Probe {
 	 * @return
 	 * @returns an AbstractAtom that represents the results
 	 */
-	Table runProbe(Refreshable refreshable, IProgressMonitor monitor);
+	Table runProbe(FocusChangingRefreshable refreshable, IProgressMonitor monitor);
 
 }

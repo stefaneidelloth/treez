@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents a plot axis
@@ -122,7 +122,7 @@ public class Axis extends GraphicsPropertiesPage {
 			D3 d3,
 			Selection graphSelection,
 			Selection graphRectSelection,
-			Refreshable refreshable) {
+			FocusChangingRefreshable refreshable) {
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 

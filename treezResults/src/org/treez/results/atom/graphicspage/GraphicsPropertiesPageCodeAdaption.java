@@ -9,6 +9,7 @@ import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.base.parent.AttributeParentCodeAdaption;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 
 /**
  * Code adaption for GraphicsPropertiesPage

@@ -12,7 +12,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
@@ -275,7 +275,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	}
 
 	@Override
-	public ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 
 		String startMessage = "Running " + this.getClass().getSimpleName() + " '" + getName() + "'.";
 		LOG.info(startMessage);
@@ -443,7 +443,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	/**
 	 * Executes all children that are of type InputFileGenerator
 	 */
-	private void executeInputFileGenerator(Refreshable refreshable) {
+	private void executeInputFileGenerator(FocusChangingRefreshable refreshable) {
 		executeChildren(InputFileGenerator.class, refreshable);
 
 	}
@@ -451,7 +451,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	/**
 	 * Executes all children that are of type DataImport
 	 */
-	private ModelOutput runDataImport(Refreshable refreshable, IProgressMonitor monitor) {
+	private ModelOutput runDataImport(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 		boolean hasDataImportChild = hasChildModel(TableImport.class);
 		if (hasDataImportChild) {
 			ModelOutput modelOutput = runChildModel(TableImport.class, refreshable, monitor);

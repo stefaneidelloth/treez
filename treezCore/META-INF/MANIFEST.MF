@@ -74,6 +74,7 @@ Export-Package: org.apache.commons.exec;uses:="new org.apache.commons.exec",
  org.treez.core.atom.variablelist;uses:="org.treez.core.atom.attribute,org.treez.testutils",
  org.treez.core.atom.variablerange,
  org.treez.core.attribute,
+ org.treez.core.color,
  org.treez.core.console;uses:="org.eclipse.ui.console,org.apache.log4j,org.apache.log4j.spi",
  org.treez.core.data.cell;
   uses:="org.eclipse.swt.events,

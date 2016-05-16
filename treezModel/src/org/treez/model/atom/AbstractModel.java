@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
@@ -50,7 +50,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	 * Remotely runs the model with the given ModelInput
 	 */
 	@Override
-	public ModelOutput runModel(ModelInput modelInput, Refreshable refreshable, IProgressMonitor monitor) {
+	public ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 
 		//assign the model input to variable values (also assigns model input for sub models)
 		assignModelInput(modelInput);
@@ -95,7 +95,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	 * Executes the model with the current state of its variables
 	 */
 	@Override
-	public void execute(Refreshable refreshable) {
+	public void execute(FocusChangingRefreshable refreshable) {
 		runNonUiJob("AbstractModel: execute", (monitor) -> runModel(refreshable, monitor));
 	}
 
@@ -105,7 +105,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	 * @return
 	 */
 	@Override
-	public ModelOutput runModel(Refreshable refreshable, IProgressMonitor monitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 
 		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
@@ -174,7 +174,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	 *
 	 * @param wantedClass
 	 */
-	protected ModelOutput runChildModel(Class<?> wantedClass, Refreshable refreshable, IProgressMonitor monitor) {
+	protected ModelOutput runChildModel(Class<?> wantedClass, FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 		for (AbstractAtom child : children) {
 			Class<?> currentClass = child.getClass();
 			boolean hasWantedClass = currentClass.equals(wantedClass);

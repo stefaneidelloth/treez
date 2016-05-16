@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.CodeAdaption;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.adjustable.AdjustableAtomControlAdaption;
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -57,7 +57,7 @@ public class GenericInputModel extends AbstractModel {
 	 * contentComposite before (re-) creating the ControlAdaption with this method.
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite contentComposite, Refreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(Composite contentComposite, FocusChangingRefreshable treeViewRefreshable) {
 		return super.createControlAdaption(contentComposite, treeViewRefreshable);
 	}
 

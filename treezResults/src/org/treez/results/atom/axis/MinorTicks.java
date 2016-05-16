@@ -5,6 +5,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
@@ -12,7 +13,6 @@ import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.Scale;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPageFactory;
 
 /**
  * Represents the minor tick lines
@@ -69,7 +69,7 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		number.addModificationConsumerAndRun("replotMinorTicks", (data) -> {
+		number.addModificationConsumerAndRun("replotMinorTicks", () -> {
 			replotMinorTicks(axisSelection, parent);
 		});
 		return axisSelection;
@@ -90,7 +90,7 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 		}
 
 		//bind tick properties
-		length.addModificationConsumerAndRun("length", (data) -> {
+		length.addModificationConsumerAndRun("length", () -> {
 			Axis parentAxis = (Axis) parent;
 			boolean axisIsHorizontal = parentAxis.data.direction.get().equals("horizontal");
 			if (axisIsHorizontal) {
@@ -103,9 +103,7 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 		});
 
 		Selection allMinorTickLines = axisSelection //
-				.selectAll("g")
-				.selectAll(".minor")
-				.selectAll("line");
+				.selectAll("g").selectAll(".minor").selectAll("line");
 
 		GraphicsAtom.bindStringAttribute(allMinorTickLines, "stroke", color);
 		GraphicsAtom.bindStringAttribute(allMinorTickLines, "stroke-width", width);
@@ -124,9 +122,7 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 		PrimaryAndSecondarySelection minorTickLineSelections = new PrimaryAndSecondarySelection();
 
 		axisSelection //
-				.selectAll("g")
-				.selectAll(".tick:not(.major)")
-				.classed("minor", true);
+				.selectAll("g").selectAll(".tick:not(.major)").classed("minor", true);
 
 		Selection primaryMinorTickLines = axisSelection //
 				.selectAll(".primary") //

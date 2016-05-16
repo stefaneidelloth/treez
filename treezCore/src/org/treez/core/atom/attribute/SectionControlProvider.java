@@ -22,7 +22,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.treez.core.AbstractActivator;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
@@ -41,7 +41,7 @@ public class SectionControlProvider {
 
 	private Composite parentComposite;
 
-	private Refreshable treeViewerRefreshable;
+	private FocusChangingRefreshable treeViewerRefreshable;
 
 	/**
 	 * The section composite
@@ -53,7 +53,7 @@ public class SectionControlProvider {
 	//#region CONSTRUCTORS
 
 	public SectionControlProvider(Section section, Composite parentComposite,
-			Refreshable treeViewerRefreshable) {
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.section = section;
 		this.parentComposite = parentComposite;
 		this.treeViewerRefreshable = treeViewerRefreshable;

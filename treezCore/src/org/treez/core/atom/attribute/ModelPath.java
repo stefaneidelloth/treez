@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -22,7 +21,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
-import org.treez.core.adaptable.Refreshable;
+import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
@@ -76,23 +75,19 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	private Button button;
 
 	/**
-	 * The combo box (as alternative to the text field and path selection
-	 * button)
+	 * The combo box (as alternative to the text field and path selection button)
 	 */
 	private Combo combo = null;
 
 	/**
-	 * A parent atom that can be passed to the constructor to use an alternative
-	 * entry point for the path navigation. If this parentAtom is not null, the
-	 * root of that parent atom will be used instead of the root of this
-	 * AttributeAtom
+	 * A parent atom that can be passed to the constructor to use an alternative entry point for the path navigation. If
+	 * this parentAtom is not null, the root of that parent atom will be used instead of the root of this AttributeAtom
 	 */
 	private AbstractAtom modelEntryAtom = null;
 
 	/**
-	 * If this relative root is not null, it will be used as starting atom for
-	 * the model path selection. The text field will display the relative path
-	 * instead of the absolute path, e.g.
+	 * If this relative root is not null, it will be used as starting atom for the model path selection. The text field
+	 * will display the relative path instead of the absolute path, e.g.
 	 *
 	 * <pre>
 	 * realtiveRoot = null
@@ -129,16 +124,14 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setSelectionType(selectionType);
 	}
 
-	public ModelPath(String name, AbstractAtom modelEntryAtom,
-			ModelPathSelectionType selectionType) {
+	public ModelPath(String name, AbstractAtom modelEntryAtom, ModelPathSelectionType selectionType) {
 		super(name);
 		setLabel(label);
 		setSelectionType(selectionType);
 		setModelEntryAtom(modelEntryAtom);
 	}
 
-	public ModelPath(String name, ModelPath parentModelPath,
-			Class<?> atomType) {
+	public ModelPath(String name, ModelPath parentModelPath, Class<?> atomType) {
 		super(name);
 		setLabel(name);
 		setSelectionType(selectionType);
@@ -152,13 +145,11 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 		//add listener to update relative root if value of parent ModelPath
 		//changes
-		parentModelPath.addModifyListener("updateRelativeRootAtom",
-				(event) -> updateRelativeRootAtom());
+		parentModelPath.addModifyListener("updateRelativeRootAtom", (event) -> updateRelativeRootAtom());
 
 	}
 
-	public ModelPath(String name, ModelPath parentModelPath,
-			Class<?>[] atomTypes) {
+	public ModelPath(String name, ModelPath parentModelPath, Class<?>[] atomTypes) {
 		super(name);
 		setLabel(name);
 		setSelectionType(selectionType);
@@ -177,13 +168,11 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 		//add listener to update relative root if value of parent ModelPath
 		//changes
-		parentModelPath.addModifyListener("updateRelativeRootAtom",
-				(event) -> updateRelativeRootAtom());
+		parentModelPath.addModifyListener("updateRelativeRootAtom", (event) -> updateRelativeRootAtom());
 
 	}
 
-	public ModelPath(String name, ModelPathSelectionType selectionType,
-			String defaultPath) {
+	public ModelPath(String name, ModelPathSelectionType selectionType, String defaultPath) {
 		super(name);
 		setLabel(label);
 		setDefaultValue(defaultPath);
@@ -191,8 +180,11 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setSelectionType(selectionType);
 	}
 
-	public ModelPath(String name, AbstractAtom modelEntryAtom,
-			ModelPathSelectionType selectionType, String defaultPath) {
+	public ModelPath(
+			String name,
+			AbstractAtom modelEntryAtom,
+			ModelPathSelectionType selectionType,
+			String defaultPath) {
 		super(name);
 		setLabel(label);
 		setDefaultValue(defaultPath);
@@ -201,8 +193,12 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setModelEntryAtom(modelEntryAtom);
 	}
 
-	public ModelPath(String name, String defaultPath, Class<?> atomType,
-			ModelPathSelectionType selectionType, AbstractAtom modelEntryAtom,
+	public ModelPath(
+			String name,
+			String defaultPath,
+			Class<?> atomType,
+			ModelPathSelectionType selectionType,
+			AbstractAtom modelEntryAtom,
 			boolean hasToBeEnabled) {
 		super(name);
 		setLabel(label);
@@ -214,8 +210,12 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setHasToBeEnabled(hasToBeEnabled);
 	}
 
-	public ModelPath(String name, String defaultPath, Class<?>[] atomTypes,
-			ModelPathSelectionType selectionType, AbstractAtom modelEntryAtom,
+	public ModelPath(
+			String name,
+			String defaultPath,
+			Class<?>[] atomTypes,
+			ModelPathSelectionType selectionType,
+			AbstractAtom modelEntryAtom,
 			boolean hasToBeEnabled) {
 		super(name);
 		setLabel(label);
@@ -233,9 +233,14 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		setHasToBeEnabled(hasToBeEnabled);
 	}
 
-	public ModelPath(String name, String label, String defaultPath,
-			Class<?> atomType, ModelPathSelectionType selectionType,
-			AbstractAtom modelEntryAtom, AbstractAtom relativeRoot) {
+	public ModelPath(
+			String name,
+			String label,
+			String defaultPath,
+			Class<?> atomType,
+			ModelPathSelectionType selectionType,
+			AbstractAtom modelEntryAtom,
+			AbstractAtom relativeRoot) {
 		super(name);
 		setLabel(label);
 		setDefaultValue(defaultPath);
@@ -275,7 +280,8 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 	@Override
 	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, Refreshable treeViewerRefreshable) {
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -306,23 +312,21 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		//relative root label
 		rootLabel = new CustomLabel(toolkit, contentContainer, "");
 		final int grayValue = 190;
-		rootLabel.setForeground(new Color(Display.getCurrent(), grayValue,
-				grayValue, grayValue));
+		rootLabel.setForeground(new Color(Display.getCurrent(), grayValue, grayValue, grayValue));
 		rootLabel.hide();
 
 		//sub container for rest (tree selector or combo box selector)
 		subContainer = createSubContainer(toolkit, contentContainer);
 
 		switch (selectionType) {
-			case FLAT :
-				reCreateComboBoxSelector(subContainer);
-				break;
-			case TREE :
-				reCreateTextFieldAndButtonForTreeSelector(subContainer);
-				break;
-			default :
-				throw new IllegalStateException("The selection type '"
-						+ selectionType + "' is not yet implemented.");
+		case FLAT:
+			reCreateComboBoxSelector(subContainer);
+			break;
+		case TREE:
+			reCreateTextFieldAndButtonForTreeSelector(subContainer);
+			break;
+		default:
+			throw new IllegalStateException("The selection type '" + selectionType + "' is not yet implemented.");
 		}
 
 		return this;
@@ -335,8 +339,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createSubContainer(FormToolkit toolkit,
-			Composite container) {
+	private static Composite createSubContainer(FormToolkit toolkit, Composite container) {
 		Composite subContainer = toolkit.createComposite(container);
 		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.horizontalSpacing = 5;
@@ -367,8 +370,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		//get available target paths
 		List<String> availableTargetPaths = getAvailableTargetPaths();
 		availableTargetPaths.add(0, ""); //entry for empty selection
-		String[] availableTargetPathsArray = Utils
-				.stringListToArray(availableTargetPaths);
+		String[] availableTargetPathsArray = Utils.stringListToArray(availableTargetPaths);
 
 		//create combo box if it does not already exist
 		if (!isAvailable(combo)) {
@@ -389,8 +391,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					//update value
-					String currentValue = combo
-							.getItem(combo.getSelectionIndex());
+					String currentValue = combo.getItem(combo.getSelectionIndex());
 					if (relativeRoot != null) {
 						currentValue = relativeToAbsolutePath(currentValue);
 					}
@@ -434,33 +435,29 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		//get available target paths
 		List<String> availableTargetPaths = new ArrayList<>();
 		if (model != null) {
-			availableTargetPaths = ModelPathSelector.getAvailableTargetPaths(
-					model, targetClassNames, hasToBeEnabled);
+			availableTargetPaths = ModelPathSelector.getAvailableTargetPaths(model, targetClassNames, hasToBeEnabled);
 			if (availableTargetPaths == null) {
 				throw new IllegalStateException(
-						"No model paths are available for the target class(es) '"
-								+ targetClassNames + "' .");
+						"No model paths are available for the target class(es) '" + targetClassNames + "' .");
 			}
 
 			//convert paths to relative paths
 			if (relativeRoot != null) {
-				availableTargetPaths = absoluteToRelativePaths(
-						availableTargetPaths);
+				availableTargetPaths = absoluteToRelativePaths(availableTargetPaths);
 			}
 		}
 		return availableTargetPaths;
 	}
 
 	/**
-	 * Tries to determine the current value and select it in the combo box. If
-	 * currently no value is set no selection will be made.
+	 * Tries to determine the current value and select it in the combo box. If currently no value is set no selection
+	 * will be made.
 	 *
 	 * @param availableTargetPaths
 	 */
 	private void tryToSelectCurrentValue(List<String> availableTargetPaths) {
 		String currentModelPath = get();
-		boolean valueIsGiven = currentModelPath != null
-				&& !currentModelPath.isEmpty();
+		boolean valueIsGiven = currentModelPath != null && !currentModelPath.isEmpty();
 		if (valueIsGiven) {
 			if (relativeRoot != null) {
 				try {
@@ -472,23 +469,21 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 			int currentIndex = availableTargetPaths.indexOf(currentModelPath);
 			combo.select(currentIndex);
 			if (currentIndex < 0) {
-				String message = "Could not select model path '"
-						+ currentModelPath + "'.";
+				String message = "Could not select model path '" + currentModelPath + "'.";
 				LOG.warn(message);
 			}
 		}
 	}
 
 	/**
-	 * Converts the given absolute model paths to relative model paths. If a
-	 * path does not include the relative root path it is filtered out.
+	 * Converts the given absolute model paths to relative model paths. If a path does not include the relative root
+	 * path it is filtered out.
 	 *
 	 * @param absolutePaths
 	 * @return
 	 */
 	private List<String> absoluteToRelativePaths(List<String> absolutePaths) {
-		Objects.requireNonNull(relativeRoot,
-				"Relative root must not be null when calling this method.");
+		Objects.requireNonNull(relativeRoot, "Relative root must not be null when calling this method.");
 
 		List<String> relativePaths = new ArrayList<>();
 		for (String absolutePath : absolutePaths) {
@@ -514,14 +509,12 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	 * @return
 	 */
 	private String absoluteToRelativePath(String absolutePath) {
-		String relativeRootPath = relativeRoot.createTreeNodeAdaption()
-				.getTreePath();
+		String relativeRootPath = relativeRoot.createTreeNodeAdaption().getTreePath();
 		int startIndex = relativeRootPath.length() + 1;
 		int pathLength = absolutePath.length();
 		if (pathLength <= startIndex) {
 			String message = "Could not convert absolute path '" + absolutePath
-					+ "' because it is too short to include the relative root path '"
-					+ relativeRootPath + "'";
+					+ "' because it is too short to include the relative root path '" + relativeRootPath + "'";
 			throw new IllegalArgumentException(message);
 		}
 		String relativePath = absolutePath.substring(startIndex, pathLength);
@@ -535,11 +528,9 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	 * @return
 	 */
 	private String relativeToAbsolutePath(String path) {
-		Objects.requireNonNull(relativeRoot,
-				"Relative root must not be null when calling this method.");
+		Objects.requireNonNull(relativeRoot, "Relative root must not be null when calling this method.");
 
-		String relativeRootPath = relativeRoot.createTreeNodeAdaption()
-				.getTreePath();
+		String relativeRootPath = relativeRoot.createTreeNodeAdaption().getTreePath();
 		String absolutePath = relativeRootPath + "." + path;
 		return absolutePath;
 	}
@@ -549,8 +540,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	 *
 	 * @param subContainer
 	 */
-	private void reCreateTextFieldAndButtonForTreeSelector(
-			Composite subContainer) {
+	private void reCreateTextFieldAndButtonForTreeSelector(Composite subContainer) {
 
 		Objects.requireNonNull(subContainer, "Sub container must not be null");
 
@@ -586,8 +576,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 					AbstractAtom model = getModel();
 
 					//select path
-					String modelPath = ModelPathSelector.selectTreePath(model,
-							targetClassNames, defaultValue);
+					String modelPath = ModelPathSelector.selectTreePath(model, targetClassNames, defaultValue);
 
 					//update default value and value
 					updateDefaultValueAndValue(modelPath);
@@ -629,15 +618,14 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		if (contentContainer != null) {
 			//recreate components if they already exist to refresh them
 			switch (selectionType) {
-				case FLAT :
-					reCreateComboBoxSelector(contentContainer);
-					break;
-				case TREE :
-					reCreateTextFieldAndButtonForTreeSelector(contentContainer);
-					break;
-				default :
-					throw new IllegalStateException("The selection type '"
-							+ selectionType + "' is not yet implemented.");
+			case FLAT:
+				reCreateComboBoxSelector(contentContainer);
+				break;
+			case TREE:
+				reCreateTextFieldAndButtonForTreeSelector(contentContainer);
+				break;
+			default:
+				throw new IllegalStateException("The selection type '" + selectionType + "' is not yet implemented.");
 			}
 		}
 
@@ -651,8 +639,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 			if (isAvailable(rootLabel)) {
 
 				if (relativeRoot != null) {
-					String rootPath = relativeRoot.createTreeNodeAdaption()
-							.getTreePath();
+					String rootPath = relativeRoot.createTreeNodeAdaption().getTreePath();
 					String relativeRootString = rootPath + ".";
 					rootLabel.setText(relativeRootString);
 					rootLabel.show();
@@ -678,16 +665,13 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
 
 	/**
-	 * Updates the relative root of this ModelPath with the given parent
-	 * ModelPath
-	 *
+	 * Updates the relative root of this ModelPath with the given parent ModelPath
 	 */
 	public void updateRelativeRootAtom() {
 		if (parentModelPath != null) {
@@ -696,8 +680,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 
 				AbstractAtom relativeRootAtom = null;
 				try {
-					relativeRootAtom = modelEntryAtom
-							.getChildFromRoot(parentPath);
+					relativeRootAtom = modelEntryAtom.getChildFromRoot(parentPath);
 				} catch (IllegalArgumentException exception) {
 					//nothing to do here
 				}
@@ -711,6 +694,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 		}
 	}
 
+	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
 		addModifyListener(key, (event) -> {
@@ -720,9 +704,10 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
 	}
+	*/
 
 	//#end region
 
@@ -753,9 +738,8 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * If a model entry atom is specified, this method returns the relative
-	 * path. If no model entry atom is specified, this method will throw an
-	 * exception.
+	 * If a model entry atom is specified, this method returns the relative path. If no model entry atom is specified,
+	 * this method will throw an exception.
 	 *
 	 * @return
 	 */
@@ -804,8 +788,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Sets the target class names that are used to filter the items that can be
-	 * selected in the model tree
+	 * Sets the target class names that are used to filter the items that can be selected in the model tree
 	 *
 	 * @param targetClassNames
 	 */
