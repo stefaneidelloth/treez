@@ -6,20 +6,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.ComboBox;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 /**
  * An item example
  */
-public class StringItemVariableField extends ComboBox
-		implements
-			VariableField<String> {
+public class StringItemVariableField extends ComboBox implements VariableField<String> {
 
 	//#region ATTRIBUTES
 
-	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245,
-			249);
+	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245, 249);
 
 	//#end region
 
@@ -50,18 +47,17 @@ public class StringItemVariableField extends ComboBox
 		Image baseImage = Activator.getImage("stringItemVariable.png");
 		Image image;
 		if (isEnabled()) {
-			image = Activator.getOverlayImageStatic(baseImage,
-					"enabledDecoration.png");
+			image = Activator.getOverlayImageStatic(baseImage, "enabledDecoration.png");
 		} else {
-			image = Activator.getOverlayImageStatic(baseImage,
-					"disabledDecoration.png");
+			image = Activator.getOverlayImageStatic(baseImage, "disabledDecoration.png");
 		}
 		return image;
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractStringAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		super.createAttributeAtomControl(parent, treeViewerRefreshable);

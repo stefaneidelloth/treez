@@ -5,14 +5,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.JavaFxWrapperForSwt;
 
 /**
  * Plots a functional expression
  */
-public class FunctionPlotter extends AbstractAttributeAtom<String> {
+public class FunctionPlotter extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -23,8 +23,7 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 	private String defaultExpression;
 
 	/**
-	 * The parent composite for the attribute atom control can be stored here to
-	 * be able to refresh it.
+	 * The parent composite for the attribute atom control can be stored here to be able to refresh it.
 	 */
 	protected Composite attributeAtomParent = null;
 
@@ -71,8 +70,9 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractStringAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.attributeAtomParent = parent;
 		this.treeViewRefreshable = treeViewerRefreshable;
 
@@ -84,8 +84,7 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 		//Create JavaFx scene with FunctionPlotter
 		double width = 420;
 		double height = 400;
-		final JavaFxWrapperForSwt javaFxWrapper = new JavaFxWrapperForSwt(
-				parent);
+		final JavaFxWrapperForSwt javaFxWrapper = new JavaFxWrapperForSwt(parent);
 		plotter = new org.treez.javafxd3.javafx.FunctionPlotter(width, height);
 		javaFxWrapper.setContent(plotter);
 		plotter.setXDomain(-2, 2);
@@ -107,8 +106,7 @@ public class FunctionPlotter extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Plots the given custom expression, e.g.
-	 * "[{fn: '3 + sin(x)', range: [2, 8], closed: true }]"
+	 * Plots the given custom expression, e.g. "[{fn: '3 + sin(x)', range: [2, 8], closed: true }]"
 	 *
 	 * @param customExpression
 	 */

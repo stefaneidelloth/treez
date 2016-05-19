@@ -159,11 +159,22 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 		if (margin == null) {
 			margin = 0;
 		}
-		int rectWidth = (int) (bounds.getWidth() + 2 * margin);
-		int rectHight = (int) (bounds.getHeight() + 2 * margin);
 
-		rectSelection.attr("width", rectWidth);
-		rectSelection.attr("height", rectHight);
+		Double contentWidth = bounds.getWidth();
+		Double contentHeight = bounds.getHeight();
+
+		boolean contentIsEmpty = contentWidth.equals(0.0) || contentHeight.equals(0.0);
+		if (contentIsEmpty) {
+			rectSelection.attr("width", 0);
+			rectSelection.attr("height", 0);
+		} else {
+			double rectWidth = contentWidth + 2 * margin;
+			double rectHight = bounds.getHeight() + 2 * margin;
+
+			rectSelection.attr("width", rectWidth);
+			rectSelection.attr("height", rectHight);
+		}
+
 	}
 
 	private void setLegendPosition() {

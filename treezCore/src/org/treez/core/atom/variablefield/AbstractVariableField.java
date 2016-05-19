@@ -19,9 +19,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Abstract parent class for some variable fields
  */
-public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
-		implements
-			VariableField<T> {
+public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> implements VariableField<T> {
 
 	//#region ATTRIBUTES
 
@@ -38,14 +36,13 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	protected Color backgroundColor = new Color(null, 240, 245, 249);
 
 	/**
-	 * Contains the actual valueString. This is used together with the
-	 * unitString to represent the state of this attribute atom. The
-	 * attributeValue is derived from them.
+	 * Contains the actual valueString. This is used together with the unitString to represent the state of this
+	 * attribute atom. The attributeValue is derived from them.
 	 */
 	protected String valueString;
 
 	/**
-	 * The lable for the value text field
+	 * The label for the value text field
 	 */
 	protected CustomLabel labelComposite;
 
@@ -102,11 +99,9 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 		Image baseImage = provideBaseImage();
 		Image image;
 		if (isEnabled()) {
-			image = Activator.getOverlayImageStatic(baseImage,
-					"enabledDecoration.png");
+			image = Activator.getOverlayImageStatic(baseImage, "enabledDecoration.png");
 		} else {
-			image = Activator.getOverlayImageStatic(baseImage,
-					"disabledDecoration.png");
+			image = Activator.getOverlayImageStatic(baseImage, "disabledDecoration.png");
 		}
 
 		return image;
@@ -133,23 +128,23 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 		}
 
 		//check if the content is too long for a single line
-		boolean useIndividualLines = (valueLabelSize
-				+ valueSize) > CHARACTER_LENGTH_LIMIT;
+		boolean useIndividualLines = (valueLabelSize + valueSize) > CHARACTER_LENGTH_LIMIT;
 		return useIndividualLines;
 	}
 
 	/**
-	 * Creates a container composite for the labels and text fields. If the
-	 * labels and entries are short, every thing is displayed in a single line.
-	 * If the labels or entries are long, several lines are used.
+	 * Creates a container composite for the labels and text fields. If the labels and entries are short, every thing is
+	 * displayed in a single line. If the labels or entries are long, several lines are used.
 	 *
 	 * @param parent
 	 * @param toolkit
 	 * @param useIndividualLines
 	 * @return
 	 */
-	protected Composite createContainerForLabelsAndTextFields(Composite parent,
-			FormToolkit toolkit, boolean useIndividualLines) {
+	protected Composite createContainerForLabelsAndTextFields(
+			Composite parent,
+			FormToolkit toolkit,
+			boolean useIndividualLines) {
 
 		//create container
 		container = toolkit.createComposite(parent);
@@ -173,10 +168,8 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	 * @param container
 	 */
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static void createContainerLayoutForSingleLine(
-			Composite container) {
-		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(
-				5, false);
+	private static void createContainerLayoutForSingleLine(Composite container) {
+		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(5, false);
 		gridLayout.horizontalSpacing = 5;
 		gridLayout.verticalSpacing = 0;
 		gridLayout.marginHeight = 2;
@@ -190,16 +183,13 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	}
 
 	/**
-	 * Creates a container layout that will show the individual labels and
-	 * entries in individual lines
+	 * Creates a container layout that will show the individual labels and entries in individual lines
 	 *
 	 * @param container
 	 */
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static void createContainerLayoutForIndividualLines(
-			Composite container) {
-		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(
-				1, false);
+	private static void createContainerLayoutForIndividualLines(Composite container) {
+		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(1, false);
 		gridLayout.horizontalSpacing = 0;
 		gridLayout.verticalSpacing = 5;
 		gridLayout.marginHeight = 2;
@@ -234,8 +224,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	 * @param toolkit
 	 * @param container
 	 */
-	protected void createValueTextField(FormToolkit toolkit,
-			Composite container) {
+	protected void createValueTextField(FormToolkit toolkit, Composite container) {
 		String value = getValueString();
 		valueField = toolkit.createText(container, value, SWT.BORDER);
 		valueField.addVerifyListener((event) -> restrictInput(event));
@@ -246,14 +235,12 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 
 		valueField.setToolTipText(tooltip);
 
-		valueErrorDecorator = new TextFieldErrorDecoration(valueField,
-				"Invalid input", container);
+		valueErrorDecorator = new TextFieldErrorDecoration(valueField, "Invalid input", container);
 
 		valueField.addFocusListener(new FocusListener() {
 
 			@Override
-			public void focusGained(org.eclipse.swt.events.FocusEvent e) {
-			}
+			public void focusGained(org.eclipse.swt.events.FocusEvent e) {}
 
 			@Override
 			public void focusLost(org.eclipse.swt.events.FocusEvent event) {
@@ -272,36 +259,32 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	}
 
 	/**
-	 * This default implementation allows all input. In an inheriting class you
-	 * might want to set event.doit = false for specific characters.
+	 * This default implementation allows all input. In an inheriting class you might want to set event.doit = false for
+	 * specific characters.
 	 *
 	 * @param event
 	 */
-	protected void restrictInput(
-			@SuppressWarnings("unused") VerifyEvent event) {
+	protected void restrictInput(@SuppressWarnings("unused") VerifyEvent event) {
 		return;
 	}
 
 	/**
-	 * This default implementation allows all input. In an inheriting class you
-	 * might want to use valueErrorDecorator.show() if a value is invalid.
+	 * This default implementation allows all input. In an inheriting class you might want to use
+	 * valueErrorDecorator.show() if a value is invalid.
 	 *
 	 * @param text
 	 */
-	protected void validateValueOnFocusLoss(
-			@SuppressWarnings("unused") String text) {
+	protected void validateValueOnFocusLoss(@SuppressWarnings("unused") String text) {
 		return;
 	}
 
 	/**
-	 * This default implementation allows all input. In an inheriting class you
-	 * might want to use valueErrorDecorator.hide() if a value previously has
-	 * been invalid and is now valid.
+	 * This default implementation allows all input. In an inheriting class you might want to use
+	 * valueErrorDecorator.hide() if a value previously has been invalid and is now valid.
 	 *
 	 * @param text
 	 */
-	protected void validateValueOnChange(
-			@SuppressWarnings("unused") String text) {
+	protected void validateValueOnChange(@SuppressWarnings("unused") String text) {
 		return;
 	}
 
@@ -345,7 +328,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 			valueField.setText(valueString);
 		}
 		setInitialized();
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	@Override
@@ -387,8 +370,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T>
 	}
 
 	/**
-	 * Sets the value string. If the given value is null, the value string is
-	 * set to "".
+	 * Sets the value string. If the given value is null, the value string is set to "".
 	 *
 	 * @param valueString
 	 */

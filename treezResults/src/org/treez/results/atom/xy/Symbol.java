@@ -19,9 +19,6 @@ import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.results.atom.graph.Graph;
 
-/**
- * XY symbol settings
- */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Symbol implements GraphicsPropertiesPageFactory {
 
@@ -145,15 +142,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		//create clipping path that ensures that the symbols are only
 		//shown within the bounds of the graph
-		AbstractAtom grandParent = parent.getParentAtom();
-		Graph graph;
-		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
-		if (isGraph) {
-			graph = (Graph) grandParent;
-		} else {
-			AbstractAtom greatGrandParent = grandParent.getParentAtom();
-			graph = (Graph) greatGrandParent;
-		}
+		Graph graph = getGraph(parent);
 
 		double width = Length.toPx(graph.data.width.get());
 		double height = Length.toPx(graph.data.width.get());
@@ -179,6 +168,19 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		//see method replotWithD3
 		return xySelection;
+	}
+
+	private Graph getGraph(GraphicsAtom parent) {
+		AbstractAtom grandParent = parent.getParentAtom();
+		Graph graph;
+		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
+		if (isGraph) {
+			graph = (Graph) grandParent;
+		} else {
+			AbstractAtom greatGrandParent = grandParent.getParentAtom();
+			graph = (Graph) greatGrandParent;
+		}
+		return graph;
 	}
 
 	private void rePlotSymbols(D3 d3, GraphicsAtom parent) {

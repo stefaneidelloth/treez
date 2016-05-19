@@ -2,6 +2,9 @@ package org.treez.core.attribute;
 
 import java.util.Objects;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+
 /**
  * Default implementation of the AttributeWrapper interface
  */
@@ -30,6 +33,11 @@ public class Wrap<T> implements AttributeWrapper<T> {
 		Objects.requireNonNull(wrappedAttribute, "Wrapped attribute must be set before calling this method.");
 		T value = wrappedAttribute.get();
 		return value;
+	}
+
+	@Override
+	public T getValue() {
+		return get();
 	}
 
 	@Override
@@ -64,6 +72,28 @@ public class Wrap<T> implements AttributeWrapper<T> {
 	public void addModificationConsumerAndRun(String key, Consumer consumer) {
 		wrappedAttribute.addModificationConsumer(key, consumer);
 		consumer.consume();
+	}
+
+	@Override
+	public void addListener(ChangeListener<? super T> listener) {
+		wrappedAttribute.addListener(listener);
+
+	}
+
+	@Override
+	public void removeListener(ChangeListener<? super T> listener) {
+		wrappedAttribute.removeListener(listener);
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener) {
+		wrappedAttribute.addListener(listener);
+
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		wrappedAttribute.removeListener(listener);
 	}
 
 	//#end region

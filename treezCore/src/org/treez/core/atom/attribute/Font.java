@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
@@ -22,7 +22,7 @@ import org.treez.core.utils.Utils;
 /**
  * Allows the user to choose a font
  */
-public class Font extends AbstractAttributeAtom<String> {
+public class Font extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -90,7 +90,7 @@ public class Font extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
+	public AbstractStringAttributeAtom createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -143,7 +143,7 @@ public class Font extends AbstractAttributeAtom<String> {
 				set(currentFont);
 
 				//trigger modification listeners
-				triggerModificationListeners();
+				triggerListeners();
 			}
 		});
 

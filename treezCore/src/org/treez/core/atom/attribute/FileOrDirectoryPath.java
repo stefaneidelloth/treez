@@ -17,13 +17,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
 /**
  * Allows the user to choose a file path or directory path
  */
-public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
+public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -77,8 +77,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 
 	}
 
-	public FileOrDirectoryPath(String name, String label, String defaultPath,
-			Boolean validatePath) {
+	public FileOrDirectoryPath(String name, String label, String defaultPath, Boolean validatePath) {
 		super(name);
 		setLabel(label);
 		setDefaultValue(defaultPath);
@@ -116,8 +115,9 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractStringAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -166,8 +166,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		return this;
 	}
 
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit) {
+	private static Composite createContainer(Composite parent, FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData containerFillHorizontal = new GridData();
 		containerFillHorizontal.grabExcessHorizontalSpace = true;
@@ -181,8 +180,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private Composite createSubContainer(FormToolkit toolkit,
-			Composite container) {
+	private Composite createSubContainer(FormToolkit toolkit, Composite container) {
 		Composite subContainer = toolkit.createComposite(container);
 		int numberOfColumns = 3;
 		if (showOpenButton) {
@@ -201,8 +199,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		return subContainer;
 	}
 
-	private void createTextField(FormToolkit toolkit, Composite container,
-			Composite subContainer) {
+	private void createTextField(FormToolkit toolkit, Composite container, Composite subContainer) {
 		//create grid data to use all horizontal space and limit preferred width
 		GridData textFieldFillHorizontal = new GridData();
 		textFieldFillHorizontal.grabExcessHorizontalSpace = true;
@@ -220,7 +217,9 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		//create error decoration for text field
 		String errorMessage = "Invalid path";
 		final TextFieldErrorDecoration errorDecoration = new TextFieldErrorDecoration(
-				textField, errorMessage, container);
+				textField,
+				errorMessage,
+				container);
 
 		//path validation
 
@@ -248,7 +247,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 				textField.setSelection(caretPosition);
 
 				//trigger listeners
-				triggerModificationListeners();
+				triggerListeners();
 
 			}
 
@@ -259,10 +258,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		}
 	}
 
-	private void createBrowseFileButton(FormToolkit toolkit,
-			Composite subContainer) {
-		Label browseFileButton = toolkit.createLabel(subContainer, "",
-				SWT.PUSH);
+	private void createBrowseFileButton(FormToolkit toolkit, Composite subContainer) {
+		Label browseFileButton = toolkit.createLabel(subContainer, "", SWT.PUSH);
 		browseFileButton.setEnabled(isEnabled());
 		Image browseImage = Activator.getImage("browse.png");
 		browseFileButton.setImage(browseImage);
@@ -277,8 +274,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				FileDialog fileDialog = new FileDialog(
-						Display.getCurrent().getActiveShell(), SWT.MULTI);
+				FileDialog fileDialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
 
 				fileDialog.setFilterPath(defaultValue);
 
@@ -296,10 +292,8 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 		});
 	}
 
-	private void createBrowseDirectoryButton(FormToolkit toolkit,
-			Composite subContainer) {
-		Label browseDirectoryButton = toolkit.createLabel(subContainer, "",
-				SWT.PUSH);
+	private void createBrowseDirectoryButton(FormToolkit toolkit, Composite subContainer) {
+		Label browseDirectoryButton = toolkit.createLabel(subContainer, "", SWT.PUSH);
 		browseDirectoryButton.setEnabled(isEnabled());
 		Image browseFolderImage = Activator.getImage("browseDirectory.png");
 		browseDirectoryButton.setImage(browseFolderImage);
@@ -311,8 +305,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				DirectoryDialog directoryDialog = new DirectoryDialog(
-						Display.getCurrent().getActiveShell(), SWT.MULTI);
+				DirectoryDialog directoryDialog = new DirectoryDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
 
 				directoryDialog.setFilterPath(defaultValue);
 				String firstFolder = directoryDialog.open();
@@ -332,8 +325,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	 * @param errorDecoration
 	 * @param text
 	 */
-	private void validateFilePath(
-			final TextFieldErrorDecoration errorDecoration, String text) {
+	private void validateFilePath(final TextFieldErrorDecoration errorDecoration, String text) {
 
 		boolean isValid = FileHelper.isValidFilePath(text);
 		if (isValid) {
@@ -362,8 +354,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -417,8 +408,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Get file extension names as comma separated list, e.g. 'TestFile,
-	 * ImageFile'
+	 * Get file extension names as comma separated list, e.g. 'TestFile, ImageFile'
 	 *
 	 * @return the extensionNames
 	 */
@@ -427,8 +417,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Set file extension names as comma separated list, e.g. 'TestFile,
-	 * ImageFile'
+	 * Set file extension names as comma separated list, e.g. 'TestFile, ImageFile'
 	 *
 	 * @param extensionNames
 	 *            the extensionNames to set
@@ -438,8 +427,7 @@ public class FileOrDirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * If set to false the file path is not validated/no error decoration is
-	 * shown
+	 * If set to false the file path is not validated/no error decoration is shown
 	 *
 	 * @param validatePath
 	 */

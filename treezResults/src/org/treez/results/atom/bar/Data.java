@@ -1,4 +1,4 @@
-package org.treez.results.atom.xy;
+package org.treez.results.atom.bar;
 
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
@@ -12,27 +12,28 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.axis.Direction;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	public final Attribute<String> xData = new Wrap<>();
+	public final Attribute<String> barLengths = new Wrap<>();
 
-	public final Attribute<String> yData = new Wrap<>();
+	public final Attribute<String> barPositions = new Wrap<>();
+
+	public final Attribute<String> barDirection = new Wrap<>();
+
+	public final Attribute<Double> barFillRatio = new Wrap<>();
 
 	public final Attribute<String> legendText = new Wrap<>();
 
 	//public final Attribute<String> labels = new Wrap<>();
 
-	//public final Attribute<String> scaleMarkers = new Wrap<>();
-
 	public final Attribute<String> xAxis = new Wrap<>();
 
 	public final Attribute<String> yAxis = new Wrap<>();
-
-	//public final Attribute<String> colorMarkers = new Wrap<>();
 
 	//#end region
 
@@ -47,21 +48,20 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Class<?> targetClass = org.treez.data.column.Column.class;
 		String value = "root.data.table.columns.x";
-		data.createModelPath(xData, this, value, targetClass, parent) //
+		data.createModelPath(barLengths, this, value, targetClass, parent) //
 				.setLabel("X data");
 
 		targetClass = org.treez.data.column.Column.class;
 		value = "root.data.table.columns.y";
-		data.createModelPath(yData, this, value, targetClass, parent) //
+		data.createModelPath(barPositions, this, value, targetClass, parent) //
 				.setLabel("Y data");
+		data.createEnumComboBox(barDirection, "Direction", Direction.VERTICAL);
+
+		final double defaultBarFillRatio = 0.75;
+		data.createDoubleVariableField(barFillRatio, this, defaultBarFillRatio);
 
 		TextField legendTextField = data.createTextField(legendText, "legendText", "");
 		legendTextField.setLabel("Legend text");
-		//data.createTextField(labels, "labels", "Labels", "");
-
-		//targetClass = org.treez.data.column.Column.class;
-		//value = "";
-		//data.createModelPath(scaleMarkers, "scaleMarkers", "Scale markers", value, targetClass, parent);
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
 		value = "";
@@ -76,22 +76,23 @@ public class Data implements GraphicsPropertiesPageFactory {
 				.createModelPath(yAxis, this, value, targetClass, parent) //
 				.setLabel("Y axis");
 
-		//data.createTextField(colorMarkers, "colorMarkers", "Color markers", "");
-
 	}
 
 	@Override
 	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
 
-		//this property page factory does create an own d3 group; the work will be
-		//done by the other property page factories
-
 		Consumer dataChangedConsumer = () -> {
-			Xy xy = (Xy) parent;
-			xy.updatePlotWithD3(d3);
+			Bar bar = (Bar) parent;
+			bar.updatePlotWithD3(d3);
 		};
-		xData.addModificationConsumer("replot", dataChangedConsumer);
-		yData.addModificationConsumer("replot", dataChangedConsumer);
+		barLengths.addModificationConsumer("replot", dataChangedConsumer);
+		barPositions.addModificationConsumer("replot", dataChangedConsumer);
+
+		barDirection.addModificationConsumer("replot", dataChangedConsumer);
+
+		barFillRatio.addModificationConsumer("replot", dataChangedConsumer);
+
+		//legendText.addModificationConsumer("replot", dataChangedConsumer);
 
 		xAxis.addModificationConsumer("replot", dataChangedConsumer);
 		yAxis.addModificationConsumer("replot", dataChangedConsumer);

@@ -10,12 +10,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-public class TextField extends AbstractAttributeAtom<String> {
+public class TextField extends AbstractStringAttributeAtom {
 
 	private static final Logger LOG = Logger.getLogger(TextField.class);
 
@@ -95,7 +95,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
+	public AbstractStringAttributeAtom createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -162,7 +162,7 @@ public class TextField extends AbstractAttributeAtom<String> {
 			textField.setSelection(caretPosition);
 
 			//trigger modification listeners
-			triggerModificationListeners();
+			triggerListeners();
 
 		};
 

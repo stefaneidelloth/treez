@@ -17,6 +17,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
@@ -24,7 +25,7 @@ import org.treez.core.utils.Utils;
 /**
  * An item example
  */
-public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
+public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -170,7 +171,7 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 				updateTargetsEnabledStates(currentValue);
 
 				//trigger modification listeners
-				triggerModificationListeners();
+				triggerListeners();
 			}
 
 		});
@@ -229,10 +230,10 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 	}
 
 	/*
-
+	
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
-	
+
 		addModifyListener(key, (event) -> {
 			if (event.data == null) {
 				consumer.accept(null);
@@ -240,9 +241,9 @@ public abstract class AbstractComboBox extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-	
+
 		});
-	
+
 	}
 	*/
 

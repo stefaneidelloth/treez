@@ -14,14 +14,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 
 /**
  * Allows the user to choose a symbol type
  */
-public class SymbolType extends AbstractAttributeAtom<String> {
+public class SymbolType extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -90,7 +90,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
+	public AbstractStringAttributeAtom createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -146,7 +146,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 				imageLabel.setImage(Activator.getImage(imagePrefix + currentStyle + ".png"));
 
 				//trigger modification listeners
-				triggerModificationListeners();
+				triggerListeners();
 			}
 		});
 
@@ -201,7 +201,7 @@ public class SymbolType extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-	
+
 		});
 	}
 	*/

@@ -14,9 +14,6 @@ import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 
-/**
- * XY area settings
- */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Area implements GraphicsPropertiesPageFactory {
 
@@ -135,8 +132,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 		String id = "area-above_" + parentName;
 
 		//remove old area group if it already exists
-		xySelection
-				.selectAll("#" + id) //
+		xySelection.selectAll("#" + id) //
 				.remove();
 
 		//create new area group
@@ -173,8 +169,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 		String id = "area-below_" + parentName;
 
 		//remove old area group if it already exists
-		xySelection
-				.selectAll("#" + id) //
+		xySelection.selectAll("#" + id) //
 				.remove();
 
 		//create new area group

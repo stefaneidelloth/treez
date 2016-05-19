@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.AtomTreeNodeAdaption;
@@ -204,7 +204,7 @@ public class Section extends AbstractAttributeContainerAtom {
 		return colorChooser;
 	}
 
-	public AbstractAttributeAtom<String> createColorMap(Attribute<String> wrap, AbstractAtom attributeParent) {
+	public AbstractStringAttributeAtom createColorMap(Attribute<String> wrap, AbstractAtom attributeParent) {
 
 		String attributeName = getFieldName(wrap, attributeParent);
 		ColorMap colorMap = new ColorMap(attributeName);
@@ -772,7 +772,7 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	//#end region
 
-	public AbstractAttributeAtom<String> createErrorBarStyle(Attribute<String> wrap, String name, String label) {
+	public AbstractStringAttributeAtom createErrorBarStyle(Attribute<String> wrap, String name, String label) {
 		ErrorBarStyle errorBarStyle = new ErrorBarStyle(name);
 		errorBarStyle.setLabel(label);
 		addChild(errorBarStyle);
@@ -800,14 +800,14 @@ public class Section extends AbstractAttributeContainerAtom {
 		return directoryPath;
 	}
 
-	public AbstractAttributeAtom<String> createFillStyle(Attribute<String> wrap, String name, String label) {
+	public AbstractStringAttributeAtom createFillStyle(Attribute<String> wrap, String name, String label) {
 		FillStyle fillStyle = new FillStyle(name, label);
 		addChild(fillStyle);
 		fillStyle.wrap(wrap);
 		return fillStyle;
 	}
 
-	public AbstractAttributeAtom<String> createFont(Attribute<String> wrap, String name) {
+	public AbstractStringAttributeAtom createFont(Attribute<String> wrap, String name) {
 		Font font = new Font(name, "Arial");
 		addChild(font);
 		font.wrap(wrap);
@@ -826,7 +826,7 @@ public class Section extends AbstractAttributeContainerAtom {
 		return spacer;
 	}
 
-	public AbstractAttributeAtom<String> createSymbolType(
+	public AbstractStringAttributeAtom createSymbolType(
 			Attribute<String> wrap,
 			Object attributeParent,
 			String label,
@@ -856,14 +856,14 @@ public class Section extends AbstractAttributeContainerAtom {
 		return action;
 	}
 
-	public AbstractAttributeAtom<String> createSize(Attribute<String> wrap, String name) {
+	public AbstractStringAttributeAtom createSize(Attribute<String> wrap, String name) {
 		Size size = new Size(name);
 		addChild(size);
 		size.wrap(wrap);
 		return size;
 	}
 
-	public AbstractAttributeAtom<String> createSize(Attribute<String> wrap, String name, String defaultValue) {
+	public AbstractStringAttributeAtom createSize(Attribute<String> wrap, String name, String defaultValue) {
 		Size size = new Size(name);
 		size.setDefaultValue(defaultValue);
 		addChild(size);
@@ -871,7 +871,7 @@ public class Section extends AbstractAttributeContainerAtom {
 		return size;
 	}
 
-	public AbstractAttributeAtom<String> createSize(
+	public AbstractStringAttributeAtom createSize(
 			Attribute<String> wrap,
 			String name,
 			String label,

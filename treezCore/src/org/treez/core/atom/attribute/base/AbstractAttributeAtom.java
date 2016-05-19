@@ -27,6 +27,11 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.ActionSeparator;
 import org.treez.core.treeview.action.TreeViewerAction;
 
+import com.sun.javafx.binding.ExpressionHelper;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+
 /**
  * Abstract base class for all AttributeAtoms. See the package description for more information.
  *
@@ -71,6 +76,8 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 	 * The enabled state.
 	 */
 	private boolean isEnabled = true;
+
+	private ExpressionHelper<T> javaFxListenerHelper;
 
 	//#end region
 
@@ -179,6 +186,8 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 		set(getDefaultValue());
 	}
 
+	//#region SWT MODIFICATION LISTENERS
+
 	/**
 	 * Adds a modify listener to be able to listen to changes of the attribute value
 	 *
@@ -188,18 +197,56 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 		modifyListeners.put(key, listener);
 	}
 
+	public void removeModifyListener(String key) {
+		modifyListeners.remove(key);
+	}
+
 	/**
 	 * Informs the modification listeners about changes
 	 */
-	public synchronized void triggerModificationListeners() {
+	public synchronized void triggerListeners() {
 		if (this.modifyListenersEnabled) {
+			//trigger SWT modify listeners
 			ModifyEvent modifyEvent = new AttributeAtomEvent(this).createModifyEvent();
 			Set<ModifyListener> listeners = getModifyListeners();
 			for (ModifyListener listener : listeners) {
 				listener.modifyText(modifyEvent);
 			}
+
+			//trigger JavaFx change listeners
+			fireJavaFxValueChangedEvent();
 		}
 	}
+
+	//#end region
+
+	//#region JAVAFX CHANGE LISTENERS (for implementing JavaFx ObservableValue)
+
+	@Override
+	public void addListener(ChangeListener<? super T> listener) {
+		javaFxListenerHelper = ExpressionHelper.addListener(javaFxListenerHelper, this, listener);
+	}
+
+	@Override
+	public void removeListener(ChangeListener<? super T> listener) {
+		javaFxListenerHelper = ExpressionHelper.removeListener(javaFxListenerHelper, listener);
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener) {
+		javaFxListenerHelper = ExpressionHelper.addListener(javaFxListenerHelper, this, listener);
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		javaFxListenerHelper = ExpressionHelper.removeListener(javaFxListenerHelper, listener);
+	}
+
+	protected void fireJavaFxValueChangedEvent() {
+		ExpressionHelper.fireValueChangedEvent(javaFxListenerHelper);
+	}
+
+	//#end region
 
 	/**
 	 * Creates a container layout where all content is put in a single line
@@ -349,7 +396,14 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 		} else {
 			return getDefaultValue();
 		}
+	}
 
+	/**
+	 * For implementing javafx ObservableValue
+	 */
+	@Override
+	public T getValue() {
+		return get();
 	}
 
 	@Override
@@ -358,7 +412,7 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 			attributeValue = value;
 			setInitialized();
 			refreshAttributeAtomControl();
-			triggerModificationListeners();
+			triggerListeners();
 		}
 	}
 

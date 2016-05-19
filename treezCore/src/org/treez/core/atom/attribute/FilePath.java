@@ -16,13 +16,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
 /**
  * Allows the user to choose a file path
  */
-public class FilePath extends AbstractAttributeAtom<String> {
+public class FilePath extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -90,8 +90,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 
 	}
 
-	public FilePath(String name, String label, String defaultPath,
-			Boolean validatePath) {
+	public FilePath(String name, String label, String defaultPath, Boolean validatePath) {
 		super(name);
 
 		setLabel(label);
@@ -131,8 +130,9 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractStringAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -144,8 +144,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 
 		container = createVerticalContainer(parent, toolkit);
 
-		checkBoxAndLabelContainer = createHorizontalContainer(container,
-				toolkit);
+		checkBoxAndLabelContainer = createHorizontalContainer(container, toolkit);
 
 		//label
 		labelComposite = toolkit.createLabel(checkBoxAndLabelContainer, label);
@@ -219,7 +218,9 @@ public class FilePath extends AbstractAttributeAtom<String> {
 		//create error decoration for text field
 		String errorMessage = "Invalid file path";
 		final TextFieldErrorDecoration errorDecoration = new TextFieldErrorDecoration(
-				textField, errorMessage, container);
+				textField,
+				errorMessage,
+				container);
 
 		//path validation
 
@@ -241,7 +242,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 				//restore caret position
 				textField.setSelection(caretPosition);
 
-				triggerModificationListeners();
+				triggerListeners();
 
 			}
 
@@ -268,8 +269,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				FileDialog fileDialog = new FileDialog(
-						Display.getCurrent().getActiveShell(), SWT.MULTI);
+				FileDialog fileDialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
 
 				fileDialog.setFilterPath(defaultValue);
 
@@ -293,8 +293,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	 * @param errorDecoration
 	 * @param text
 	 */
-	private void validateFilePath(
-			final TextFieldErrorDecoration errorDecoration, String text) {
+	private void validateFilePath(final TextFieldErrorDecoration errorDecoration, String text) {
 
 		boolean isValid = FileHelper.isValidFilePath(text);
 		if (isValid) {
@@ -393,8 +392,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Get file extension names as comma separated list, e.g. 'TestFile,
-	 * ImageFile'
+	 * Get file extension names as comma separated list, e.g. 'TestFile, ImageFile'
 	 *
 	 * @return the extensionNames
 	 */
@@ -403,8 +401,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * Set file extension names as comma separated list, e.g. 'TestFile,
-	 * ImageFile'
+	 * Set file extension names as comma separated list, e.g. 'TestFile, ImageFile'
 	 *
 	 * @param extensionNames
 	 *            the extensionNames to set
@@ -414,8 +411,7 @@ public class FilePath extends AbstractAttributeAtom<String> {
 	}
 
 	/**
-	 * If set to false the file path is not validated/no error decoration is
-	 * shown
+	 * If set to false the file path is not validated/no error decoration is shown
 	 *
 	 * @param validatePath
 	 */

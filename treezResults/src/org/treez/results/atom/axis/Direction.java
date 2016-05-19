@@ -1,37 +1,30 @@
 package org.treez.results.atom.axis;
 
-/**
- * The direction of an axis
- */
-public enum Direction {
+import java.util.ArrayList;
+import java.util.List;
+
+import org.treez.core.atom.attribute.EnumValueProvider;
+
+public enum Direction implements EnumValueProvider<Direction> {
 
 	//#region VALUES
 
-	/**
-	 * The axis is oriented vertically
-	 */
 	VERTICAL("vertical"),
 
-	/**
-	 * The axis is oriented horizontally
-	 */
 	HORIZONTAL("horizontal");
 
 	//#end region
 
 	//#region ATTRIBUTES
 
-	/**
-	 * The string value that corresponds to the direction
-	 */
-	private String directionString;
+	private String value;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
 	Direction(String directionString) {
-		this.directionString = directionString;
+		this.value = directionString;
 	}
 
 	//#end region
@@ -40,7 +33,22 @@ public enum Direction {
 
 	@Override
 	public String toString() {
-		return directionString;
+		return value;
+	}
+
+	@Override
+	public Direction fromString(final String value) {
+		return valueOf(value.toUpperCase().replace('-', '_'));
+	}
+
+	@Override
+	public List<String> getValues() {
+		List<String> values = new ArrayList<>();
+		for (Direction enumValue : values()) {
+			String stringValue = enumValue.value;
+			values.add(stringValue);
+		}
+		return values;
 	}
 
 	//#end region

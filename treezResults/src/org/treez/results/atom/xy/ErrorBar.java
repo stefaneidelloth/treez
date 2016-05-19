@@ -13,9 +13,6 @@ import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 
-/**
- * XY error bar settings
- */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class ErrorBar implements GraphicsPropertiesPageFactory {
 

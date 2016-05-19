@@ -14,9 +14,6 @@ import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 
-/**
- * XY line settings
- */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Line implements GraphicsPropertiesPageFactory {
 

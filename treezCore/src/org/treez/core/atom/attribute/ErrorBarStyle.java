@@ -14,14 +14,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 
 /**
  * Allows the user to choose a error bar style
  */
-public class ErrorBarStyle extends AbstractAttributeAtom<String> {
+public class ErrorBarStyle extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -43,8 +43,7 @@ public class ErrorBarStyle extends AbstractAttributeAtom<String> {
 	/**
 	 * Predefined error bar styles
 	 */
-	private final List<String> errorBarStyles = ErrorBarStyleValue
-			.getAllStringValues();
+	private final List<String> errorBarStyles = ErrorBarStyleValue.getAllStringValues();
 
 	//#end region
 
@@ -63,8 +62,7 @@ public class ErrorBarStyle extends AbstractAttributeAtom<String> {
 		if (isErrorBarStyle) {
 			attributeValue = defaultStyle;
 		} else {
-			throw new IllegalArgumentException("The specified error bar style '"
-					+ defaultStyle + "' is not known.");
+			throw new IllegalArgumentException("The specified error bar style '" + defaultStyle + "' is not known.");
 		}
 	}
 
@@ -93,8 +91,9 @@ public class ErrorBarStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractStringAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -108,8 +107,7 @@ public class ErrorBarStyle extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container,
-				currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
 		final int preferredLabelWidth = 80;
 		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
@@ -124,8 +122,7 @@ public class ErrorBarStyle extends AbstractAttributeAtom<String> {
 		//set predefined styles
 		final List<String> styles = getErrorBarStyles();
 		for (String styleString : styles) {
-			styleCombo.add(styleString,
-					Activator.getImage(imagePrefix + styleString + ".png"));
+			styleCombo.add(styleString, Activator.getImage(imagePrefix + styleString + ".png"));
 		}
 
 		//initialize selected item
@@ -140,11 +137,10 @@ public class ErrorBarStyle extends AbstractAttributeAtom<String> {
 				int index = styleCombo.getSelectionIndex();
 				String currentStyle = styles.get(index);
 				set(currentStyle);
-				imageLabel.setImage(Activator
-						.getImage(imagePrefix + currentStyle + ".png"));
+				imageLabel.setImage(Activator.getImage(imagePrefix + currentStyle + ".png"));
 
 				//trigger modification listeners
-				triggerModificationListeners();
+				triggerListeners();
 			}
 		});
 
@@ -153,8 +149,7 @@ public class ErrorBarStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit) {
+	private static Composite createContainer(Composite parent, FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -177,15 +172,13 @@ public class ErrorBarStyle extends AbstractAttributeAtom<String> {
 			int index = styles.indexOf(style);
 			if (styleCombo.getSelectionIndex() != index) {
 				styleCombo.select(index);
-				imageLabel.setImage(
-						Activator.getImage(imagePrefix + style + ".png"));
+				imageLabel.setImage(Activator.getImage(imagePrefix + style + ".png"));
 			}
 		}
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}

@@ -12,14 +12,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 
 /**
  * Shows a non editable info text
  */
-public class InfoText extends AbstractAttributeAtom<String> {
+public class InfoText extends AbstractStringAttributeAtom {
 
 	private static final Logger LOG = Logger.getLogger(InfoText.class);
 
@@ -71,8 +71,9 @@ public class InfoText extends AbstractAttributeAtom<String> {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractStringAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -84,13 +85,11 @@ public class InfoText extends AbstractAttributeAtom<String> {
 
 		//heading label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, parent,
-				currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, parent, currentLabel);
 		final int preferredLabelWidth = 80;
 		labelComposite.setPrefferedWidth(preferredLabelWidth);
 
-		labelField = toolkit.createText(parent, get(),
-				SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		labelField = toolkit.createText(parent, get(), SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		labelField.setEditable(false);
 		labelField.setToolTipText(tooltip);
 
@@ -134,8 +133,7 @@ public class InfoText extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -145,8 +143,7 @@ public class InfoText extends AbstractAttributeAtom<String> {
 	 */
 	public void highlightError() {
 		if (isAvailable(labelField)) {
-			final Color errorColor = new Color(Display.getCurrent(), 250, 200,
-					128);
+			final Color errorColor = new Color(Display.getCurrent(), 250, 200, 128);
 			labelField.setBackground(errorColor);
 		}
 	}
@@ -156,8 +153,7 @@ public class InfoText extends AbstractAttributeAtom<String> {
 	 */
 	public void resetError() {
 		if (isAvailable(labelField)) {
-			final Color normalColor = new Color(Display.getCurrent(), 250, 250,
-					250);
+			final Color normalColor = new Color(Display.getCurrent(), 250, 250, 250);
 			labelField.setBackground(normalColor);
 		}
 	}

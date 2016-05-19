@@ -12,9 +12,6 @@ import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 
-/**
- * XY label settings
- */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Label implements GraphicsPropertiesPageFactory {
 

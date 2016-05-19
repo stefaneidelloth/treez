@@ -16,10 +16,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
-public class DirectoryPath extends AbstractAttributeAtom<String> {
+public class DirectoryPath extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -112,8 +112,9 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractStringAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -126,8 +127,7 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 		//container for label and rest
 		container = createVerticalContainer(parent, toolkit);
 
-		checkBoxAndLabelContainer = createHorizontalContainer(container,
-				toolkit);
+		checkBoxAndLabelContainer = createHorizontalContainer(container, toolkit);
 
 		//label
 		labelComposite = toolkit.createLabel(checkBoxAndLabelContainer, label);
@@ -186,7 +186,9 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 		//create error decoration for text field
 		String errorMessage = "Invalid directory path";
 		final TextFieldErrorDecoration errorDecoration = new TextFieldErrorDecoration(
-				textField, errorMessage, container);
+				textField,
+				errorMessage,
+				container);
 
 		//create listener for text field
 		textField.addModifyListener(new ModifyListener() {
@@ -205,7 +207,7 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 				textField.setSelection(caretPosition);
 
 				//trigger modification listeners
-				triggerModificationListeners();
+				triggerListeners();
 			}
 
 		});
@@ -225,8 +227,7 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
-				DirectoryDialog directoryDialog = new DirectoryDialog(
-						Display.getCurrent().getActiveShell(), SWT.MULTI);
+				DirectoryDialog directoryDialog = new DirectoryDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
 
 				directoryDialog.setFilterPath(defaultValue);
 
@@ -265,8 +266,7 @@ public class DirectoryPath extends AbstractAttributeAtom<String> {
 	 * @param errorDecoration
 	 * @param text
 	 */
-	private void validateText(final TextFieldErrorDecoration errorDecoration,
-			String text) {
+	private void validateText(final TextFieldErrorDecoration errorDecoration, String text) {
 
 		boolean isValid = FileHelper.isValidDirectoryPath(text);
 		if (isValid) {

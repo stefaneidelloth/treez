@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 import org.treez.core.atom.variablelist.DoubleVariableListField;
 
@@ -44,7 +43,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<Double> consumer) {
-	
+
 		addModifyListener(key, (event) -> {
 			Double doubleValue = Double.parseDouble(event.data.toString());
 			consumer.accept(doubleValue);
@@ -57,7 +56,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<Double> createAttributeAtomControl(
+	public DoubleVariableField createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
@@ -175,7 +174,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 		}
 		enableModificationListeners();
 
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	//#end region

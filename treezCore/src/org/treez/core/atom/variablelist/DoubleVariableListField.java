@@ -216,7 +216,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 		if (valueField != null) {
 			valueField.setText(valueString);
 		}
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	@Override
@@ -275,7 +275,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 			setValueString(currentValueString);
 		}
 		enableModificationListeners();
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	//#end region

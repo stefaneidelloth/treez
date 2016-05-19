@@ -1,4 +1,4 @@
-package org.treez.results.atom.xy;
+package org.treez.results.atom.bar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,29 +18,26 @@ import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 import org.treez.results.atom.legend.LegendContributor;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Xy extends GraphicsPropertiesPage implements LegendContributor {
+public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 
 	//#region ATTRIBUTES
 
 	public Data data;
 
-	public Symbol symbol;
+	public Fill fill;
 
 	public Line line;
 
+	//public Label label;
 	//public ErrorBar errorBar;
 
-	public Area area;
-
-	//public Label label;
-
-	private Selection xySelection;
+	private Selection barSelection;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public Xy(String name) {
+	public Bar(String name) {
 		super(name);
 	}
 
@@ -54,22 +51,20 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		data = new Data();
 		propertyPageFactories.add(data);
 
-		area = new Area();
-		propertyPageFactories.add(area);
+		fill = new Fill();
+		propertyPageFactories.add(fill);
 
 		line = new Line();
 		propertyPageFactories.add(line);
 
-		symbol = new Symbol();
-		propertyPageFactories.add(symbol);
-
-		//errorBar = new ErrorBar();
 		//label = new Label();
+		//errorBar = new ErrorBar();
+
 	}
 
 	@Override
 	public Image provideImage() {
-		return Activator.getImage("xy.png");
+		return Activator.getImage("bar.png");
 	}
 
 	@Override
@@ -86,27 +81,27 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 	@Override
 	public Selection plotWithD3(
 			D3 d3,
-			Selection graphOrXySeriesSelection,
+			Selection graphOrBarSeriesSelection,
 			Selection graphRectSelection,
 			FocusChangingRefreshable refreshable) {
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
-		//remove old xy group if it already exists
-		graphOrXySeriesSelection //
+		//remove old bar group if it already exists
+		graphOrBarSeriesSelection //
 				.select("#" + name) //
 				.remove();
 
 		//create new axis group
-		xySelection = graphOrXySeriesSelection //
+		barSelection = graphOrBarSeriesSelection //
 				.insert("g", ".axis") //
-				.attr("class", "xy") //
+				.attr("class", "bar") //
 				.onMouseClick(this);
-		bindNameToId(xySelection);
+		bindNameToId(barSelection);
 
 		updatePlotWithD3(d3);
 
-		return xySelection;
+		return barSelection;
 	}
 
 	@Override
@@ -116,7 +111,7 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 
 	private void plotPageModels(D3 d3) {
 		for (GraphicsPropertiesPageFactory pageModel : propertyPageFactories) {
-			xySelection = pageModel.plotWithD3(d3, xySelection, null, this);
+			barSelection = pageModel.plotWithD3(d3, barSelection, null, this);
 		}
 	}
 
@@ -144,52 +139,90 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 			int symbolLengthInPx,
 			Refreshable refreshable) {
 		Selection symbolSelection = parentSelection //
-				.append("g") //
-				.classed("xy-legend-entry-symbol", true);
+				.append("rect") //
+				.classed("bar-legend-entry-symbol", true);
 
-		this.line.plotLegendLineWithD3(d3, symbolSelection, symbolLengthInPx);
-		this.symbol.plotLegendSymbolWithD3(d3, symbolSelection, symbolLengthInPx / 2, refreshable);
+		this.fill.formatLegendSymbol(symbolSelection, symbolLengthInPx);
+		this.line.formatLegendSymbolLine(symbolSelection, refreshable);
 
 		return symbolSelection;
 	}
 
-	public String getXyDataString() {
+	public String getBarDataString() {
 
-		List<Object> xDataValues = getXData();
-		List<Object> yDataValues = getYData();
+		List<Object> lengthDataValues = getLengthData();
+		List<Object> positionDataValues = getPositionData();
 
-		int xLength = xDataValues.size();
-		int yLength = yDataValues.size();
-		boolean lengthsAreOk = xLength == yLength;
-		if (!lengthsAreOk) {
-			String message = "The x and y data has to be of equal size but size of x data is " + xLength
-					+ " and size of y data is " + yLength;
+		int lengthSize = lengthDataValues.size();
+		int positionSize = positionDataValues.size();
+		boolean sizesAreOk = lengthSize == positionSize;
+		if (!sizesAreOk) {
+			String message = "The length and position data has to be of equal size but size of length data is "
+					+ lengthSize + " and size of position data is " + positionSize;
 			throw new IllegalStateException(message);
 		}
 
 		List<String> rowList = new java.util.ArrayList<>();
-		for (int rowIndex = 0; rowIndex < xLength; rowIndex++) {
-			Object xDatum = xDataValues.get(rowIndex);
-			Double x = Double.parseDouble(xDatum.toString());
+		for (int rowIndex = 0; rowIndex < lengthSize; rowIndex++) {
+			Object lengthDatum = lengthDataValues.get(rowIndex);
+			Double length = Double.parseDouble(lengthDatum.toString());
 
-			Object yDatum = yDataValues.get(rowIndex);
-			Double y = Double.parseDouble(yDatum.toString());
+			Object positionDatum = positionDataValues.get(rowIndex);
+			Double position = Double.parseDouble(positionDatum.toString());
 
-			String rowString = "[" + x + "," + y + "]";
+			String rowString = "[" + length + "," + position + "]";
 			rowList.add(rowString);
 		}
-		String xyDataString = "[" + String.join(",", rowList) + "]";
-		return xyDataString;
+		String dataString = "[" + String.join(",", rowList) + "]";
+		return dataString;
+	}
+
+	public int getPositionSize() {
+		List<Object> positionDataValues = getPositionData();
+		return positionDataValues.size();
+	}
+
+	public double getSmallestPositionDistance() {
+
+		double smallestDistance = Double.MAX_VALUE;
+
+		List<Object> positionDataValues = getPositionData();
+		int positionSize = positionDataValues.size();
+
+		if (positionSize > 1) {
+			for (int positionIndex = 1; positionIndex < positionSize; positionIndex++) {
+				Object leftPositionObj = positionDataValues.get(positionIndex - 1);
+				Double leftPosition = Double.parseDouble(leftPositionObj.toString());
+
+				Object rightPositionObj = positionDataValues.get(positionIndex);
+				Double rightPosition = Double.parseDouble(rightPositionObj.toString());
+
+				double distance = Math.abs(rightPosition - leftPosition);
+				if (distance < smallestDistance) {
+					smallestDistance = distance;
+				}
+			}
+			return smallestDistance;
+		} else {
+			return 0;
+		}
+
 	}
 
 	public QuantitativeScale<?> getXScale() {
 		Axis xAxisAtom = getXAxis();
+		if (xAxisAtom == null) {
+			return null;
+		}
 		QuantitativeScale<?> scale = (QuantitativeScale<?>) xAxisAtom.getScale();
 		return scale;
 	}
 
 	public QuantitativeScale<?> getYScale() {
 		Axis yAxisAtom = getYAxis();
+		if (yAxisAtom == null) {
+			return null;
+		}
 		QuantitativeScale<?> scale = (QuantitativeScale<?>) yAxisAtom.getScale();
 		return scale;
 	}
@@ -212,8 +245,8 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return yAxisAtom;
 	}
 
-	private List<Object> getXData() {
-		String xDataPath = data.xData.get();
+	private List<Object> getLengthData() {
+		String xDataPath = data.barLengths.get();
 		if (xDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -222,8 +255,8 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return xDataValues;
 	}
 
-	private List<Object> getYData() {
-		String yDataPath = data.yData.get();
+	private List<Object> getPositionData() {
+		String yDataPath = data.barPositions.get();
 		if (yDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}

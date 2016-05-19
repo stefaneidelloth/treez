@@ -218,7 +218,7 @@ public class IntegerVariableListField
 		if (valueField != null) {
 			valueField.setText(valueString);
 		}
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	@Override
@@ -277,7 +277,7 @@ public class IntegerVariableListField
 			setValueString(currentValueString);
 		}
 		enableModificationListeners();
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	//#end region

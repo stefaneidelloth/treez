@@ -297,7 +297,7 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 		if (unitField != null && !unitField.isDisposed()) {
 			unitField.setText(unitString);
 		}
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	@Override
@@ -348,7 +348,7 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 			setUnitString(quantity.getUnit());
 		}
 		enableModificationListeners();
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	//#end region

@@ -159,14 +159,14 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 			if (valueChanged) {
 				this.valueString = "";
 				setInitialized();
-				triggerModificationListeners();
+				triggerListeners();
 			}
 		} else {
 			boolean valueChanged = !currentValueString.equals(this.valueString);
 			if (valueChanged) {
 				this.valueString = currentValueString;
 				setInitialized();
-				triggerModificationListeners();
+				triggerListeners();
 			}
 		}
 
@@ -182,7 +182,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 			valueSpinner.setSelection(intValue);
 		}
 		setInitialized();
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 			setValueString("" + value);
 		}
 		enableModificationListeners();
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	//#end region

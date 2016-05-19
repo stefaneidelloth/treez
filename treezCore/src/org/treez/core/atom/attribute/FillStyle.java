@@ -14,14 +14,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 
 /**
  * Allows the user to choose a fill style
  */
-public class FillStyle extends AbstractAttributeAtom<String> {
+public class FillStyle extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -95,7 +95,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-	
+
 		});
 	}*/
 
@@ -110,7 +110,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
+	public AbstractStringAttributeAtom createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -162,7 +162,7 @@ public class FillStyle extends AbstractAttributeAtom<String> {
 				imageLabel.setImage(Activator.getImage(IMAGE_PREFIX + currentStyle + ".png"));
 
 				//trigger modification listeners
-				triggerModificationListeners();
+				triggerListeners();
 			}
 		});
 

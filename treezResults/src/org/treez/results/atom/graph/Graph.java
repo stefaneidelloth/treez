@@ -14,6 +14,7 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
+import org.treez.results.atom.bar.Bar;
 import org.treez.results.atom.graphicspage.Background;
 import org.treez.results.atom.graphicspage.Border;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
@@ -91,6 +92,14 @@ public class Graph extends GraphicsPropertiesPage {
 		Action addXy = new AddChildAtomTreeViewerAction(Xy.class, "xy", Activator.getImage("xy.png"), this, treeViewer);
 		actions.add(addXy);
 
+		Action addBar = new AddChildAtomTreeViewerAction(
+				Bar.class,
+				"bar",
+				Activator.getImage("bar.png"),
+				this,
+				treeViewer);
+		actions.add(addBar);
+
 		Action addLegend = new AddChildAtomTreeViewerAction(
 				Legend.class,
 				"legend",
@@ -121,7 +130,12 @@ public class Graph extends GraphicsPropertiesPage {
 	 * @return
 	 */
 	@Override
-	public Selection plotWithD3(D3 d3, Selection pageSelection, Selection pageRectSelection, FocusChangingRefreshable refreshable) {
+	public Selection plotWithD3(
+			D3 d3,
+			Selection pageSelection,
+			Selection pageRectSelection,
+			FocusChangingRefreshable refreshable) {
+
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
@@ -160,6 +174,7 @@ public class Graph extends GraphicsPropertiesPage {
 		plotAxis(d3);
 		plotXySeries(d3);
 		plotXy(d3);
+		plotBar(d3);
 		plotLegend(d3);
 	}
 
@@ -193,6 +208,16 @@ public class Graph extends GraphicsPropertiesPage {
 		}
 	}
 
+	private void plotBar(D3 d3) {
+		for (Adaptable child : children) {
+			Boolean isBar = child.getClass().equals(Bar.class);
+			if (isBar) {
+				Bar bar = (Bar) child;
+				bar.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
+			}
+		}
+	}
+
 	private void plotLegend(D3 d3) {
 		for (Adaptable child : children) {
 			Boolean isLegend = child.getClass().equals(Legend.class);
@@ -221,6 +246,12 @@ public class Graph extends GraphicsPropertiesPage {
 
 	public Xy createXy(String name) {
 		Xy child = new Xy(name);
+		addChild(child);
+		return child;
+	}
+
+	public Bar createBar(String name) {
+		Bar child = new Bar(name);
 		addChild(child);
 		return child;
 	}

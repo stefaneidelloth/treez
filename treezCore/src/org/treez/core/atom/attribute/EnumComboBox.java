@@ -13,12 +13,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractAttributeAtom<String> {
+public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -90,7 +90,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractAttrib
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
+	public AbstractStringAttributeAtom createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -181,7 +181,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractAttrib
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-	
+
 		});
 	}
 	*/

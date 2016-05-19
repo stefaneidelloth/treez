@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.path.ModelPathSelector;
@@ -32,7 +32,7 @@ import org.treez.core.utils.Utils;
 /**
  * Allows the user to choose a model path
  */
-public class ModelPath extends AbstractAttributeAtom<String> {
+public class ModelPath extends AbstractStringAttributeAtom {
 
 	private static final Logger LOG = Logger.getLogger(ModelPath.class);
 
@@ -279,7 +279,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
+	public AbstractStringAttributeAtom createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -608,7 +608,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 			textField.setText(get());
 
 			//trigger modification listeners
-			triggerModificationListeners();
+			triggerListeners();
 		}
 	}
 
@@ -704,7 +704,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-	
+
 		});
 	}
 	*/
@@ -733,7 +733,7 @@ public class ModelPath extends AbstractAttributeAtom<String> {
 			attributeValue = value;
 			setInitialized();
 			refreshAttributeAtomControl();
-			triggerModificationListeners();
+			triggerListeners();
 		}
 	}
 

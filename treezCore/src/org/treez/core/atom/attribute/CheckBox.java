@@ -15,11 +15,12 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractBooleanAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-public class CheckBox extends AbstractAttributeAtom<Boolean> {
+public class CheckBox extends AbstractBooleanAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -102,7 +103,7 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractAttributeAtom<Boolean> createAttributeAtomControl(
+	public AbstractBooleanAttributeAtom createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.attributeAtomParent = parent;
@@ -166,7 +167,7 @@ public class CheckBox extends AbstractAttributeAtom<Boolean> {
 				updateTargetsEnabledStates(currentValue);
 
 				//trigger modification listeners
-				triggerModificationListeners();
+				triggerListeners();
 			}
 
 		});

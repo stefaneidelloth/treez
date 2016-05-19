@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 /**
@@ -42,8 +41,9 @@ public class StringVariableField extends AbstractVariableField<String> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public StringVariableField createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize quantity value at the first call
@@ -60,8 +60,7 @@ public class StringVariableField extends AbstractVariableField<String> {
 
 		//create container composite
 		//its layout depends on the length of the labels and values
-		Composite container = createContainerForLabelsAndTextFields(parent,
-				toolkit, useIndividualLines);
+		Composite container = createContainerForLabelsAndTextFields(parent, toolkit, useIndividualLines);
 
 		//label
 		createValueLabel(toolkit, container);
@@ -73,8 +72,7 @@ public class StringVariableField extends AbstractVariableField<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -92,9 +90,8 @@ public class StringVariableField extends AbstractVariableField<String> {
 	//#region VALUE
 
 	/**
-	 * Returns the quantity. This does not use the attributeValue to store the
-	 * state of this attribute atom but uses the valueString and the unitString
-	 * to do so.
+	 * Returns the quantity. This does not use the attributeValue to store the state of this attribute atom but uses the
+	 * valueString and the unitString to do so.
 	 */
 	@Override
 	public String get() {
@@ -110,7 +107,7 @@ public class StringVariableField extends AbstractVariableField<String> {
 			setValueString(value);
 		}
 		enableModificationListeners();
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	//#end region

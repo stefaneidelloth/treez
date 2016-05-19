@@ -334,7 +334,7 @@ public class QuantityVariableListField
 		if (valueField != null) {
 			valueField.setText(valueString);
 		}
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	/**
@@ -347,7 +347,7 @@ public class QuantityVariableListField
 		if (unitField != null) {
 			unitField.setText(unitString);
 		}
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	@Override
@@ -404,7 +404,7 @@ public class QuantityVariableListField
 			setUnitString(currentUnitString);
 		}
 		enableModificationListeners();
-		triggerModificationListeners();
+		triggerListeners();
 	}
 
 	/**

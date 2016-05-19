@@ -6,21 +6,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.CheckBox;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractBooleanAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 /**
  * An item example
  */
-public class BooleanVariableField extends CheckBox
-		implements
-			VariableField<Boolean> {
+public class BooleanVariableField extends CheckBox implements VariableField<Boolean> {
 
 	/**
 	 * Background color
 	 */
-	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245,
-			249);
+	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245, 249);
 
 	//#region ATTRIBUTES
 
@@ -53,18 +50,17 @@ public class BooleanVariableField extends CheckBox
 		Image baseImage = Activator.getImage("booleanVariable.png");
 		Image image;
 		if (isEnabled()) {
-			image = Activator.getOverlayImageStatic(baseImage,
-					"enabledDecoration.png");
+			image = Activator.getOverlayImageStatic(baseImage, "enabledDecoration.png");
 		} else {
-			image = Activator.getOverlayImageStatic(baseImage,
-					"disabledDecoration.png");
+			image = Activator.getOverlayImageStatic(baseImage, "disabledDecoration.png");
 		}
 		return image;
 	}
 
 	@Override
-	public AbstractAttributeAtom<Boolean> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractBooleanAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		super.createAttributeAtomControl(parent, treeViewerRefreshable);
@@ -97,8 +93,7 @@ public class BooleanVariableField extends CheckBox
 			Boolean value = new Boolean(valueString);
 			this.set(value);
 		} catch (Exception exception) {
-			String message = "The string value '" + valueString
-					+ "' could not be inteprted as Boolean value";
+			String message = "The string value '" + valueString + "' could not be inteprted as Boolean value";
 			throw new IllegalStateException(message);
 		}
 	}

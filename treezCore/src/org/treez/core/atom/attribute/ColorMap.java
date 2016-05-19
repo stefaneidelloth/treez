@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.color.ColorMapValue;
 import org.treez.core.swt.CustomLabel;
@@ -22,7 +22,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Allows the user to choose a color map
  */
-public class ColorMap extends AbstractAttributeAtom<String> {
+public class ColorMap extends AbstractStringAttributeAtom {
 
 	//#region ATTRIBUTES
 
@@ -66,8 +66,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 		if (isColorMap) {
 			attributeValue = defaultStyle;
 		} else {
-			throw new IllegalArgumentException("The specified color map '"
-					+ defaultStyle + "' is not known.");
+			throw new IllegalArgumentException("The specified color map '" + defaultStyle + "' is not known.");
 		}
 	}
 
@@ -99,8 +98,9 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 	 * Creates the composite on a given parent
 	 */
 	@Override
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractStringAttributeAtom createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -120,8 +120,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 
 		//label
 		String currentLabel = getLabel();
-		CustomLabel labelComposite = new CustomLabel(toolkit, container,
-				currentLabel);
+		CustomLabel labelComposite = new CustomLabel(toolkit, container, currentLabel);
 		final int prefferedLabelWidth = 80;
 		labelComposite.setPrefferedWidth(prefferedLabelWidth);
 
@@ -136,8 +135,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 		//set predefined color map
 		final List<String> currentColorMaps = getColorMaps();
 		for (String styleString : currentColorMaps) {
-			styleCombo.add(styleString,
-					Activator.getImage(imagePrefix + styleString + ".png"));
+			styleCombo.add(styleString, Activator.getImage(imagePrefix + styleString + ".png"));
 		}
 
 		//initialize selected item
@@ -154,7 +152,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 				set(currentStyle);
 
 				//trigger modification listeners
-				triggerModificationListeners();
+				triggerListeners();
 			}
 		});
 
@@ -163,8 +161,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainer(Composite parent,
-			FormToolkit toolkit, GridData fillHorizontal) {
+	private static Composite createContainer(Composite parent, FormToolkit toolkit, GridData fillHorizontal) {
 		Composite container = toolkit.createComposite(parent);
 		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.horizontalSpacing = 10;
@@ -180,8 +177,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 			int index = colorMaps.indexOf(currentStyle);
 			if (styleCombo.getSelectionIndex() != index) {
 				styleCombo.select(index);
-				imageLabel.setImage(Activator
-						.getImage(imagePrefix + currentStyle + ".png"));
+				imageLabel.setImage(Activator.getImage(imagePrefix + currentStyle + ".png"));
 			}
 		}
 	}
@@ -247,8 +243,7 @@ public class ColorMap extends AbstractAttributeAtom<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 	}
 
