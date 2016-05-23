@@ -1010,13 +1010,20 @@ public class D3 extends JavaScriptObject {
 
 	// =========== range ===================
 
-	/**
-	 * @param stop
-	 * @return
-	 */
-	public Selection range(double stop) {
+
+	public Array<Double> range(double stop) {
 		JSObject result = call("range", stop);
-		return new Selection(webEngine, result);
+		return new Array<Double>(webEngine, result);
+	}
+	
+	public Array<Double> range(double start, double stop) {		
+		JSObject result = call("range", start, stop);
+		return new Array<Double>(webEngine, result);		
+	}
+	
+	public Array<Double> range(double start, double stop, double step) {		
+		JSObject result = call("range", start, stop, step);
+		return new Array<Double>(webEngine, result);		
 	}
 
 	// =========== behaviours ==============
@@ -1129,6 +1136,8 @@ public class D3 extends JavaScriptObject {
 	public WebEngine getWebEngine() {
 		return webEngine;
 	}
+
+	
 
 	//#end region
 

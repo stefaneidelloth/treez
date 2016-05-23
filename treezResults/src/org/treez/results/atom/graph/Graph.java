@@ -15,6 +15,7 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.bar.Bar;
+import org.treez.results.atom.contour.Contour;
 import org.treez.results.atom.graphicspage.Background;
 import org.treez.results.atom.graphicspage.Border;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
@@ -100,6 +101,14 @@ public class Graph extends GraphicsPropertiesPage {
 				treeViewer);
 		actions.add(addBar);
 
+		Action addContour = new AddChildAtomTreeViewerAction(
+				Contour.class,
+				"contour",
+				Activator.getImage("contour.png"),
+				this,
+				treeViewer);
+		actions.add(addContour);
+
 		Action addLegend = new AddChildAtomTreeViewerAction(
 				Legend.class,
 				"legend",
@@ -172,6 +181,7 @@ public class Graph extends GraphicsPropertiesPage {
 
 	private void plotChildren(D3 d3) {
 		plotAxis(d3);
+		plotContour(d3);
 		plotXySeries(d3);
 		plotXy(d3);
 		plotBar(d3);
@@ -218,6 +228,16 @@ public class Graph extends GraphicsPropertiesPage {
 		}
 	}
 
+	private void plotContour(D3 d3) {
+		for (Adaptable child : children) {
+			Boolean isContour = child.getClass().equals(Contour.class);
+			if (isContour) {
+				Contour contour = (Contour) child;
+				contour.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
+			}
+		}
+	}
+
 	private void plotLegend(D3 d3) {
 		for (Adaptable child : children) {
 			Boolean isLegend = child.getClass().equals(Legend.class);
@@ -258,6 +278,12 @@ public class Graph extends GraphicsPropertiesPage {
 
 	public Legend createLegend(String name) {
 		Legend child = new Legend(name);
+		addChild(child);
+		return child;
+	}
+
+	public Contour createContour(String name) {
+		Contour child = new Contour(name);
 		addChild(child);
 		return child;
 	}

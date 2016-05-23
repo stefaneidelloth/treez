@@ -61,14 +61,14 @@ import netscape.javascript.JSObject;
  * to integrate with GWT {@link Element} API.
  * <p>
  * <h1>Operating on selections</h1> Selections are arrays of
- * elementsâ€�?literally. D3 binds additional methods to the array so that you
- * can apply operators to the selected elements, such as setting an attribute on
- * all the selected elements. One nuance is that selections are grouped: rather
- * than a one-dimensional array, each selection is an array of arrays of
- * elements. This preserves the hierarchical structure of subselections. Most of
- * the time, you can ignore this detail, but that's why a single-element
- * selection looks like [[node]] rather than [node]. For more on nested
- * selections, see Nested Selections.
+ * elementsâ€�?literally. D3 binds additional methods to the array so that
+ * you can apply operators to the selected elements, such as setting an
+ * attribute on all the selected elements. One nuance is that selections are
+ * grouped: rather than a one-dimensional array, each selection is an array of
+ * arrays of elements. This preserves the hierarchical structure of
+ * subselections. Most of the time, you can ignore this detail, but that's why a
+ * single-element selection looks like [[node]] rather than [node]. For more on
+ * nested selections, see Nested Selections.
  * <p>
  * If you want to learn how selections work, try selecting elements
  * interactively using your browser's developer console. You can inspect the
@@ -286,10 +286,10 @@ public class Selection extends EnteringSelection {
 		String result = attrObj.toString();
 		return result;
 	}
-	
-	public Double attrAsDouble(String name){
+
+	public Double attrAsDouble(String name) {
 		String attribute = attr(name);
-		if(attribute==null){
+		if (attribute == null) {
 			return null;
 		}
 		return Double.parseDouble(attribute);
@@ -352,7 +352,7 @@ public class Selection extends EnteringSelection {
 	 * @return the current selection
 	 */
 	public Selection attr(final String name, PathDataGenerator value) {
-		JSObject result = call("attr", name, value);
+		JSObject result = call("attr", name, value.getJsObject());
 		return new Selection(webEngine, result);
 	}
 
@@ -496,10 +496,19 @@ public class Selection extends EnteringSelection {
 		JSObject d3JsObject = getD3();
 		d3JsObject.setMember(funcName, callback);
 
-		String command = "try { return this.style('" + name + "', " + //
-				"function(d, i) { " + "try { var r = d3." + funcName + ".apply(this,{datum:d},i); return r; } "
-				+ "catch (e) { alert(e); return null; } }); } " + //
-				"catch (e) { alert(e); return null; }";
+		String command = "this.style('" + name + "', " + //
+				"      function(d, i) { " + //
+				"        try { "+ //
+				"               var result = d3." + funcName + ".apply(this,{datum:d},i);"+ //
+				"               return result; "+
+				"             } " +//
+				"         catch (exception) {"+//
+				"            alert(exception);"+	//
+				"            return null; "+ //
+				"         } "+//
+				"      }"+//
+				"    );";
+				
 		JSObject result = evalForJsObject(command);
 		return new Selection(webEngine, result);
 	}
@@ -952,10 +961,10 @@ public class Selection extends EnteringSelection {
 	/**
 	 * Removes the elements in the current selection from the current document.
 	 * Returns the current selection (the same elements that were removed) which
-	 * are now â€œoff-screenâ€�, detached from the DOM. Note that there is not
-	 * currently a dedicated API to add removed elements back to the document;
-	 * however, you can pass a function to selection.each or selection.select to
-	 * re-add elements.
+	 * are now â€œoff-screenâ€�, detached from the DOM. Note that there
+	 * is not currently a dedicated API to add removed elements back to the
+	 * document; however, you can pass a function to selection.each or
+	 * selection.select to re-add elements.
 	 * <p>
 	 * The elements are removed from the DOM but still remains in the selection.
 	 * <p>
@@ -1119,11 +1128,13 @@ public class Selection extends EnteringSelection {
 
 		return new UpdateSelection(webEngine, result);
 	}
+	
+
 
 	/**
 	 * Same as #data(JSObject) but let the user control how to map data to the
-	 * selection. The specified "values" is an array of data values (e.g. numbers or objects), 
-	 * or a function that returns an array of values.
+	 * selection. The specified "values" is an array of data values (e.g.
+	 * numbers or objects), or a function that returns an array of values.
 	 * <p>
 	 * See {@link KeyFunction}'s documentation.
 	 * <p>
@@ -1164,11 +1175,11 @@ public class Selection extends EnteringSelection {
 		return new UpdateSelection(webEngine, result);
 
 	}
-	
+
 	/**
 	 * Same as #data(JSObject) but let the user control how to map data to the
-	 * selection. The specified "values" is an array of data values (e.g. numbers or objects), 
-	 * or a function that returns an array of values.
+	 * selection. The specified "values" is an array of data values (e.g.
+	 * numbers or objects), or a function that returns an array of values.
 	 * <p>
 	 * See {@link KeyFunction}'s documentation.
 	 * <p>
@@ -1183,14 +1194,14 @@ public class Selection extends EnteringSelection {
 	public UpdateSelection dataExpression(JavaScriptObject values, String keyFunctionExpression) {
 
 		JSObject d3JsObject = getD3();
-		
+
 		String valuesName = createNewTemporaryInstanceName();
 		JSObject valuesJsObject = values.getJsObject();
 		d3JsObject.setMember(valuesName, valuesJsObject);
 
 		String command = "this.data( d3." + valuesName + ", " + keyFunctionExpression + ");";
 
-		JSObject result = evalForJsObject(command);		
+		JSObject result = evalForJsObject(command);
 		d3JsObject.removeMember(valuesName);
 		return new UpdateSelection(webEngine, result);
 	}
@@ -1777,12 +1788,11 @@ public class Selection extends EnteringSelection {
 
 		String command = "this.datum([" + String.join(",", fullVarNames) + "])";
 		JSObject result = evalForJsObject(command);
-		
+
 		for (String varName : varNames) {
 			d3JsObject.removeMember(varName);
 		}
 
-		
 		return new UpdateSelection(webEngine, result);
 
 	}
@@ -1985,7 +1995,7 @@ public class Selection extends EnteringSelection {
 		JSObject result = call("interrupt");
 		return new Selection(webEngine, result);
 	}
-	
+
 	// =================== ACTION ===============
 
 	/**
@@ -2077,7 +2087,6 @@ public class Selection extends EnteringSelection {
 		return new Selection(webEngine, result);
 
 	}
-	
 
 	public Selection onMouseClick(MouseClickFunction listener) {
 
@@ -2099,8 +2108,6 @@ public class Selection extends EnteringSelection {
 		return new Selection(webEngine, result);
 
 	}
-	
-	
 
 	//#end region
 

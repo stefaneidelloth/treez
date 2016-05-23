@@ -97,7 +97,20 @@ public class Array<T> extends JavaScriptObject {
 		webEngine.executeScript(varName +" = null;");
 		
 		return new Array<Double>(webEngine, result);
+	}
+	
+	public static Array<Double> fromDoubles(WebEngine webEngine, Double[][] data) {
+		String varName = createNewTemporaryInstanceName();
+		String arrayString = ArrayUtils.createArrayString(data);
+		String command = "var " + varName + " = " + arrayString + ";";
+		webEngine.executeScript(command);
 
+		// execute command and return result as Array
+		JSObject result = (JSObject) webEngine.executeScript(varName);
+		
+		webEngine.executeScript(varName +" = null;");
+		
+		return new Array<Double>(webEngine, result);
 	}
 
 	/**
@@ -299,6 +312,8 @@ public class Array<T> extends JavaScriptObject {
 		return displayString;
 		
 	}
+
+	
 	
 	//#end region
 

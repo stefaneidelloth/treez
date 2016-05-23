@@ -8,7 +8,7 @@ import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
@@ -211,8 +211,8 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 		//trigger modification listeners
 		Wrap<String> wrap = (Wrap<String>) sourceVariableModelPath;
 		Attribute<String> attribute = wrap.getAttribute();
-		AbstractAttributeAtom<String> attributeAtom = (AbstractAttributeAtom<String>) attribute;
-		attributeAtom.triggerModificationListeners();
+		AbstractStringAttributeAtom attributeAtom = (AbstractStringAttributeAtom) attribute;
+		attributeAtom.triggerListeners();
 	}
 
 	/**

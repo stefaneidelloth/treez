@@ -4,11 +4,14 @@ import org.treez.javafxd3.d3.scales.QuantitativeScale;
 
 import netscape.javascript.JSObject;
 
-public class AxisScaleSecondDatumFunction implements DatumFunction<Double> {
+
+public class AxisScaleInversedSecondDatumFunction implements DatumFunction<Double> {
 	
 	//#region ATTRIBUTES
 	
-	QuantitativeScale<?> scale;	
+	private QuantitativeScale<?> scale;	
+	
+	private double maxValue;
 	
 	//#end region
 	
@@ -17,8 +20,9 @@ public class AxisScaleSecondDatumFunction implements DatumFunction<Double> {
 	/**
 	 * @param webEngine
 	 */
-	public AxisScaleSecondDatumFunction(QuantitativeScale<?> scale){
+	public AxisScaleInversedSecondDatumFunction(QuantitativeScale<?> scale, double maxValue){
 		this.scale = scale;		
+		this.maxValue = maxValue;
 	}
 	
 	//#end region
@@ -33,8 +37,9 @@ public class AxisScaleSecondDatumFunction implements DatumFunction<Double> {
 		Object secondValueObj = jsObject.eval("this.datum[1]");	
 		Double secondValue = Double.parseDouble(secondValueObj.toString());		
 		
-		Double scaledValue = scale.apply(secondValue).asDouble();		
-		return scaledValue;			
+		Double scaledValue = scale.apply(secondValue).asDouble();
+		double inversedValue = maxValue-scaledValue;
+		return inversedValue;			
 	}
 	
 	//#end region

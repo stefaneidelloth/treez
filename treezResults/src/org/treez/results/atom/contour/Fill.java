@@ -1,4 +1,4 @@
-package org.treez.results.atom.bar;
+package org.treez.results.atom.contour;
 
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
@@ -8,7 +8,6 @@ import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
-import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
@@ -63,26 +62,28 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	@Override
 	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, GraphicsAtom parent) {
 
+		/*
+		
 		String parentName = parent.getName();
-
+		
 		String clipPathId = "bar-rects-" + parentName + "-clip-path";
-
+		
 		//remove old group if it already exists
 		barSelection //
 				.select(".bar-rects") //
 				.remove();
-
+		
 		//create new group
 		rectsSelection = barSelection //
 				.append("g") //
 				.attr("id", "bar-rects") //
 				.attr("class", "bar-rects") //
 				.attr("clip-path", "url(#" + clipPathId);
-
+		
 		//create clipping path that ensures that the bars are only
 		//shown within the bounds of the graph
 		Graph graph = getGraph(parent);
-
+		
 		double width = Length.toPx(graph.data.width.get());
 		double height = Length.toPx(graph.data.width.get());
 		rectsSelection.append("clipPath") //
@@ -92,16 +93,17 @@ public class Fill implements GraphicsPropertiesPageFactory {
 				.attr("y", 0) //
 				.attr("width", width) //
 				.attr("height", height);
-
+		
 		//bind attributes
 		GraphicsAtom.bindDisplayToBooleanAttribute("hideRects", rectsSelection, hide);
-
+		
 		Consumer replotRects = () -> {
 			rePlotRects(parent);
 		};
-
+		
 		//initially plot rects
 		replotRects.consume();
+		*/
 
 		return barSelection;
 	}
@@ -132,7 +134,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 	private void plotNewRects(GraphicsAtom parent) {
 
-		Bar bar = (Bar) parent;
+		Contour bar = (Contour) parent;
 		Graph graph = getGraph(parent);
 		double graphHeight = Length.toPx(graph.data.height.get());
 		double graphWidth = Length.toPx(graph.data.width.get());
@@ -185,7 +187,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	}
 
 	private static double determineBarWidth(
-			Bar bar,
+			Contour bar,
 			double graphWidth,
 			QuantitativeScale<?> xScale,
 			int positionSize,
@@ -203,7 +205,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	}
 
 	private static double determineBarHeight(
-			Bar bar,
+			Contour bar,
 			double graphHeight,
 			QuantitativeScale<?> yScale,
 			int positionSize,

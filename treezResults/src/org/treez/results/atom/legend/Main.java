@@ -105,7 +105,7 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 		main.createIntegerVariableField(numberOfColumns, this, 1)//
 				.setLabel("Number of columns");
 
-		final int defaultKeyLength = 30;
+		final int defaultKeyLength = 25;
 		main.createIntegerVariableField(keyLength, this, defaultKeyLength) //
 				.setLabel("Key length");
 

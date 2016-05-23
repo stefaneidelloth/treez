@@ -9,7 +9,7 @@ import netscape.javascript.JSObject;
 /**
  * A DatumFunction that returns the x coordinate
  */
-public class XAccessorDatumFunction implements DatumFunction<Double> {
+public class XDatumFunction implements DatumFunction<Double> {
 
 	//#region ATTRIBUTES
 
@@ -19,7 +19,7 @@ public class XAccessorDatumFunction implements DatumFunction<Double> {
 
 	//#region CONSTRUCTORS
 
-	public XAccessorDatumFunction(WebEngine webEngine) {
+	public XDatumFunction(WebEngine webEngine) {
 		this.webEngine = webEngine;
 	}
 

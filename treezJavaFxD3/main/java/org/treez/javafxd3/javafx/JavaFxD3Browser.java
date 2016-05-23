@@ -156,7 +156,7 @@ public class JavaFxD3Browser extends Region {
 
 		injectD3();
 		injectFunctionPlotter();
-		injectNvd3();
+		injectNvd3();	
 
 		if (enableDebugMode) {
 			injectFireBug();
@@ -180,7 +180,7 @@ public class JavaFxD3Browser extends Region {
 		// https://github.com/novus/nvd3/blob/master/build/nv.d3.min.js
 		String nvd3Content = getJavaScriptLibraryFromFile("nv.d3.min.js");
 		webEngine.executeScript(nvd3Content);
-	}
+	}	
 
 	private void injectFireBug() {
 		// inject firebug into web engine, also see 
@@ -291,10 +291,7 @@ public class JavaFxD3Browser extends Region {
 
 	//#region ACCESSORS
 
-	/**
-	 * 
-	 * @return
-	 */
+	
 	public D3 getD3() {
 		if (d3 == null) {
 			String message = "The d3 reference is null. Do not call this method directly but use "
@@ -304,10 +301,7 @@ public class JavaFxD3Browser extends Region {
 		return d3;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
+	
 	public FunctionPlot getFunctionPlot() {
 		if (d3 == null) {
 			String message = "The d3 reference is null. Do not call this method directly but use "
@@ -318,17 +312,15 @@ public class JavaFxD3Browser extends Region {
 		FunctionPlot functionPlot = new FunctionPlot(webEngine);
 		return functionPlot;
 	}
+	
+	
 
-	/**
-	 * @return
-	 */
+	
 	public WebEngine getWebEngine() {
 		return webEngine;
 	}
 
-	/**
-	 * @param width
-	 */
+	
 	public void setBrowserWidth(double width) {
 		browserWidth = width+4;		
 		
