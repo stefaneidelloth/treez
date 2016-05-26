@@ -30,11 +30,9 @@ public class AxisScaleSecondDatumFunction implements DatumFunction<Double> {
 		
 		JSObject jsObject = (JSObject) datum;	
 		
-		Object secondValueObj = jsObject.eval("this.datum[1]");	
-		Double secondValue = Double.parseDouble(secondValueObj.toString());		
-		
-		Double scaledValue = scale.apply(secondValue).asDouble();		
-		return scaledValue;			
+		Object secondValueObj = jsObject.eval("this.datum[1]");			
+		Double scaledValue = scale.applyForDouble(secondValueObj.toString());		
+		return scaledValue;		
 	}
 	
 	//#end region

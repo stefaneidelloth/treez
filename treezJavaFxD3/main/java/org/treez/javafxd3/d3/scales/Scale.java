@@ -281,4 +281,18 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     	return value;
     	
     }
+    
+    public  Double applyForDouble(String d){
+    	String command = "this('" + d + "')";
+    	Object result = eval(command);    	
+    	Double value = Double.parseDouble(result.toString());
+    	return value;
+    	
+    }
+    
+    public  String applyForString(String d){
+    	String command = "this('" + d + "')";
+    	Object result = eval(command);    	
+    	return result.toString();    	
+    }
 }

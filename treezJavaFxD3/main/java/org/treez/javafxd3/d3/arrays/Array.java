@@ -112,6 +112,22 @@ public class Array<T> extends JavaScriptObject {
 		
 		return new Array<Double>(webEngine, result);
 	}
+	
+	
+	public static Array<String> fromStrings(WebEngine webEngine, String[] data) {
+
+		String varName = createNewTemporaryInstanceName();
+		String arrayString = ArrayUtils.createArrayString(data);
+		String command = "var " + varName + " = " + arrayString + ";";
+		webEngine.executeScript(command);
+
+		// execute command and return result as Array
+		JSObject result = (JSObject) webEngine.executeScript(varName);
+		
+		webEngine.executeScript(varName +" = null;");
+		
+		return new Array<String>(webEngine, result);
+	}
 
 	/**
 	 * Creates a one-dimensional Array from the given two JSObjects

@@ -465,7 +465,7 @@ public class Selection extends EnteringSelection {
 	 * @return
 	 */
 	public Selection style(String name, String value) {
-		JSObject result = call("style", name, value);
+		JSObject result = (JSObject) eval("this.style('" + name + "','"+ value + "')");
 		return new Selection(webEngine, result);
 	}
 

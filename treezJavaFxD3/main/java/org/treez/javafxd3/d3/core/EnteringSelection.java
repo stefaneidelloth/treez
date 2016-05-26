@@ -91,7 +91,21 @@ public class EnteringSelection extends JavaScriptObject {
 	 * @return a new selection containing the appended elements
 	 */
 	public Selection append(String name) {
-		JSObject result = call("append", name);
+		JSObject result = (JSObject) eval("this.append('" + name +"')");
+		return new Selection(webEngine, result);
+	}
+	
+	public Selection append(DatumFunction<JSObject> function) {
+		
+		String funcName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, function);
+
+		String command = "this.append(function(d, i) { return d3." + funcName + ".apply(this,{datum:d},i); });";
+		JSObject result = evalForJsObject(command);
+		
+		d3JsObject.removeMember(funcName);	
+		
 		return new Selection(webEngine, result);
 	}
 

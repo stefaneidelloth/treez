@@ -23,9 +23,12 @@ import org.treez.javafxd3.d3.geom.Polygon;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.Line;
+import org.treez.javafxd3.plotly.Plotly;
 import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.contour.conrec.Conrec;
 import org.treez.results.atom.contour.conrec.Point;
+
+import javafx.scene.web.WebEngine;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Data implements GraphicsPropertiesPageFactory {
@@ -97,6 +100,92 @@ public class Data implements GraphicsPropertiesPageFactory {
 	@SuppressWarnings("checkstyle:magicnumber")
 	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, GraphicsAtom parent) {
 
+		WebEngine webEngine = d3.getWebEngine();
+		Plotly plotly = new Plotly(webEngine);
+
+		double[][] data = createExampleData2();
+		double[][] cliffedData = addCliffBorder(data);
+
+		Conrec conrec = new Conrec(null);
+
+		double[] xs = range(0, cliffedData.length);
+		double[] ys = range(0, cliffedData[0].length);
+		double[] zs = range(0, 8, 0.1);
+
+		Contour contour = (Contour) parent;
+		QuantitativeScale<?> xScale = contour.getXScale();
+		QuantitativeScale<?> yScale = contour.getYScale();
+
+		LinearScale colorScale = d3.scale() //
+				.linear() //
+				.domain(new double[] { 0, 8 }) //
+				.range(new String[] { "#fff", "red" });
+
+		Line lineGenerator = d3.svg() //
+				.line() //
+				.x(new AxisScaleFirstDatumFunction(xScale))
+				.y(new AxisScaleSecondDatumFunction(yScale));
+
+		LOG.info("starting contour");
+
+		conrec.contour(cliffedData, 0, xs.length - 1, 0, ys.length - 1, xs, ys, zs.length, zs);
+
+		LOG.info("getting contours");
+
+		List<org.treez.results.atom.contour.conrec.Contour> contourData = conrec.getContours();
+
+		LOG.info("converting to polygons");
+
+		List<Polygon> polygons = convertToD3Polygons(d3, contourData);
+
+		LOG.info("drawing");
+
+		Selection dataSelection = contourSelection.selectAll("path") //
+				.data(polygons); //
+
+		LOG.info("path");
+		Selection pathSelection = dataSelection.enter() //
+				.append("path") //
+				.style("fill", new ColorScaleLevelDatumFunction(colorScale))
+				.style("stroke", "black"); //
+
+		LOG.info("geometry");
+		pathSelection.attr("d", lineGenerator);
+
+		LOG.info("finished");
+
+		Consumer dataChangedConsumer = () -> {
+			Contour bar = (Contour) parent;
+			bar.updatePlotWithD3(d3);
+		};
+		barLengths.addModificationConsumer("replot", dataChangedConsumer);
+		barPositions.addModificationConsumer("replot", dataChangedConsumer);
+
+		barDirection.addModificationConsumer("replot", dataChangedConsumer);
+
+		barFillRatio.addModificationConsumer("replot", dataChangedConsumer);
+
+		//legendText.addModificationConsumer("replot",dataChangedConsumer);
+
+		xAxis.addModificationConsumer("replot", dataChangedConsumer);
+		yAxis.addModificationConsumer("replot", dataChangedConsumer);
+
+		return contourSelection;
+	}
+
+	private double[][] createExampleData2() {
+
+		double[][] data = new double[][] {
+				new double[] { 10, 10.625, 12.5, 15.625, 20 },
+				new double[] { 5.625, 6.25, 8.125, 11.25, 15.625 },
+				new double[] { 2.5, 3.125, 5., 8.125, 12.5 },
+				new double[] { 0.625, 1.25, 3.125, 6.25, 10.625 },
+				new double[] { 0, 0.625, 2.5, 5.625, 10 } };
+		return data;
+
+	}
+
+	private double[][] createExampleData() {
 		double[][] data = new double[][] {
 				new double[] {
 						0.4,
@@ -518,7 +607,10 @@ public class Data implements GraphicsPropertiesPageFactory {
 						-2.5,
 						-2.4,
 						-3.3 } };
+		return data;
+	}
 
+	private double[][] addCliffBorder(double[][] data) {
 		double cliff = -1000;
 		double[][] cliffedData = new double[data.length + 2][data[0].length + 2];
 
@@ -537,68 +629,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 				cliffedData[rowIndex + 1][colIndex + 1] = data[rowIndex][colIndex];
 			}
 		}
-
-		Conrec conrec = new Conrec(null);
-
-		double[] xs = range(0, cliffedData.length);
-		double[] ys = range(0, cliffedData[0].length);
-		double[] zs = range(-5, 3, 0.5);
-
-		Contour contour = (Contour) parent;
-		QuantitativeScale<?> xScale = contour.getXScale();
-		QuantitativeScale<?> yScale = contour.getYScale();
-
-		LinearScale colorScale = d3.scale() //
-				.linear() //
-				.domain(new double[] { -5, 3 }) //
-				.range(new String[] { "#fff", "red" });
-
-		Line lineGenerator = d3.svg() //
-				.line() //
-				.x(new AxisScaleFirstDatumFunction(xScale))
-				.y(new AxisScaleSecondDatumFunction(yScale));
-
-		LOG.info("starting contour");
-
-		conrec.contour(cliffedData, 0, xs.length - 1, 0, ys.length - 1, xs, ys, zs.length, zs);
-
-		LOG.info("getting contours");
-
-		List<org.treez.results.atom.contour.conrec.Contour> contourData = conrec.getContours();
-
-		LOG.info("converting to polygons");
-
-		List<Polygon> polygons = convertToD3Polygons(d3, contourData);
-
-		LOG.info("drawing");
-
-		contourSelection.selectAll("path") //
-				.data(polygons) //
-				.enter() //
-				.append("path") //
-				.style("fill", new ColorScaleLevelDatumFunction(colorScale))
-				.style("stroke", "black") //
-				.attr("d", lineGenerator);
-
-		LOG.info("finished");
-
-		Consumer dataChangedConsumer = () -> {
-			Contour bar = (Contour) parent;
-			bar.updatePlotWithD3(d3);
-		};
-		barLengths.addModificationConsumer("replot", dataChangedConsumer);
-		barPositions.addModificationConsumer("replot", dataChangedConsumer);
-
-		barDirection.addModificationConsumer("replot", dataChangedConsumer);
-
-		barFillRatio.addModificationConsumer("replot", dataChangedConsumer);
-
-		//legendText.addModificationConsumer("replot",dataChangedConsumer);
-
-		xAxis.addModificationConsumer("replot", dataChangedConsumer);
-		yAxis.addModificationConsumer("replot", dataChangedConsumer);
-
-		return contourSelection;
+		return cliffedData;
 	}
 
 	public double[] range(double start, double stop, double step) {

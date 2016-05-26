@@ -35,10 +35,8 @@ public class AxisScaleFirstDatumFunction implements DatumFunction<Double> {
 		
 		JSObject jsObject = (JSObject) datum;	
 		
-		Object firstValueObj = jsObject.eval("this.datum[0]");	
-		Double firstValue = Double.parseDouble(firstValueObj.toString());		
-		
-		Double scaledValue = scale.apply(firstValue).asDouble();		
+		Object firstValueObj = jsObject.eval("this.datum[0]");			
+		Double scaledValue = scale.applyForDouble(firstValueObj.toString());		
 		return scaledValue;			
 	}
 	

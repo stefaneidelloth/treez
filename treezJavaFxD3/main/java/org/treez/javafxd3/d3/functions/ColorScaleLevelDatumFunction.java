@@ -23,14 +23,10 @@ public class ColorScaleLevelDatumFunction implements DatumFunction<String> {
 	//#region METHODS
 
 	@Override
-	public String apply(Object context, Object datum, int index) {	
-		
+	public String apply(Object context, Object datum, int index) {			
 		JSObject jsObject = (JSObject) datum;
-		Object levelObject = jsObject.eval("this.datum.level");
-		
-		Double level = Double.parseDouble(levelObject.toString());	
-		
-		String scaledValue = scale.apply(level).asString();		
+		Object levelObject = jsObject.eval("this.datum.level");		
+		String scaledValue = scale.applyForString(levelObject.toString());		
 		return scaledValue;			
 	}
 	

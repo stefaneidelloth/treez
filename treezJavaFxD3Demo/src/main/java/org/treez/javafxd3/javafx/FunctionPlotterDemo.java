@@ -12,11 +12,7 @@ public class FunctionPlotterDemo extends Application {
 
 	//#region METHODS
 
-	/**
-	 * Main
-	 * 
-	 * @param args
-	 */
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -31,7 +27,7 @@ public class FunctionPlotterDemo extends Application {
 		FunctionPlotter functionPlotter = new FunctionPlotter();
 		functionPlotter.setXDomain(-2,2);	
 		functionPlotter.setYDomain(-0.2,1.2);
-		functionPlotter.plot("[{fn: 'exp(-x^2)'}]");
+		functionPlotter.plot("exp(-x^2)");
 
 		//create the scene
 		Scene scene = new Scene(functionPlotter, 750, 500, Color.web("#666970"));
