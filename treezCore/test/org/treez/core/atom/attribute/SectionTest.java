@@ -22,7 +22,7 @@ public class SectionTest extends AbstractAttributeContainerAtomConstructonTest {
 
 		//create test atom
 		Section section = new Section(atomName);
-		section.setTitle("Section Title");
+		section.setLabel("Section Title");
 		section.setDescription("Section Description");
 		section.setLayout("HORIZONTAL");
 		section.setExpanded(true);

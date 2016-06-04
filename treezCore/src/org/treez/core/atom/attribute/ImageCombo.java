@@ -34,6 +34,10 @@ import org.eclipse.swt.widgets.TypedListener;
  */
 public final class ImageCombo extends Composite {
 
+	//#region "ATTRIBUTES"
+
+	private static final Color DEFAULT_BACKGROUND_COLOR = new Color(null, 255, 255, 255);
+
 	private Text text;
 
 	private Table table;
@@ -58,9 +62,10 @@ public final class ImageCombo extends Composite {
 
 	private Font font;
 
-	/**
-	 * Constructor
-	 */
+	//#end region
+
+	//#region "CONSTRUCTORS"
+
 	public ImageCombo(Composite parent, int style) {
 		super(parent, checkStyle(style));
 
@@ -68,7 +73,14 @@ public final class ImageCombo extends Composite {
 
 		text = new Text(this, SWT.NONE);
 
-		int[] textEvents = { SWT.KeyDown, SWT.KeyUp, SWT.Modify, SWT.MouseDown, SWT.MouseUp, SWT.Traverse, SWT.FocusIn };
+		int[] textEvents = {
+				SWT.KeyDown,
+				SWT.KeyUp,
+				SWT.Modify,
+				SWT.MouseDown,
+				SWT.MouseUp,
+				SWT.Traverse,
+				SWT.FocusIn };
 		for (int i = 0; i < textEvents.length; i++) {
 			text.addListener(textEvents[i], listener);
 		}
@@ -94,7 +106,12 @@ public final class ImageCombo extends Composite {
 
 		createPopup(-1);
 		initAccessible();
+		setBackground(DEFAULT_BACKGROUND_COLOR);
 	}
+
+	//#end region
+
+	//#region METHODS
 
 	private void createArrow(int checkedStyle) {
 		int arrowStyle = SWT.ARROW | SWT.DOWN;
@@ -260,7 +277,14 @@ public final class ImageCombo extends Composite {
 		for (int i = 0; i < popupEvents.length; i++) {
 			popup.addListener(popupEvents[i], listener);
 		}
-		int[] listEvents = { SWT.MouseUp, SWT.Selection, SWT.Traverse, SWT.KeyDown, SWT.KeyUp, SWT.FocusIn, SWT.Dispose };
+		int[] listEvents = {
+				SWT.MouseUp,
+				SWT.Selection,
+				SWT.Traverse,
+				SWT.KeyDown,
+				SWT.KeyUp,
+				SWT.FocusIn,
+				SWT.Dispose };
 		for (int i = 0; i < listEvents.length; i++) {
 			table.addListener(listEvents[i], listener);
 		}
@@ -1126,4 +1150,6 @@ public final class ImageCombo extends Composite {
 		e.stateMask = event.stateMask;
 		notifyListeners(SWT.DefaultSelection, e);
 	}
+
+	//#end region
 }

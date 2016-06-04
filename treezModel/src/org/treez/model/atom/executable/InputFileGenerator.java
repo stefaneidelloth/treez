@@ -92,7 +92,7 @@ public class InputFileGenerator extends AdjustableAtom {
 		String helpContextId = Activator.getAbsoluteHelpContextIdStatic(relativeHelpContextId);
 
 		Section data = dataPage.createSection("data", helpContextId);
-		data.setTitle("");
+		data.setLabel("");
 		data.createSectionAction("action", "Generate input file", () -> execute(treeViewRefreshable));
 		//template
 		data.createFilePath(templateFilePath, "templateFilePath",

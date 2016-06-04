@@ -72,7 +72,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 		//#region fill above section
 
 		Section fillAbove = fillPage.createSection("fillAbove", false);
-		fillAbove.setTitle("Fill above");
+		fillAbove.setLabel("Fill above");
 
 		fillAbove.createColorChooser(aboveColor, "color", "black");
 

@@ -94,7 +94,7 @@ public class PickingProbe extends AbstractProbe {
 
 		//domain section
 		Section domainSection = page.createSection("domainSection", "DomainSectionHelpId");
-		domainSection.setTitle("Domain");
+		domainSection.setLabel("Domain");
 		domainSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
 		ComboBox domainTypeCombo = domainSection.createComboBox(domainType, this);

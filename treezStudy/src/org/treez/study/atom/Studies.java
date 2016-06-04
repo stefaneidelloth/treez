@@ -45,7 +45,7 @@ public class Studies extends AdjustableAtom {
 		String relativeHelpContextId = "studies";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 		Section studies = dataPage.createSection("studies", absoluteHelpContextId);
-		studies.setTitle("");
+		studies.setLabel("");
 		studies.createLabel("label", "This atom represents studies.");
 		setModel(root);
 	}

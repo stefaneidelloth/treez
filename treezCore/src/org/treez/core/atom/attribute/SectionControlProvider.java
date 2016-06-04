@@ -27,13 +27,9 @@ import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 
-/**
- * Provides the control for the section that represents the attribute atom
- */
 public class SectionControlProvider {
 
-	private static final Logger LOG = Logger
-			.getLogger(SectionControlProvider.class);
+	private static final Logger LOG = Logger.getLogger(SectionControlProvider.class);
 
 	//#region ATTRIBUTES
 
@@ -43,16 +39,15 @@ public class SectionControlProvider {
 
 	private FocusChangingRefreshable treeViewerRefreshable;
 
-	/**
-	 * The section composite
-	 */
 	private org.eclipse.ui.forms.widgets.Section sectionComposite;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public SectionControlProvider(Section section, Composite parentComposite,
+	public SectionControlProvider(
+			Section section,
+			Composite parentComposite,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.section = section;
 		this.parentComposite = parentComposite;
@@ -75,14 +70,14 @@ public class SectionControlProvider {
 		//define section style
 		int sectionStyle;
 		if (isExpanded) {
-			sectionStyle = ExpandableComposite.TWISTIE
-					| org.eclipse.ui.forms.widgets.Section.DESCRIPTION
-					| ExpandableComposite.EXPANDED
-					| ExpandableComposite.TITLE_BAR;
+			sectionStyle = ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR;
 		} else {
-			sectionStyle = ExpandableComposite.TWISTIE
-					| org.eclipse.ui.forms.widgets.Section.DESCRIPTION
-					| ExpandableComposite.TITLE_BAR;
+			sectionStyle = ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR;
+		}
+
+		boolean descriptionIsEmpty = section.getDescription().isEmpty();
+		if (!descriptionIsEmpty) {
+			sectionStyle = sectionStyle | org.eclipse.ui.forms.widgets.Section.DESCRIPTION;
 		}
 
 		//create section composite
@@ -96,13 +91,12 @@ public class SectionControlProvider {
 
 		//register help id
 		String absoluteHelpId = section.getAbsoluteHelpId();
-		AbstractActivator.registerAbsoluteHelpId(absoluteHelpId,
-				sectionComposite);
+		AbstractActivator.registerAbsoluteHelpId(absoluteHelpId, sectionComposite);
 
 		//set layout data for the section composite to horizontally expand the
 		//section to its parent width
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true,
-				false);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
+
 		sectionComposite.setLayoutData(gridData);
 
 		//create section tool bar (some property child atoms might add actions to this
@@ -111,6 +105,10 @@ public class SectionControlProvider {
 
 		//create section client and set its layout direction
 		Composite contentComposite = toolkit.createComposite(sectionComposite);
+
+		//GridData contentGridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+		//contentComposite.setLayoutData(contentGridData);
+
 		sectionComposite.setClient(contentComposite);
 
 		//add expansion listener to collapsed sections
@@ -150,12 +148,10 @@ public class SectionControlProvider {
 
 		//add spacer to tool bar
 		Label toolbarSpacer = toolkit.createLabel(toolbar, "  ");
-		toolbarSpacer.setBackground(
-				sectionComposite.getTitleBarGradientBackground());
+		toolbarSpacer.setBackground(sectionComposite.getTitleBarGradientBackground());
 
 		//add help button to tool bar
-		ImageHyperlink helpToolBarLink = toolkit.createImageHyperlink(toolbar,
-				SWT.NULL);
+		ImageHyperlink helpToolBarLink = toolkit.createImageHyperlink(toolbar, SWT.NULL);
 		//info.setText("go");
 		helpToolBarLink.setImage(Activator.getImage("help.png"));
 		helpToolBarLink.addHyperlinkListener(new HyperlinkAdapter() {
@@ -163,8 +159,7 @@ public class SectionControlProvider {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
 
-				IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench()
-						.getHelpSystem();
+				IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
 				String absoluteHelpId = section.getAbsoluteHelpId();
 				if (helpSystem != null) {
 					helpSystem.displayHelp(absoluteHelpId);
@@ -172,18 +167,16 @@ public class SectionControlProvider {
 
 			}
 		});
-		helpToolBarLink.setBackground(
-				sectionComposite.getTitleBarGradientBackground());
+		helpToolBarLink.setBackground(sectionComposite.getTitleBarGradientBackground());
 		helpToolBarLink.setToolTipText("Show help.");
 	}
 
 	/**
-	 * Creates the content of the section. The functionality is extracted to
-	 * this method to be able to do lazy creation.
+	 * Creates the content of the section. The functionality is extracted to this method to be able to do lazy creation.
 	 *
 	 * @param sectionContentComposite
 	 */
-	@SuppressWarnings({"checkstyle:illegalcatch", "checkstyle:magicnumber"})
+	@SuppressWarnings({ "checkstyle:illegalcatch", "checkstyle:magicnumber" })
 	private void createSectionContent(Composite sectionContentComposite) {
 
 		//remove old content
@@ -197,6 +190,9 @@ public class SectionControlProvider {
 			GridLayout gridLayout = new GridLayout();
 			gridLayout.verticalSpacing = 5;
 			gridLayout.horizontalSpacing = 0;
+			gridLayout.marginTop = -5;
+			gridLayout.marginLeft = -5;
+			gridLayout.marginRight = -5;
 
 			sectionContentComposite.setLayout(gridLayout);
 		} else {
@@ -206,28 +202,23 @@ public class SectionControlProvider {
 		}
 
 		//create child composites
-		List<TreeNodeAdaption> childNodes = section.createTreeNodeAdaption()
-				.getChildren();
+		List<TreeNodeAdaption> childNodes = section.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
 
 			try {
 
-				AbstractAttributeAtom<?> propertyAtom = (AbstractAttributeAtom<?>) childNode
-						.getAdaptable();
-				propertyAtom.createAttributeAtomControl(sectionContentComposite,
-						treeViewerRefreshable);
+				AbstractAttributeAtom<?> propertyAtom = (AbstractAttributeAtom<?>) childNode.getAdaptable();
+				propertyAtom.createAttributeAtomControl(sectionContentComposite, treeViewerRefreshable);
 
 			} catch (Exception exception) {
 				try {
 
 					AbstractAttributeContainerAtom propertyAtom = (AbstractAttributeContainerAtom) childNode
 							.getAdaptable();
-					propertyAtom.createAtomControl(sectionContentComposite,
-							treeViewerRefreshable);
+					propertyAtom.createAtomControl(sectionContentComposite, treeViewerRefreshable);
 
 				} catch (Exception secondException) {
-					LOG.error("Could not create attribute atom.",
-							secondException);
+					LOG.error("Could not create attribute atom.", secondException);
 					throw exception;
 				}
 			}

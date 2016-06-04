@@ -99,7 +99,7 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	 */
 	protected void assignRealtiveRootToSourceVariablePath() {
 		Objects.requireNonNull(sourceModelModelPath, "Source model path must not be null when calling this function.");
-		data.setTitle("Data for " + sourceModelModelPath);
+		data.setLabel("Data for " + sourceModelModelPath);
 		AbstractAtom relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
 		AttributeWrapper<String> pathWrapper = (AttributeWrapper<String>) sourceVariableModelPath;
 		ModelPath modelPath = (ModelPath) pathWrapper.getAttribute();

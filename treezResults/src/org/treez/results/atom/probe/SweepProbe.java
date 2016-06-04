@@ -115,7 +115,7 @@ public class SweepProbe extends AbstractProbe {
 
 		//domain section
 		Section domainSection = page.createSection("domainSection", "DomainSectionHelpId");
-		domainSection.setTitle("Domain");
+		domainSection.setLabel("Domain");
 		domainSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
 		TextField domainLabelField = domainSection.createTextField(domainLabel, "domainLabel", "x");

@@ -124,7 +124,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 
 	private void createSourceDataSection(Page dataPage, String absoluteHelpContextId) {
 		Section sourceDataSection = dataPage.createSection("sourceDataSection", absoluteHelpContextId);
-		sourceDataSection.setTitle("Source data");
+		sourceDataSection.setLabel("Source data");
 
 		//inherit source file path : take (modified) parent output path
 		CheckBox inheritSourcePath = sourceDataSection.createCheckBox(inheritSourceFilePath, "inheritSourceFilePath",
@@ -161,7 +161,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 
 	private void createSourceTypeSection(Page dataPage, String absoluteHelpContextId) {
 		Section sourceTypeSection = dataPage.createSection("sourceTypeSection", absoluteHelpContextId);
-		sourceTypeSection.setTitle("Source type");
+		sourceTypeSection.setLabel("Source type");
 		sourceTypeSection.createSectionAction("action", "Import data", () -> execute(treeViewRefreshable));
 
 		//source type

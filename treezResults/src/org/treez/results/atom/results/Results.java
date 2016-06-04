@@ -40,7 +40,7 @@ public class Results extends AdjustableAtom {
 		String relativeHelpContextId = "results";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 		Section results = dataPage.createSection("results", absoluteHelpContextId);
-		results.setTitle("");
+		results.setLabel("");
 		results.createLabel("label", "This atom represents results.");
 		setModel(root);
 	}

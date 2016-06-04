@@ -79,7 +79,7 @@ public class Page extends GraphicsAtom {
 
 		//section
 		Section section = page.createSection("section");
-		section.setTitle("Page");
+		section.setLabel("Page");
 
 		Runnable runAction = () -> execute(treeViewRefreshable);
 		section.createSectionAction("action", "Build page", runAction);

@@ -153,7 +153,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 		//time dependent picking
 		Section timeDependentSection = dataPage.createSection("timeDependent", absoluteHelpContextId);
-		timeDependentSection.setTitle("Time dependent picking");
+		timeDependentSection.setLabel("Time dependent picking");
 		timeDependentSection.setExpanded(false);
 		CheckBox isTimeDependentCheckBox = timeDependentSection.createCheckBox(isTimeDependent, "isTimeDependent");
 		isTimeDependentCheckBox.setLabel("Use time series");
@@ -189,7 +189,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 		//study info
 		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
-		studyInfoSection.setTitle("Export study info");
+		studyInfoSection.setLabel("Export study info");
 
 		//export study info check box
 		CheckBox export = studyInfoSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);

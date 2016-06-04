@@ -72,7 +72,7 @@ public class XySeries extends GraphicsAtom implements LegendContributorProvider 
 
 		//section
 		Section section = page.createSection("section");
-		section.setTitle("XySeries");
+		section.setLabel("XySeries");
 
 		Runnable runAction = () -> execute(treeViewRefreshable);
 		section.createSectionAction("action", "Build XySeries", runAction);

@@ -64,38 +64,61 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Page dataPage = root.createPage("data", "Data");
 
-		Section data = dataPage.createSection("data", "Data");
+		//data
+
+		Section dataSection = dataPage.createSection("data", "Data");
 
 		Class<?> targetClass = org.treez.data.column.Column.class;
 		String value = "root.data.table.columns.x";
-		data.createModelPath(xData, this, value, targetClass, parent)//
+		dataSection.createModelPath(xData, this, value, targetClass, parent)//
 				.setLabel("x-Data");
 
 		value = "root.data.table.columns.y";
-		data.createModelPath(yData, this, value, targetClass, parent)//
+		dataSection.createModelPath(yData, this, value, targetClass, parent)//
 				.setLabel("y-Data");
 
 		value = "root.data.table.columns.z";
-		data.createModelPath(zData, this, value, targetClass, parent)//
+		dataSection.createModelPath(zData, this, value, targetClass, parent)//
 				.setLabel("z-Data");
 
-		CheckBox autoZLimitsCheckBox = data.createCheckBox(automaticZLimits, "Automatic z limits", true);
-		autoZLimitsCheckBox.addChild(new CheckBoxEnableTarget("zMin", false, "data.data.zMin"));
-		autoZLimitsCheckBox.addChild(new CheckBoxEnableTarget("zMax", false, "data.data.zMax"));
+		dataSection.createCheckBox(connectGaps, "Connect gaps", true);
 
-		data.createDoubleVariableField(zMin, this, 0.0).setEnabled(false);
-		data.createDoubleVariableField(zMax, this, 1.0).setEnabled(false);
+		//axis
+		Section axisSection = dataPage.createSection("axis", "Axis");
 
-		CheckBox autoContourcheckBox = data.createCheckBox(automaticContours, "Automatic contours", true);
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("coloring", false, "data.data.coloring"));
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("numberOfContours", true, "data.data.numberOfContours"));
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("startLevel", false, "data.data.startLevel"));
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("endLevel", false, "data.data.endLevel"));
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("levelSize", false, "data.data.levelSize"));
+		targetClass = org.treez.results.atom.axis.Axis.class;
+		value = "";
+		axisSection.createModelPath(xAxis, this, value, targetClass, parent)//
+				.setLabel("Xaxis");
 
-		data.createIntegerVariableField(numberOfContours, this, 5);
+		axisSection.createModelPath(yAxis, this, value, targetClass, parent)//
+				.setLabel("Yaxis");
 
-		EnumComboBox<?> coloringComboBox = data.createEnumComboBox(coloring, "coloring", Coloring.FILL);
+		//zLimits
+		Section zLimits = dataPage.createSection("zLimits", "zLimits");
+		zLimits.setLabel("z-Limits");
+
+		CheckBox autoZLimitsCheckBox = zLimits.createCheckBox(automaticZLimits, "Automatic z limits", true);
+		autoZLimitsCheckBox.addChild(new CheckBoxEnableTarget("zMin", false, "data.zLimits.zMin"));
+		autoZLimitsCheckBox.addChild(new CheckBoxEnableTarget("zMax", false, "data.zLimits.zMax"));
+
+		zLimits.createDoubleVariableField(zMin, this, 0.0).setEnabled(false);
+		zLimits.createDoubleVariableField(zMax, this, 1.0).setEnabled(false);
+
+		//contours
+		Section contours = dataPage.createSection("contours", "z-Limits");
+
+		CheckBox autoContourcheckBox = contours.createCheckBox(automaticContours, "Automatic contours", true);
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("coloring", false, "data.contours.coloring"));
+		autoContourcheckBox
+				.addChild(new CheckBoxEnableTarget("numberOfContours", true, "data.contours.numberOfContours"));
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("startLevel", false, "data.contours.startLevel"));
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("endLevel", false, "data.contours.endLevel"));
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("levelSize", false, "data.contours.levelSize"));
+
+		contours.createIntegerVariableField(numberOfContours, this, 5);
+
+		EnumComboBox<?> coloringComboBox = contours.createEnumComboBox(coloring, "coloring", Coloring.FILL);
 		coloringComboBox.setLabel("Coloring mode");
 		coloringComboBox.setEnabled(false);
 
@@ -108,19 +131,9 @@ public class Data implements GraphicsPropertiesPageFactory {
 			colorChooser.setEnabled(!isLinesMode);
 		});
 
-		data.createDoubleVariableField(startLevel, this, 0.0).setEnabled(false);
-		data.createDoubleVariableField(endLevel, this, 10.0).setEnabled(false);
-		data.createDoubleVariableField(levelSize, this, 2.0).setEnabled(false);
-
-		data.createCheckBox(connectGaps, "Connect gaps", true);
-
-		targetClass = org.treez.results.atom.axis.Axis.class;
-		value = "";
-		data.createModelPath(xAxis, this, value, targetClass, parent)//
-				.setLabel("Xaxis");
-
-		data.createModelPath(yAxis, this, value, targetClass, parent)//
-				.setLabel("Yaxis");
+		contours.createDoubleVariableField(startLevel, this, 0.0).setEnabled(false);
+		contours.createDoubleVariableField(endLevel, this, 10.0).setEnabled(false);
+		contours.createDoubleVariableField(levelSize, this, 2.0).setEnabled(false);
 
 	}
 

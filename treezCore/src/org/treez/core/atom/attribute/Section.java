@@ -908,7 +908,7 @@ public class Section extends AbstractAttributeContainerAtom {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setLabel(String title) {
 		this.title = title;
 	}
 

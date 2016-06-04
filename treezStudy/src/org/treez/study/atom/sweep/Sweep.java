@@ -93,7 +93,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		//study info
 		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
-		studyInfoSection.setTitle("Export study info");
+		studyInfoSection.setLabel("Export study info");
 
 		//export study info check box
 		CheckBox exportStudy = studyInfoSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);

@@ -1,6 +1,5 @@
 package org.treez.core.atom.attribute;
 
-import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
 
@@ -137,6 +136,7 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 		//combo box value
 		//chooser-------------------------------------------------
 		colorCombo = new ImageCombo(container, SWT.DEFAULT);
+
 		colorCombo.setEnabled(isEnabled());
 		colorCombo.setEditable(false);
 
@@ -286,7 +286,7 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-	
+
 		});
 	}
 	*/
@@ -345,11 +345,11 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 		return attributeValue;
 	}
 
-	public Color getColor() {
+	public java.awt.Color getColor() {
 		Objects.requireNonNull(attributeValue, "The value has not been set.");
 		String colorString = get();
 		try {
-			Color color = Color.decode(colorString);
+			java.awt.Color color = java.awt.Color.decode(colorString);
 			return color;
 		} catch (NumberFormatException exception) {
 			throw new IllegalStateException("Could not decode color value '" + colorString + "'");
@@ -357,7 +357,7 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 	}
 
 	public RGB getColorRgb() {
-		Color colorObj = getColor();
+		java.awt.Color colorObj = getColor();
 		int red = colorObj.getRed();
 		int green = colorObj.getGreen();
 		int blue = colorObj.getBlue();

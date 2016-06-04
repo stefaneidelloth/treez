@@ -181,7 +181,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
 		Section outputModification = dataPage.createSection("outputModification", executableHelpContextId);
-		outputModification.setTitle("Output modification");
+		outputModification.setLabel("Output modification");
 		outputModification.setExpanded(false);
 
 		outputModification.createLabel("includeDate", "Include date in:");
