@@ -59,7 +59,7 @@ public class Root extends AdjustableAtom {
 		String relativeHelpContextId = "root";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 		Section studies = dataPage.createSection("root", absoluteHelpContextId);
-		studies.setTitle("");
+		studies.setLabel("");
 		studies.createLabel("label",
 				"This atom represents the root of the tree.\nClick the help button for more information.");
 		setModel(root);
