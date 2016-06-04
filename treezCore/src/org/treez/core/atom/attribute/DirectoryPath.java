@@ -18,6 +18,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
+import org.treez.core.utils.Utils;
 
 public class DirectoryPath extends AbstractStringAttributeAtom {
 
@@ -75,12 +76,12 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 
 	public DirectoryPath(String name) {
 		super(name);
-		label = name;
+		label = Utils.firstToUpperCase(name);
 	}
 
 	public DirectoryPath(String name, String defaultDirectoryPath) {
 		super(name);
-		label = name;
+		label = Utils.firstToUpperCase(name);
 		attributeValue = defaultDirectoryPath;
 
 	}
@@ -131,6 +132,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 
 		//label
 		labelComposite = toolkit.createLabel(checkBoxAndLabelContainer, label);
+		labelComposite.setBackground(backgroundColor);
 
 		//sub container for rest (text field and buttons)
 		createSubContainer(toolkit);
@@ -168,6 +170,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 		gridLayout.horizontalSpacing = 10;
 		subContainer.setLayout(gridLayout);
 		subContainer.setLayoutData(fillHorizontal);
+		subContainer.setBackground(backgroundColor);
 	}
 
 	private void createTextField(FormToolkit toolkit) {
@@ -182,6 +185,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 		textField = toolkit.createText(subContainer, get());
 		textField.setEnabled(isEnabled());
 		textField.setLayoutData(textFieldFillHorizontal);
+		textField.setBackground(backgroundColor);
 
 		//create error decoration for text field
 		String errorMessage = "Invalid directory path";
@@ -221,6 +225,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 		Image browseImage = Activator.getImage("browse.png");
 		selectButton.setImage(browseImage);
 		selectButton.setToolTipText("Select directory");
+		selectButton.setBackground(backgroundColor);
 
 		selectButton.addListener(SWT.MouseDown, new Listener() {
 
@@ -248,6 +253,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 		Image runImage = Activator.getImage("run_triangle.png");
 		openButton.setImage(runImage);
 		openButton.setToolTipText("Open directory");
+		openButton.setBackground(backgroundColor);
 
 		//create action listener for open button
 		openButton.addListener(SWT.MouseDown, new Listener() {
@@ -344,7 +350,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 
 	@Override
 	public void setBackgroundColor(Color backgroundColor) {
-
+		this.backgroundColor = backgroundColor;
 		if (isAvailable(container)) {
 			container.setBackground(backgroundColor);
 		}

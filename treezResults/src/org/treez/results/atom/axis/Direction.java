@@ -3,7 +3,7 @@ package org.treez.results.atom.axis;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.treez.core.atom.attribute.EnumValueProvider;
+import org.treez.javafxd3.javafx.EnumValueProvider;
 
 public enum Direction implements EnumValueProvider<Direction> {
 

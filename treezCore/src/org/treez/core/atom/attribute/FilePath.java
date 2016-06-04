@@ -18,6 +18,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
+import org.treez.core.utils.Utils;
 
 /**
  * Allows the user to choose a file path
@@ -71,12 +72,12 @@ public class FilePath extends AbstractStringAttributeAtom {
 
 	public FilePath(String name) {
 		super(name);
-		label = name;
+		label = Utils.firstToUpperCase(name);
 	}
 
 	public FilePath(String name, String defaultPath) {
 		super(name);
-		label = name;
+		label = Utils.firstToUpperCase(name);
 		setDefaultValue(defaultPath);
 		set(defaultPath);
 
@@ -148,6 +149,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 
 		//label
 		labelComposite = toolkit.createLabel(checkBoxAndLabelContainer, label);
+		labelComposite.setBackground(backgroundColor);
 
 		//sub container for rest (text field and buttons)
 		createSubContainer(toolkit);
@@ -165,6 +167,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 			Image runImage = Activator.getImage("run_triangle.png");
 			openButton.setImage(runImage);
 			openButton.setToolTipText("Open/Run");
+			openButton.setBackground(backgroundColor);
 
 			//create action listener for open button
 			openButton.addListener(SWT.MouseDown, new Listener() {
@@ -198,6 +201,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 		fillHorizontal.horizontalAlignment = GridData.FILL;
 
 		subContainer.setLayoutData(fillHorizontal);
+		subContainer.setBackground(backgroundColor);
 	}
 
 	private void createTextField(FormToolkit toolkit) {
@@ -212,6 +216,8 @@ public class FilePath extends AbstractStringAttributeAtom {
 		textField = toolkit.createText(subContainer, get());
 		textField.setEnabled(isEnabled());
 		textField.setLayoutData(textFieldFillHorizontal);
+		textField.setBackground(backgroundColor);
+
 		//initialize value
 		refreshAttributeAtomControl();
 
@@ -259,6 +265,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 		Image browseImage = Activator.getImage("browse.png");
 		selectButton.setImage(browseImage);
 		selectButton.setToolTipText("Select file path");
+		selectButton.setBackground(backgroundColor);
 
 		//create action listener for select button
 		final String[] extensionsArray = fileExtensions.split(",");
@@ -422,7 +429,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 
 	@Override
 	public void setBackgroundColor(Color backgroundColor) {
-
+		this.backgroundColor = backgroundColor;
 		if (isAvailable(container)) {
 			container.setBackground(backgroundColor);
 		}

@@ -618,7 +618,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 * @param namePrefix
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	public void createChildAtom(Class<? extends AbstractAtom> atomClass, String namePrefix) {
+	public AbstractAtom createChildAtom(Class<? extends AbstractAtom> atomClass, String namePrefix) {
 		Objects.requireNonNull(atomClass, "Atom class must not be null");
 		Objects.requireNonNull(namePrefix, "Name prefix must not be null");
 
@@ -635,6 +635,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 		}
 
 		addChild(newChild);
+		return newChild;
 	}
 
 	/**

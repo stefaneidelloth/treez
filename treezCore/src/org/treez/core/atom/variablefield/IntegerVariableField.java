@@ -123,6 +123,9 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 		valueSpinner.setMinimum(minValue);
 		valueSpinner.setMaximum(maxValue);
 		Integer intValue = get();
+		if (intValue == null) {
+			intValue = 0;
+		}
 		valueSpinner.setSelection(intValue);
 		valueSpinner.addModifyListener((event) -> updateValue(event));
 
@@ -192,7 +195,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 			valueSpinner.setEnabled(state);
 		}
 		if (treeViewRefreshable != null) {
-			treeViewRefreshable.refresh();
+			//treeViewRefreshable.refresh(); //creates flickering when targets are updated
 		}
 		refreshAttributeAtomControl();
 	}
@@ -246,7 +249,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 	public Integer get() {
 		String valueString = getValueString();
 		if (valueString.isEmpty()) {
-			return null;
+			return getDefaultValue();
 		}
 		try {
 			Integer value = Integer.parseInt(valueString);
@@ -274,8 +277,12 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 
 	@Override
 	public Integer getDefaultValue() {
-		Integer value = new Integer(getDefaultValueString());
-		return value;
+		try {
+			Integer value = new Integer(getDefaultValueString());
+			return value;
+		} catch (NumberFormatException exception) {
+			return null;
+		}
 	}
 
 	public void setDefaultValue(Integer defaultValue) {

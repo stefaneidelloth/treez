@@ -1,9 +1,5 @@
 package org.treez.javafxd3.plotly;
 
-import org.treez.javafxd3.d3.D3;
-import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AppendDatumFunction;
-import org.treez.javafxd3.d3.wrapper.Element;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import javafx.application.Application;
@@ -72,11 +68,11 @@ public class PlotlyContourDemo extends Application {
 
 		plotly.newPlot("dummyDiv", singleData, layout, configuration);		
 		
-		String copyCommand = "$('.contour').appendTo('.svg');";
+		String copyCommand = "$('.main-svg').find('.contour').appendTo('.svg');";
 		plotly.eval(copyCommand);
 		
-		String clearCommand = "$('#dummyDiv').empty()";
-		plotly.eval(clearCommand);
+		//String clearCommand = "$('#dummyDiv').empty()";
+		//plotly.eval(clearCommand);
 		
 				
 		

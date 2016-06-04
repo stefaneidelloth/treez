@@ -1,5 +1,7 @@
 package org.treez.javafxd3.plotly;
 
+import java.util.List;
+
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
@@ -42,8 +44,13 @@ public class Data extends JavaScriptObject {
 
 	//#region X
 
-	public void setX(Double[] xData) {
+	public void setX(Double[] xData) {		
 		Array<Double> array = Array.fromDoubles(webEngine, xData);
+		setX(array);
+	}
+	
+	public void setX(List<Double> xData) {
+		Array<Double> array = Array.fromList(webEngine, xData);
 		setX(array);
 	}
 
@@ -65,6 +72,11 @@ public class Data extends JavaScriptObject {
 		Array<Double> array = Array.fromDoubles(webEngine, yData);
 		setY(array);
 	}
+	
+	public void setY(List<Double> yData) {
+		Array<Double> array = Array.fromList(webEngine, yData);
+		setY(array);
+	}
 
 	public void setY(Array<Double> yData) {
 		JSObject arrayObj = yData.getJsObject();
@@ -79,9 +91,19 @@ public class Data extends JavaScriptObject {
 	//#end region
 
 	//#region Z
+	
+	public void setZ(Double[] zData) {
+		Array<Double> array = Array.fromDoubles(webEngine, zData);
+		setZ(array);
+	}
 
 	public void setZ(Double[][] zData) {
 		Array<Double> array = Array.fromDoubles(webEngine, zData);
+		setZ(array);
+	}
+	
+	public void setZ(List<Double> zData) {
+		Array<Double> array = Array.fromList(webEngine, zData);
 		setZ(array);
 	}
 
@@ -93,6 +115,18 @@ public class Data extends JavaScriptObject {
 	public Array<Double> getZ() {
 		JSObject result = getMember("z");
 		return new Array<Double>(webEngine, result);
+	}
+	
+	public void setZAuto(boolean isZAuto) {
+		setMember("zauto", isZAuto);		
+	}
+
+	public void setZMin(double zmin) {
+		setMember("zmin", zmin);		
+	}
+
+	public void setZMax(double zmax) {
+		setMember("zmax", zmax);		
 	}
 
 	//#end region
@@ -146,6 +180,66 @@ public class Data extends JavaScriptObject {
 		return new Marker(webEngine, result);
 	}
 
+	//#end region
+
+	//#region CONTOURS
+	
+	public void setAutoContour(boolean autoContour) {
+		setMember("autocontour", autoContour);		
+	}
+
+	public void setContours(Contours contours) {
+		setMember("contours", contours.getJsObject());
+	}	
+	
+	public void setNContours(int numberOfContours) {
+		setMember("ncontours", numberOfContours);		
+	}	
+	
+	public void setConnectGaps(boolean connectGaps) {
+		setMember("connectgaps", connectGaps);		
+	}
+
+	//#end region
+	
+	//#region SCALES
+	
+	public void setShowScale(boolean showScale) {
+		setMember("showscale", showScale);		
+	}
+	
+	public void setColorScale(ColorScale scale) {
+		setMember("colorscale", scale.toString());
+	}
+	
+	public void setColorScale(String scale) {
+		setMember("colorscale", scale);
+	}
+	
+	public void setReverseScale(boolean isReversedScale) {
+		setMember("reversescale", isReversedScale);		
+	}
+	
+	//#end region
+	
+	//#region LINE	
+
+	public void setLine(Line line) {
+		setMember("line", line.getJsObject());		
+	}
+	
+	//#end region
+	
+	//#region VISIBILITY & TRANSPARENCY	
+
+	public void setOpacity(double opacity) {
+		setMember("opacity", opacity);		
+	}
+
+	public void setVisible(boolean isVisible) {
+		setMember("visible", isVisible);		
+	}
+	
 	//#end region
 
 	//#end region

@@ -1,7 +1,5 @@
 package org.treez.results.atom.contour.conrec;
 
-import org.treez.results.atom.contour.Sequence;
-
 public class ContourBlueprint {
 
 	//#region ATTRIBUTES

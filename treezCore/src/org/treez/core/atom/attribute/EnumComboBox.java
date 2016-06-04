@@ -17,6 +17,7 @@ import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
+import org.treez.javafxd3.javafx.EnumValueProvider;
 
 public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractStringAttributeAtom {
 
@@ -240,6 +241,18 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 	@Override
 	public void set(String value) {
 		super.set(value);
+	}
+
+	@Override
+	public void setEnabled(boolean state) {
+		super.setEnabled(state);
+		if (isAvailable(comboBox)) {
+			comboBox.setEnabled(state);
+		}
+		if (treeViewRefreshable != null) {
+			//treeViewRefreshable.refresh(); //creates flickering when targets are updated
+		}
+		refreshAttributeAtomControl();
 	}
 
 	//#end region

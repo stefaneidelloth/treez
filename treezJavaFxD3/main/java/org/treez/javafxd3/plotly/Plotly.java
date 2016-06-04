@@ -28,26 +28,7 @@ public class Plotly extends JavaScriptObject {
 
 	//#end region
 
-	//#region METHODS
-	
-	/**
-	 * Creates a data array with a single entry
-	 */
-	public SingleData createSingleData() {		
-		return new SingleData(webEngine);
-	}
-	
-	public Data createData() {		
-		return new Data(webEngine);
-	}
-
-	public Layout createLayout() {
-		return new Layout(webEngine);
-	}
-
-	public Configuration createConfiguration() {
-		return new Configuration(webEngine);
-	}
+	//#region METHODS	
 	
 	public PlotResult newPlot(String targetDiv, Array<Data> data, Layout layout, Configuration configuration){
 		JSObject dataObj = data.getJsObject();
@@ -56,24 +37,7 @@ public class Plotly extends JavaScriptObject {
 		JSObject configurationObj = configuration.getJsObject();		
 		JSObject result = call("newPlot", targetDiv, dataObj, layoutObj, configurationObj);
 		return new PlotResult(webEngine, result);		
-	}
-	
-	public Selection getSvg() {
-		D3 d3 = new D3(webEngine);
-		Selection svgSelection = d3.select(".main-svg");
-		return svgSelection;
-	}
-	
-	public Selection getContour() {
-		D3 d3 = new D3(webEngine);
-		Selection contourSelection = d3.select(".contour");
-		return contourSelection;
-	}
-	
-	public Element getElementById(String elementId){
-		JSObject result = evalForJsObject("document.getElementById('" + elementId + "');");
-		return new Element(webEngine, result);		
-	}
+	}		
 	
 	public void restyle(Element element, Data data, int... indices ){
 		JSObject elementObj = element.getJsObject();
@@ -105,6 +69,72 @@ public class Plotly extends JavaScriptObject {
 		JSObject elementObj = element.getJsObject();
 		call("redraw", elementObj);		
 	}
+	
+	//#region CREATE PLOTLY OBJECTS
+	
+		/**
+		 * Creates a Data array with a single entry
+		 */
+		public SingleData createSingleData() {		
+			return new SingleData(webEngine);
+		}
+		
+		public Data createData() {		
+			return new Data(webEngine);
+		}
+
+		public Layout createLayout() {
+			return new Layout(webEngine);
+		}
+
+		public Configuration createConfiguration() {
+			return new Configuration(webEngine);
+		}
+		
+		public Contours createContourOptions() {
+			return new Contours(webEngine);
+		}
+		
+		public Axis createAxis() {
+			return new Axis(webEngine);
+		}
+		
+		public Margin createMargin() {
+			return new Margin(webEngine);
+		}
+		
+		public ZeroMargin createZeroMargin() {
+			return new ZeroMargin(webEngine);
+		}
+		
+		public Line createLine() {
+			return new Line(webEngine);
+		}
+		
+		//#end region
+	
+	//#region RETRIEVE SELECTIONS / NODES
+	
+	public Selection getSvg() {
+		D3 d3 = new D3(webEngine);
+		Selection svgSelection = d3.select(".main-svg");
+		return svgSelection;
+	}
+	
+	public Selection getContour() {
+		D3 d3 = new D3(webEngine);
+		Selection contourSelection = d3.select(".contour");
+		return contourSelection;
+	}
+	
+	public Element getElementById(String elementId){
+		JSObject result = evalForJsObject("document.getElementById('" + elementId + "');");
+		return new Element(webEngine, result);		
+	}
+
+	
+	
+	//#end region
 
 		
 

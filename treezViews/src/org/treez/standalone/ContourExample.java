@@ -25,17 +25,22 @@ public class ContourExample extends ModelProvider {
 		Table table0 = data0.createTable("table");
 		Columns columns0 = table0.createColumns("columns");
 		columns0.createColumn("x");
-		columns0.createColumn("y1");
-		columns0.createColumn("y2");
+		columns0.createColumn("y");
+		columns0.createColumn("z");
 
 		table0.addRow("0", "0", "0");
-		table0.addRow("1", "1", "10");
-		table0.addRow("2", "2", "20");
-		table0.addRow("3", "3", "30");
+		table0.addRow("1", "0", "0");
+		table0.addRow("1", "1", "1");
+		table0.addRow("0", "1", "1");
+		table0.addRow("0.5", "0.5", "3");
 
 		Page page = results0.createPage("page");
 		Graph graph = page.createGraph("graph");
 		Contour contour = graph.createContour("contour");
+		contour.data.xData.set("root.results.data.table.columns.x");
+		contour.data.yData.set("root.results.data.table.columns.y");
+		contour.data.zData.set("root.results.data.table.columns.z");
+
 		contour.data.xAxis.set("root.results.page.graph.xAxis");
 		contour.data.yAxis.set("root.results.page.graph.yAxis");
 

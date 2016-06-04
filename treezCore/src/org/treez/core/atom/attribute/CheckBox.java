@@ -38,14 +38,8 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 	 */
 	private Composite contentContainer;
 
-	/**
-	 * The label
-	 */
 	private CustomLabel labelComposite;
 
-	/**
-	 * The check box
-	 */
 	private Button valueCheckBox;
 
 	/**
@@ -92,9 +86,6 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 
 	//#end region
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image baseImage = Activator.getImage("CheckBox.png");
@@ -119,6 +110,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 
 		//create content composite for label and check box
 		contentContainer = toolkit.createComposite(parent);
+		contentContainer.setBackground(backgroundColor);
 
 		//check label length
 		boolean useExtraCheckBoxLine = label.length() > CHARACTER_LENGTH_LIMIT;
@@ -147,6 +139,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 		labelComposite = new CustomLabel(toolkit, contentContainer, label);
 		final int prefferedLabelWidth = 80;
 		labelComposite.setPrefferedWidth(prefferedLabelWidth);
+		labelComposite.setBackground(backgroundColor);
 	}
 
 	private void createCheckBox(FormToolkit toolkit) {
@@ -154,6 +147,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 		valueCheckBox.setEnabled(isEnabled());
 		valueCheckBox.setSelection(get());
 		valueCheckBox.setToolTipText(tooltip);
+		valueCheckBox.setBackground(backgroundColor);
 
 		//action listener
 		valueCheckBox.addSelectionListener(new SelectionAdapter() {
@@ -221,7 +215,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 	}
 
 	/*
-	
+
 	@Override
 	public void addModificationConsumer(String key,
 			Consumer<Boolean> consumer) {
@@ -232,7 +226,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 			}
 		});
 	}
-
+	
 	*/
 
 	//#end region
@@ -266,6 +260,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 
 	@Override
 	public void setBackgroundColor(Color color) {
+		this.backgroundColor = color;
 		if (isAvailable(contentContainer)) {
 			contentContainer.setBackground(color);
 		}

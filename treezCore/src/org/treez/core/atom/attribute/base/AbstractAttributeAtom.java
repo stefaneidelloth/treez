@@ -79,6 +79,8 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 
 	private ExpressionHelper<T> javaFxListenerHelper;
 
+	protected Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
+
 	//#end region
 
 	//#region CONSTRUCTORS
@@ -289,7 +291,7 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 
 	}
 
-	protected static Composite createVerticalContainer(Composite parent, FormToolkit toolkit) {
+	protected Composite createVerticalContainer(Composite parent, FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -299,11 +301,12 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 		Composite container = toolkit.createComposite(parent);
 		container.setLayout(new GridLayout(1, false));
 		container.setLayoutData(fillHorizontal);
+		container.setBackground(backgroundColor);
 		return container;
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	protected static Composite createHorizontalContainer(Composite parent, FormToolkit toolkit) {
+	protected Composite createHorizontalContainer(Composite parent, FormToolkit toolkit) {
 		//create grid data to use all horizontal space
 		GridData fillHorizontal = new GridData();
 		fillHorizontal.grabExcessHorizontalSpace = true;
@@ -319,6 +322,7 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 		gridLayout.marginWidth = 0;
 		container.setLayout(gridLayout);
 		container.setLayoutData(fillHorizontal);
+		container.setBackground(backgroundColor);
 		return container;
 	}
 

@@ -1,5 +1,7 @@
 package org.treez.javafxd3.plotly;
 
+import java.util.List;
+
 import org.treez.javafxd3.d3.arrays.Array;
 
 import javafx.scene.web.WebEngine;
@@ -51,6 +53,10 @@ public class SingleData extends Array<Data> {
 	public void setX(Double[] xData) {
 		data.setX(xData);
 	}
+	
+	public void setX(List<Double> xData) {
+		data.setX(xData);
+	}
 
 	public void setX(Array<Double> xData) {
 		data.setX(xData);
@@ -67,6 +73,10 @@ public class SingleData extends Array<Data> {
 	public void setY(Double[] yData) {
 		data.setY(yData);
 	}
+	
+	public void setY(List<Double> yData) {
+		data.setY(yData);
+	}
 
 	public void setY(Array<Double> yData) {
 		data.setY(yData);
@@ -80,7 +90,15 @@ public class SingleData extends Array<Data> {
 
 	//#region Z
 
+	public void setZ(Double[] zData) {
+		data.setZ(zData);
+	}
+	
 	public void setZ(Double[][] zData) {
+		data.setZ(zData);
+	}
+	
+	public void setZ(List<Double> zData) {
 		data.setZ(zData);
 	}
 
@@ -90,6 +108,18 @@ public class SingleData extends Array<Data> {
 
 	public Array<Double> getZ() {
 		return data.getZ();
+	}
+	
+	public void setZAuto(boolean automatic) {
+		data.setZAuto(automatic);		
+	}
+
+	public void setZMin(double zmin) {
+		data.setZMin(zmin);		
+	}
+
+	public void setZMax(double zmax) {
+		data.setZMax(zmax);		
 	}
 
 	//#end region
@@ -134,8 +164,69 @@ public class SingleData extends Array<Data> {
 
 	public Marker getMarker() {
 		return data.getMarker();
+	}	
+
+	//#end region
+	
+	//#region CONTOURS
+	
+	public void setAutoContour(boolean autoContour) {
+		data.setAutoContour(autoContour);		
+	}
+	
+	public void setContours(Contours contours) {
+		data.setContours(contours);		
+	}	
+	
+	public void setNContours(int numberOfContours) {
+		data.setNContours(numberOfContours);		
+	}	
+	
+	public void setConnectGaps(boolean connectGaps) {
+		data.setConnectGaps(connectGaps);		
+	}
+	
+	//#end region
+	
+	//#region SCALE
+	
+	
+	public void setShowScale(boolean showScale) {
+		data.setShowScale(showScale);		
+	}
+	
+	public void setColorScale(ColorScale scale) {
+		data.setColorScale(scale);
+	}	
+	
+	public void setColorScale(String scale) {
+		data.setColorScale(scale);
+	}	
+
+	public void setReverseScale(boolean isReversedScale) {
+		data.setReverseScale(isReversedScale);		
+	}
+	
+	//#end region
+	
+	//#region LINE	
+
+	public void setLine(Line line) {
+		data.setLine(line);		
+	}
+	
+	//#end region
+	
+	//#region VISIBILITY & TRANSPARENCY	
+
+	public void setOpacity(double opacity) {
+		data.setOpacity(opacity);		
 	}
 
+	public void setVisible(boolean isVisible) {
+		data.setVisible(isVisible);		
+	}
+	
 	//#end region
 
 	//#end region

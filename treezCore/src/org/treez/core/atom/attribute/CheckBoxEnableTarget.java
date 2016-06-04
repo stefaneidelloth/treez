@@ -18,7 +18,7 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 	private Boolean value;
 
 	@IsParameter(defaultValue = "")
-	private String targetPath; //e.g. "root.properties.mytext
+	private String targetPath; //e.g. "properties.mytext" points to root.properites.mytext
 
 	//#end region
 
@@ -30,8 +30,7 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 	 * @param targetPath
 	 *            the model path to the target whose enabled state is controlled
 	 */
-	public CheckBoxEnableTarget(String name, Boolean enableValue,
-			String targetPath) {
+	public CheckBoxEnableTarget(String name, Boolean enableValue, String targetPath) {
 		super(name);
 		setValue(enableValue);
 		setTargetPath(targetPath);
@@ -40,8 +39,7 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 	/**
 	 * Copy constructor
 	 */
-	private CheckBoxEnableTarget(
-			CheckBoxEnableTarget checkBoxEnableTargetToCopy) {
+	private CheckBoxEnableTarget(CheckBoxEnableTarget checkBoxEnableTargetToCopy) {
 		super(checkBoxEnableTargetToCopy);
 		value = checkBoxEnableTargetToCopy.value;
 		targetPath = checkBoxEnableTargetToCopy.targetPath;
@@ -69,8 +67,7 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 	}
 
 	@Override
-	public void createAtomControl(Composite parent,
-			FocusChangingRefreshable treeViewerRefreshable) {
+	public void createAtomControl(Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
 
 	}
 

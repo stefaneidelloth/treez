@@ -49,12 +49,12 @@ public class Data implements GraphicsPropertiesPageFactory {
 		Class<?> targetClass = org.treez.data.column.Column.class;
 		String value = "root.data.table.columns.x";
 		data.createModelPath(barLengths, this, value, targetClass, parent) //
-				.setLabel("X data");
+				.setLabel("Bar lengths");
 
 		targetClass = org.treez.data.column.Column.class;
 		value = "root.data.table.columns.y";
 		data.createModelPath(barPositions, this, value, targetClass, parent) //
-				.setLabel("Y data");
+				.setLabel("Bar positions");
 		data.createEnumComboBox(barDirection, "Direction", Direction.VERTICAL);
 
 		final double defaultBarFillRatio = 0.75;

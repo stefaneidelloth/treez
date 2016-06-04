@@ -1,6 +1,5 @@
 package org.treez.core.atom.variablefield;
 
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
@@ -9,16 +8,7 @@ import org.treez.core.atom.attribute.ComboBox;
 import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
-/**
- * An item example
- */
 public class StringItemVariableField extends ComboBox implements VariableField<String> {
-
-	//#region ATTRIBUTES
-
-	private static final Color BACKGROUND_COLOR = new Color(null, 240, 245, 249);
-
-	//#end region
 
 	//#region CONSTRUCTORS
 
@@ -61,7 +51,6 @@ public class StringItemVariableField extends ComboBox implements VariableField<S
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		super.createAttributeAtomControl(parent, treeViewerRefreshable);
-		super.setBackgroundColor(BACKGROUND_COLOR);
 
 		return this;
 	}

@@ -17,8 +17,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
-	private static final Logger LOG = Logger
-			.getLogger(AtomTreeNodeAdaption.class);
+	private static final Logger LOG = Logger.getLogger(AtomTreeNodeAdaption.class);
 
 	//#region ATTRIBUTES
 
@@ -51,8 +50,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 			Adaptable parent = parentNode.getAdaptable();
 			String parentName = parent.createTreeNodeAdaption().getName();
 			if (!parentName.equals("invisibleRoot")) {
-				path = parent.createTreeNodeAdaption().getTreePath() + "."
-						+ path;
+				path = parent.createTreeNodeAdaption().getTreePath() + "." + path;
 			}
 		}
 		return path;
@@ -88,14 +86,12 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	}
 
 	/**
-	 * Implements the method TreeNodeAdaption.fillContextMenu(...) using the
-	 * method createContextMenuActions(...) of the corresponding AbstractAtom
+	 * Implements the method TreeNodeAdaption.fillContextMenu(...) using the method createContextMenuActions(...) of the
+	 * corresponding AbstractAtom
 	 */
 	@Override
-	public void fillContextMenu(TreeViewerRefreshable treeViewerRefreshable,
-			IMenuManager manager) {
-		List<Object> items = atomAdaptable
-				.createContextMenuActions(treeViewerRefreshable);
+	public void fillContextMenu(TreeViewerRefreshable treeViewerRefreshable, IMenuManager manager) {
+		List<Object> items = atomAdaptable.createContextMenuActions(treeViewerRefreshable);
 		for (Object item : items) {
 
 			//try to add item as IAction
@@ -143,6 +139,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
 		treeViewer.setExpandedState(getAdaptable(), true);
 
+		/*
 		TreeNodeAdaption treeNode = getAdaptable().createTreeNodeAdaption();
 		String itemName = treeNode.getName();
 		List<TreeNodeAdaption> childNodes = treeNode.getChildren();
@@ -153,6 +150,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 		}
 		LOG.info(
 				"-------------------------------------------------------------------------");
+		*/
 
 	}
 
@@ -177,17 +175,14 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	 * @param defaultName
 	 * @return
 	 */
-	public static String createChildNameStartingWith(AbstractAtom atom,
-			String defaultName) {
+	public static String createChildNameStartingWith(AbstractAtom atom, String defaultName) {
 
 		NameAndNumber currentNameAndNumber = new NameAndNumber(defaultName, 0);
 		NameAndNumber nextNameAndNumber;
 		boolean goOn = true;
 		while (goOn) {
-			nextNameAndNumber = getNextDummyChildName(atom,
-					currentNameAndNumber);
-			boolean currentNameIsOk = nextNameAndNumber
-					.equals(currentNameAndNumber);
+			nextNameAndNumber = getNextDummyChildName(atom, currentNameAndNumber);
+			boolean currentNameIsOk = nextNameAndNumber.equals(currentNameAndNumber);
 			if (currentNameIsOk) {
 				goOn = false;
 			}
@@ -199,21 +194,19 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	}
 
 	/**
-	 * Checks if a child atom with a name that corresponds to the given
-	 * NameAndNumber already exists and returns a new NameAndNumber
+	 * Checks if a child atom with a name that corresponds to the given NameAndNumber already exists and returns a new
+	 * NameAndNumber
 	 *
 	 * @param atom
 	 * @param start
 	 * @return
 	 */
-	private static NameAndNumber getNextDummyChildName(AbstractAtom atom,
-			NameAndNumber start) {
+	private static NameAndNumber getNextDummyChildName(AbstractAtom atom, NameAndNumber start) {
 		NameAndNumber next = start.copy();
 		boolean childWithSameNameAlreadyExists = false;
 
 		String currentName = start.getFullName();
-		List<TreeNodeAdaption> existingNodes = atom.createTreeNodeAdaption()
-				.getChildren();
+		List<TreeNodeAdaption> existingNodes = atom.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption treeNodeAdaption : existingNodes) {
 			String childName = treeNodeAdaption.getName();
 			boolean namesAreEqual = currentName.equals(childName);
@@ -237,8 +230,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	//#region basic attributes
 
 	/**
-	 * Implements TreeNodeAdaption.getName() by returning the name of the
-	 * corresponding AbstractAtom
+	 * Implements TreeNodeAdaption.getName() by returning the name of the corresponding AbstractAtom
 	 */
 	@Override
 	public String getName() {
@@ -246,10 +238,9 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	}
 
 	/**
-	 * Implements TreeNodeAdaption.setName() by setting the name of the
-	 * corresponding AbstractAtom. (In order to be able to identify an
-	 * AbstractAtom by its tree path, this name should only be used once for all
-	 * children of the parent AbstractAtom.)
+	 * Implements TreeNodeAdaption.setName() by setting the name of the corresponding AbstractAtom. (In order to be able
+	 * to identify an AbstractAtom by its tree path, this name should only be used once for all children of the parent
+	 * AbstractAtom.)
 	 */
 	@Override
 	public void setName(String name) {

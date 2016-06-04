@@ -1,6 +1,4 @@
-package org.treez.results.atom.contour;
-
-import org.treez.results.atom.contour.conrec.Point;
+package org.treez.results.atom.contour.conrec;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Sequence {

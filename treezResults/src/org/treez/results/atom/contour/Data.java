@@ -1,13 +1,12 @@
 package org.treez.results.atom.contour;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
+import org.treez.core.atom.attribute.CheckBoxEnableTarget;
+import org.treez.core.atom.attribute.ColorChooser;
+import org.treez.core.atom.attribute.EnumComboBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -16,36 +15,38 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
-import org.treez.javafxd3.d3.functions.ColorScaleLevelDatumFunction;
-import org.treez.javafxd3.d3.geom.Polygon;
-import org.treez.javafxd3.d3.scales.LinearScale;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.javafxd3.d3.svg.Line;
-import org.treez.javafxd3.plotly.Plotly;
-import org.treez.results.atom.axis.Direction;
-import org.treez.results.atom.contour.conrec.Conrec;
-import org.treez.results.atom.contour.conrec.Point;
-
-import javafx.scene.web.WebEngine;
+import org.treez.javafxd3.plotly.Coloring;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Data implements GraphicsPropertiesPageFactory {
 
-	private static final Logger LOG = Logger.getLogger(Data.class);
-
 	//#regionATTRIBUTES
 
-	public final Attribute<String> barLengths = new Wrap<>();
+	public final Attribute<String> xData = new Wrap<>();
 
-	public final Attribute<String> barPositions = new Wrap<>();
+	public final Attribute<String> yData = new Wrap<>();
 
-	public final Attribute<String> barDirection = new Wrap<>();
+	public final Attribute<String> zData = new Wrap<>();
 
-	public final Attribute<Double> barFillRatio = new Wrap<>();
+	public final Attribute<Boolean> automaticZLimits = new Wrap<>();
 
-	public final Attribute<String> legendText = new Wrap<>();
+	public final Attribute<Double> zMin = new Wrap<>();
+
+	public final Attribute<Double> zMax = new Wrap<>();
+
+	public final Attribute<Boolean> automaticContours = new Wrap<>();
+
+	public final Attribute<String> coloring = new Wrap<>();
+
+	public final Attribute<Integer> numberOfContours = new Wrap<>();
+
+	public final Attribute<Double> startLevel = new Wrap<>();
+
+	public final Attribute<Double> endLevel = new Wrap<>();
+
+	public final Attribute<Double> levelSize = new Wrap<>();
+
+	public final Attribute<Boolean> connectGaps = new Wrap<>();
 
 	//public finalAttribute<String>labels=newWrap<>();
 
@@ -58,6 +59,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 	//#regionMETHODS
 
 	@Override
+	@SuppressWarnings("checkstyle:magicnumber")
 	public void createPage(AttributeRoot root, AbstractAtom parent) {
 
 		Page dataPage = root.createPage("data", "Data");
@@ -66,32 +68,58 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Class<?> targetClass = org.treez.data.column.Column.class;
 		String value = "root.data.table.columns.x";
-		data.createModelPath(barLengths, this, value, targetClass, parent)//
-				.setLabel("Xdata");
+		data.createModelPath(xData, this, value, targetClass, parent)//
+				.setLabel("x-Data");
 
-		targetClass = org.treez.data.column.Column.class;
 		value = "root.data.table.columns.y";
-		data.createModelPath(barPositions, this, value, targetClass, parent)//
-				.setLabel("Ydata");
-		data.createEnumComboBox(barDirection, "Direction", Direction.VERTICAL);
+		data.createModelPath(yData, this, value, targetClass, parent)//
+				.setLabel("y-Data");
 
-		final double defaultBarFillRatio = 0.75;
-		data.createDoubleVariableField(barFillRatio, this, defaultBarFillRatio);
+		value = "root.data.table.columns.z";
+		data.createModelPath(zData, this, value, targetClass, parent)//
+				.setLabel("z-Data");
 
-		TextField legendTextField = data.createTextField(legendText, "legendText", "");
-		legendTextField.setLabel("Legendtext");
+		CheckBox autoZLimitsCheckBox = data.createCheckBox(automaticZLimits, "Automatic z limits", true);
+		autoZLimitsCheckBox.addChild(new CheckBoxEnableTarget("zMin", false, "data.data.zMin"));
+		autoZLimitsCheckBox.addChild(new CheckBoxEnableTarget("zMax", false, "data.data.zMax"));
+
+		data.createDoubleVariableField(zMin, this, 0.0).setEnabled(false);
+		data.createDoubleVariableField(zMax, this, 1.0).setEnabled(false);
+
+		CheckBox autoContourcheckBox = data.createCheckBox(automaticContours, "Automatic contours", true);
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("coloring", false, "data.data.coloring"));
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("numberOfContours", true, "data.data.numberOfContours"));
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("startLevel", false, "data.data.startLevel"));
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("endLevel", false, "data.data.endLevel"));
+		autoContourcheckBox.addChild(new CheckBoxEnableTarget("levelSize", false, "data.data.levelSize"));
+
+		data.createIntegerVariableField(numberOfContours, this, 5);
+
+		EnumComboBox<?> coloringComboBox = data.createEnumComboBox(coloring, "coloring", Coloring.FILL);
+		coloringComboBox.setLabel("Coloring mode");
+		coloringComboBox.setEnabled(false);
+
+		Contour contour = (Contour) parent;
+
+		coloring.addModificationConsumer("enableOrDisableLineColor", () -> {
+			Wrap<?> wrap = (Wrap<?>) contour.lines.color;
+			ColorChooser colorChooser = (ColorChooser) wrap.getAttribute();
+			boolean isLinesMode = coloring.get().equals(Coloring.LINES.toString());
+			colorChooser.setEnabled(!isLinesMode);
+		});
+
+		data.createDoubleVariableField(startLevel, this, 0.0).setEnabled(false);
+		data.createDoubleVariableField(endLevel, this, 10.0).setEnabled(false);
+		data.createDoubleVariableField(levelSize, this, 2.0).setEnabled(false);
+
+		data.createCheckBox(connectGaps, "Connect gaps", true);
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
 		value = "";
-
-		data//
-				.createModelPath(xAxis, this, value, targetClass, parent)//
+		data.createModelPath(xAxis, this, value, targetClass, parent)//
 				.setLabel("Xaxis");
 
-		targetClass = org.treez.results.atom.axis.Axis.class;
-		value = "";
-		data//
-				.createModelPath(yAxis, this, value, targetClass, parent)//
+		data.createModelPath(yAxis, this, value, targetClass, parent)//
 				.setLabel("Yaxis");
 
 	}
@@ -100,72 +128,14 @@ public class Data implements GraphicsPropertiesPageFactory {
 	@SuppressWarnings("checkstyle:magicnumber")
 	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, GraphicsAtom parent) {
 
-		WebEngine webEngine = d3.getWebEngine();
-		Plotly plotly = new Plotly(webEngine);
-
-		double[][] data = createExampleData2();
-		double[][] cliffedData = addCliffBorder(data);
-
-		Conrec conrec = new Conrec(null);
-
-		double[] xs = range(0, cliffedData.length);
-		double[] ys = range(0, cliffedData[0].length);
-		double[] zs = range(0, 8, 0.1);
-
 		Contour contour = (Contour) parent;
-		QuantitativeScale<?> xScale = contour.getXScale();
-		QuantitativeScale<?> yScale = contour.getYScale();
-
-		LinearScale colorScale = d3.scale() //
-				.linear() //
-				.domain(new double[] { 0, 8 }) //
-				.range(new String[] { "#fff", "red" });
-
-		Line lineGenerator = d3.svg() //
-				.line() //
-				.x(new AxisScaleFirstDatumFunction(xScale))
-				.y(new AxisScaleSecondDatumFunction(yScale));
-
-		LOG.info("starting contour");
-
-		conrec.contour(cliffedData, 0, xs.length - 1, 0, ys.length - 1, xs, ys, zs.length, zs);
-
-		LOG.info("getting contours");
-
-		List<org.treez.results.atom.contour.conrec.Contour> contourData = conrec.getContours();
-
-		LOG.info("converting to polygons");
-
-		List<Polygon> polygons = convertToD3Polygons(d3, contourData);
-
-		LOG.info("drawing");
-
-		Selection dataSelection = contourSelection.selectAll("path") //
-				.data(polygons); //
-
-		LOG.info("path");
-		Selection pathSelection = dataSelection.enter() //
-				.append("path") //
-				.style("fill", new ColorScaleLevelDatumFunction(colorScale))
-				.style("stroke", "black"); //
-
-		LOG.info("geometry");
-		pathSelection.attr("d", lineGenerator);
-
-		LOG.info("finished");
 
 		Consumer dataChangedConsumer = () -> {
-			Contour bar = (Contour) parent;
-			bar.updatePlotWithD3(d3);
+			contour.updatePlotWithD3(d3);
 		};
-		barLengths.addModificationConsumer("replot", dataChangedConsumer);
-		barPositions.addModificationConsumer("replot", dataChangedConsumer);
+		xData.addModificationConsumer("replot", dataChangedConsumer);
 
-		barDirection.addModificationConsumer("replot", dataChangedConsumer);
-
-		barFillRatio.addModificationConsumer("replot", dataChangedConsumer);
-
-		//legendText.addModificationConsumer("replot",dataChangedConsumer);
+		//TODO: other listeners
 
 		xAxis.addModificationConsumer("replot", dataChangedConsumer);
 		yAxis.addModificationConsumer("replot", dataChangedConsumer);
@@ -173,510 +143,6 @@ public class Data implements GraphicsPropertiesPageFactory {
 		return contourSelection;
 	}
 
-	private double[][] createExampleData2() {
-
-		double[][] data = new double[][] {
-				new double[] { 10, 10.625, 12.5, 15.625, 20 },
-				new double[] { 5.625, 6.25, 8.125, 11.25, 15.625 },
-				new double[] { 2.5, 3.125, 5., 8.125, 12.5 },
-				new double[] { 0.625, 1.25, 3.125, 6.25, 10.625 },
-				new double[] { 0, 0.625, 2.5, 5.625, 10 } };
-		return data;
-
-	}
-
-	private double[][] createExampleData() {
-		double[][] data = new double[][] {
-				new double[] {
-						0.4,
-						0.4,
-						0.7,
-						-1.0,
-						-0.1,
-						0.6,
-						-0.4,
-						0.6,
-						-0.4,
-						1.3,
-						0.7,
-						-0.4,
-						1.1,
-						1.3,
-						0.6,
-						0.1,
-						-0.0,
-						-0.8,
-						-0.8,
-						-1.0 },
-				new double[] {
-						0.4,
-						-0.4,
-						0.4,
-						-1.2,
-						-0.7,
-						0.4,
-						-0.9,
-						0.5,
-						-0.9,
-						1.2,
-						0.5,
-						-1.0,
-						1.3,
-						1.1,
-						0.5,
-						-0.0,
-						-0.1,
-						-1.2,
-						-1.0,
-						-0.9 },
-				new double[] {
-						0.7,
-						0.4,
-						0.1,
-						-1.2,
-						-0.2,
-						0.5,
-						-0.6,
-						0.6,
-						-0.2,
-						0.9,
-						0.6,
-						-0.5,
-						1.1,
-						0.8,
-						0.6,
-						0.1,
-						-0.4,
-						-0.9,
-						-0.7,
-						-0.8 },
-				new double[] {
-						-1.0,
-						-1.2,
-						-1.2,
-						-4.4,
-						-1.9,
-						-0.8,
-						-2.2,
-						-1.0,
-						-2.2,
-						0.0,
-						-0.3,
-						-2.0,
-						-0.2,
-						0.2,
-						-0.8,
-						-1.6,
-						-1.9,
-						-2.4,
-						-2.3,
-						-2.6 },
-				new double[] {
-						-0.1,
-						-0.7,
-						-0.2,
-						-1.9,
-						-2.0,
-						-0.5,
-						-1.9,
-						-0.3,
-						-1.7,
-						0.4,
-						-0.2,
-						-1.9,
-						0.3,
-						0.4,
-						-0.3,
-						-0.8,
-						-0.9,
-						-2.1,
-						-1.8,
-						-2.0 },
-				new double[] {
-						0.6,
-						0.4,
-						0.5,
-						-0.8,
-						-0.5,
-						-0.1,
-						-0.8,
-						0.6,
-						-0.5,
-						1.0,
-						0.5,
-						-0.7,
-						0.8,
-						1.0,
-						0.5,
-						0.1,
-						-0.3,
-						-0.9,
-						-0.7,
-						-1.1 },
-				new double[] {
-						-0.4,
-						-0.9,
-						-0.6,
-						-2.2,
-						-1.9,
-						-0.8,
-						-2.7,
-						-0.6,
-						-2.0,
-						0.3,
-						-0.3,
-						-2.3,
-						-0.0,
-						-0.0,
-						-0.6,
-						-1.1,
-						-1.3,
-						-2.4,
-						-2.0,
-						-2.2 },
-				new double[] {
-						0.6,
-						0.5,
-						0.6,
-						-1.0,
-						-0.3,
-						0.6,
-						-0.6,
-						0.1,
-						-0.8,
-						1.3,
-						0.8,
-						-0.8,
-						1.1,
-						1.3,
-						0.4,
-						0.1,
-						0.1,
-						-0.8,
-						-1.0,
-						-1.0 },
-				new double[] {
-						-0.4,
-						-0.9,
-						-0.2,
-						-2.2,
-						-1.7,
-						-0.5,
-						-2.0,
-						-0.8,
-						-2.9,
-						0.3,
-						-0.4,
-						-2.2,
-						-0.0,
-						-0.0,
-						-0.7,
-						-0.7,
-						-1.3,
-						-2.4,
-						-2.1,
-						-2.6 },
-				new double[] {
-						1.3,
-						1.2,
-						0.9,
-						0.0,
-						0.4,
-						1.0,
-						0.3,
-						1.3,
-						0.3,
-						1.1,
-						1.0,
-						0.2,
-						0.7,
-						1.9,
-						0.9,
-						-0.2,
-						0.3,
-						0.1,
-						-0.4,
-						-0.2 },
-				new double[] {
-						0.7,
-						0.5,
-						0.6,
-						-0.3,
-						-0.2,
-						0.5,
-						-0.3,
-						0.8,
-						-0.4,
-						1.0,
-						0.3,
-						-0.3,
-						1.0,
-						1.1,
-						0.6,
-						0.1,
-						0.3,
-						-0.7,
-						-0.5,
-						-0.6 },
-				new double[] {
-						-0.4,
-						-1.0,
-						-0.5,
-						-2.0,
-						-1.9,
-						-0.7,
-						-2.3,
-						-0.8,
-						-2.2,
-						0.2,
-						-0.3,
-						-2.7,
-						0.0,
-						-0.0,
-						-0.6,
-						-1.0,
-						-1.1,
-						-2.3,
-						-2.1,
-						-2.4 },
-				new double[] {
-						1.1,
-						1.3,
-						1.1,
-						-0.2,
-						0.3,
-						0.8,
-						-0.0,
-						1.1,
-						-0.0,
-						0.7,
-						1.0,
-						0.0,
-						1.6,
-						0.8,
-						1.0,
-						0.8,
-						0.7,
-						-0.2,
-						-0.2,
-						-0.2 },
-				new double[] {
-						1.3,
-						1.1,
-						0.8,
-						0.2,
-						0.4,
-						1.0,
-						-0.0,
-						1.3,
-						-0.0,
-						1.9,
-						1.1,
-						-0.0,
-						0.8,
-						1.2,
-						1.1,
-						0.0,
-						0.2,
-						-0.1,
-						-0.4,
-						0.0 },
-				new double[] {
-						0.6,
-						0.5,
-						0.6,
-						-0.8,
-						-0.3,
-						0.5,
-						-0.6,
-						0.4,
-						-0.7,
-						0.9,
-						0.6,
-						-0.6,
-						1.0,
-						1.1,
-						-0.2,
-						0.1,
-						-0.0,
-						-0.9,
-						-0.6,
-						-1.2 },
-				new double[] {
-						0.1,
-						-0.0,
-						0.1,
-						-1.6,
-						-0.8,
-						0.1,
-						-1.1,
-						0.1,
-						-0.7,
-						-0.2,
-						0.1,
-						-1.0,
-						0.8,
-						0.0,
-						0.1,
-						-0.6,
-						-0.4,
-						-1.2,
-						-1.3,
-						-1.4 },
-				new double[] {
-						-0.0,
-						-0.1,
-						-0.4,
-						-1.9,
-						-0.9,
-						-0.3,
-						-1.3,
-						0.1,
-						-1.3,
-						0.3,
-						0.3,
-						-1.1,
-						0.7,
-						0.2,
-						-0.0,
-						-0.4,
-						-1.3,
-						-1.4,
-						-1.6,
-						-1.9 },
-				new double[] {
-						-0.8,
-						-1.2,
-						-0.9,
-						-2.4,
-						-2.1,
-						-0.9,
-						-2.4,
-						-0.8,
-						-2.4,
-						0.1,
-						-0.7,
-						-2.3,
-						-0.2,
-						-0.1,
-						-0.9,
-						-1.2,
-						-1.4,
-						-3.0,
-						-2.3,
-						-2.5 },
-				new double[] {
-						-0.8,
-						-1.0,
-						-0.7,
-						-2.3,
-						-1.8,
-						-0.7,
-						-2.0,
-						-1.0,
-						-2.1,
-						-0.4,
-						-0.5,
-						-2.1,
-						-0.2,
-						-0.4,
-						-0.6,
-						-1.3,
-						-1.6,
-						-2.3,
-						-2.3,
-						-2.4 },
-				new double[] {
-						-1.0,
-						-0.9,
-						-0.8,
-						-2.6,
-						-2.0,
-						-1.1,
-						-2.2,
-						-1.0,
-						-2.6,
-						-0.2,
-						-0.6,
-						-2.4,
-						-0.2,
-						0.0,
-						-1.2,
-						-1.4,
-						-1.9,
-						-2.5,
-						-2.4,
-						-3.3 } };
-		return data;
-	}
-
-	private double[][] addCliffBorder(double[][] data) {
-		double cliff = -1000;
-		double[][] cliffedData = new double[data.length + 2][data[0].length + 2];
-
-		for (int rowIndex = 0; rowIndex < cliffedData.length; rowIndex++) {
-			cliffedData[rowIndex][0] = cliff;
-			cliffedData[rowIndex][cliffedData[0].length - 1] = cliff;
-		}
-
-		for (int colIndex = 0; colIndex < cliffedData[0].length; colIndex++) {
-			cliffedData[0][colIndex] = cliff;
-			cliffedData[cliffedData[0].length - 1][colIndex] = cliff;
-		}
-
-		for (int rowIndex = 0; rowIndex < data.length; rowIndex++) {
-			for (int colIndex = 0; colIndex < data[0].length; colIndex++) {
-				cliffedData[rowIndex + 1][colIndex + 1] = data[rowIndex][colIndex];
-			}
-		}
-		return cliffedData;
-	}
-
-	public double[] range(double start, double stop, double step) {
-
-		List<Double> list = new ArrayList<>();
-		double value = start;
-		while (value <= stop) {
-			list.add(value);
-			value += step;
-		}
-
-		double[] result = new double[list.size()];
-		for (int i = 0; i < list.size(); i++) {
-			result[i] = list.get(i);
-		}
-		return result;
-	}
-
-	public double[] range(double start, double stop) {
-		double[] result = new double[(int) (stop - start)];
-
-		for (int i = 0; i < stop - start; i++) {
-			result[i] = start + i;
-		}
-
-		return result;
-	}
-
-	private static
-			List<Polygon>
-			convertToD3Polygons(D3 d3, List<org.treez.results.atom.contour.conrec.Contour> contourData) {
-
-		List<Polygon> polygons = new ArrayList<>();
-		for (org.treez.results.atom.contour.conrec.Contour contour : contourData) {
-			Polygon polygon = d3.geom().polygon(new Double[][] {});
-			for (Point point : contour) {
-				double[] pointCoordinates = new double[] { point.x, point.y };
-				polygon.addPoint(pointCoordinates);
-			}
-			double level = contour.getLevel();
-			polygon.setMember("level", level);
-			polygons.add(polygon);
-		}
-		return polygons;
-
-	}
-
-	//#endregion
+	//#end region
 
 }

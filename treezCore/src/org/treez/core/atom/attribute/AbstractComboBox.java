@@ -110,6 +110,7 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 
 		//create content composite for label and combo box
 		contentContainer = toolkit.createComposite(parent);
+		contentContainer.setBackground(backgroundColor);
 
 		//check label length
 		boolean useExtraComboBoxLine = label.length() > CHARACTER_LENGTH_LIMIT;
@@ -130,6 +131,11 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 		//create combo box
 		createComboBox();
 
+		if (!useExtraComboBoxLine) {
+			//add a little spacer on the right
+			//toolkit.createLabel(contentContainer, " ").setBackground(backgroundColor);
+		}
+
 		return this;
 
 	}
@@ -138,13 +144,14 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 		labelComposite = new CustomLabel(toolkit, contentContainer, label);
 		final int prefferedLabelWidth = 80;
 		labelComposite.setPrefferedWidth(prefferedLabelWidth);
+		labelComposite.setBackground(backgroundColor);
 	}
 
 	private void createComboBox() {
 
 		GridData comboFillHorizontal = new GridData();
 		comboFillHorizontal.grabExcessHorizontalSpace = true;
-		comboFillHorizontal.horizontalAlignment = GridData.FILL;
+		//comboFillHorizontal.horizontalAlignment = GridData.FILL;
 
 		combo = new Combo(contentContainer, SWT.READ_ONLY);
 		combo.setEnabled(isEnabled());
@@ -218,7 +225,7 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 
 	@Override
 	public void setBackgroundColor(org.eclipse.swt.graphics.Color color) {
-
+		this.backgroundColor = color;
 		if (isAvailable(contentContainer)) {
 			contentContainer.setBackground(color);
 		}
@@ -230,10 +237,10 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 	}
 
 	/*
-	
+
 	@Override
 	public void addModificationConsumer(String key, Consumer<String> consumer) {
-
+	
 		addModifyListener(key, (event) -> {
 			if (event.data == null) {
 				consumer.accept(null);
@@ -241,9 +248,9 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
-
+	
 	}
 	*/
 

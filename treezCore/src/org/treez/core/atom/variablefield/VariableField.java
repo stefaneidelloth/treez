@@ -1,5 +1,6 @@
 package org.treez.core.atom.variablefield;
 
+import org.eclipse.swt.graphics.Color;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 /**
@@ -30,9 +31,10 @@ public interface VariableField<T> {
 	T get();
 
 	/**
-	 * Creates a VariableListField whose variable type is the same as the type
-	 * of this VariableField
+	 * Creates a VariableListField whose variable type is the same as the type of this VariableField
 	 */
 	AbstractVariableListField<T> createVariableListField();
+
+	void setBackgroundColor(Color color);
 
 }

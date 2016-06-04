@@ -122,8 +122,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 
 	@Override
 	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
-		throw new IllegalStateException("Not yet implemented");
-
+		this.backgroundColor = backgroundColor;
 	}
 
 	@Override
@@ -152,7 +151,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	public Double get() {
 		String valueString = getValueString();
 		if (valueString.isEmpty()) {
-			return null;
+			return getDefaultValue();
 		}
 		try {
 			Double value = new Double(valueString);

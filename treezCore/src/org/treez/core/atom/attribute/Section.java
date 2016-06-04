@@ -27,6 +27,7 @@ import org.treez.core.data.column.ColumnType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.core.utils.Utils;
+import org.treez.javafxd3.javafx.EnumValueProvider;
 
 /**
  * An item example

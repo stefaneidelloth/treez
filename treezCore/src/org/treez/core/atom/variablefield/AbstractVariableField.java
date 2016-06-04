@@ -15,6 +15,7 @@ import org.treez.core.atom.attribute.TextFieldErrorDecoration;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
+import org.treez.core.utils.Utils;
 
 /**
  * Abstract parent class for some variable fields
@@ -33,7 +34,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	protected String tooltip;
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	protected Color backgroundColor = new Color(null, 240, 245, 249);
+	protected Color backgroundColor = new Color(null, 255, 255, 255);
 
 	/**
 	 * Contains the actual valueString. This is used together with the unitString to represent the state of this
@@ -71,7 +72,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	 */
 	public AbstractVariableField(String name) {
 		super(name);
-		label = name;
+		label = Utils.firstToUpperCase(name);
 	}
 
 	/**
@@ -173,6 +174,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 		gridLayout.horizontalSpacing = 5;
 		gridLayout.verticalSpacing = 0;
 		gridLayout.marginHeight = 2;
+		gridLayout.marginWidth = 0;
 		container.setLayout(gridLayout);
 
 		//create grid data to use all horizontal space
@@ -193,6 +195,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 		gridLayout.horizontalSpacing = 0;
 		gridLayout.verticalSpacing = 5;
 		gridLayout.marginHeight = 2;
+		gridLayout.marginWidth = 0;
 		container.setLayout(gridLayout);
 
 		//create grid data to use all horizontal space
@@ -338,7 +341,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 			valueField.setEnabled(state);
 		}
 		if (treeViewRefreshable != null) {
-			treeViewRefreshable.refresh();
+			//treeViewRefreshable.refresh(); //creates flickering when targets are updated
 		}
 		refreshAttributeAtomControl();
 	}

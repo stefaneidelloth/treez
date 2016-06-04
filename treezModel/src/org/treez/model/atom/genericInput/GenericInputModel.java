@@ -27,7 +27,7 @@ import org.treez.core.atom.variablefield.StringVariableField;
 import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
-import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
+import org.treez.core.treeview.action.AddColoredChildAtomTreeViewerAction;
 import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.model.Activator;
 import org.treez.model.atom.AbstractModel;
@@ -57,7 +57,9 @@ public class GenericInputModel extends AbstractModel {
 	 * contentComposite before (re-) creating the ControlAdaption with this method.
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite contentComposite, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite contentComposite,
+			FocusChangingRefreshable treeViewRefreshable) {
 		return super.createControlAdaption(contentComposite, treeViewRefreshable);
 	}
 
@@ -133,7 +135,7 @@ public class GenericInputModel extends AbstractModel {
 					() -> enableAllVariableFields()));
 		}
 
-		Action addQuantityVariableField = new AddChildAtomTreeViewerAction(
+		Action addQuantityVariableField = new AddColoredChildAtomTreeViewerAction(
 				QuantityVariableField.class,
 				"quantityVariable",
 				org.treez.core.Activator.getImage("quantityVariable.png"),
@@ -141,7 +143,7 @@ public class GenericInputModel extends AbstractModel {
 				treeViewer);
 		actions.add(addQuantityVariableField);
 
-		Action addDoubleVariableField = new AddChildAtomTreeViewerAction(
+		Action addDoubleVariableField = new AddColoredChildAtomTreeViewerAction(
 				DoubleVariableField.class,
 				"doubleVariable",
 				org.treez.core.Activator.getImage("doubleVariable.png"),
@@ -149,7 +151,7 @@ public class GenericInputModel extends AbstractModel {
 				treeViewer);
 		actions.add(addDoubleVariableField);
 
-		Action addIntegerVariableField = new AddChildAtomTreeViewerAction(
+		Action addIntegerVariableField = new AddColoredChildAtomTreeViewerAction(
 				IntegerVariableField.class,
 				"integerVariable",
 				org.treez.core.Activator.getImage("integerVariable.png"),
@@ -157,7 +159,7 @@ public class GenericInputModel extends AbstractModel {
 				treeViewer);
 		actions.add(addIntegerVariableField);
 
-		Action addBooleanVariableField = new AddChildAtomTreeViewerAction(
+		Action addBooleanVariableField = new AddColoredChildAtomTreeViewerAction(
 				BooleanVariableField.class,
 				"booleanVariable",
 				org.treez.core.Activator.getImage("booleanVariable.png"),
@@ -165,7 +167,7 @@ public class GenericInputModel extends AbstractModel {
 				treeViewer);
 		actions.add(addBooleanVariableField);
 
-		Action addStringVariableField = new AddChildAtomTreeViewerAction(
+		Action addStringVariableField = new AddColoredChildAtomTreeViewerAction(
 				StringVariableField.class,
 				"stringVariable",
 				org.treez.core.Activator.getImage("stringVariable.png"),
@@ -173,7 +175,7 @@ public class GenericInputModel extends AbstractModel {
 				treeViewer);
 		actions.add(addStringVariableField);
 
-		Action addStringItemVariableField = new AddChildAtomTreeViewerAction(
+		Action addStringItemVariableField = new AddColoredChildAtomTreeViewerAction(
 				StringItemVariableField.class,
 				"stringItemVariable",
 				org.treez.core.Activator.getImage("stringItemVariable.png"),
@@ -181,7 +183,7 @@ public class GenericInputModel extends AbstractModel {
 				treeViewer);
 		actions.add(addStringItemVariableField);
 
-		Action addFilePathVariableField = new AddChildAtomTreeViewerAction(
+		Action addFilePathVariableField = new AddColoredChildAtomTreeViewerAction(
 				FilePathVariableField.class,
 				"filePathVariable",
 				org.treez.core.Activator.getImage("filePathVariable.png"),
@@ -189,7 +191,7 @@ public class GenericInputModel extends AbstractModel {
 				treeViewer);
 		actions.add(addFilePathVariableField);
 
-		Action addDirectoryPathVariableField = new AddChildAtomTreeViewerAction(
+		Action addDirectoryPathVariableField = new AddColoredChildAtomTreeViewerAction(
 				DirectoryPathVariableField.class,
 				"directoryPathVariable",
 				org.treez.core.Activator.getImage("directoryPathVariable.png"),

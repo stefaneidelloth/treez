@@ -42,6 +42,8 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 
 	private ImageCombo colorCombo = null;
 
+	private Button colorButton = null;
+
 	/**
 	 * Predefined color names
 	 */
@@ -123,8 +125,9 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 
 		//button value
 		//chooser-----------------------------------------------------
-		final ColorSelector colorSelector = new ColorSelector(container);
-		Button colorButton = colorSelector.getButton();
+		ColorSelector colorSelector = new ColorSelector(container);
+		colorButton = colorSelector.getButton();
+		colorButton.setEnabled(isEnabled());
 		RGB rgb = getColorRgb();
 		colorSelector.setColorValue(rgb);
 
@@ -388,6 +391,21 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 				throw new IllegalArgumentException("The string '" + value + "' could not be interpreted as color.");
 			}
 		}
+	}
+
+	@Override
+	public void setEnabled(boolean state) {
+		super.setEnabled(state);
+		if (isAvailable(colorCombo)) {
+			colorCombo.setEnabled(state);
+		}
+		if (isAvailable(colorButton)) {
+			colorButton.setEnabled(state);
+		}
+		if (treeViewRefreshable != null) {
+			//treeViewRefreshable.refresh(); //creates flickering when targets are updated
+		}
+		refreshAttributeAtomControl();
 	}
 
 	/**

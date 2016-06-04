@@ -73,8 +73,7 @@ public class StringVariableField extends AbstractVariableField<String> {
 
 	@Override
 	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
-		throw new IllegalStateException("Not yet implemented");
-
+		this.backgroundColor = backgroundColor;
 	}
 
 	@Override

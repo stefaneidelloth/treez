@@ -1,4 +1,4 @@
-package org.treez.core.atom.attribute;
+package org.treez.javafxd3.javafx;
 
 import java.util.List;
 
