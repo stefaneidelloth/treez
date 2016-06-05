@@ -1,17 +1,20 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.data.contour.colorbar;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-public enum Coloring implements org.treez.javafxd3.javafx.EnumValueProvider<Coloring>{
+public enum ExponentFormat {
 
 	//#region VALUES
 
-	FILL("fill"), //
-	HEATMAP("heatmap"), //
-	LINES("lines");	// ("none" is not used here) 
+	NONE("none"), //
+	E_LOWER_CASE("e"), //
+	E_UPPER_CASE("E"), //
+	POWER("power"), //
+	SI("SI"), //
+	B("B");
 
 	//#end region
 
@@ -23,7 +26,7 @@ public enum Coloring implements org.treez.javafxd3.javafx.EnumValueProvider<Colo
 
 	//#region CONSTRUCTORS
 
-	Coloring(String value) {
+	ExponentFormat(String value) {
 		this.value = value;
 	}
 
@@ -36,15 +39,13 @@ public enum Coloring implements org.treez.javafxd3.javafx.EnumValueProvider<Colo
 		return value;
 	}
 
-	@Override
-	public Coloring fromString(final String value) {
+	public static ExponentFormat fromString(final String value) {
 		return valueOf(value.toUpperCase().replace("-", "_"));
 	}
 
-	@Override
 	public List<String> getValues() {
 		List<String> values = new ArrayList<>();
-		for (Coloring enumValue : values()) {
+		for (ExponentFormat enumValue : values()) {
 			String stringValue = enumValue.value;
 			values.add(stringValue);
 		}

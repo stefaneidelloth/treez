@@ -43,7 +43,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	/*
 	@Override
 	public void addModificationConsumer(String key, Consumer<Double> consumer) {
-
+	
 		addModifyListener(key, (event) -> {
 			Double doubleValue = Double.parseDouble(event.data.toString());
 			consumer.accept(doubleValue);
@@ -158,7 +158,7 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 			return value;
 		} catch (NumberFormatException exception) {
 			//this happens  for example if "e" is entered as string value
-			return null;
+			return getDefaultValue();
 		}
 	}
 
@@ -182,8 +182,12 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 
 	@Override
 	public Double getDefaultValue() {
-		Double value = new Double(getDefaultValueString());
-		return value;
+		try {
+			Double value = new Double(getDefaultValueString());
+			return value;
+		} catch (NumberFormatException exception) {
+			return 0.0;
+		}
 	}
 
 	public void setDefaultValue(Double defaultValue) {

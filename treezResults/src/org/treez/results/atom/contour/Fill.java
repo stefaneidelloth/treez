@@ -10,7 +10,7 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.plotly.ColorScale;
+import org.treez.javafxd3.plotly.data.contour.ColorScale;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Fill implements GraphicsPropertiesPageFactory {
@@ -21,7 +21,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<Boolean> reverseScale = new Wrap<>();
 
-	public final Attribute<String> transparency = new Wrap<>();
+	public final Attribute<Double> transparency = new Wrap<>();
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -40,7 +40,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 		fill.createCheckBox(reverseScale, "Reverse scale", false);
 
-		fill.createTextField(transparency, "transparency", "0");
+		fill.createDoubleVariableField(transparency, this, 0.0);
 
 		fill.createCheckBox(hide, "hide");
 

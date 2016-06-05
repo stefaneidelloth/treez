@@ -5,6 +5,17 @@ import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.wrapper.Element;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
+import org.treez.javafxd3.plotly.configuration.Configuration;
+import org.treez.javafxd3.plotly.data.Data;
+import org.treez.javafxd3.plotly.data.Font;
+import org.treez.javafxd3.plotly.data.SingleData;
+import org.treez.javafxd3.plotly.data.contour.Contours;
+import org.treez.javafxd3.plotly.data.contour.colorbar.ColorBar;
+import org.treez.javafxd3.plotly.data.line.Line;
+import org.treez.javafxd3.plotly.layout.Axis;
+import org.treez.javafxd3.plotly.layout.Layout;
+import org.treez.javafxd3.plotly.layout.margin.Margin;
+import org.treez.javafxd3.plotly.layout.margin.ZeroMargin;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -111,6 +122,14 @@ public class Plotly extends JavaScriptObject {
 			return new Line(webEngine);
 		}
 		
+		public ColorBar createColorBar() {
+			return new ColorBar(webEngine);
+		}
+		
+		public Font createFont() {
+			return new Font(webEngine);
+		}
+		
 		//#end region
 	
 	//#region RETRIEVE SELECTIONS / NODES
@@ -131,6 +150,8 @@ public class Plotly extends JavaScriptObject {
 		JSObject result = evalForJsObject("document.getElementById('" + elementId + "');");
 		return new Element(webEngine, result);		
 	}
+
+	
 
 	
 	

@@ -1,27 +1,19 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.data.contour.colorbar;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.treez.javafxd3.javafx.EnumValueProvider;
 
-public enum ColorScale implements EnumValueProvider<ColorScale> {
+public enum TickPosition implements EnumValueProvider<TickPosition>{
 
 	//#region VALUES
 
-	BLACKBODY("Blackbody"), //
-	BLUERED("Bluered"), //
-	EARTH("Earth"), //
-	ELECTRIC("Electric"), //
-	GREENS("Greens"), //
-	GREYS("Greys"), //
-	HOT("Hot"), //
-	JET("Jet"), //
-	PICNIC("Picnic"), //
-	PORTLAND("Portland"), //
-	RDBU("RdBu"), //
-	YIGNBU("YIGnBu"), //
-	YIORD("YIOrRd");
+	OUTSIDE("outside"), //
+	INSIDE("inside"), //
+	NONE("");
 
 	//#end region
 
@@ -33,7 +25,7 @@ public enum ColorScale implements EnumValueProvider<ColorScale> {
 
 	//#region CONSTRUCTORS
 
-	ColorScale(String value) {
+	TickPosition(String value) {
 		this.value = value;
 	}
 
@@ -47,14 +39,14 @@ public enum ColorScale implements EnumValueProvider<ColorScale> {
 	}
 
 	@Override
-	public ColorScale fromString(final String value) {
+	public TickPosition fromString(final String value) {
 		return valueOf(value.toUpperCase().replace("-", "_"));
 	}
 
 	@Override
 	public List<String> getValues() {
 		List<String> values = new ArrayList<>();
-		for (ColorScale enumValue : values()) {
+		for (TickPosition enumValue : values()) {
 			String stringValue = enumValue.value;
 			values.add(stringValue);
 		}

@@ -1,4 +1,4 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.data;
 
 import java.util.ArrayList;
 import java.util.List;

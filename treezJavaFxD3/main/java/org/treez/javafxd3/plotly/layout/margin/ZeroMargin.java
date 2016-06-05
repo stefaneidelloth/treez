@@ -1,4 +1,4 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.layout.margin;
 
 import javafx.scene.web.WebEngine;
 

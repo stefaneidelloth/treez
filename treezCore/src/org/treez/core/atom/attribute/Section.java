@@ -486,6 +486,14 @@ public class Section extends AbstractAttributeContainerAtom {
 		return textField;
 	}
 
+	public TextField createTextField(Attribute<String> wrap, GraphicsPropertiesPageFactory attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		TextField textField = new TextField(attributeName);
+		addChild(textField);
+		textField.wrap(wrap);
+		return textField;
+	}
+
 	//#end region
 
 	//#region LABEL

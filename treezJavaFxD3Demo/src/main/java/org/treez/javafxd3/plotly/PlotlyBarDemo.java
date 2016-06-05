@@ -1,6 +1,10 @@
 package org.treez.javafxd3.plotly;
 
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
+import org.treez.javafxd3.plotly.configuration.Configuration;
+import org.treez.javafxd3.plotly.data.PlotlyType;
+import org.treez.javafxd3.plotly.data.SingleData;
+import org.treez.javafxd3.plotly.layout.Layout;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

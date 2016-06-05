@@ -22,7 +22,7 @@ public class Border implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> style = new Wrap<>();
 
-	public final Attribute<String> transparency = new Wrap<>();
+	public final Attribute<Double> transparency = new Wrap<>();
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -43,7 +43,7 @@ public class Border implements GraphicsPropertiesPageFactory {
 
 		border.createLineStyle(style, "style", "solid");
 
-		border.createTextField(transparency, "transparency", "0");
+		border.createDoubleVariableField(transparency, this, 0.0);
 
 		border.createCheckBox(hide, "hide");
 	}

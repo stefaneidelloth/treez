@@ -1,23 +1,17 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.data.contour;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Determines the line shape. With "spline" the lines are drawn using spline interpolation.
- * The other available values correspond to step-wise line shapes. 
- */
-public enum LineShape {
+
+
+public enum Coloring implements org.treez.javafxd3.javafx.EnumValueProvider<Coloring>{
 
 	//#region VALUES
 
-	LINEAR("linear"), //
-	SPLINE("spline"), //
-	HV("hv"), //
-	VH("vh"), //
-	HVH("hvh"), //
-	VHV("vhv"); //
-	
+	FILL("fill"), //
+	HEATMAP("heatmap"), //
+	LINES("lines");	// ("none" is not used here) 
 
 	//#end region
 
@@ -29,7 +23,7 @@ public enum LineShape {
 
 	//#region CONSTRUCTORS
 
-	LineShape(String value) {
+	Coloring(String value) {
 		this.value = value;
 	}
 
@@ -42,13 +36,15 @@ public enum LineShape {
 		return value;
 	}
 
-	public static LineShape fromString(final String value) {
+	@Override
+	public Coloring fromString(final String value) {
 		return valueOf(value.toUpperCase().replace("-", "_"));
 	}
 
+	@Override
 	public List<String> getValues() {
 		List<String> values = new ArrayList<>();
-		for (LineShape enumValue : values()) {
+		for (Coloring enumValue : values()) {
 			String stringValue = enumValue.value;
 			values.add(stringValue);
 		}

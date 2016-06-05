@@ -26,4 +26,11 @@ Export-Package: org.treez.javafxd3.d3,
  org.treez.javafxd3.d3.xhr,
  org.treez.javafxd3.functionplot,
  org.treez.javafxd3.javafx,
- org.treez.javafxd3.plotly
+ org.treez.javafxd3.plotly,
+ org.treez.javafxd3.plotly.configuration,
+ org.treez.javafxd3.plotly.data,
+ org.treez.javafxd3.plotly.data.contour,
+ org.treez.javafxd3.plotly.data.contour.colorbar,
+ org.treez.javafxd3.plotly.data.line,
+ org.treez.javafxd3.plotly.layout,
+ org.treez.javafxd3.plotly.layout.margin

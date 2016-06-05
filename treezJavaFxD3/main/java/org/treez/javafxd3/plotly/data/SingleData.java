@@ -1,8 +1,12 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.data;
 
 import java.util.List;
 
 import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.plotly.data.contour.ColorScale;
+import org.treez.javafxd3.plotly.data.contour.Contours;
+import org.treez.javafxd3.plotly.data.contour.colorbar.ColorBar;
+import org.treez.javafxd3.plotly.data.line.Line;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -139,6 +143,14 @@ public class SingleData extends Array<Data> {
 	}
 
 	//#end region
+	
+	//#region TEXT
+	
+	public void setText(String[] textArray) {
+		data.setText(textArray);		
+	}	
+	
+	//#end region
 
 	//#region LABELS
 
@@ -209,6 +221,14 @@ public class SingleData extends Array<Data> {
 	
 	//#end region
 	
+	//#region COLORBAR
+	
+	public void setColorBar(ColorBar colorBar) {
+		data.setColorBar(colorBar);		
+	}
+	
+	//#end region
+	
 	//#region LINE	
 
 	public void setLine(Line line) {
@@ -226,6 +246,8 @@ public class SingleData extends Array<Data> {
 	public void setVisible(boolean isVisible) {
 		data.setVisible(isVisible);		
 	}
+
+	
 	
 	//#end region
 

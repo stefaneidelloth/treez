@@ -12,14 +12,15 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.javafxd3.plotly.Configuration;
-import org.treez.javafxd3.plotly.Contours;
-import org.treez.javafxd3.plotly.Layout;
-import org.treez.javafxd3.plotly.Line;
 import org.treez.javafxd3.plotly.Plotly;
-import org.treez.javafxd3.plotly.PlotlyType;
-import org.treez.javafxd3.plotly.SingleData;
-import org.treez.javafxd3.plotly.ZeroMargin;
+import org.treez.javafxd3.plotly.configuration.Configuration;
+import org.treez.javafxd3.plotly.data.PlotlyType;
+import org.treez.javafxd3.plotly.data.SingleData;
+import org.treez.javafxd3.plotly.data.contour.Contours;
+import org.treez.javafxd3.plotly.data.contour.colorbar.ColorBar;
+import org.treez.javafxd3.plotly.data.line.Line;
+import org.treez.javafxd3.plotly.layout.Layout;
+import org.treez.javafxd3.plotly.layout.margin.ZeroMargin;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graph.Graph;
@@ -38,7 +39,7 @@ public class Contour extends GraphicsPropertiesPage {
 
 	public Lines lines;
 
-	//public Label label;
+	public org.treez.results.atom.contour.ColorBar colorbar;
 
 	private Selection graphSelection;
 
@@ -71,6 +72,9 @@ public class Contour extends GraphicsPropertiesPage {
 
 		lines = new Lines();
 		propertyPageFactories.add(lines);
+
+		colorbar = new org.treez.results.atom.contour.ColorBar();
+		propertyPageFactories.add(colorbar);
 
 		//label = new Label();
 
@@ -131,6 +135,12 @@ public class Contour extends GraphicsPropertiesPage {
 		Selection lineSelection = getLineSelection(contourSelection);
 		bindAdditionalLineAttributes(lineSelection);
 
+		if (!colorbar.hide.get()) {
+			Selection colorBarSelection = org.treez.results.atom.contour.ColorBar
+					.getColorBarSelection(contourSelection);
+			colorbar.bindAdditionalColorBarAttributes(colorBarSelection, d3, graph);
+		}
+
 	}
 
 	private static Selection getFillSelection(Selection contourSelection) {
@@ -182,13 +192,13 @@ public class Contour extends GraphicsPropertiesPage {
 		double yMin = Double.parseDouble(yAxisAtom.data.min.get());
 		double yMax = Double.parseDouble(yAxisAtom.data.max.get());
 
-		org.treez.javafxd3.plotly.Axis xAxisPlotly = plotly.createAxis();
+		org.treez.javafxd3.plotly.layout.Axis xAxisPlotly = plotly.createAxis();
 		xAxisPlotly.setRange(xMin, xMax);
 		xAxisPlotly.setShowTickLabels(false);
 		xAxisPlotly.setTicks("");
 		layout.setXAxis(xAxisPlotly);
 
-		org.treez.javafxd3.plotly.Axis yAxisPlotly = plotly.createAxis();
+		org.treez.javafxd3.plotly.layout.Axis yAxisPlotly = plotly.createAxis();
 		yAxisPlotly.setRange(yMin, yMax);
 		yAxisPlotly.setShowTickLabels(false);
 		yAxisPlotly.setTicks("");
@@ -206,9 +216,13 @@ public class Contour extends GraphicsPropertiesPage {
 
 		SingleData singleData = plotly.createSingleData();
 		singleData.setType(PlotlyType.CONTOUR);
-		singleData.setShowScale(false);
 		singleData.setVisible(true);
 		singleData.setOpacity(1);
+
+		singleData.setShowScale(!colorbar.hide.get());
+
+		ColorBar colorBar = colorbar.createColorBar(plotly, updateConsumer);
+		singleData.setColorBar(colorBar);
 
 		List<Double> xData = getXData();
 		singleData.setX(xData);
@@ -241,8 +255,11 @@ public class Contour extends GraphicsPropertiesPage {
 		singleData.setReverseScale(fill.reverseScale.get());
 
 		Line line = createPlotlyLine();
-
 		singleData.setLine(line);
+
+		singleData.setText(new String[] { "a", "b", "c", "d" });
+
+		colorbar.hide.addModificationConsumer("hide", updateConsumer);
 
 		data.xData.addModificationConsumer("xData", updateConsumer);
 		data.yData.addModificationConsumer("yData", updateConsumer);
@@ -292,8 +309,12 @@ public class Contour extends GraphicsPropertiesPage {
 
 	private void movePlotlyContourFromDummyDivToContourGroup(Selection contourSelection) {
 		String contourId = contourSelection.attr("id");
-		String copyCommand = "$('.main-svg').find('.contour').appendTo($('#root').find('#" + contourId + "'));";
-		plotly.eval(copyCommand);
+		String copyContourCommand = "$('.main-svg').find('.contour').appendTo($('#root').find('#" + contourId + "'));";
+		plotly.eval(copyContourCommand);
+
+		String copyColorbarCommand = "$('.main-svg').find('.infolayer').children('g:last-child').appendTo($('#root').find('#"
+				+ contourId + "')).attr('class','colorbar');";
+		plotly.eval(copyColorbarCommand);
 
 		String clearCommand = "$('#dummyDiv').empty().removeAttr('class')";
 		plotly.eval(clearCommand);

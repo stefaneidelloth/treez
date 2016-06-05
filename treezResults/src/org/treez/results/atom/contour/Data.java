@@ -15,7 +15,7 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.plotly.Coloring;
+import org.treez.javafxd3.plotly.data.contour.Coloring;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Data implements GraphicsPropertiesPageFactory {

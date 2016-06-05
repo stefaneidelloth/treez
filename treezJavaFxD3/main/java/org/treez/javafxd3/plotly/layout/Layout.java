@@ -1,6 +1,7 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.layout;
 
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
+import org.treez.javafxd3.plotly.layout.margin.Margin;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;

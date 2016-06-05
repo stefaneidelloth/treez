@@ -30,7 +30,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 	//public final Attribute<String> fillStyle = new Wrap<>();
 
-	public final Attribute<String> transparency = new Wrap<>();
+	public final Attribute<Double> transparency = new Wrap<>();
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -53,7 +53,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 		//fill.createFillStyle(fillStyle, "style", "Style");
 
-		fill.createTextField(transparency, "transparency", "0");
+		fill.createDoubleVariableField(transparency, this, 0.0);
 
 		fill.createCheckBox(hide, "hide");
 

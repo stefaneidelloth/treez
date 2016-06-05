@@ -1,4 +1,4 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.layout.margin;
 
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 

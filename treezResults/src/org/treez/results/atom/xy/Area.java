@@ -51,7 +51,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 	/**
 	 * Transparency of the "above area"
 	 */
-	public final Attribute<String> aboveTransparency = new Wrap<>();
+	public final Attribute<Double> aboveTransparency = new Wrap<>();
 
 	/**
 	 * Hides the "above area"
@@ -78,7 +78,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 		//fillAbove.createFillStyle(aboveFillStyle, "style", "Style");
 
-		fillAbove.createTextField(aboveTransparency, "transparency", "0");
+		fillAbove.createDoubleVariableField(aboveTransparency, this, 0.0).setLabel("Transparency");
 
 		fillAbove.createCheckBox(aboveHide, "hide", true);
 

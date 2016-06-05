@@ -29,7 +29,7 @@ public class Line implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> style = new Wrap<>();
 
-	public final Attribute<String> transparency = new Wrap<>();
+	public final Attribute<Double> transparency = new Wrap<>();
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -54,7 +54,7 @@ public class Line implements GraphicsPropertiesPageFactory {
 
 		line.createLineStyle(style, "style", "solid");
 
-		line.createTextField(transparency, "transparency", "0");
+		line.createDoubleVariableField(transparency, this, 0.0);
 
 		line.createCheckBox(hide, "hide");
 	}

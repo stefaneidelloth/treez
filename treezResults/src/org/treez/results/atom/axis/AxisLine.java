@@ -25,7 +25,7 @@ public class AxisLine implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> style = new Wrap<>();
 
-	public final Attribute<String> transparency = new Wrap<>();
+	public final Attribute<Double> transparency = new Wrap<>();
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -46,7 +46,7 @@ public class AxisLine implements GraphicsPropertiesPageFactory {
 
 		axisLineSection.createLineStyle(style, "style", "solid");
 
-		axisLineSection.createTextField(transparency, "transparency", "0");
+		axisLineSection.createDoubleVariableField(transparency, this, 0.0);
 
 		axisLineSection.createCheckBox(hide, "hide");
 

@@ -294,6 +294,14 @@ public class Selection extends EnteringSelection {
 		}
 		return Double.parseDouble(attribute);
 	}
+	
+	/**
+	 * Removes the attribute with the given name
+	 */
+	public <T> Selection attrRemove(final String name) {
+		JSObject result = call("attr", name, null);
+		return new Selection(webEngine, result);
+	}
 
 	/**
 	 * Sets the attribute with the specified name to the specified value on all

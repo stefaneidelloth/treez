@@ -1,18 +1,23 @@
-package org.treez.javafxd3.plotly;
+package org.treez.javafxd3.plotly.data.line;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public enum Dash {
+/**
+ * Determines the line shape. With "spline" the lines are drawn using spline interpolation.
+ * The other available values correspond to step-wise line shapes. 
+ */
+public enum LineShape {
 
 	//#region VALUES
 
-	SOLID("solid"), //
-	DOT("dot"), //
-	DASH("dash"), //
-	LONGDASH("longdash"), //
-	DASHDOT("dashdot"), //
-	LONGDASHDOT("longdashdot");
+	LINEAR("linear"), //
+	SPLINE("spline"), //
+	HV("hv"), //
+	VH("vh"), //
+	HVH("hvh"), //
+	VHV("vhv"); //
+	
 
 	//#end region
 
@@ -24,7 +29,7 @@ public enum Dash {
 
 	//#region CONSTRUCTORS
 
-	Dash(String value) {
+	LineShape(String value) {
 		this.value = value;
 	}
 
@@ -37,13 +42,13 @@ public enum Dash {
 		return value;
 	}
 
-	public static Dash fromString(final String value) {
+	public static LineShape fromString(final String value) {
 		return valueOf(value.toUpperCase().replace("-", "_"));
 	}
 
 	public List<String> getValues() {
 		List<String> values = new ArrayList<>();
-		for (Dash enumValue : values()) {
+		for (LineShape enumValue : values()) {
 			String stringValue = enumValue.value;
 			values.add(stringValue);
 		}

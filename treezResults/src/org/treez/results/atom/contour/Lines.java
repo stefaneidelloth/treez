@@ -24,7 +24,7 @@ public class Lines implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<Double> smoothing = new Wrap<>();
 
-	public final Attribute<String> transparency = new Wrap<>();
+	public final Attribute<Double> transparency = new Wrap<>();
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -47,7 +47,7 @@ public class Lines implements GraphicsPropertiesPageFactory {
 
 		line.createDoubleVariableField(smoothing, this, 0.0);
 
-		line.createTextField(transparency, "transparency", "0");
+		line.createDoubleVariableField(transparency, this, 0.0);
 
 		line.createCheckBox(hide, "hide");
 	}

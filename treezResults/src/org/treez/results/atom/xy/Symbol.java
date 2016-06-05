@@ -43,7 +43,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 	//public final Attribute<String> fillStyle = new Wrap<>();
 
-	public final Attribute<String> fillTransparency = new Wrap<>();
+	public final Attribute<Double> fillTransparency = new Wrap<>();
 
 	public final Attribute<Boolean> hideFill = new Wrap<>();
 
@@ -53,7 +53,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> lineStyle = new Wrap<>();
 
-	public final Attribute<String> lineTransparency = new Wrap<>();
+	public final Attribute<Double> lineTransparency = new Wrap<>();
 
 	public final Attribute<Boolean> hideLine = new Wrap<>();
 
@@ -94,7 +94,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		//fill.createFillStyle(fillStyle, "style", "Style");
 
-		fill.createTextField(fillTransparency, "transparency", "0");
+		fill.createDoubleVariableField(fillTransparency, this, 0.0).setLabel("Transparency");
 
 		fill.createCheckBox(hideFill, "hide");
 
@@ -114,7 +114,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		markerBorder.createLineStyle(lineStyle, "style", "solid");
 
-		markerBorder.createTextField(lineTransparency, "transparency", "0");
+		markerBorder.createDoubleVariableField(lineTransparency, this, 0.0).setLabel("Transparency");
 
 		markerBorder.createCheckBox(hideLine, "hide");
 

@@ -103,14 +103,28 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 		});
 	}
 
-	public static void bindTransparency(Selection selection, Attribute<String> transparency) {
+	public static void bindTransparency(Selection selection, Attribute<Double> transparency) {
 
 		String consumerKey = "updateTransparency" + System.currentTimeMillis();
 		transparency.addModificationConsumerAndRun(consumerKey, () -> {
 			try {
-				double transparencyValue = Double.parseDouble(transparency.get());
+				double transparencyValue = transparency.get();
 				double opacity = 1 - transparencyValue;
 				selection.attr("fill-opacity", "" + opacity);
+			} catch (NumberFormatException exception) {
+
+			}
+		});
+	}
+
+	public static void bindTransparencyByStyle(Selection selection, Attribute<Double> transparency) {
+
+		String consumerKey = "updateTransparency" + System.currentTimeMillis();
+		transparency.addModificationConsumerAndRun(consumerKey, () -> {
+			try {
+				double transparencyValue = transparency.get();
+				double opacity = 1 - transparencyValue;
+				selection.style("fill-opacity", "" + opacity);
 			} catch (NumberFormatException exception) {
 
 			}
@@ -120,7 +134,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	public static void bindTransparencyToBooleanAttribute(
 			Selection selection,
 			Attribute<Boolean> hide,
-			Attribute<String> transparency) {
+			Attribute<Double> transparency) {
 
 		String consumerKey = "hideFill" + +System.currentTimeMillis();
 		hide.addModificationConsumerAndRun(consumerKey, () -> {
@@ -129,9 +143,29 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 				if (doHide) {
 					selection.attr("fill-opacity", "0");
 				} else {
-					double transparencyValue = Double.parseDouble(transparency.get());
+					double transparencyValue = transparency.get();
 					double opacity = 1 - transparencyValue;
 					selection.attr("fill-opacity", "" + opacity);
+				}
+			} catch (NumberFormatException exception) {}
+		});
+	}
+
+	public static void bindTransparencyToBooleanAttributeByStyle(
+			Selection selection,
+			Attribute<Boolean> hide,
+			Attribute<Double> transparency) {
+
+		String consumerKey = "hideFillByStyle" + +System.currentTimeMillis();
+		hide.addModificationConsumerAndRun(consumerKey, () -> {
+			try {
+				boolean doHide = hide.get();
+				if (doHide) {
+					selection.style("fill-opacity", "0");
+				} else {
+					double transparencyValue = transparency.get();
+					double opacity = 1 - transparencyValue;
+					selection.style("fill-opacity", "" + opacity);
 				}
 			} catch (NumberFormatException exception) {}
 		});
@@ -214,10 +248,20 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 		}
 	}
 
-	/**
-	 * @param selection
-	 * @param style
-	 */
+	public static void bindStringStyle(Selection selection, String styleName, Attribute<String> style) {
+		String consumerKey = "updateStyle" + +System.currentTimeMillis();
+		style.addModificationConsumerAndRun(consumerKey, () -> {
+			selection.style(styleName, style.get());
+		});
+	}
+
+	public static void bindDoubleStyle(Selection selection, String styleName, Attribute<Double> style) {
+		String consumerKey = "updateStyle" + +System.currentTimeMillis();
+		style.addModificationConsumerAndRun(consumerKey, () -> {
+			selection.style(styleName, style.get());
+		});
+	}
+
 	public static void bindLineStyle(Selection selection, Attribute<String> style) {
 
 		String consumerKey = "updateLineStyle" + +System.currentTimeMillis();
@@ -229,18 +273,14 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 		});
 	}
 
-	/**
-	 * @param selection
-	 * @param transparency
-	 */
-	public static void bindLineTransparency(Selection selection, Attribute<String> transparency) {
+	public static void bindLineTransparency(Selection selection, Attribute<Double> transparency) {
 
 		String consumerKey = "updateLineTransparency" + +System.currentTimeMillis();
 		transparency.addModificationConsumerAndRun(consumerKey, () -> {
 			try {
-				double lineTransparency = Double.parseDouble(transparency.get());
+				double lineTransparency = transparency.get();
 				double opacity = 1 - lineTransparency;
-				selection.attr("stroke-opacity", "" + opacity);
+				selection.style("stroke-opacity", "" + opacity);
 			} catch (NumberFormatException exception) {
 
 			}
@@ -255,18 +295,18 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 	public static void bindLineTransparencyToBooleanAttribute(
 			Selection selection,
 			Attribute<Boolean> hide,
-			Attribute<String> transparency) {
+			Attribute<Double> transparency) {
 
 		String consumerKey = "hideLine" + +System.currentTimeMillis();
 		hide.addModificationConsumerAndRun(consumerKey, () -> {
 			try {
 				boolean doHide = hide.get();
 				if (doHide) {
-					selection.attr("stroke-opacity", "0");
+					selection.style("stroke-opacity", "0");
 				} else {
-					double lineTransparency = Double.parseDouble(transparency.get());
+					double lineTransparency = transparency.get();
 					double opacity = 1 - lineTransparency;
-					selection.attr("stroke-opacity", "" + opacity);
+					selection.style("stroke-opacity", "" + opacity);
 				}
 			} catch (NumberFormatException exception) {
 

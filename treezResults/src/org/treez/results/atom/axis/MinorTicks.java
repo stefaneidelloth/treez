@@ -35,7 +35,7 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> style = new Wrap<>();
 
-	public final Attribute<String> transparency = new Wrap<>();
+	public final Attribute<Double> transparency = new Wrap<>();
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
@@ -60,7 +60,7 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 
 		ticksSection.createLineStyle(style, "style", "solid");
 
-		ticksSection.createTextField(transparency, "transparency", "0");
+		ticksSection.createDoubleVariableField(transparency, this, 0.0);
 
 		ticksSection.createCheckBox(hide, "hide");
 
