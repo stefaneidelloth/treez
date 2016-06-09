@@ -20,6 +20,7 @@ import org.treez.results.atom.graphicspage.Background;
 import org.treez.results.atom.graphicspage.Border;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 import org.treez.results.atom.legend.Legend;
+import org.treez.results.atom.tornado.Tornado;
 import org.treez.results.atom.xy.Xy;
 import org.treez.results.atom.xyseries.XySeries;
 
@@ -100,6 +101,14 @@ public class Graph extends GraphicsPropertiesPage {
 				this,
 				treeViewer);
 		actions.add(addBar);
+
+		Action addTornado = new AddChildAtomTreeViewerAction(
+				Tornado.class,
+				"tornado",
+				Activator.getImage("tornado.png"),
+				this,
+				treeViewer);
+		actions.add(addTornado);
 
 		Action addContour = new AddChildAtomTreeViewerAction(
 				Contour.class,
@@ -185,6 +194,7 @@ public class Graph extends GraphicsPropertiesPage {
 		plotXySeries(d3);
 		plotXy(d3);
 		plotBar(d3);
+		plotTornado(d3);
 		plotLegend(d3);
 	}
 
@@ -224,6 +234,16 @@ public class Graph extends GraphicsPropertiesPage {
 			if (isBar) {
 				Bar bar = (Bar) child;
 				bar.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
+			}
+		}
+	}
+
+	private void plotTornado(D3 d3) {
+		for (Adaptable child : children) {
+			Boolean isTornado = child.getClass().equals(Tornado.class);
+			if (isTornado) {
+				Tornado tornado = (Tornado) child;
+				tornado.plotWithD3(d3, graphGroupSelection, rectSelection, this.treeViewRefreshable);
 			}
 		}
 	}
@@ -272,6 +292,12 @@ public class Graph extends GraphicsPropertiesPage {
 
 	public Bar createBar(String name) {
 		Bar child = new Bar(name);
+		addChild(child);
+		return child;
+	}
+
+	public Tornado createTornado(String name) {
+		Tornado child = new Tornado(name);
 		addChild(child);
 		return child;
 	}

@@ -274,6 +274,18 @@ public class Section extends AbstractAttributeContainerAtom {
 		return comboBox;
 	}
 
+	public <T extends EnumValueProvider<?>> EnumComboBox<T> createEnumComboBox(
+			Attribute<String> wrap,
+			Object attributeParent,
+			EnumValueProvider<?> defaultEnumValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		EnumComboBox<T> comboBox = new EnumComboBox(defaultEnumValue, attributeName);
+		addChild(comboBox);
+		comboBox.wrap(wrap);
+		return comboBox;
+	}
+
 	public ComboBoxEnableTarget createComboBoxEnableTarget(String name, String enableValues, String targetPath) {
 		ComboBoxEnableTarget comboBoxEnableTarget = new ComboBoxEnableTarget(name, enableValues, targetPath);
 		addChild(comboBoxEnableTarget);

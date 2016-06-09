@@ -154,13 +154,25 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		String minString = min.get();
 		boolean minIsAuto = minString.equals("Auto");
-		Double minValue = Double.parseDouble(minString);
+
+		Double minValue = null;
+		if (!minIsAuto) {
+			try {
+				minValue = Double.parseDouble(minString);
+			} catch (NumberFormatException exception) {
+				minValue = 0.0;
+			}
+		}
 
 		String maxString = max.get();
 		boolean maxIsAuto = maxString.equals("Auto");
 		Double maxValue = null;
 		if (!maxIsAuto) {
-			maxValue = Double.parseDouble(maxString);
+			try {
+				maxValue = Double.parseDouble(maxString);
+			} catch (NumberFormatException exception) {
+				maxValue = 0.0;
+			}
 		}
 
 		if (isLog) {
