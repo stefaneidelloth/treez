@@ -12,7 +12,7 @@ public interface ModelOutput {
 	 *
 	 * @return
 	 */
-	AbstractAtom getOutputAtom();
+	AbstractAtom<?> getOutputAtom();
 
 	/**
 	 * Adds a child model output to this model output
@@ -20,8 +20,8 @@ public interface ModelOutput {
 	 * @param childModelOutput
 	 */
 	default void addChildOutput(ModelOutput childModelOutput) {
-		AbstractAtom childAtom = childModelOutput.getOutputAtom();
-		AbstractAtom rootAtom = getOutputAtom();
+		AbstractAtom<?> childAtom = childModelOutput.getOutputAtom();
+		AbstractAtom<?> rootAtom = getOutputAtom();
 		rootAtom.addChild(childAtom);
 	}
 

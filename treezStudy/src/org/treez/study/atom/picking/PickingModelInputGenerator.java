@@ -89,9 +89,9 @@ public class PickingModelInputGenerator {
 		modelInput.add(timeVariablePath, timeValue);
 
 		//set sample values
-		Map<String, AbstractVariableListField<?>> variableData = sample.getVariableSeriesData();
+		Map<String, AbstractVariableListField<?, ?>> variableData = sample.getVariableSeriesData();
 		for (String variableName : variableData.keySet()) {
-			AbstractVariableListField<?> variableListField = variableData.get(variableName);
+			AbstractVariableListField<?, ?> variableListField = variableData.get(variableName);
 			String variablePath = sourceModelPath + "." + variableName;
 
 			Object listObject = variableListField.get();
@@ -120,9 +120,9 @@ public class PickingModelInputGenerator {
 
 	private ModelInput createModelInputFromSample(String sourceModelPath, Sample sample) {
 		ModelInput modelInput = new HashMapModelInput(pickingModelPath);
-		Map<String, VariableField<?>> variableData = sample.getVariableData();
+		Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
 		for (String variableName : variableData.keySet()) {
-			VariableField<?> variableField = variableData.get(variableName);
+			VariableField<?, ?> variableField = variableData.get(variableName);
 			String variablePath = sourceModelPath + "." + variableName;
 
 			Object value = variableField.get();
@@ -138,7 +138,7 @@ public class PickingModelInputGenerator {
 	 */
 	public List<Sample> getEnabledSamples() {
 		List<Sample> samples = new ArrayList<>();
-		for (AbstractAtom child : picking.getChildAtoms()) {
+		for (AbstractAtom<?> child : picking.getChildAtoms()) {
 			boolean isSample = child instanceof Sample;
 			if (isSample) {
 				Sample sample = (Sample) child;

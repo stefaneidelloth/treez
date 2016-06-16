@@ -12,6 +12,6 @@ public interface FocusChangingRefreshable extends Refreshable {
 	 *
 	 * @param atomToFocus
 	 */
-	void setFocus(AbstractAtom atomToFocus);
+	void setFocus(AbstractAtom<?> atomToFocus);
 
 }

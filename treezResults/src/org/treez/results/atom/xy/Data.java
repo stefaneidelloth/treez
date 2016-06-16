@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -39,7 +39,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page dataPage = root.createPage("data", "   Data   ");
 
@@ -55,7 +55,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 		data.createModelPath(yData, this, value, targetClass, parent) //
 				.setLabel("Y data");
 
-		TextField legendTextField = data.createTextField(legendText, "legendText", "");
+		TextField legendTextField = data.createTextField(legendText, this, "");
 		legendTextField.setLabel("Legend text");
 		//data.createTextField(labels, "labels", "Labels", "");
 
@@ -81,7 +81,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		//this property page factory does create an own d3 group; the work will be
 		//done by the other property page factories

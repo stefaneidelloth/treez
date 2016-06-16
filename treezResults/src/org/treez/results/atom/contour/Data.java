@@ -8,7 +8,7 @@ import org.treez.core.atom.attribute.EnumComboBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -60,7 +60,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page dataPage = root.createPage("data", "Data");
 
@@ -81,7 +81,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 		dataSection.createModelPath(zData, this, value, targetClass, parent)//
 				.setLabel("z-Data");
 
-		dataSection.createCheckBox(connectGaps, "Connect gaps", true);
+		dataSection.createCheckBox(connectGaps, this, true).setLabel("Connect gaps");
 
 		//axis
 		Section axisSection = dataPage.createSection("axis", "Axis");
@@ -98,7 +98,8 @@ public class Data implements GraphicsPropertiesPageFactory {
 		Section zLimits = dataPage.createSection("zLimits", "zLimits");
 		zLimits.setLabel("z-Limits");
 
-		CheckBox autoZLimitsCheckBox = zLimits.createCheckBox(automaticZLimits, "Automatic z limits", true);
+		CheckBox autoZLimitsCheckBox = zLimits.createCheckBox(automaticZLimits, this, true);
+		autoZLimitsCheckBox.setLabel("Automatic z limits");
 		autoZLimitsCheckBox.addChild(new CheckBoxEnableTarget("zMin", false, "data.zLimits.zMin"));
 		autoZLimitsCheckBox.addChild(new CheckBoxEnableTarget("zMax", false, "data.zLimits.zMax"));
 
@@ -108,17 +109,18 @@ public class Data implements GraphicsPropertiesPageFactory {
 		//contours
 		Section contours = dataPage.createSection("contours", "z-Limits");
 
-		CheckBox autoContourcheckBox = contours.createCheckBox(automaticContours, "Automatic contours", true);
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("coloring", false, "data.contours.coloring"));
-		autoContourcheckBox
+		CheckBox autoContourCheckBox = contours.createCheckBox(automaticContours, this, true);
+		autoContourCheckBox.setLabel("Automatic contours");
+		autoContourCheckBox.addChild(new CheckBoxEnableTarget("coloring", false, "data.contours.coloring"));
+		autoContourCheckBox
 				.addChild(new CheckBoxEnableTarget("numberOfContours", true, "data.contours.numberOfContours"));
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("startLevel", false, "data.contours.startLevel"));
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("endLevel", false, "data.contours.endLevel"));
-		autoContourcheckBox.addChild(new CheckBoxEnableTarget("levelSize", false, "data.contours.levelSize"));
+		autoContourCheckBox.addChild(new CheckBoxEnableTarget("startLevel", false, "data.contours.startLevel"));
+		autoContourCheckBox.addChild(new CheckBoxEnableTarget("endLevel", false, "data.contours.endLevel"));
+		autoContourCheckBox.addChild(new CheckBoxEnableTarget("levelSize", false, "data.contours.levelSize"));
 
 		contours.createIntegerVariableField(numberOfContours, this, 5);
 
-		EnumComboBox<?> coloringComboBox = contours.createEnumComboBox(coloring, "coloring", Coloring.FILL);
+		EnumComboBox<?> coloringComboBox = contours.createEnumComboBox(coloring, this, Coloring.FILL);
 		coloringComboBox.setLabel("Coloring mode");
 		coloringComboBox.setEnabled(false);
 
@@ -139,7 +141,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		Contour contour = (Contour) parent;
 

@@ -15,7 +15,7 @@ public class AttributeParentCodeAdaption extends AtomCodeAdaption {
 
 	//#region CONSTRUCTORS
 
-	public AttributeParentCodeAdaption(AbstractAttributeParentAtom atom) {
+	public AttributeParentCodeAdaption(AbstractAttributeParentAtom<?> atom) {
 		super(atom);
 	}
 
@@ -24,44 +24,40 @@ public class AttributeParentCodeAdaption extends AtomCodeAdaption {
 	//#region METHODS
 
 	/**
-	 * Adds the attribute code for the AttributeParentAtom that corresponds to
-	 * this code adaption to the given parent code container. The purpose is to
-	 * set the attribute values of the parentAtom that uses an underlying model.
+	 * Adds the attribute code for the AttributeParentAtom that corresponds to this code adaption to the given parent
+	 * code container. The purpose is to set the attribute values of the parentAtom that uses an underlying model.
 	 *
 	 * @param intermediateAtom
 	 * @param parentContainer
 	 * @return
 	 */
 	public CodeContainer extendAttributeCodeContainerForModelParent(
-			AbstractAtom intermediateAtom, CodeContainer parentContainer) {
+			AbstractAtom<?> intermediateAtom,
+			CodeContainer parentContainer) {
 
 		CodeContainer extendedContainer = parentContainer;
 
-		List<AbstractAtom> children = atom.getChildAtoms();
+		List<AbstractAtom<?>> children = atom.getChildAtoms();
 
-		for (AbstractAtom child : children) {
+		for (AbstractAtom<?> child : children) {
 
 			boolean isAttributeAtom = child instanceof AbstractAttributeAtom;
 
 			if (isAttributeAtom) {
-				AbstractAttributeAtom<?> attributeAtom = (AbstractAttributeAtom<?>) child;
-				AttributeAtomCodeAdaption<?> codeAdaption = attributeAtom
-						.createCodeAdaption(scriptType);
-				extendedContainer = codeAdaption
-						.extendAttributeCodeContainerForModelParent(
-								intermediateAtom, parentContainer);
+				AbstractAttributeAtom<?, ?> attributeAtom = (AbstractAttributeAtom<?, ?>) child;
+				AttributeAtomCodeAdaption<?> codeAdaption = attributeAtom.createCodeAdaption(scriptType);
+				extendedContainer = codeAdaption.extendAttributeCodeContainerForModelParent(intermediateAtom,
+						parentContainer);
 
 			} else {
 
 				boolean isAttributeParentAtom = child instanceof AbstractAttributeParentAtom;
 
 				if (isAttributeParentAtom) {
-					AbstractAttributeParentAtom attributeParentAtom = (AbstractAttributeParentAtom) child;
-					AttributeParentCodeAdaption codeAdaption = attributeParentAtom
-							.createCodeAdaption(scriptType);
-					extendedContainer = codeAdaption
-							.extendAttributeCodeContainerForModelParent(
-									intermediateAtom, parentContainer);
+					AbstractAttributeParentAtom<?> attributeParentAtom = (AbstractAttributeParentAtom<?>) child;
+					AttributeParentCodeAdaption codeAdaption = attributeParentAtom.createCodeAdaption(scriptType);
+					extendedContainer = codeAdaption.extendAttributeCodeContainerForModelParent(intermediateAtom,
+							parentContainer);
 				} else {
 					String message = "The child atom " + child.getName()
 							+ " has to inherit from AttributeAtom or AttributeParentAtom but it is "

@@ -9,7 +9,7 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.color.ColorBrewer;
@@ -30,7 +30,7 @@ import org.treez.results.atom.xy.Xy;
  * Represents a series of xy plots that references a table
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class XySeries extends GraphicsAtom implements LegendContributorProvider {
+public class XySeries extends AbstractGraphicsAtom implements LegendContributorProvider {
 
 	private static final Logger LOG = Logger.getLogger(XySeries.class);
 
@@ -86,7 +86,7 @@ public class XySeries extends GraphicsAtom implements LegendContributorProvider 
 
 		section.createColorMap(colorMap, this);
 
-		section.createCheckBox(hide, "hide");
+		section.createCheckBox(hide, this);
 
 		setModel(root);
 
@@ -104,8 +104,8 @@ public class XySeries extends GraphicsAtom implements LegendContributorProvider 
 
 	@Override
 	public void addLegendContributors(List<LegendContributor> legendContributors) {
-		List<AbstractAtom> children = getChildAtoms();
-		for (AbstractAtom child : children) {
+		List<AbstractAtom<?>> children = getChildAtoms();
+		for (AbstractAtom<?> child : children) {
 			boolean isLegendContributorProvider = child instanceof LegendContributorProvider;
 			if (isLegendContributorProvider) {
 				LegendContributorProvider provider = (LegendContributorProvider) child;
@@ -311,7 +311,7 @@ public class XySeries extends GraphicsAtom implements LegendContributorProvider 
 				.onMouseClick(this);
 		bindNameToId(seriesGroupSelection);
 
-		GraphicsAtom.bindDisplayToBooleanAttribute("hidePage", seriesGroupSelection, hide);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hidePage", seriesGroupSelection, hide);
 
 		updatePlotWithD3(d3);
 

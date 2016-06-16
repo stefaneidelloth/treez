@@ -20,7 +20,7 @@ import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.utils.Utils;
 
-public class DirectoryPath extends AbstractStringAttributeAtom {
+public class DirectoryPath extends AbstractStringAttributeAtom<DirectoryPath> {
 
 	//#region ATTRIBUTES
 
@@ -103,6 +103,11 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public DirectoryPath getThis() {
+		return this;
+	}
+
+	@Override
 	public DirectoryPath copy() {
 		return new DirectoryPath(this);
 	}
@@ -113,7 +118,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<DirectoryPath> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -284,7 +289,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public DirectoryPath setEnabled(boolean state) {
 
 		super.setEnabled(state);
 		if (isAvailable(textField)) {
@@ -302,6 +307,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 		if (treeViewRefreshable != null) {
 			treeViewRefreshable.refresh();
 		}
+		return getThis();
 
 	}
 
@@ -319,16 +325,18 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 
 	//#region ACCESSORS
 
-	public void setShowEnabledCheckBox(boolean state) {
+	public DirectoryPath setShowEnabledCheckBox(boolean state) {
 		showEnabledCheckBox = state;
+		return getThis();
 	}
 
 	public String getLabel() {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public DirectoryPath setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -336,20 +344,22 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultDirectoryPath) {
+	public DirectoryPath setDefaultValue(String defaultDirectoryPath) {
 		this.defaultValue = defaultDirectoryPath;
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public DirectoryPath setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	@Override
-	public void setBackgroundColor(Color backgroundColor) {
+	public DirectoryPath setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
 		if (isAvailable(container)) {
 			container.setBackground(backgroundColor);
@@ -374,6 +384,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom {
 		if (isAvailable(openButton)) {
 			openButton.setBackground(backgroundColor);
 		}
+		return getThis();
 
 	}
 

@@ -284,8 +284,13 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     
     public  Double applyForDouble(String d){
     	String command = "this('" + d + "')";
-    	Object result = eval(command);    	
-    	Double value = Double.parseDouble(result.toString());
+    	Object result = eval(command);  
+    	String valueString = result.toString();
+    	boolean isUndefined = valueString.equals("undefined");
+    	if(isUndefined){
+    		return null;
+    	}
+    	Double value = Double.parseDouble(valueString);
     	return value;
     	
     }

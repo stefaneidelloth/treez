@@ -4,6 +4,7 @@ import org.treez.core.scripting.ModelProvider;
 import org.treez.data.column.Columns;
 import org.treez.data.table.Table;
 import org.treez.results.atom.axis.Axis;
+import org.treez.results.atom.axis.AxisMode;
 import org.treez.results.atom.data.Data;
 import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.page.Page;
@@ -60,7 +61,7 @@ public class TornadoExample extends ModelProvider {
 
 		Axis yAxis = graph.createAxis("yAxis");
 		yAxis.data.direction.set("vertical");
-		yAxis.data.max.set("4");
+		yAxis.data.mode.set(AxisMode.ORDINAL.toString());
 
 		graph.createLegend("legend");
 

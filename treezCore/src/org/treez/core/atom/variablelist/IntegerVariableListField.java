@@ -14,18 +14,15 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.variablefield.IntegerVariableField;
-import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.springspel.VectorEvaluation;
 import org.treez.core.swt.CustomLabel;
 
 /**
- * Allows a user to enter a string that is interpreted as a list Integers. This
- * is use for example by the study atom IntegerVariableRange
+ * Allows a user to enter a string that is interpreted as a list Integers. This is use for example by the study atom
+ * IntegerVariableRange
  */
-public class IntegerVariableListField
-		extends
-			AbstractVariableListField<Integer> {
+public class IntegerVariableListField extends AbstractVariableListField<IntegerVariableListField, Integer> {
 
 	//#region ATTRIBUTES
 
@@ -44,8 +41,7 @@ public class IntegerVariableListField
 	private String valueString;
 
 	/**
-	 * The value text field, may contain a single number or an expression to
-	 * create a list of numbers
+	 * The value text field, may contain a single number or an expression to create a list of numbers
 	 */
 	private Text valueField = null;
 
@@ -81,6 +77,11 @@ public class IntegerVariableListField
 	//#region METHODS
 
 	@Override
+	protected IntegerVariableListField getThis() {
+		return this;
+	}
+
+	@Override
 	public IntegerVariableListField copy() {
 		return new IntegerVariableListField(this);
 	}
@@ -92,8 +93,9 @@ public class IntegerVariableListField
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractAttributeAtom<List<Integer>> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<IntegerVariableListField, List<Integer>> createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize integer list value at the first call
@@ -110,8 +112,7 @@ public class IntegerVariableListField
 		fillHorizontal.horizontalAlignment = GridData.FILL;
 
 		//create container control for labels  and text fields
-		Composite container = createContainerComposite(parent, toolkit,
-				fillHorizontal);
+		Composite container = createContainerComposite(parent, toolkit, fillHorizontal);
 
 		//label
 		CustomLabel labelComposite = new CustomLabel(toolkit, container, label);
@@ -123,8 +124,7 @@ public class IntegerVariableListField
 		return this;
 	}
 
-	private void createValueTextField(FormToolkit toolkit,
-			Composite container) {
+	private void createValueTextField(FormToolkit toolkit, Composite container) {
 		valueField = toolkit.createText(container, getValueString());
 		valueField.setToolTipText(tooltip);
 		valueField.setEnabled(isEnabled());
@@ -154,11 +154,9 @@ public class IntegerVariableListField
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainerComposite(Composite parent,
-			FormToolkit toolkit, GridData fillHorizontal) {
+	private static Composite createContainerComposite(Composite parent, FormToolkit toolkit, GridData fillHorizontal) {
 		Composite container = toolkit.createComposite(parent);
-		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(
-				8, false);
+		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(8, false);
 		gridLayout.horizontalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		container.setLayout(gridLayout);
@@ -167,18 +165,16 @@ public class IntegerVariableListField
 	}
 
 	@Override
-	public IntegerVariableListFieldCodeAdaption createCodeAdaption(
-			ScriptType scriptType) {
+	public IntegerVariableListFieldCodeAdaption createCodeAdaption(ScriptType scriptType) {
 
 		IntegerVariableListFieldCodeAdaption codeAdaption;
 		switch (scriptType) {
-			case JAVA :
-				codeAdaption = new IntegerVariableListFieldCodeAdaption(this);
-				break;
-			default :
-				String message = "The ScriptType " + scriptType
-						+ " is not yet implemented.";
-				throw new IllegalStateException(message);
+		case JAVA:
+			codeAdaption = new IntegerVariableListFieldCodeAdaption(this);
+			break;
+		default:
+			String message = "The ScriptType " + scriptType + " is not yet implemented.";
+			throw new IllegalStateException(message);
 		}
 
 		return codeAdaption;
@@ -203,8 +199,7 @@ public class IntegerVariableListField
 	 * @return
 	 */
 	private static List<Integer> createIntegerList(String valueString) {
-		List<Integer> values = vectorEvaluation
-				.parseStringToIntegerList(valueString);
+		List<Integer> values = vectorEvaluation.parseStringToIntegerList(valueString);
 		return values;
 	}
 
@@ -222,7 +217,7 @@ public class IntegerVariableListField
 	}
 
 	@Override
-	public VariableField<Integer> createVariableField() {
+	public IntegerVariableField createVariableField() {
 		IntegerVariableField variableField = new IntegerVariableField(name);
 		List<Integer> currentValues = get();
 		if (currentValues == null || currentValues.isEmpty()) {
@@ -240,25 +235,25 @@ public class IntegerVariableListField
 	//#region ACCESSORS
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public IntegerVariableListField setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public IntegerVariableListField setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (valueField != null) {
 			valueField.setEnabled(state);
 		}
+		return getThis();
 	}
 
 	//#region VALUE
 
 	/**
-	 * Returns the Integer list. This does not use the attributeValue to store
-	 * the state of this attribute atom but uses the valueString
+	 * Returns the Integer list. This does not use the attributeValue to store the state of this attribute atom but uses
+	 * the valueString
 	 */
 	@Override
 	public List<Integer> get() {
@@ -272,8 +267,7 @@ public class IntegerVariableListField
 		if (valueList.isEmpty()) {
 			setValueString("");
 		} else {
-			String currentValueString = VectorEvaluation
-					.integerListToDisplayString(valueList);
+			String currentValueString = VectorEvaluation.integerListToDisplayString(valueList);
 			setValueString(currentValueString);
 		}
 		enableModificationListeners();
@@ -289,12 +283,11 @@ public class IntegerVariableListField
 	}
 
 	/**
-	 * Sets the value string. If the given value is null, the value string is
-	 * set to "".
+	 * Sets the value string. If the given value is null, the value string is set to "".
 	 *
 	 * @param valueString
 	 */
-	public void setValueString(String valueString) {
+	public IntegerVariableListField setValueString(String valueString) {
 		if (valueString == null) {
 			boolean valueChanged = !"".equals(this.valueString);
 			if (valueChanged) {
@@ -307,6 +300,7 @@ public class IntegerVariableListField
 			}
 		}
 		setInitialized();
+		return getThis();
 	}
 
 	//#end region
@@ -318,8 +312,9 @@ public class IntegerVariableListField
 	}
 
 	@Override
-	public void setLabel(String label) {
+	public IntegerVariableListField setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	//#end region
@@ -332,22 +327,23 @@ public class IntegerVariableListField
 		return defaultValues;
 	}
 
-	public void setDefaultValue(List<Integer> valueList) {
+	public IntegerVariableListField setDefaultValue(List<Integer> valueList) {
 		if (valueList.isEmpty()) {
 			setDefaultValueString("");
 		} else {
-			String currentDefaultValueString = VectorEvaluation
-					.integerListToDisplayString(valueList);
+			String currentDefaultValueString = VectorEvaluation.integerListToDisplayString(valueList);
 			setDefaultValueString(currentDefaultValueString);
 		}
+		return getThis();
 	}
 
 	public String getDefaultValueString() {
 		return defaultValueString;
 	}
 
-	public void setDefaultValueString(String defaultValueString) {
+	public IntegerVariableListField setDefaultValueString(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
+		return getThis();
 	}
 
 	//#end region
@@ -358,8 +354,9 @@ public class IntegerVariableListField
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public IntegerVariableListField setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	//#end region

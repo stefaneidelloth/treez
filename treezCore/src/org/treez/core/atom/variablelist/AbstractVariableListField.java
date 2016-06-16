@@ -10,9 +10,9 @@ import org.treez.core.atom.variablefield.VariableField;
  *
  * @param <T>
  */
-public abstract class AbstractVariableListField<T>
+public abstract class AbstractVariableListField<A extends AbstractVariableListField<A, T>, T>
 		extends
-			AbstractAttributeAtom<List<T>> {
+		AbstractAttributeAtom<A, List<T>> {
 
 	//#region CONSTRUCTORS
 
@@ -23,8 +23,7 @@ public abstract class AbstractVariableListField<T>
 	/**
 	 * Copy Constructor
 	 */
-	public AbstractVariableListField(
-			AbstractVariableListField<T> abstractVariableListFieldToCopy) {
+	public AbstractVariableListField(AbstractVariableListField<A, T> abstractVariableListFieldToCopy) {
 		super(abstractVariableListFieldToCopy);
 	}
 
@@ -33,15 +32,14 @@ public abstract class AbstractVariableListField<T>
 	//#region METHODS
 
 	@Override
-	public abstract AbstractVariableListField<T> copy();
+	public abstract AbstractVariableListField<A, T> copy();
 
 	/**
-	 * Creates a VariableField whose type corresponds to the type of this
-	 * VariableListField
+	 * Creates a VariableField whose type corresponds to the type of this VariableListField
 	 *
 	 * @return
 	 */
-	public abstract VariableField<T> createVariableField();
+	public abstract VariableField<?, T> createVariableField();
 
 	//#end region
 
@@ -53,7 +51,7 @@ public abstract class AbstractVariableListField<T>
 	@Override
 	public abstract void set(List<T> valueList);
 
-	public abstract void setLabel(String newLabel);
+	public abstract A setLabel(String newLabel);
 
 	//#end region
 

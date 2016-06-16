@@ -16,8 +16,7 @@ import org.treez.core.scripting.AbstractScripting;
  */
 public class JavaScriptScripting extends AbstractScripting {
 
-	private static final Logger LOG = Logger
-			.getLogger(JavaScriptScripting.class);
+	private static final Logger LOG = Logger.getLogger(JavaScriptScripting.class);
 
 	//#region ATTRIBUTES
 
@@ -62,11 +61,11 @@ public class JavaScriptScripting extends AbstractScripting {
 	 */
 	@Override
 	@SuppressWarnings("checkstyle:illegalcatch")
-	public AbstractAtom getRoot() {
+	public AbstractAtom<?> getRoot() {
 		try {
 			Object object = engine.get("root");
 			if (object instanceof AbstractAtom) {
-				return (AbstractAtom) object;
+				return (AbstractAtom<?>) object;
 			}
 		} catch (Exception e) {
 			LOG.debug("Could not get root", e);
@@ -75,8 +74,7 @@ public class JavaScriptScripting extends AbstractScripting {
 	}
 
 	private void setSourceName() {
-		IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getActivePage().getActiveEditor();
+		IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 
 		if (part instanceof ITextEditor) {
 

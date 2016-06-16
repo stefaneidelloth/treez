@@ -70,7 +70,7 @@ public class TreeViewProviderTest {
 		treeViewProvider.provideTreeView(null, null, null);
 
 		//set example content
-		AbstractAtom invisibleRoot = new AttributeRoot("invisibleRoot");
+		AbstractAtom<?> invisibleRoot = new AttributeRoot("invisibleRoot");
 
 		AttributeRoot root = new AttributeRoot("root");
 		invisibleRoot.addChild(root);

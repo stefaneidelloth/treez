@@ -6,7 +6,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -39,7 +39,7 @@ public class ErrorBar implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page errorBarPage = root.createPage("errorBar", "   Error Bar  ");
 
@@ -47,25 +47,25 @@ public class ErrorBar implements GraphicsPropertiesPageFactory {
 
 		errorBarLine.createColorChooser(color, "color", "black");
 
-		errorBarLine.createSize(width, "width", "0.5pt");
+		errorBarLine.createSize(width, this, "0.5pt");
 
 		errorBarLine.createLineStyle(style, "style");
 
-		errorBarLine.createTextField(transparency, "transparency", "0");
+		errorBarLine.createTextField(transparency, this, "0");
 
-		errorBarLine.createCheckBox(hide, "hide");
+		errorBarLine.createCheckBox(hide, this);
 
-		TextField endSizeField = errorBarLine.createTextField(endSize, "endSize", "1");
+		TextField endSizeField = errorBarLine.createTextField(endSize, this, "1");
 		endSizeField.setLabel("End size");
 
-		CheckBox hideHorz = errorBarLine.createCheckBox(hideHorizontal, "hideHorizontal");
+		CheckBox hideHorz = errorBarLine.createCheckBox(hideHorizontal, this);
 		hideHorz.setLabel("Hide horz.");
-		CheckBox hideVert = errorBarLine.createCheckBox(hideVertical, "hideVertical");
+		CheckBox hideVert = errorBarLine.createCheckBox(hideVertical, this);
 		hideVert.setLabel("Hide vert.");
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		//parent.bindStringAttribute(selection, "x", leftMargin);
 

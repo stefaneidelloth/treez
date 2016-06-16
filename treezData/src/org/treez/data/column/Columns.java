@@ -53,6 +53,11 @@ public class Columns extends AdjustableAtom {
 	//#region METHODS
 
 	@Override
+	public Columns getThis() {
+		return this;
+	}
+
+	@Override
 	public Columns copy() {
 		return new Columns(this);
 	}
@@ -69,7 +74,9 @@ public class Columns extends AdjustableAtom {
 	 * Provides a control to represent this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		return new EmptyControlAdaption(parent, this, "This atom represents all columns of its parent table.");
 	}
@@ -211,7 +218,7 @@ public class Columns extends AdjustableAtom {
 	 * @return
 	 */
 	public Column getColumnByIndex(int columnIndex) {
-		List<AbstractAtom> children = this.getChildAtoms();
+		List<AbstractAtom<?>> children = this.getChildAtoms();
 		if (children.size() > columnIndex) {
 			Column column = (Column) children.get(columnIndex);
 			return column;

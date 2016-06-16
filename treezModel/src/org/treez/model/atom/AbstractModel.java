@@ -17,7 +17,7 @@ import org.treez.model.output.ModelOutput;
 /**
  * Represents the root atom for all models
  */
-public class AbstractModel extends AdjustableAtom implements Model {
+public abstract class AbstractModel extends AdjustableAtom implements Model {
 
 	private static final Logger LOG = Logger.getLogger(AbstractModel.class);
 
@@ -80,7 +80,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 			List<String> allVariableModelPaths = modelInput.getAllVariableModelPaths();
 			for (String variableModelPath : allVariableModelPaths) {
 				Object quantityToAssign = modelInput.getVariableValue(variableModelPath);
-				AbstractAttributeAtom<Object> variableAtom = getVariableAtom(variableModelPath);
+				AbstractAttributeAtom<?, Object> variableAtom = getVariableAtom(variableModelPath);
 				if (variableAtom != null) {
 					variableAtom.set(quantityToAssign);
 				} else {
@@ -110,7 +110,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
 		ModelOutput modelOutput = createEmptyModelOutput();
-		for (AbstractAtom child : getChildAtoms()) {
+		for (AbstractAtom<?> child : getChildAtoms()) {
 			boolean isModel = child instanceof Model;
 			if (isModel) {
 				//get model
@@ -140,7 +140,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	protected ModelOutput createEmptyModelOutput() {
 		String rootOutputName = getName() + "Output";
 		Image rootBaseImage = provideImage();
-		AbstractAtom rootOutput = new OutputAtom(rootOutputName, rootBaseImage);
+		AbstractAtom<?> rootOutput = new OutputAtom(rootOutputName, rootBaseImage);
 		ModelOutput modelOutput = () -> {
 			//overrides getRootOutput
 			return rootOutput;
@@ -156,9 +156,9 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private AbstractAttributeAtom<Object> getVariableAtom(String variableModelPath) {
+	private AbstractAttributeAtom<?, Object> getVariableAtom(String variableModelPath) {
 
-		AbstractAttributeAtom<Object> variableAtom = null;
+		AbstractAttributeAtom<?, Object> variableAtom = null;
 		try {
 			variableAtom = getChildFromRoot(variableModelPath);
 			return variableAtom;
@@ -174,8 +174,11 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	 *
 	 * @param wantedClass
 	 */
-	protected ModelOutput runChildModel(Class<?> wantedClass, FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
-		for (AbstractAtom child : children) {
+	protected ModelOutput runChildModel(
+			Class<?> wantedClass,
+			FocusChangingRefreshable refreshable,
+			IProgressMonitor monitor) {
+		for (AbstractAtom<?> child : children) {
 			Class<?> currentClass = child.getClass();
 			boolean hasWantedClass = currentClass.equals(wantedClass);
 			if (hasWantedClass) {
@@ -203,7 +206,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	 * @param wantedClass
 	 */
 	protected boolean hasChildModel(Class<?> wantedClass) {
-		for (AbstractAtom child : children) {
+		for (AbstractAtom<?> child : children) {
 			Class<?> currentClass = child.getClass();
 			boolean hasWantedClass = currentClass.equals(wantedClass);
 			if (hasWantedClass) {
@@ -240,7 +243,7 @@ public class AbstractModel extends AdjustableAtom implements Model {
 	@Override
 	public void setStudyId(String studyId) {
 		this.studyId = studyId;
-		for (AbstractAtom child : children) {
+		for (AbstractAtom<?> child : children) {
 			boolean isModel = child instanceof Model;
 			if (isModel) {
 				Model model = (Model) child;

@@ -16,7 +16,7 @@ import org.treez.core.treeview.action.TreeViewerAction;
 /**
  * The root AttributeAtom of the model tree of the adjustable atom
  */
-public class AttributeRoot extends AbstractAtom {
+public class AttributeRoot extends AbstractAtom<AttributeRoot> {
 
 	//#region CONSTRUCTORS
 
@@ -35,6 +35,11 @@ public class AttributeRoot extends AbstractAtom {
 
 	//#region METHODS
 
+	@Override
+	protected AttributeRoot getThis() {
+		return this;
+	}
+
 	//#region COPY
 
 	@Override
@@ -48,7 +53,8 @@ public class AttributeRoot extends AbstractAtom {
 	 * Returns the control adaption for this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent,
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
 			FocusChangingRefreshable treeViewRefreshable) {
 		//LOG.debug("get root control");
 		return new EmptyControlAdaption(parent, this, "");
@@ -58,13 +64,14 @@ public class AttributeRoot extends AbstractAtom {
 	 * Creates the context menu actions
 	 */
 	@Override
-	protected ArrayList<Object> createContextMenuActions(
-			final TreeViewerRefreshable treeViewerRefreshable) {
+	protected ArrayList<Object> createContextMenuActions(final TreeViewerRefreshable treeViewerRefreshable) {
 
 		ArrayList<Object> actions = new ArrayList<>();
 
-		actions.add(new TreeViewerAction("Add Page",
-				Activator.getImage("Page.png"), treeViewerRefreshable,
+		actions.add(new TreeViewerAction(
+				"Add Page",
+				Activator.getImage("Page.png"),
+				treeViewerRefreshable,
 				() -> addPage(treeViewerRefreshable)));
 
 		return actions;
@@ -85,8 +92,7 @@ public class AttributeRoot extends AbstractAtom {
 	 * @param treeViewer
 	 */
 	void addPage(TreeViewerRefreshable treeViewer) {
-		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this,
-				"myPage");
+		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myPage");
 		createPage(name);
 		createTreeNodeAdaption().expand(treeViewer);
 	}

@@ -11,7 +11,7 @@ import org.treez.core.atom.variablelist.AbstractVariableListField;
 /**
  * Represents a string model variable (-text field)
  */
-public class StringVariableField extends AbstractVariableField<String> {
+public class StringVariableField extends AbstractVariableField<StringVariableField, String> {
 
 	//#region CONSTRUCTORS
 
@@ -29,6 +29,11 @@ public class StringVariableField extends AbstractVariableField<String> {
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public StringVariableField getThis() {
+		return this;
+	}
 
 	@Override
 	public StringVariableField copy() {
@@ -72,13 +77,7 @@ public class StringVariableField extends AbstractVariableField<String> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
-		this.backgroundColor = backgroundColor;
-	}
-
-	@Override
-	public AbstractVariableListField<String> createVariableListField() {
-
+	public AbstractVariableListField<?, String> createVariableListField() {
 		throw new IllegalStateException("Not yet implemented");
 	}
 
@@ -118,15 +117,22 @@ public class StringVariableField extends AbstractVariableField<String> {
 		return getDefaultValueString();
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public StringVariableField setDefaultValue(String defaultValue) {
 		if (defaultValue == null) {
 			setDefaultValueString("");
 		} else {
 			setDefaultValueString(defaultValue);
 		}
+		return getThis();
 	}
 
 	//#end region
+
+	@Override
+	public StringVariableField setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+		return getThis();
+	}
 
 	//#end region
 

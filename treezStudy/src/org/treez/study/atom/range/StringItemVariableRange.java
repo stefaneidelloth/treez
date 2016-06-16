@@ -50,7 +50,7 @@ public class StringItemVariableRange extends AbstractVariableRange<String> {
 		// source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		ModelPath variablePath = data.createModelPath(sourceVariableModelPath, this, defaultValue,
 				StringItemVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled);

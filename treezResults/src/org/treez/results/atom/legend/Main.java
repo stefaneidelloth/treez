@@ -9,7 +9,7 @@ import org.treez.core.atom.attribute.EnumComboBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
@@ -79,19 +79,20 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page mainPage = root.createPage("main");
 
 		Section main = mainPage.createSection("main");
 
-		positionReferenceBox = main.createEnumComboBox(positionReference, "Position reference",
-				PositionReference.GRAPH);
+		positionReferenceBox = main.createEnumComboBox(positionReference, this, PositionReference.GRAPH);
+		positionReferenceBox.setLabel("Position reference");
 
-		horizontalPositionBox = main.createEnumComboBox(horizontalPosition, "Horizontal position",
-				HorizontalPosition.RIGHT);
+		horizontalPositionBox = main.createEnumComboBox(horizontalPosition, this, HorizontalPosition.RIGHT);
+		horizontalPositionBox.setLabel("Horizontal position");
 
-		verticalPositionBox = main.createEnumComboBox(verticalPosition, "Vertical position", VerticalPosition.TOP);
+		verticalPositionBox = main.createEnumComboBox(verticalPosition, this, VerticalPosition.TOP);
+		verticalPositionBox.setLabel("Vertical position");
 
 		main.createIntegerVariableField(manualHorizontalPosition, this, 0) //
 				.setLabel("Manual horizontal position");
@@ -109,14 +110,18 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 		main.createIntegerVariableField(keyLength, this, defaultKeyLength) //
 				.setLabel("Key length");
 
-		main.createCheckBox(swapSymbol, "Swap symbol");
+		main.createCheckBox(swapSymbol, this).setLabel("Swap symbol");
 
-		main.createCheckBox(hide, "hide");
+		main.createCheckBox(hide, this);
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection legendSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(
+			D3 d3,
+			Selection legendSelection,
+			Selection rectSelection,
+			AbstractGraphicsAtom parent) {
 
 		this.d3 = d3;
 		this.legendSelection = legendSelection;
@@ -199,7 +204,7 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 
 	private void listenForChanges(D3 d3) {
 
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideGraph", legendSelection, hide);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideGraph", legendSelection, hide);
 
 		Consumer replotLegend = () -> {
 			legend.updatePlotWithD3(d3);
@@ -403,8 +408,8 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 
 	private List<LegendContributor> getLegendContributors() {
 		List<LegendContributor> legendContributors = new ArrayList<>();
-		List<AbstractAtom> graphChildren = graph.getChildAtoms();
-		for (AbstractAtom graphChild : graphChildren) {
+		List<AbstractAtom<?>> graphChildren = graph.getChildAtoms();
+		for (AbstractAtom<?> graphChild : graphChildren) {
 			boolean isLegendContributorProvider = graphChild instanceof LegendContributorProvider;
 			if (isLegendContributorProvider) {
 				LegendContributorProvider provider = (LegendContributorProvider) graphChild;

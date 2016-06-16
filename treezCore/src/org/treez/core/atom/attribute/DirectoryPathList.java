@@ -22,6 +22,11 @@ public class DirectoryPathList extends StringList {
 
 	//#region METHODS
 
+	@Override
+	public DirectoryPathList getThis() {
+		return this;
+	}
+
 	/**
 	 * Creates a treez list that contains Strings/text
 	 */

@@ -11,7 +11,7 @@ import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 
-public class Label extends AbstractStringAttributeAtom {
+public class Label extends AbstractStringAttributeAtom<Label> {
 
 	//#region ATTRIBUTES
 
@@ -44,6 +44,11 @@ public class Label extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public Label getThis() {
+		return this;
+	}
+
+	@Override
 	public Label copy() {
 		return new Label(this);
 	}
@@ -54,7 +59,7 @@ public class Label extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<Label> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -104,8 +109,9 @@ public class Label extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public Label setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	/**
@@ -128,18 +134,20 @@ public class Label extends AbstractStringAttributeAtom {
 		return get();
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public Label setDefaultValue(String defaultValue) {
 		set(defaultValue);
+		return getThis();
 	}
 
 	@Override
-	public void setBackgroundColor(Color color) {
+	public Label setBackgroundColor(Color color) {
 		if (isAvailable(contentContainer)) {
 			contentContainer.setBackground(color);
 		}
 		if (isAvailable(labelComposite)) {
 			labelComposite.setBackground(color);
 		}
+		return getThis();
 	}
 
 	//#end region

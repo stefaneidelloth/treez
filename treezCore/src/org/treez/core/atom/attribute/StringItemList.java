@@ -22,7 +22,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Allows to edit a list of strings with a combo box for each value
  */
-public class StringItemList extends AbstractAttributeAtom<List<String>> {
+public class StringItemList extends AbstractAttributeAtom<StringItemList, List<String>> {
 
 	//#region ATTRIBUTES
 
@@ -68,6 +68,11 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 
 	//#region METHODS
 
+	@Override
+	public StringItemList getThis() {
+		return this;
+	}
+
 	/**
 	 * Creates a treez list that contains Strings/text
 	 */
@@ -90,8 +95,9 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<List<String>> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<StringItemList, List<String>> createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -112,8 +118,7 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 
 		//create parent composite for treez list
 		listContainerComposite = toolkit.createComposite(contentContainer);
-		GridData fillData = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
+		GridData fillData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		listContainerComposite.setLayoutData(fillData);
 
 		//create treez list control
@@ -123,17 +128,14 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	/**
-	 * Creates the control for the treezList by calling the corresponding method
-	 * of the wrapped TreezListAtom
+	 * Creates the control for the treezList by calling the corresponding method of the wrapped TreezListAtom
 	 */
 	private void createTreezListControl() {
-		treezList.createControlAdaption(listContainerComposite,
-				treeViewRefreshable);
+		treezList.createControlAdaption(listContainerComposite, treeViewRefreshable);
 	}
 
 	/**
-	 * Creates a container layout where the label and the check box are put in
-	 * individual lines
+	 * Creates a container layout where the label and the check box are put in individual lines
 	 *
 	 * @param contentContainer
 	 */
@@ -171,8 +173,7 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	/**
-	 * Splits the given valueString with "," and returns the individual values
-	 * as a String list
+	 * Splits the given valueString with "," and returns the individual values as a String list
 	 *
 	 * @param valueString
 	 * @return
@@ -184,8 +185,7 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public StringItemList setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -200,8 +200,9 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public StringItemList setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	//#end region
@@ -213,9 +214,10 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 	 *
 	 * @param valueString
 	 */
-	public void setValue(String valueString) {
+	public StringItemList setValue(String valueString) {
 		List<String> stringValues = valueStringToList(valueString);
 		set(stringValues);
+		return getThis();
 	}
 
 	@Override
@@ -239,21 +241,23 @@ public class StringItemList extends AbstractAttributeAtom<List<String>> {
 		return stringValues;
 	}
 
-	public void setDefaultValue(String defaultValueString) {
+	public StringItemList setDefaultValue(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
+		return getThis();
 	}
 
 	//#end region
 
 	//#region AVAILABLE ITEMS
 
-	public void setAvailableItems(List<String> availableItems) {
+	public StringItemList setAvailableItems(List<String> availableItems) {
 		String itemString = String.join(",", availableItems);
 		treezList.setAvailableStringItems(itemString);
 
 		//clear old list items
 		List<String> emptyList = new ArrayList<>();
 		set(emptyList);
+		return getThis();
 	}
 
 	//#end region

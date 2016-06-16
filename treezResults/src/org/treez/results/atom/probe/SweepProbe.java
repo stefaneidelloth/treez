@@ -118,7 +118,7 @@ public class SweepProbe extends AbstractProbe {
 		domainSection.setLabel("Domain");
 		domainSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
-		TextField domainLabelField = domainSection.createTextField(domainLabel, "domainLabel", "x");
+		TextField domainLabelField = domainSection.createTextField(domainLabel, this, "x");
 		domainLabelField.setLabel("Domain label");
 		ModelPath xRangePath = domainSection.createModelPath(domainRange, this, "", VariableRange.class, this);
 		xRangePath.setLabel("Domain range");
@@ -129,8 +129,7 @@ public class SweepProbe extends AbstractProbe {
 		Section firstFamilySection = page.createSection("firstFamily", "First family");
 		firstFamilySection.setExpanded(false);
 
-		TextField firstFamilyField = firstFamilySection.createTextField(firstFamilyLegend, "firstFamilyLegend",
-				"family1");
+		TextField firstFamilyField = firstFamilySection.createTextField(firstFamilyLegend, this, "family1");
 		firstFamilyField.setLabel("Legend for first family");
 		ModelPath firstFamilyRangePath = firstFamilySection.createModelPath(firstFamilyRange, this, "",
 				VariableRange.class, this);
@@ -140,8 +139,7 @@ public class SweepProbe extends AbstractProbe {
 		Section secondFamilySection = page.createSection("secondFamily", "Second family");
 		secondFamilySection.setExpanded(false);
 
-		TextField secondFamilyField = secondFamilySection.createTextField(secondFamilyLegend, "secondFamilyLegend",
-				"family2");
+		TextField secondFamilyField = secondFamilySection.createTextField(secondFamilyLegend, this, "family2");
 		secondFamilyField.setLabel("Legend for second family");
 		ModelPath secondFamilyRangePath = secondFamilySection.createModelPath(secondFamilyRange, this, "",
 				VariableRange.class, this);
@@ -150,7 +148,7 @@ public class SweepProbe extends AbstractProbe {
 		//probe section
 		Section probeSection = page.createSection("probe", "Probe");
 
-		TextField probeLabelField = probeSection.createTextField(probeLabel, "probeLabel", "y");
+		TextField probeLabelField = probeSection.createTextField(probeLabel, this, "y");
 		probeLabelField.setLabel("Probe label");
 
 		ModelPath sweepOutputModelPath = probeSection.createModelPath(sweepOutput, this, "", OutputAtom.class, this);
@@ -160,10 +158,10 @@ public class SweepProbe extends AbstractProbe {
 				Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
-		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");
+		TextField columnIndex = probeSection.createTextField(probeColumnIndex, this, "0");
 		columnIndex.setLabel("Column index");
 
-		TextField rowIndex = probeSection.createTextField(probeRowIndex, "probeRowIndex", "0");
+		TextField rowIndex = probeSection.createTextField(probeRowIndex, this, "0");
 		rowIndex.setLabel("Row index");
 
 		setModel(root);

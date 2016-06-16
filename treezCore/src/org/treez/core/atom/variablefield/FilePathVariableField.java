@@ -1,5 +1,6 @@
 package org.treez.core.atom.variablefield;
 
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
@@ -8,7 +9,7 @@ import org.treez.core.atom.attribute.FilePath;
 import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
-public class FilePathVariableField extends FilePath implements VariableField<String> {
+public class FilePathVariableField extends FilePath implements VariableField<FilePathVariableField, String> {
 
 	//#region CONSTRUCTORS
 
@@ -28,14 +29,15 @@ public class FilePathVariableField extends FilePath implements VariableField<Str
 
 	//#region METHODS
 
-	//#region COPY
+	@Override
+	public FilePathVariableField getThis() {
+		return this;
+	}
 
 	@Override
 	public FilePathVariableField copy() {
 		return new FilePathVariableField(this);
 	}
-
-	//#end region
 
 	@Override
 	public Image provideImage() {
@@ -50,7 +52,7 @@ public class FilePathVariableField extends FilePath implements VariableField<Str
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<FilePath> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
@@ -60,7 +62,7 @@ public class FilePathVariableField extends FilePath implements VariableField<Str
 	}
 
 	@Override
-	public AbstractVariableListField<String> createVariableListField() {
+	public AbstractVariableListField<?, String> createVariableListField() {
 
 		throw new IllegalStateException("Not yet implemented");
 	}
@@ -70,14 +72,33 @@ public class FilePathVariableField extends FilePath implements VariableField<Str
 	//#region ACCESSORS
 
 	@Override
+	public FilePathVariableField setEnabled(boolean state) {
+		super.setEnabled(state);
+		return getThis();
+	}
+
+	@Override
+	public FilePathVariableField setLabel(String label) {
+		super.setLabel(label);
+		return getThis();
+	}
+
+	@Override
 	public String getValueString() {
 		String value = this.get();
 		return value;
 	}
 
 	@Override
-	public void setValueString(String valueString) {
+	public FilePathVariableField setValueString(String valueString) {
 		this.set(valueString);
+		return getThis();
+	}
+
+	@Override
+	public FilePathVariableField setBackgroundColor(Color color) {
+		super.setBackgroundColor(color);
+		return getThis();
 	}
 
 	//#end region

@@ -23,7 +23,7 @@ import org.treez.core.utils.Utils;
 /**
  * Allows the user to choose a file path
  */
-public class FilePath extends AbstractStringAttributeAtom {
+public class FilePath extends AbstractStringAttributeAtom<FilePath> {
 
 	//#region ATTRIBUTES
 
@@ -121,6 +121,11 @@ public class FilePath extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public FilePath getThis() {
+		return this;
+	}
+
+	@Override
 	public FilePath copy() {
 		return new FilePath(this);
 	}
@@ -131,7 +136,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<FilePath> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -312,7 +317,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public FilePath setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(textField)) {
 			textField.setEnabled(state);
@@ -330,6 +335,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 			treeViewRefreshable.refresh();
 		}
 		this.refreshAttributeAtomControl();
+		return getThis();
 
 	}
 
@@ -350,16 +356,18 @@ public class FilePath extends AbstractStringAttributeAtom {
 	/**
 	 * Sets the showEnableCheckBox flag
 	 */
-	public void setShowEnabledCheckBox(boolean state) {
+	public FilePath setShowEnabledCheckBox(boolean state) {
 		showEnabledCheckBox = state;
+		return getThis();
 	}
 
 	public String getLabel() {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public FilePath setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -367,16 +375,18 @@ public class FilePath extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultFilePath) {
+	public FilePath setDefaultValue(String defaultFilePath) {
 		this.defaultValue = defaultFilePath;
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public FilePath setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	/**
@@ -394,8 +404,9 @@ public class FilePath extends AbstractStringAttributeAtom {
 	 * @param extensions
 	 *            the extensions to set
 	 */
-	public void setFileExtensions(String extensions) {
+	public FilePath setFileExtensions(String extensions) {
 		this.fileExtensions = extensions;
+		return getThis();
 	}
 
 	/**
@@ -413,8 +424,9 @@ public class FilePath extends AbstractStringAttributeAtom {
 	 * @param extensionNames
 	 *            the extensionNames to set
 	 */
-	public void setFileExtensionNames(String extensionNames) {
+	public FilePath setFileExtensionNames(String extensionNames) {
 		this.fileExtensionNames = extensionNames;
+		return getThis();
 	}
 
 	/**
@@ -422,13 +434,14 @@ public class FilePath extends AbstractStringAttributeAtom {
 	 *
 	 * @param validatePath
 	 */
-	public void setValidatePath(Boolean validatePath) {
+	public FilePath setValidatePath(Boolean validatePath) {
 		this.validatePath = validatePath;
+		return getThis();
 
 	}
 
 	@Override
-	public void setBackgroundColor(Color backgroundColor) {
+	public FilePath setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
 		if (isAvailable(container)) {
 			container.setBackground(backgroundColor);
@@ -453,6 +466,7 @@ public class FilePath extends AbstractStringAttributeAtom {
 		if (isAvailable(openButton)) {
 			openButton.setBackground(backgroundColor);
 		}
+		return getThis();
 
 	}
 

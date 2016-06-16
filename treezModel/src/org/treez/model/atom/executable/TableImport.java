@@ -12,6 +12,7 @@ import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.ComboBox;
+import org.treez.core.atom.attribute.EnumComboBox;
 import org.treez.core.atom.attribute.ModelPath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
@@ -118,7 +119,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		resultTable.setLabel("Result table");
 
 		//append check box (if true, existing data is not deleted and new data is appended)
-		CheckBox appendDataCheck = targetSection.createCheckBox(appendData, "appendData", false);
+		CheckBox appendDataCheck = targetSection.createCheckBox(appendData, this, false);
 		appendDataCheck.setLabel("Append data");
 	}
 
@@ -127,35 +128,34 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		sourceDataSection.setLabel("Source data");
 
 		//inherit source file path : take (modified) parent output path
-		CheckBox inheritSourcePath = sourceDataSection.createCheckBox(inheritSourceFilePath, "inheritSourceFilePath",
-				true);
+		CheckBox inheritSourcePath = sourceDataSection.createCheckBox(inheritSourceFilePath, this, true);
 		inheritSourcePath.setLabel("Inherit source file");
 		inheritSourcePath.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
 
 		//path to data file (enabled if source is file based)
-		sourceDataSection.createFilePath(sourceFilePath, "importFilePath", "Source file", "C:\\data.txt");
+		sourceDataSection.createFilePath(sourceFilePath, this, "Source file", "C:\\data.txt");
 
-		TextField columnSeparatorField = sourceDataSection.createTextField(columnSeparator, "columnSeparator", ";");
+		TextField columnSeparatorField = sourceDataSection.createTextField(columnSeparator, this, ";");
 		columnSeparatorField.setLabel("Column separator");
 		//host
-		TextField hostField = sourceDataSection.createTextField(host, "host", "localhost");
+		TextField hostField = sourceDataSection.createTextField(host, this, "localhost");
 		hostField.setLabel("Host name/IP address");
 
 		//port
-		sourceDataSection.createTextField(port, "port", "3306");
+		sourceDataSection.createTextField(port, this, "3306");
 
 		//user
-		sourceDataSection.createTextField(user, "user", "root");
+		sourceDataSection.createTextField(user, this, "root");
 
 		//password
-		sourceDataSection.createTextField(password, "password", "");
+		sourceDataSection.createTextField(password, this, "");
 
 		//database name (e.g. for SqLite or MySql sources)
-		TextField schemaField = sourceDataSection.createTextField(schema, "schema", "my_schema");
+		TextField schemaField = sourceDataSection.createTextField(schema, this, "my_schema");
 		schemaField.setLabel("Schema name");
 
 		//table name (e.g. name of Excel sheet or SqLite table )
-		TextField tableField = sourceDataSection.createTextField(table, "table", "Sheet1");
+		TextField tableField = sourceDataSection.createTextField(table, this, "Sheet1");
 		tableField.setLabel("Table name");
 	}
 
@@ -165,7 +165,8 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		sourceTypeSection.createSectionAction("action", "Import data", () -> execute(treeViewRefreshable));
 
 		//source type
-		ComboBox sourceTypeCheck = sourceTypeSection.createComboBox(sourceType, "sourceType", TableSourceType.CSV);
+		EnumComboBox<TableSourceType> sourceTypeCheck = sourceTypeSection.createEnumComboBox(sourceType, this,
+				TableSourceType.CSV);
 		sourceTypeCheck.setLabel("Source type");
 		sourceTypeCheck.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
 
@@ -174,9 +175,9 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		//remaining data can be loaded lazily.
 		//con: if the source is replaced/changed/deleted, e.g. in a sweep, the
 		//link might not give meaningful data.
-		CheckBox linkSourceCheck = sourceTypeSection.createCheckBox(linkSource, "linkSource", false);
+		CheckBox linkSourceCheck = sourceTypeSection.createCheckBox(linkSource, this, false);
 		linkSourceCheck.setLabel("Link source");
-		TextField rowLimitField = sourceTypeSection.createTextField(rowLimit, "rowLimit", "1000");
+		TextField rowLimitField = sourceTypeSection.createTextField(rowLimit, this, "1000");
 		rowLimitField.setLabel("Row limit");
 	}
 
@@ -289,7 +290,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	 */
 	private static void setEnabled(Attribute<?> attribute, boolean value) {
 		Wrap<?> attributeWrapper = (Wrap<?>) attribute;
-		AbstractAttributeAtom<?> atom = (AbstractAttributeAtom<?>) attributeWrapper.getAttribute();
+		AbstractAttributeAtom<?, ?> atom = (AbstractAttributeAtom<?, ?>) attributeWrapper.getAttribute();
 		boolean hasEqualValue = (atom.isEnabled() == value);
 		if (!hasEqualValue) {
 			atom.setEnabled(value);
@@ -395,7 +396,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	 * @return
 	 */
 	private String getSourcePathFromParent() {
-		AbstractAtom parent = this.getParentAtom();
+		AbstractAtom<?> parent = this.getParentAtom();
 		boolean parentIsPathProvider = FilePathProvider.class.isAssignableFrom(parent.getClass());
 		if (parentIsPathProvider) {
 			FilePathProvider pathProvider = (FilePathProvider) parent;

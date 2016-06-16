@@ -47,7 +47,7 @@ public class TreeViewerRefreshable extends TreeViewer implements FocusChangingRe
 	}
 
 	@Override
-	public void setFocus(AbstractAtom atomToFocus) {
+	public void setFocus(AbstractAtom<?> atomToFocus) {
 
 		ITreeSelection oldSelection = this.getStructuredSelection();
 		Object selectedElement = oldSelection.getFirstElement();

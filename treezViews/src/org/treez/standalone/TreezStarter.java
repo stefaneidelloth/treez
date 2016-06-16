@@ -48,12 +48,12 @@ public final class TreezStarter {
 		//BarExample example = new BarExample();
 		//ContourExample example = new ContourExample();
 		TornadoExample example = new TornadoExample();
-		AbstractAtom root = example.createModel();
+		AbstractAtom<?> root = example.createModel();
 		startTreez(root);
 
 	}
 
-	public static void startTreez(AbstractAtom root) {
+	public static void startTreez(AbstractAtom<?> root) {
 
 		final Shell shell = createShellAndViewContainers();
 
@@ -136,8 +136,8 @@ public final class TreezStarter {
 		return container;
 	}
 
-	private static void setTreeContent(AbstractAtom root, TreeViewPart treeView) {
-		AbstractAtom invisibleRoot = new Root("invisibleRoot");
+	private static void setTreeContent(AbstractAtom<?> root, TreeViewPart treeView) {
+		AbstractAtom<?> invisibleRoot = new Root("invisibleRoot");
 		invisibleRoot.addChild(root);
 		treeView.setTreeContent(invisibleRoot);
 		treeView.expandAll();

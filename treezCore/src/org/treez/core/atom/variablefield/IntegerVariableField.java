@@ -14,13 +14,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
-import org.treez.core.atom.variablelist.AbstractVariableListField;
 import org.treez.core.atom.variablelist.IntegerVariableListField;
 
 /**
  * Represents a model variable (-text field) that is used to enter an Integer value
  */
-public class IntegerVariableField extends AbstractVariableField<Integer> {
+public class IntegerVariableField extends AbstractVariableField<IntegerVariableField, Integer> {
 
 	//#region ATTRIBUTES
 
@@ -58,28 +57,14 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 	//#region METHODS
 
 	@Override
+	public IntegerVariableField getThis() {
+		return this;
+	}
+
+	@Override
 	public IntegerVariableField copy() {
 		return new IntegerVariableField(this);
 	}
-
-	/*
-	@Override
-	public void addModificationConsumer(String key, Consumer<Integer> consumer) {
-	
-		addModifyListener(key, (event) -> {
-			if (event.data == null) {
-				consumer.accept(null);
-			} else {
-				try {
-					Integer intValue = Integer.parseInt(event.data.toString());
-					consumer.accept(intValue);
-				} catch (NumberFormatException exception) {
-					consumer.accept(null);
-				}
-			}
-		});
-	}
-	*/
 
 	@Override
 	public Image provideBaseImage() {
@@ -87,7 +72,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<Integer> createAttributeAtomControl(
+	public AbstractAttributeAtom<IntegerVariableField, Integer> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
@@ -189,7 +174,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public IntegerVariableField setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(valueSpinner)) {
 			valueSpinner.setEnabled(state);
@@ -198,6 +183,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 			//treeViewRefreshable.refresh(); //creates flickering when targets are updated
 		}
 		refreshAttributeAtomControl();
+		return getThis();
 	}
 
 	@Override
@@ -211,7 +197,7 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color color) {
+	public IntegerVariableField setBackgroundColor(org.eclipse.swt.graphics.Color color) {
 		super.setBackgroundColor(color);
 		if (isAvailable(contentContainer)) {
 			contentContainer.setBackground(color);
@@ -220,11 +206,12 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 		if (isAvailable(valueSpinner)) {
 			valueSpinner.setBackground(color);
 		}
+		return getThis();
 
 	}
 
 	@Override
-	public AbstractVariableListField<Integer> createVariableListField() {
+	public IntegerVariableListField createVariableListField() {
 
 		IntegerVariableListField listField = new IntegerVariableListField(name);
 		List<Integer> valueList = new ArrayList<>();
@@ -285,31 +272,33 @@ public class IntegerVariableField extends AbstractVariableField<Integer> {
 		}
 	}
 
-	public void setDefaultValue(Integer defaultValue) {
+	public IntegerVariableField setDefaultValue(Integer defaultValue) {
 		if (defaultValue == null) {
 			setDefaultValueString("");
 		} else {
 			setDefaultValueString("" + defaultValue);
 		}
+		return getThis();
 	}
 
 	//#end region
 
 	//#region MIN & MAX
 
-	public void setMinValue(Integer minValue) {
+	public IntegerVariableField setMinValue(Integer minValue) {
 		this.minValue = minValue;
 		if (isAvailable(valueSpinner)) {
 			valueSpinner.setMinimum(minValue);
 		}
-
+		return getThis();
 	}
 
-	public void setMaxValue(Integer maxValue) {
+	public IntegerVariableField setMaxValue(Integer maxValue) {
 		this.maxValue = maxValue;
 		if (isAvailable(valueSpinner)) {
 			valueSpinner.setMaximum(maxValue);
 		}
+		return getThis();
 	}
 
 	//#end region

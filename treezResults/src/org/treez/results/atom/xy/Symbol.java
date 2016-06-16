@@ -6,7 +6,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.SymbolStyleValue;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
@@ -66,7 +66,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page symbolPage = root.createPage("symbol", "   Symbol   ");
 
@@ -76,11 +76,11 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		symbol.createSymbolType(symbolType, this, "Symbol", "circle");
 
-		symbol.createTextField(size, "size", "64");
+		symbol.createTextField(size, this, "64");
 
 		//symbol.createTextField(thinMarkers, "thinMarkers", "Thin markers", "1");
 
-		symbol.createCheckBox(hide, "hide");
+		symbol.createCheckBox(hide, this);
 
 		//symbol.createErrorBarStyle(errorStyle, "errorStyle", "Error style");
 
@@ -96,11 +96,11 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		fill.createDoubleVariableField(fillTransparency, this, 0.0).setLabel("Transparency");
 
-		fill.createCheckBox(hideFill, "hide");
+		fill.createCheckBox(hideFill, this).setLabel("Hide");
 
-		//markerFill.createColorMap(colorMap, "colorMap", "Color map");
+		//markerFill.createColorMap(colorMap, this, "Color map");
 
-		//markerFill.createCheckBox(invertMap, "invertMap", "Invert map");
+		//markerFill.createCheckBox(invertMap, this, "Invert map");
 
 		//#end region
 
@@ -108,11 +108,11 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		Section markerBorder = symbolPage.createSection("line", true);
 
-		markerBorder.createColorChooser(lineColor, "color", "black");
+		markerBorder.createColorChooser(lineColor, this, "black");
 
-		markerBorder.createTextField(lineWidth, "width", "0.5");
+		markerBorder.createTextField(lineWidth, this, "0.5");
 
-		markerBorder.createLineStyle(lineStyle, "style", "solid");
+		markerBorder.createLineStyle(lineStyle, this, "solid");
 
 		markerBorder.createDoubleVariableField(lineTransparency, this, 0.0).setLabel("Transparency");
 
@@ -122,7 +122,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		String parentName = parent.getName();
 		String id = "symbols_" + parentName;
@@ -155,7 +155,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 				.attr("height", height);
 
 		//bind attributes
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideSymbols", symbolsSelection, hide);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideSymbols", symbolsSelection, hide);
 
 		Consumer replotSymbols = () -> {
 			rePlotSymbols(d3, parent);
@@ -170,20 +170,20 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 		return xySelection;
 	}
 
-	private Graph getGraph(GraphicsAtom parent) {
-		AbstractAtom grandParent = parent.getParentAtom();
+	private Graph getGraph(AbstractGraphicsAtom parent) {
+		AbstractAtom<?> grandParent = parent.getParentAtom();
 		Graph graph;
 		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
 		if (isGraph) {
 			graph = (Graph) grandParent;
 		} else {
-			AbstractAtom greatGrandParent = grandParent.getParentAtom();
+			AbstractAtom<?> greatGrandParent = grandParent.getParentAtom();
 			graph = (Graph) greatGrandParent;
 		}
 		return graph;
 	}
 
-	private void rePlotSymbols(D3 d3, GraphicsAtom parent) {
+	private void rePlotSymbols(D3 d3, AbstractGraphicsAtom parent) {
 
 		//remove old symbols
 		symbolsSelection.selectAll("path") //
@@ -198,7 +198,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 		}
 	}
 
-	private void plotNewSymbols(D3 d3, String symbolTypeString, GraphicsAtom parent) {
+	private void plotNewSymbols(D3 d3, String symbolTypeString, AbstractGraphicsAtom parent) {
 
 		SymbolType symbolTypeValue = SymbolType.fromString(symbolTypeString);
 		int symbolSquareSize = Integer.parseInt(size.get());
@@ -225,17 +225,17 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 				.attr("d", symbolDString);
 
 		//bind attributes
-		GraphicsAtom.bindStringAttribute(symbolsSelection, "fill", fillColor);
-		GraphicsAtom.bindTransparency(symbolsSelection, fillTransparency);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(symbolsSelection, hideFill, fillTransparency);
+		AbstractGraphicsAtom.bindStringAttribute(symbolsSelection, "fill", fillColor);
+		AbstractGraphicsAtom.bindTransparency(symbolsSelection, fillTransparency);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(symbolsSelection, hideFill, fillTransparency);
 
-		GraphicsAtom.bindStringAttribute(symbolsSelection, "stroke", lineColor);
-		GraphicsAtom.bindLineTransparency(symbolsSelection, lineTransparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(symbolsSelection, hideLine, lineTransparency);
+		AbstractGraphicsAtom.bindStringAttribute(symbolsSelection, "stroke", lineColor);
+		AbstractGraphicsAtom.bindLineTransparency(symbolsSelection, lineTransparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(symbolsSelection, hideLine, lineTransparency);
 
-		GraphicsAtom.bindLineStyle(symbolsSelection, lineStyle);
+		AbstractGraphicsAtom.bindLineStyle(symbolsSelection, lineStyle);
 
-		GraphicsAtom.bindStringAttribute(symbolsSelection, "stroke-width", lineWidth);
+		AbstractGraphicsAtom.bindStringAttribute(symbolsSelection, "stroke-width", lineWidth);
 	}
 
 	public void plotLegendSymbolWithD3(D3 d3, Selection parentSelection, int xSymbol, Refreshable refreshable) {
@@ -275,17 +275,17 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 					.attr("d", symbolDString);
 
 			//bind attributes
-			GraphicsAtom.bindStringAttribute(legendSymbol, "fill", fillColor);
-			GraphicsAtom.bindTransparency(legendSymbol, fillTransparency);
-			GraphicsAtom.bindTransparencyToBooleanAttribute(legendSymbol, hideFill, fillTransparency);
+			AbstractGraphicsAtom.bindStringAttribute(legendSymbol, "fill", fillColor);
+			AbstractGraphicsAtom.bindTransparency(legendSymbol, fillTransparency);
+			AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(legendSymbol, hideFill, fillTransparency);
 
-			GraphicsAtom.bindStringAttribute(legendSymbol, "stroke", lineColor);
-			GraphicsAtom.bindLineTransparency(legendSymbol, lineTransparency);
-			GraphicsAtom.bindLineTransparencyToBooleanAttribute(legendSymbol, hideLine, lineTransparency);
+			AbstractGraphicsAtom.bindStringAttribute(legendSymbol, "stroke", lineColor);
+			AbstractGraphicsAtom.bindLineTransparency(legendSymbol, lineTransparency);
+			AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(legendSymbol, hideLine, lineTransparency);
 
-			GraphicsAtom.bindLineStyle(legendSymbol, lineStyle);
+			AbstractGraphicsAtom.bindLineStyle(legendSymbol, lineStyle);
 
-			GraphicsAtom.bindStringAttribute(legendSymbol, "stroke-width", lineWidth);
+			AbstractGraphicsAtom.bindStringAttribute(legendSymbol, "stroke-width", lineWidth);
 
 		}
 	}

@@ -12,7 +12,7 @@ import org.treez.core.swt.JavaFxWrapperForSwt;
 /**
  * Plots a functional expression
  */
-public class FunctionPlotter extends AbstractStringAttributeAtom {
+public class FunctionPlotter extends AbstractStringAttributeAtom<FunctionPlotter> {
 
 	//#region ATTRIBUTES
 
@@ -58,6 +58,11 @@ public class FunctionPlotter extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public FunctionPlotter getThis() {
+		return this;
+	}
+
+	@Override
 	public FunctionPlotter copy() {
 		return new FunctionPlotter(this);
 	}
@@ -70,7 +75,7 @@ public class FunctionPlotter extends AbstractStringAttributeAtom {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<FunctionPlotter> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.attributeAtomParent = parent;
@@ -127,13 +132,14 @@ public class FunctionPlotter extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public FunctionPlotter setEnabled(boolean state) {
 		super.setEnabled(state);
 
 		if (treeViewRefreshable != null) {
 			treeViewRefreshable.refresh();
 		}
 		this.refreshAttributeAtomControl();
+		return getThis();
 	}
 
 	@Override
@@ -149,8 +155,9 @@ public class FunctionPlotter extends AbstractStringAttributeAtom {
 		return title;
 	}
 
-	public void setLabel(String label) {
+	public FunctionPlotter setLabel(String label) {
 		this.title = label;
+		return getThis();
 	}
 
 	@Override
@@ -158,25 +165,28 @@ public class FunctionPlotter extends AbstractStringAttributeAtom {
 		return defaultExpression;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public FunctionPlotter setDefaultValue(String defaultValue) {
 		this.defaultExpression = defaultValue;
+		return getThis();
 	}
 
-	public void setXDomain(Double xMin, Double xMax) {
+	public FunctionPlotter setXDomain(Double xMin, Double xMax) {
 		if (plotter != null) {
 			plotter.setXDomain(xMin, xMax);
 		}
+		return getThis();
 	}
 
-	public void setYDomain(Double yMin, Double yMax) {
+	public FunctionPlotter setYDomain(Double yMin, Double yMax) {
 		if (plotter != null) {
 			plotter.setYDomain(yMin, yMax);
 		}
+		return getThis();
 	}
 
 	@Override
-	public void setBackgroundColor(Color backgroundColor) {
-		//TODO Auto-generated method stub
+	public FunctionPlotter setBackgroundColor(Color backgroundColor) {
+		throw new IllegalStateException("not yet implemented");
 	}
 
 	//#end region

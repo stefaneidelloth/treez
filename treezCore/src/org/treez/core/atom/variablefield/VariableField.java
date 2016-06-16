@@ -6,24 +6,24 @@ import org.treez.core.atom.variablelist.AbstractVariableListField;
 /**
  * Represents a variable field
  */
-public interface VariableField<T> {
+public interface VariableField<A, T> {
 
 	String getName();
 
 	String getLabel();
 
-	void setLabel(String newLabel);
+	A setLabel(String newLabel);
 
 	String getValueString();
 
-	void setValueString(String valueString);
+	A setValueString(String valueString);
 
 	/**
 	 * Returns true if the variable field is enabled
 	 */
 	boolean isEnabled();
 
-	void setEnabled(boolean state);
+	A setEnabled(boolean state);
 
 	/**
 	 * Returns the variable value
@@ -33,8 +33,10 @@ public interface VariableField<T> {
 	/**
 	 * Creates a VariableListField whose variable type is the same as the type of this VariableField
 	 */
-	AbstractVariableListField<T> createVariableListField();
+	AbstractVariableListField
 
-	void setBackgroundColor(Color color);
+	<?, T> createVariableListField();
+
+	A setBackgroundColor(Color color);
 
 }

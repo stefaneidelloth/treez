@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -40,7 +40,7 @@ public class Text implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page textPage = root.createPage("text");
 
@@ -52,20 +52,20 @@ public class Text implements GraphicsPropertiesPageFactory {
 		text.createIntegerVariableField(size, this, defaultFontSize) //
 				.setLabel("Size");
 
-		text.createColorChooser(color, "color", "black");
+		text.createColorChooser(color, this, "black");
 
-		text.createCheckBox(italic, "italic");
+		text.createCheckBox(italic, this);
 
-		text.createCheckBox(bold, "bold");
+		text.createCheckBox(bold, this);
 
-		text.createCheckBox(underline, "underline");
+		text.createCheckBox(underline, this);
 
-		text.createCheckBox(hide, "hide");
+		text.createCheckBox(hide, this);
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection legendSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection legendSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		//not needed here since text formatting is called while creating the legend entries
 
@@ -74,13 +74,13 @@ public class Text implements GraphicsPropertiesPageFactory {
 
 	public Selection formatText(Selection textSelection, Refreshable main) {
 
-		GraphicsAtom.bindStringAttribute(textSelection, "font-family", font);
-		GraphicsAtom.bindIntegerAttribute(textSelection, "font-size", size);
-		GraphicsAtom.bindStringAttribute(textSelection, "fill", color);
-		GraphicsAtom.bindFontItalicStyle(textSelection, italic);
-		GraphicsAtom.bindFontBoldStyle(textSelection, bold);
-		GraphicsAtom.bindFontUnderline(textSelection, underline);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(textSelection, hide);
+		AbstractGraphicsAtom.bindStringAttribute(textSelection, "font-family", font);
+		AbstractGraphicsAtom.bindIntegerAttribute(textSelection, "font-size", size);
+		AbstractGraphicsAtom.bindStringAttribute(textSelection, "fill", color);
+		AbstractGraphicsAtom.bindFontItalicStyle(textSelection, italic);
+		AbstractGraphicsAtom.bindFontBoldStyle(textSelection, bold);
+		AbstractGraphicsAtom.bindFontUnderline(textSelection, underline);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(textSelection, hide);
 
 		Consumer refreshLegendLayout = () -> main.refresh();
 		font.addModificationConsumer("font", refreshLegendLayout);

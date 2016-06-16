@@ -18,9 +18,9 @@ import org.treez.core.atom.base.AtomControlAdaption;
 /**
  * Provides methods to easily run long tasks without blocking UI
  */
-public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
+public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchronizingAtom<A>> extends AbstractAtom<A>
 		implements
-			FocusChangingRefreshable {
+		FocusChangingRefreshable {
 
 	//#region ATTRIBUTES
 
@@ -40,7 +40,7 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 	/**
 	 * Copy Constructor
 	 */
-	public AbstractUiSynchronizingAtom(AbstractUiSynchronizingAtom atomToCopy) {
+	public AbstractUiSynchronizingAtom(AbstractUiSynchronizingAtom<A> atomToCopy) {
 		super(atomToCopy);
 		this.treeViewRefreshable = atomToCopy.treeViewRefreshable;
 	}
@@ -50,23 +50,22 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 	//#region METHODS
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent,
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
 			FocusChangingRefreshable treeViewRefreshable) {
 
 		//store refreshable tree view
 		this.treeViewRefreshable = treeViewRefreshable;
 
 		//create control adaption in UI thread
-		final ResultWrapper<AtomControlAdaption> controlAdaptionWrapper = new ResultWrapper<AtomControlAdaption>(
-				null);
+		final ResultWrapper<AtomControlAdaption> controlAdaptionWrapper = new ResultWrapper<AtomControlAdaption>(null);
 		Runnable createControlAdaptionRunnable = () -> {
 
 			//remove old content and reset parent layout
 			resetContentAndLayoutOfParentComposite(parent);
 
 			//create the control adaption and return it
-			AtomControlAdaption newControlAdaption = new AtomControlAdaption(
-					parent, this);
+			AtomControlAdaption newControlAdaption = new AtomControlAdaption(parent, this);
 			controlAdaptionWrapper.setValue(newControlAdaption);
 		};
 		runUiJobBlocking(createControlAdaptionRunnable);
@@ -76,13 +75,11 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 	}
 
 	/**
-	 * Removes old content from the given parent composite and updates its
-	 * layout
+	 * Removes old content from the given parent composite and updates its layout
 	 *
 	 * @param parent
 	 */
-	protected static void resetContentAndLayoutOfParentComposite(
-			Composite parent) {
+	protected static void resetContentAndLayoutOfParentComposite(Composite parent) {
 		for (Control child : parent.getChildren()) {
 			child.dispose();
 		}
@@ -91,14 +88,12 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 	}
 
 	/**
-	 * Executes a (long running job) without blocking the UI. The calling method
-	 * will "immediately" continue.
+	 * Executes a (long running job) without blocking the UI. The calling method will "immediately" continue.
 	 *
 	 * @param jobName
 	 * @param nonUiJobRunnable
 	 */
-	public synchronized void runNonUiJob(String jobName,
-			NonUiJob nonUiJobRunnable) {
+	public synchronized void runNonUiJob(String jobName, NonUiJob nonUiJobRunnable) {
 		Objects.requireNonNull(nonUiJobRunnable, "Runnable must not be null.");
 		Job job = new Job(jobName) {
 
@@ -114,9 +109,8 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 	}
 
 	/**
-	 * Can be used from within non-UI jobs (see method runNonUiJob) to execute a
-	 * runnable in the UI thread. The calling method will "immediately"
-	 * continue.
+	 * Can be used from within non-UI jobs (see method runNonUiJob) to execute a runnable in the UI thread. The calling
+	 * method will "immediately" continue.
 	 *
 	 * @param uiJobRunnable
 	 */
@@ -133,9 +127,8 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 	}
 
 	/**
-	 * Can be used from within non-UI jobs (see method runNonUiJob) to execute a
-	 * runnable in the UI thread. The calling method will wait until this method
-	 * is finished before it continues.
+	 * Can be used from within non-UI jobs (see method runNonUiJob) to execute a runnable in the UI thread. The calling
+	 * method will wait until this method is finished before it continues.
 	 *
 	 * @param uiJobRunnable
 	 */
@@ -169,7 +162,7 @@ public abstract class AbstractUiSynchronizingAtom extends AbstractAtom
 	 * Sets the focus on the given atom
 	 */
 	@Override
-	public synchronized void setFocus(AbstractAtom atomToFocus) {
+	public synchronized void setFocus(AbstractAtom<?> atomToFocus) {
 
 		runUiJobNonBlocking(() -> {
 			if (treeViewRefreshable != null) {

@@ -16,7 +16,7 @@ public class DataCodeAdaption extends AtomCodeAdaption {
 
 	//#region CONSTRUCTORS
 
-	public DataCodeAdaption(AbstractAtom atom) {
+	public DataCodeAdaption(AbstractAtom<?> atom) {
 		super(atom);
 	}
 

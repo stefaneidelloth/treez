@@ -13,9 +13,9 @@ public class RootCodeContainer extends CodeContainer {
 	//#region ATTRIBUTES
 
 	/**
-	 * The AbstractAtom this code container corresponds to
+	 * The AbstractAtom<?> this code container corresponds to
 	 */
-	private AbstractAtom atom;
+	private AbstractAtom<?> atom;
 
 	private String className;
 
@@ -23,7 +23,7 @@ public class RootCodeContainer extends CodeContainer {
 
 	//#region CONSTRUCTORS
 
-	public RootCodeContainer(AbstractAtom atom, String className) {
+	public RootCodeContainer(AbstractAtom<?> atom, String className) {
 		super(ScriptType.JAVA);
 		this.atom = atom;
 		this.className = className;
@@ -74,7 +74,6 @@ public class RootCodeContainer extends CodeContainer {
 
 	/**
 	 * Builds code that is used to save the expansion state
-	 *
 	 */
 	private void buildExpansionCode() {
 		List<String> expandedNodes = atom.getExpandedNodes();

@@ -1,10 +1,13 @@
 package org.treez.results.atom.tornado;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
@@ -12,15 +15,17 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleThirdDatumAsSizeFunction;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.functions.AxisScaleKeyDatumFunction;
+import org.treez.javafxd3.d3.functions.AxisScaleSizeDatumFunction;
+import org.treez.javafxd3.d3.functions.AxisScaleValueDatumFunction;
+import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.graph.Graph;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Fill implements GraphicsPropertiesPageFactory {
+
+	Logger LOG = Logger.getLogger(Fill.class);
 
 	//#region ATTRIBUTES
 
@@ -47,30 +52,30 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page symbolPage = root.createPage("fill", "   Fill   ");
 
-		Section left = symbolPage.createSection("left");
+		Section leftSection = symbolPage.createSection("left");
 
-		left.createColorChooser(leftColor, "color", "grey");
+		leftSection.createColorChooser(leftColor, this, "grey").setLabel("Color");
 
-		left.createDoubleVariableField(leftTransparency, this, 0.0);
+		leftSection.createDoubleVariableField(leftTransparency, this, 0.0);
 
-		left.createCheckBox(leftHide, "hide");
+		leftSection.createCheckBox(leftHide, this).setLabel("Hide");
 
-		Section right = symbolPage.createSection("right");
+		Section rightSection = symbolPage.createSection("right");
 
-		right.createColorChooser(rightColor, "color", "green");
+		rightSection.createColorChooser(rightColor, this, "green").setLabel("Color");
 
-		right.createDoubleVariableField(rightTransparency, this, 0.0);
+		rightSection.createDoubleVariableField(rightTransparency, this, 0.0);
 
-		right.createCheckBox(rightHide, "hide");
+		rightSection.createCheckBox(rightHide, this).setLabel("Hide");
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		String parentName = parent.getName();
 
@@ -113,8 +118,8 @@ public class Fill implements GraphicsPropertiesPageFactory {
 				.attr("height", height);
 
 		//bind attributes
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideLeftRects", rectsLeftSelection, leftHide);
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideRightRects", rectsRightSelection, rightHide);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideLeftRects", rectsLeftSelection, leftHide);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideRightRects", rectsRightSelection, rightHide);
 
 		Consumer replotRects = () -> {
 			rePlotRects(parent);
@@ -126,20 +131,20 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		return barSelection;
 	}
 
-	private static Graph getGraph(GraphicsAtom parent) {
-		AbstractAtom grandParent = parent.getParentAtom();
+	private static Graph getGraph(AbstractGraphicsAtom parent) {
+		AbstractAtom<?> grandParent = parent.getParentAtom();
 		Graph graph;
 		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
 		if (isGraph) {
 			graph = (Graph) grandParent;
 		} else {
-			AbstractAtom greatGrandParent = grandParent.getParentAtom();
+			AbstractAtom<?> greatGrandParent = grandParent.getParentAtom();
 			graph = (Graph) greatGrandParent;
 		}
 		return graph;
 	}
 
-	private void rePlotRects(GraphicsAtom parent) {
+	private void rePlotRects(AbstractGraphicsAtom parent) {
 		removeOldRects();
 		plotNewRects(parent);
 
@@ -152,15 +157,12 @@ public class Fill implements GraphicsPropertiesPageFactory {
 				.remove();
 	}
 
-	private void plotNewRects(GraphicsAtom parent) {
+	private void plotNewRects(AbstractGraphicsAtom parent) {
 
 		Tornado tornado = (Tornado) parent;
 		Graph graph = getGraph(parent);
 		double graphHeight = Length.toPx(graph.data.height.get());
 		double graphWidth = Length.toPx(graph.data.width.get());
-
-		QuantitativeScale<?> xScale = tornado.getXScale();
-		QuantitativeScale<?> yScale = tornado.getYScale();
 
 		String direction = tornado.data.barDirection.get();
 		boolean isVertical = direction.equals(Direction.VERTICAL.toString());
@@ -174,74 +176,122 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		String rightDataString = tornado.getRightBarDataString();
 		int numberOfBars = tornado.getDataSize();
 
+		Scale<?> xScale = tornado.getDomainScale();
+		Scale<?> yScale = tornado.getRangeScale();
+
 		if (isVertical) {
-			double barWidth = determineBarWidth(graphWidth, xScale, numberOfBars, barFillRatio);
+
+			org.treez.results.atom.axis.Axis domainAxis = tornado.getDomainAxis();
+			boolean domainAxisIsOrdinal = domainAxis.isOrdinal();
+
+			org.treez.results.atom.axis.Axis rangeAxis = tornado.getRangeAxis();
+			boolean rangeAxisIsOrdinal = rangeAxis.isOrdinal();
+
+			if (rangeAxisIsOrdinal) {
+				String message = "Range axis must not be ordinal if bar direction is vertical";
+				LOG.error(message);
+				return;
+			}
+
+			if (domainAxisIsOrdinal) {
+				List<Object> labelData = tornado.getDomainLabelData();
+				for (Object label : labelData) {
+					domainAxis.addOrdinalValue(label.toString());
+				}
+			}
+
+			double barWidth = determineBarWidth(graphWidth, xScale, numberOfBars, barFillRatio, domainAxisIsOrdinal);
 
 			rectsLeftSelection.selectAll("rect") //
 					.data(leftDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleFirstDatumFunction(xScale))
-					.attr("y", new AxisScaleSecondDatumFunction(yScale))
+					.attr("x", new AxisScaleKeyDatumFunction(xScale))
+					.attr("y", new AxisScaleValueDatumFunction(yScale))
 					.attr("width", barWidth)
 					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleThirdDatumAsSizeFunction(yScale));
+					.attr("height", new AxisScaleSizeDatumFunction(yScale));
 
 			rectsRightSelection.selectAll("rect") //
 					.data(rightDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleFirstDatumFunction(xScale))
-					.attr("y", new AxisScaleSecondDatumFunction(yScale))
+					.attr("x", new AxisScaleKeyDatumFunction(xScale))
+					.attr("y", new AxisScaleValueDatumFunction(yScale))
 					.attr("width", barWidth)
 					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleThirdDatumAsSizeFunction(yScale));
+					.attr("height", new AxisScaleSizeDatumFunction(yScale));
 
 		} else {
-			double barHeight = determineBarHeight(graphHeight, yScale, numberOfBars, barFillRatio);
+
+			org.treez.results.atom.axis.Axis domainAxis = tornado.getDomainAxis();
+			boolean domainAxisIsOrdinal = domainAxis.isOrdinal();
+
+			org.treez.results.atom.axis.Axis rangeAxis = tornado.getRangeAxis();
+			boolean rangeAxisIsOrdinal = rangeAxis.isOrdinal();
+
+			if (domainAxisIsOrdinal) {
+				String message = "Domain axis must not be ordinal if bar direction is horizontal";
+				LOG.error(message);
+				return;
+			}
+
+			if (rangeAxisIsOrdinal) {
+				List<Object> labelData = tornado.getDomainLabelData();
+				for (Object label : labelData) {
+					rangeAxis.addOrdinalValue(label.toString());
+				}
+			}
+
+			double barHeight = determineBarHeight(graphHeight, yScale, numberOfBars, barFillRatio, rangeAxisIsOrdinal);
 
 			rectsLeftSelection.selectAll("rect") //
 					.data(leftDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleSecondDatumFunction(xScale))
-					.attr("y", new AxisScaleFirstDatumFunction(yScale))
+					.attr("x", new AxisScaleValueDatumFunction(xScale))
+					.attr("y", new AxisScaleKeyDatumFunction(yScale))
 					.attr("height", barHeight)
 					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleThirdDatumAsSizeFunction(xScale));
+					.attr("width", new AxisScaleSizeDatumFunction(xScale));
 
 			rectsRightSelection.selectAll("rect") //
 					.data(rightDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleSecondDatumFunction(xScale))
-					.attr("y", new AxisScaleFirstDatumFunction(yScale))
+					.attr("x", new AxisScaleValueDatumFunction(xScale))
+					.attr("y", new AxisScaleKeyDatumFunction(yScale))
 					.attr("height", barHeight)
 					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleThirdDatumAsSizeFunction(xScale));
+					.attr("width", new AxisScaleSizeDatumFunction(xScale));
+
 		}
 
 		//bind attributes
-		GraphicsAtom.bindStringAttribute(rectsLeftSelection, "fill", leftColor);
-		GraphicsAtom.bindTransparency(rectsLeftSelection, leftTransparency);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(rectsLeftSelection, leftHide, leftTransparency);
+		AbstractGraphicsAtom.bindStringAttribute(rectsLeftSelection, "fill", leftColor);
+		AbstractGraphicsAtom.bindTransparency(rectsLeftSelection, leftTransparency);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(rectsLeftSelection, leftHide, leftTransparency);
 
-		GraphicsAtom.bindStringAttribute(rectsRightSelection, "fill", rightColor);
-		GraphicsAtom.bindTransparency(rectsRightSelection, rightTransparency);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(rectsRightSelection, rightHide, rightTransparency);
+		AbstractGraphicsAtom.bindStringAttribute(rectsRightSelection, "fill", rightColor);
+		AbstractGraphicsAtom.bindTransparency(rectsRightSelection, rightTransparency);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(rectsRightSelection, rightHide, rightTransparency);
 
 	}
 
 	private static double determineBarWidth(
 			double graphWidth,
-			QuantitativeScale<?> xScale,
-			int positionSize,
-			double barFillRatio) {
+			Scale<?> xScale,
+			int dataSize,
+			double barFillRatio,
+			boolean axisIsOrdinal) {
 
 		double defaultBarWidth;
-		if (positionSize > 1) {
-
-			defaultBarWidth = xScale.apply(1).asDouble();
+		if (dataSize > 1) {
+			if (axisIsOrdinal) {
+				defaultBarWidth = graphWidth / dataSize;
+			} else {
+				defaultBarWidth = xScale.apply(1).asDouble();
+			}
 		} else {
 			defaultBarWidth = graphWidth / GRAPHICS_TO_BAR_RATIO_FOR_SINGLE_BAR;
 		}
@@ -251,14 +301,18 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 	private static double determineBarHeight(
 			double graphHeight,
-			QuantitativeScale<?> yScale,
+			Scale<?> yScale,
 			int dataSize,
-			double barFillRatio) {
+			double barFillRatio,
+			boolean axisIsOrdinal) {
 
 		double defaultBarHeight;
 		if (dataSize > 1) {
-
-			defaultBarHeight = graphHeight - yScale.apply(1).asDouble();
+			if (axisIsOrdinal) {
+				defaultBarHeight = graphHeight / dataSize;
+			} else {
+				defaultBarHeight = graphHeight - yScale.apply(1).asDouble();
+			}
 		} else {
 			defaultBarHeight = graphHeight / GRAPHICS_TO_BAR_RATIO_FOR_SINGLE_BAR;
 		}
@@ -271,9 +325,9 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		symbolSelection.attr("width", symbolSize);
 		symbolSelection.attr("height", "10");
 
-		GraphicsAtom.bindStringAttribute(symbolSelection, "fill", leftColor);
-		GraphicsAtom.bindTransparency(symbolSelection, leftTransparency);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(symbolSelection, leftHide, leftTransparency);
+		AbstractGraphicsAtom.bindStringAttribute(symbolSelection, "fill", leftColor);
+		AbstractGraphicsAtom.bindTransparency(symbolSelection, leftTransparency);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(symbolSelection, leftHide, leftTransparency);
 
 		//refreshable.refresh();
 

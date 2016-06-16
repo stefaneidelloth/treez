@@ -95,8 +95,8 @@ public class InputFileGenerator extends AdjustableAtom {
 		data.setLabel("");
 		data.createSectionAction("action", "Generate input file", () -> execute(treeViewRefreshable));
 		//template
-		data.createFilePath(templateFilePath, "templateFilePath",
-				"Template for input file (contains variable place holders)", "C:/template.txt");
+		data.createFilePath(templateFilePath, this, "Template for input file (contains variable place holders)",
+				"C:/template.txt");
 
 		//variable source model
 		String defaultValue = "root.models.genericModel";
@@ -109,24 +109,21 @@ public class InputFileGenerator extends AdjustableAtom {
 		final int prefferedLabelWidth = 180;
 
 		//name expression
-		TextField nameExpressionTextField = data.createTextField(nameExpression, "nameExpression",
-				"{$" + LABEL_TAG + "$}");
+		TextField nameExpressionTextField = data.createTextField(nameExpression, this, "{$" + LABEL_TAG + "$}");
 		nameExpressionTextField.setLabel("Style for variable place holder");
 		nameExpressionTextField.setPrefferedLabelWidth(prefferedLabelWidth);
 
 		//value & unit expression
 		String defaultValueExpression = "" + VALUE_TAG + " [" + UNIT_TAG + "]";
-		TextField valueExpressionTextField = data.createTextField(valueExpression, "valueExpression",
-				defaultValueExpression);
+		TextField valueExpressionTextField = data.createTextField(valueExpression, this, defaultValueExpression);
 		valueExpressionTextField.setLabel("Style for value and unit injection");
 		valueExpressionTextField.setPrefferedLabelWidth(prefferedLabelWidth);
 
 		//path to input file (=the output of this atom)
-		data.createFilePath(inputFilePath, "inputFilePath", "Input file to generate", "C:/generated_input_file.txt",
-				false);
+		data.createFilePath(inputFilePath, this, "Input file to generate", "C:/generated_input_file.txt", false);
 
 		//enable deletion of template rows with unassigned variable place holders
-		CheckBox deleteUnassigned = data.createCheckBox(deleteUnassignedRows, "deleteUnassignedRows", true);
+		CheckBox deleteUnassigned = data.createCheckBox(deleteUnassignedRows, this, true);
 		deleteUnassigned.setLabel("Delete template rows with unassigned variable place holders.");
 
 		setModel(root);
@@ -173,8 +170,8 @@ public class InputFileGenerator extends AdjustableAtom {
 
 		String resultString = templateString;
 
-		List<VariableField<?>> variableFields = sourceModel.getEnabledVariableFields();
-		for (VariableField<?> variableField : variableFields) {
+		List<VariableField<?, ?>> variableFields = sourceModel.getEnabledVariableFields();
+		for (VariableField<?, ?> variableField : variableFields) {
 			String variableName = variableField.getName();
 			String variableLabel = variableField.getLabel();
 			String valueString = variableField.getValueString(); //e.g. "1"

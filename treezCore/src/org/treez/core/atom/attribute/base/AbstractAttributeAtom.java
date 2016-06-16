@@ -33,11 +33,12 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 
 /**
- * Abstract base class for all AttributeAtoms. See the package description for more information.
- *
- * @param <T>
+ * Abstract base class for all AttributeAtoms. See the package description for more information. The second generic type
+ * T determines the type of the represented value, e.g. Double or String.
  */
-public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAtom implements Attribute<T> {
+public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T>, T>
+		extends
+		AbstractAttributeParentAtom<A> implements Attribute<T> {
 
 	//#region ATTRIBUTES
 
@@ -93,7 +94,7 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 	/**
 	 * Copy constructor
 	 */
-	public AbstractAttributeAtom(AbstractAttributeAtom<T> attributeAtomToCopy) {
+	public AbstractAttributeAtom(AbstractAttributeAtom<A, T> attributeAtomToCopy) {
 		super(attributeAtomToCopy);
 		//modify listeners are not copied
 		modifyListeners = new HashMap<>();
@@ -114,7 +115,7 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 	 * @param parent
 	 * @return
 	 */
-	public abstract AbstractAttributeAtom<T> createAttributeAtomControl(
+	public abstract AbstractAttributeAtom<A, T> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable);
 
@@ -380,8 +381,9 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public A setEnabled(boolean state) {
 		isEnabled = state;
+		return getThis();
 	}
 
 	//#end region
@@ -484,7 +486,7 @@ public abstract class AbstractAttributeAtom<T> extends AbstractAttributeParentAt
 
 	//#region BACKGROUND COLOR
 
-	public abstract void setBackgroundColor(Color backgroundColor);
+	public abstract A setBackgroundColor(Color backgroundColor);
 
 	//#end region
 

@@ -32,7 +32,7 @@ import org.treez.core.utils.Utils;
 /**
  * Allows the user to choose a model path
  */
-public class ModelPath extends AbstractStringAttributeAtom {
+public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 
 	private static final Logger LOG = Logger.getLogger(ModelPath.class);
 
@@ -83,7 +83,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 	 * A parent atom that can be passed to the constructor to use an alternative entry point for the path navigation. If
 	 * this parentAtom is not null, the root of that parent atom will be used instead of the root of this AttributeAtom
 	 */
-	private AbstractAtom modelEntryAtom = null;
+	private AbstractAtom<?> modelEntryAtom = null;
 
 	/**
 	 * If this relative root is not null, it will be used as starting atom for the model path selection. The text field
@@ -96,7 +96,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 	 * => genericModel.xVariable
 	 * </pre>
 	 */
-	private AbstractAtom relativeRoot = null;
+	private AbstractAtom<?> relativeRoot = null;
 
 	/**
 	 * A parent model path that provides a relative root
@@ -112,7 +112,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 		setLabel(name);
 	}
 
-	public ModelPath(String name, AbstractAtom modelEntryAtom) {
+	public ModelPath(String name, AbstractAtom<?> modelEntryAtom) {
 		super(name);
 		setLabel(name);
 		setModelEntryAtom(modelEntryAtom);
@@ -124,7 +124,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 		setSelectionType(selectionType);
 	}
 
-	public ModelPath(String name, AbstractAtom modelEntryAtom, ModelPathSelectionType selectionType) {
+	public ModelPath(String name, AbstractAtom<?> modelEntryAtom, ModelPathSelectionType selectionType) {
 		super(name);
 		setLabel(label);
 		setSelectionType(selectionType);
@@ -182,7 +182,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 
 	public ModelPath(
 			String name,
-			AbstractAtom modelEntryAtom,
+			AbstractAtom<?> modelEntryAtom,
 			ModelPathSelectionType selectionType,
 			String defaultPath) {
 		super(name);
@@ -198,7 +198,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 			String defaultPath,
 			Class<?> atomType,
 			ModelPathSelectionType selectionType,
-			AbstractAtom modelEntryAtom,
+			AbstractAtom<?> modelEntryAtom,
 			boolean hasToBeEnabled) {
 		super(name);
 		setLabel(label);
@@ -215,7 +215,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 			String defaultPath,
 			Class<?>[] atomTypes,
 			ModelPathSelectionType selectionType,
-			AbstractAtom modelEntryAtom,
+			AbstractAtom<?> modelEntryAtom,
 			boolean hasToBeEnabled) {
 		super(name);
 		setLabel(label);
@@ -239,8 +239,8 @@ public class ModelPath extends AbstractStringAttributeAtom {
 			String defaultPath,
 			Class<?> atomType,
 			ModelPathSelectionType selectionType,
-			AbstractAtom modelEntryAtom,
-			AbstractAtom relativeRoot) {
+			AbstractAtom<?> modelEntryAtom,
+			AbstractAtom<?> relativeRoot) {
 		super(name);
 		setLabel(label);
 		setDefaultValue(defaultPath);
@@ -274,12 +274,17 @@ public class ModelPath extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public ModelPath getThis() {
+		return this;
+	}
+
+	@Override
 	public ModelPath copy() {
 		return new ModelPath(this);
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<ModelPath> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -418,7 +423,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 	 */
 	private List<String> getAvailableTargetPaths() {
 		//get root to use it as model
-		AbstractAtom model = null;
+		AbstractAtom<?> model = null;
 		if (modelEntryAtom != null) {
 			//use the given modelEntryAtom as entry point
 			model = modelEntryAtom.getRoot();
@@ -573,7 +578,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 				public void handleEvent(org.eclipse.swt.widgets.Event event) {
 
 					//get root to use it as model
-					AbstractAtom model = getModel();
+					AbstractAtom<?> model = getModel();
 
 					//select path
 					String modelPath = ModelPathSelector.selectTreePath(model, targetClassNames, defaultValue);
@@ -589,8 +594,8 @@ public class ModelPath extends AbstractStringAttributeAtom {
 
 	}
 
-	private AbstractAtom getModel() {
-		AbstractAtom model;
+	private AbstractAtom<?> getModel() {
+		AbstractAtom<?> model;
 		if (modelEntryAtom != null) {
 			//use the given modelEntryAtom as entry point
 			model = modelEntryAtom.getRoot();
@@ -665,7 +670,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public ModelPath setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -678,7 +683,7 @@ public class ModelPath extends AbstractStringAttributeAtom {
 			String parentPath = parentModelPath.get();
 			if (parentPath != null && !parentPath.isEmpty()) {
 
-				AbstractAtom relativeRootAtom = null;
+				AbstractAtom<?> relativeRootAtom = null;
 				try {
 					relativeRootAtom = modelEntryAtom.getChildFromRoot(parentPath);
 				} catch (IllegalArgumentException exception) {
@@ -693,21 +698,6 @@ public class ModelPath extends AbstractStringAttributeAtom {
 			}
 		}
 	}
-
-	/*
-	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key, (event) -> {
-			if (event.data == null) {
-				consumer.accept(null);
-			} else {
-				String data = event.data.toString();
-				consumer.accept(data);
-			}
-
-		});
-	}
-	*/
 
 	//#end region
 
@@ -758,8 +748,9 @@ public class ModelPath extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public ModelPath setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -767,24 +758,27 @@ public class ModelPath extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultFilePath) {
+	public ModelPath setDefaultValue(String defaultFilePath) {
 		this.defaultValue = defaultFilePath;
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public ModelPath setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	public ModelPathSelectionType getSelectionType() {
 		return selectionType;
 	}
 
-	public void setSelectionType(ModelPathSelectionType selectionType) {
+	public ModelPath setSelectionType(ModelPathSelectionType selectionType) {
 		this.selectionType = selectionType;
+		return getThis();
 	}
 
 	/**
@@ -792,32 +786,38 @@ public class ModelPath extends AbstractStringAttributeAtom {
 	 *
 	 * @param targetClassNames
 	 */
-	public void setTargetClassNames(List<String> targetClassNames) {
+	public ModelPath setTargetClassNames(List<String> targetClassNames) {
 		this.targetClassNames = String.join(",", targetClassNames);
+		return getThis();
 	}
 
-	private void setTargetClassName(String singleTargetClassName) {
+	private ModelPath setTargetClassName(String singleTargetClassName) {
 		this.targetClassNames = singleTargetClassName;
+		return getThis();
 	}
 
-	private void setModelEntryAtom(AbstractAtom modelEntryAtom) {
+	private ModelPath setModelEntryAtom(AbstractAtom<?> modelEntryAtom) {
 		this.modelEntryAtom = modelEntryAtom;
+		return getThis();
 	}
 
-	public void setModelRelativeRoot(AbstractAtom relativeRoot) {
+	public ModelPath setModelRelativeRoot(AbstractAtom<?> relativeRoot) {
 		this.relativeRoot = relativeRoot;
+		return getThis();
 	}
 
-	public void setHasToBeEnabled(boolean state) {
+	public ModelPath setHasToBeEnabled(boolean state) {
 		this.hasToBeEnabled = state;
+		return getThis();
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public ModelPath setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(combo)) {
 			combo.setEnabled(state);
 		}
+		return getThis();
 	}
 
 	//#end region

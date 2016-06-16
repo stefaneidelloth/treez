@@ -1,6 +1,7 @@
 package org.treez.javafxd3.d3.functions;
 
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.scales.Scale;
+import org.treez.javafxd3.d3.wrapper.Inspector;
 
 import netscape.javascript.JSObject;
 
@@ -13,7 +14,7 @@ public class AxisScaleFirstDatumFunction implements DatumFunction<Double> {
 	
 	//#region ATTRIBUTES
 	
-	QuantitativeScale<?> scale;	
+	Scale<?> scale;	
 	
 	//#end region
 	
@@ -22,7 +23,7 @@ public class AxisScaleFirstDatumFunction implements DatumFunction<Double> {
 	/**
 	 * @param webEngine
 	 */
-	public AxisScaleFirstDatumFunction(QuantitativeScale<?> scale){
+	public AxisScaleFirstDatumFunction(Scale<?> scale){
 		this.scale = scale;		
 	}
 	
@@ -33,8 +34,7 @@ public class AxisScaleFirstDatumFunction implements DatumFunction<Double> {
 	@Override
 	public Double apply(Object context, Object datum, int index) {
 		
-		JSObject jsObject = (JSObject) datum;	
-		
+		JSObject jsObject = (JSObject) datum;			
 		Object firstValueObj = jsObject.eval("this.datum[0]");			
 		Double scaledValue = scale.applyForDouble(firstValueObj.toString());		
 		return scaledValue;			

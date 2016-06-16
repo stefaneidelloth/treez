@@ -21,7 +21,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Allows the user to choose a error bar style
  */
-public class ErrorBarStyle extends AbstractStringAttributeAtom {
+public class ErrorBarStyle extends AbstractStringAttributeAtom<ErrorBarStyle> {
 
 	//#region ATTRIBUTES
 
@@ -81,6 +81,11 @@ public class ErrorBarStyle extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public ErrorBarStyle getThis() {
+		return this;
+	}
+
+	@Override
 	public ErrorBarStyle copy() {
 		return new ErrorBarStyle(this);
 	}
@@ -91,7 +96,7 @@ public class ErrorBarStyle extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<ErrorBarStyle> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -178,7 +183,7 @@ public class ErrorBarStyle extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public ErrorBarStyle setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -191,8 +196,9 @@ public class ErrorBarStyle extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public ErrorBarStyle setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -200,20 +206,22 @@ public class ErrorBarStyle extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public ErrorBarStyle setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		return getThis();
 	}
 
-	public void setDefaultValue(ErrorBarStyleValue defaultStyle) {
-		setDefaultValue(defaultStyle.toString());
+	public ErrorBarStyle setDefaultValue(ErrorBarStyleValue defaultStyle) {
+		return setDefaultValue(defaultStyle.toString());
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public ErrorBarStyle setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	public List<String> getErrorBarStyles() {

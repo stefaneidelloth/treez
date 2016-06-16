@@ -89,7 +89,7 @@ public final class VariableNameRegistry {
 	 * @param atom
 	 * @return
 	 */
-	public String getNewVariableName(AbstractAtom atom) {
+	public String getNewVariableName(AbstractAtom<?> atom) {
 		String atomName = atom.getName();
 		String newName = atomName.replace(" ", "").trim();
 
@@ -100,7 +100,7 @@ public final class VariableNameRegistry {
 
 		if (contains(newName)) {
 			//add name of parent atom
-			AbstractAtom parentAtom = atom.getParentAtom();
+			AbstractAtom<?> parentAtom = atom.getParentAtom();
 			if (parentAtom != null) {
 				String parentName = parentAtom.getName();
 				newName += "In" + Utils.firstToUpperCase(parentName);

@@ -10,9 +10,7 @@ import org.treez.core.utils.Utils;
 /**
  * Code adaption for the double variable list field
  */
-public class DoubleVariableListFieldCodeAdaption
-		extends
-			AttributeAtomCodeAdaption<List<Double>> {
+public class DoubleVariableListFieldCodeAdaption extends AttributeAtomCodeAdaption<List<Double>> {
 
 	//#region CONSTRUCTORS
 
@@ -31,7 +29,8 @@ public class DoubleVariableListFieldCodeAdaption
 	 */
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
-			AbstractAtom parentAtom, CodeContainer parentContainer) {
+			AbstractAtom<?> parentAtom,
+			CodeContainer parentContainer) {
 
 		CodeContainer extendedContainer = parentContainer;
 
@@ -45,11 +44,9 @@ public class DoubleVariableListFieldCodeAdaption
 
 			String valueString = variableListField.getValueString();
 			if (valueString != null) {
-				String setterName = "set"
-						+ Utils.firstToUpperCase(attributeName) + "ValueString";
+				String setterName = "set" + Utils.firstToUpperCase(attributeName) + "ValueString";
 				checkIfSetterExists(parentAtom, setterName, String.class);
-				extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "."
-						+ setterName + "(\"" + valueString + "\");");
+				extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "." + setterName + "(\"" + valueString + "\");");
 			}
 
 			return extendedContainer;

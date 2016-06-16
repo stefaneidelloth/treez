@@ -35,6 +35,11 @@ public class Models extends AbstractModel {
 
 	//#region METHODS
 
+	@Override
+	public Models getThis() {
+		return this;
+	}
+
 	/**
 	 * Creates the control model: an empty section with a help button in the title bar
 	 */

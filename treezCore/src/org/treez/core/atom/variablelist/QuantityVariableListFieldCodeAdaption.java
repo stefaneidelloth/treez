@@ -11,14 +11,11 @@ import org.treez.core.utils.Utils;
 /**
  * Code adaption for the quantity variable list field
  */
-public class QuantityVariableListFieldCodeAdaption
-		extends
-			AttributeAtomCodeAdaption<List<Quantity>> {
+public class QuantityVariableListFieldCodeAdaption extends AttributeAtomCodeAdaption<List<Quantity>> {
 
 	//#region CONSTRUCTORS
 
-	public QuantityVariableListFieldCodeAdaption(
-			QuantityVariableListField atom) {
+	public QuantityVariableListFieldCodeAdaption(QuantityVariableListField atom) {
 		super(atom);
 	}
 
@@ -28,7 +25,8 @@ public class QuantityVariableListFieldCodeAdaption
 
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
-			AbstractAtom parentAtom, CodeContainer parentContainer) {
+			AbstractAtom<?> parentAtom,
+			CodeContainer parentContainer) {
 
 		CodeContainer extendedContainer = parentContainer;
 
@@ -42,20 +40,16 @@ public class QuantityVariableListFieldCodeAdaption
 
 			String valueString = variableListField.getValueString();
 			if (valueString != null) {
-				String setterName = "set"
-						+ Utils.firstToUpperCase(attributeName) + "ValueString";
+				String setterName = "set" + Utils.firstToUpperCase(attributeName) + "ValueString";
 				checkIfSetterExists(parentAtom, setterName, String.class);
-				extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "."
-						+ setterName + "(\"" + valueString + "\");");
+				extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "." + setterName + "(\"" + valueString + "\");");
 			}
 
 			String unitString = variableListField.getUnitString();
 			if (unitString != null) {
-				String setterName = "set"
-						+ Utils.firstToUpperCase(attributeName) + "UnitString";
+				String setterName = "set" + Utils.firstToUpperCase(attributeName) + "UnitString";
 				checkIfSetterExists(parentAtom, setterName, String.class);
-				extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "."
-						+ setterName + "(\"" + unitString + "\");");
+				extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "." + setterName + "(\"" + unitString + "\");");
 			}
 
 			return extendedContainer;

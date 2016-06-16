@@ -28,15 +28,14 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.core.utils.Utils;
 
-public class Page extends AbstractAttributeContainerAtom {
+public class Page extends AbstractAttributeContainerAtom<Page> {
 
 	//#region ATTRIBUTES
 
 	@IsParameter(defaultValue = "Page Title")
 	private String title;
 
-	@IsParameter(defaultValue = "VERTICAL", comboItems = {"VERTICAL",
-			"HORIZONTAL"})
+	@IsParameter(defaultValue = "VERTICAL", comboItems = { "VERTICAL", "HORIZONTAL" })
 	private String layout;
 
 	//#end region
@@ -62,6 +61,11 @@ public class Page extends AbstractAttributeContainerAtom {
 	//#region METHODS
 
 	@Override
+	public Page getThis() {
+		return this;
+	}
+
+	@Override
 	public Page copy() {
 		return new Page(this);
 	}
@@ -72,18 +76,21 @@ public class Page extends AbstractAttributeContainerAtom {
 	}
 
 	@Override
-	protected ArrayList<Object> createContextMenuActions(
-			final TreeViewerRefreshable treeViewer) {
+	protected ArrayList<Object> createContextMenuActions(final TreeViewerRefreshable treeViewer) {
 		ArrayList<Object> actions = new ArrayList<>();
 
 		//add
-		actions.add(new TreeViewerAction("Add Section",
-				Activator.getImage("Section.png"), treeViewer,
+		actions.add(new TreeViewerAction(
+				"Add Section",
+				Activator.getImage("Section.png"),
+				treeViewer,
 				() -> addSection(treeViewer)));
 
 		//delete
-		actions.add(new TreeViewerAction("Delete",
-				Activator.getImage(ISharedImages.IMG_TOOL_DELETE), treeViewer,
+		actions.add(new TreeViewerAction(
+				"Delete",
+				Activator.getImage(ISharedImages.IMG_TOOL_DELETE),
+				treeViewer,
 				() -> createTreeNodeAdaption().delete()));
 
 		return actions;
@@ -92,8 +99,7 @@ public class Page extends AbstractAttributeContainerAtom {
 	//#region CONTROL
 
 	@Override
-	public void createAtomControl(Composite tabFolderComposite,
-			FocusChangingRefreshable treeViewerRefreshable) {
+	public void createAtomControl(Composite tabFolderComposite, FocusChangingRefreshable treeViewerRefreshable) {
 
 		//get toolkit
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
@@ -144,13 +150,11 @@ public class Page extends AbstractAttributeContainerAtom {
 	}
 
 	/**
-	 * Creates the page content. The functionality is extracted to this method
-	 * to be able to do a lazy creation.
+	 * Creates the page content. The functionality is extracted to this method to be able to do a lazy creation.
 	 *
 	 * @param parent
 	 */
-	private void createPageContent(Composite parent,
-			FocusChangingRefreshable treeViewerRefreshable) {
+	private void createPageContent(Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
 
 		//disable drawing to avoid flickering
 		parent.setRedraw(false);
@@ -172,8 +176,7 @@ public class Page extends AbstractAttributeContainerAtom {
 		}
 
 		//create sections
-		List<TreeNodeAdaption> sectionNodes = createTreeNodeAdaption()
-				.getChildren();
+		List<TreeNodeAdaption> sectionNodes = createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption sectionNode : sectionNodes) {
 
 			String type = sectionNode.getAdaptable().getClass().getSimpleName();
@@ -189,8 +192,7 @@ public class Page extends AbstractAttributeContainerAtom {
 				section.createAtomControl(parent, treeViewerRefreshable);
 
 			} else {
-				String message = "The children of a Page have to be of type Section and not '"
-						+ type + "'";
+				String message = "The children of a Page have to be of type Section and not '" + type + "'";
 				throw new IllegalArgumentException(message);
 			}
 		}
@@ -201,8 +203,7 @@ public class Page extends AbstractAttributeContainerAtom {
 	}
 
 	void addSection(TreeViewerRefreshable treeViewer) {
-		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this,
-				"mySection");
+		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "mySection");
 		createSection(name);
 		createTreeNodeAdaption().expand(treeViewer);
 	}
@@ -244,16 +245,23 @@ public class Page extends AbstractAttributeContainerAtom {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public Page setTitle(String title) {
 		this.title = title;
-	}
-
-	public void setLayout(String layout) {
-		this.layout = layout;
+		return getThis();
 	}
 
 	public String getLayout() {
 		return layout;
+	}
+
+	public Page setLayout(String layout) {
+		this.layout = layout;
+		return getThis();
+	}
+
+	@Override
+	public Page setEnabled(boolean enable) {
+		throw new IllegalStateException("not yet implemented");
 	}
 
 	//#end region

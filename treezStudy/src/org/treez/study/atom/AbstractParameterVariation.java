@@ -70,7 +70,7 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 		boolean resultAtomExists = this.rootHasChild(resultAtomPath);
 		if (!resultAtomExists) {
 			Results results = new Results("results");
-			AbstractAtom root = this.getRoot();
+			AbstractAtom<?> root = this.getRoot();
 			root.addChild(results);
 			LOG.info("Created " + resultAtomPath + " for sweep output.");
 		}
@@ -86,7 +86,7 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 		boolean dataAtomExists = this.rootHasChild(dataAtomPath);
 		if (!dataAtomExists) {
 			Data data = new Data(dataAtomName);
-			AbstractAtom results = this.getChildFromRoot(resultAtomPath);
+			AbstractAtom<?> results = this.getChildFromRoot(resultAtomPath);
 			results.addChild(data);
 			LOG.info("Created " + dataAtomPath + " for sweep output.");
 		}

@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -40,7 +40,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page dataPage = root.createPage("data", "   Data   ");
 
@@ -55,12 +55,12 @@ public class Data implements GraphicsPropertiesPageFactory {
 		value = "root.data.table.columns.y";
 		data.createModelPath(barPositions, this, value, targetClass, parent) //
 				.setLabel("Bar positions");
-		data.createEnumComboBox(barDirection, "Direction", Direction.VERTICAL);
+		data.createEnumComboBox(barDirection, this, Direction.VERTICAL).setLabel("Direction");
 
 		final double defaultBarFillRatio = 0.75;
 		data.createDoubleVariableField(barFillRatio, this, defaultBarFillRatio);
 
-		TextField legendTextField = data.createTextField(legendText, "legendText", "");
+		TextField legendTextField = data.createTextField(legendText, this, "");
 		legendTextField.setLabel("Legend text");
 
 		targetClass = org.treez.results.atom.axis.Axis.class;
@@ -79,7 +79,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		Consumer dataChangedConsumer = () -> {
 			Bar bar = (Bar) parent;

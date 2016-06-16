@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -29,25 +29,25 @@ public class Background implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page backgroundPage = root.createPage("background", "Background");
 
 		Section background = backgroundPage.createSection("background", "Background");
 
-		background.createColorChooser(color, "color", "white");
+		background.createColorChooser(color, this, "white");
 
 		//background.createFillStyle(fillStyle, "style", "Style");
 
-		background.createTextField(transparency, "transparency", "0");
+		background.createTextField(transparency, this, "0");
 
-		background.createCheckBox(hide, "hide");
+		background.createCheckBox(hide, this);
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection parentSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection parentSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
-		GraphicsAtom.bindStringAttribute(rectSelection, "fill", color);
+		AbstractGraphicsAtom.bindStringAttribute(rectSelection, "fill", color);
 
 		transparency.addModificationConsumerAndRun("updateTransparency", () -> {
 			try {

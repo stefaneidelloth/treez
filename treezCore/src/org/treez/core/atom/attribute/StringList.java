@@ -23,7 +23,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Allows to edit a list of strings
  */
-public class StringList extends AbstractAttributeAtom<List<String>> {
+public class StringList extends AbstractAttributeAtom<StringList, List<String>> {
 
 	//#region ATTRIBUTES
 
@@ -74,6 +74,11 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 
 	//#region METHODS
 
+	@Override
+	public StringList getThis() {
+		return this;
+	}
+
 	/**
 	 * Creates a treez list that contains Strings/text
 	 */
@@ -94,8 +99,9 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<List<String>> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<StringList, List<String>> createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
@@ -116,8 +122,7 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 
 		//create parent composite for treez list
 		listContainerComposite = toolkit.createComposite(contentContainer);
-		GridData fillData = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
+		GridData fillData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		listContainerComposite.setLayoutData(fillData);
 
 		//create treez list control
@@ -127,18 +132,15 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	/**
-	 * Creates the control for the treezList by calling the corresponding method
-	 * of the wrapped TreezListAtom
+	 * Creates the control for the treezList by calling the corresponding method of the wrapped TreezListAtom
 	 */
 	private void createTreezListControl() {
 		treezListControlAdaption = (TreezListAtomControlAdaption) treezList
-				.createControlAdaption(listContainerComposite,
-						treeViewRefreshable);
+				.createControlAdaption(listContainerComposite, treeViewRefreshable);
 	}
 
 	/**
-	 * Creates a container layout where the label and the check box are put in
-	 * individual lines
+	 * Creates a container layout where the label and the check box are put in individual lines
 	 *
 	 * @param contentContainer
 	 */
@@ -181,8 +183,7 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	/**
-	 * Splits the given valueString with "," and returns the individual values
-	 * as a String list
+	 * Splits the given valueString with "," and returns the individual values as a String list
 	 *
 	 * @param valueString
 	 * @return
@@ -194,8 +195,7 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 	}
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public StringList setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -210,8 +210,9 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public StringList setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	//#end region
@@ -223,9 +224,10 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 	 *
 	 * @param valueString
 	 */
-	public void setValue(String valueString) {
+	public StringList setValue(String valueString) {
 		List<String> stringValues = valueStringToList(valueString);
 		set(stringValues);
+		return getThis();
 	}
 
 	//#end region
@@ -238,8 +240,9 @@ public class StringList extends AbstractAttributeAtom<List<String>> {
 		return stringValues;
 	}
 
-	public void setDefaultValue(String defaultValueString) {
+	public StringList setDefaultValue(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
+		return getThis();
 	}
 
 	//#end region

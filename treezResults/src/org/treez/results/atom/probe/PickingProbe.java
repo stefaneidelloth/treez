@@ -259,8 +259,8 @@ public class PickingProbe extends AbstractProbe {
 	private List<ColumnBlueprint> addSampleColumnBlueprintsForPickingTimeSeries(
 			List<ColumnBlueprint> columnBlueprints) {
 		ColumnType probeColumnType = getPickingProbeColumnType();
-		List<AbstractAtom> samples = getSamplesFromPicking();
-		for (AbstractAtom sample : samples) {
+		List<AbstractAtom<?>> samples = getSamplesFromPicking();
+		for (AbstractAtom<?> sample : samples) {
 			String sampleName = sample.getName();
 			columnBlueprints.add(new ColumnBlueprint(sampleName, probeColumnType, sampleName));
 		}
@@ -291,18 +291,18 @@ public class PickingProbe extends AbstractProbe {
 		String pickingOutputModelPath = pickingOutput.get();
 		boolean pickingOutputIsSpecified = !"".equals(pickingOutputModelPath);
 		if (pickingOutputIsSpecified) {
-			AbstractAtom pickingOutputAtom = this.getChildFromRoot(pickingOutputModelPath);
+			AbstractAtom<?> pickingOutputAtom = this.getChildFromRoot(pickingOutputModelPath);
 			int numberOfOutputs = pickingOutputAtom.getChildAtoms().size();
 			return numberOfOutputs;
 		}
 		return 0;
 	}
 
-	private List<AbstractAtom> getSamplesFromPicking() {
+	private List<AbstractAtom<?>> getSamplesFromPicking() {
 		String pickingModelPath = pickingPath.get();
 		boolean pickingIsSpecified = !"".equals(pickingModelPath);
 		if (pickingIsSpecified) {
-			AbstractAtom picking = this.getChildFromRoot(pickingModelPath);
+			AbstractAtom<?> picking = this.getChildFromRoot(pickingModelPath);
 			return picking.getChildAtoms();
 		}
 		return null;

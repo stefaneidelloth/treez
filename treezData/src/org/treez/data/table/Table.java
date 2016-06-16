@@ -34,7 +34,7 @@ import org.treez.data.column.Columns;
 /**
  * Represents a table
  */
-public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
+public class Table extends AbstractUiSynchronizingAtom<Table> implements TreezTable {
 
 	//#region ATTRIBUTES
 
@@ -80,6 +80,11 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 	//#region METHODS
 
 	@Override
+	public Table getThis() {
+		return this;
+	}
+
+	@Override
 	public Table copy() {
 		return new Table(this);
 	}
@@ -90,7 +95,9 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 	}
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		List<String> headers = null;
 		try {
@@ -390,7 +397,7 @@ public class Table extends AbstractUiSynchronizingAtom implements TreezTable {
 	}
 
 	private boolean columnsExist() {
-		for (AbstractAtom currentChild : children) {
+		for (AbstractAtom<?> currentChild : children) {
 			boolean isWantedChild = currentChild.getClass().equals(Columns.class);
 			if (isWantedChild) {
 				return true;

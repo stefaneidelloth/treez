@@ -51,7 +51,7 @@ public class JavaScripting extends AbstractScripting {
 	 * @param javaCode
 	 */
 	@Override
-	@SuppressWarnings("checkstyle:illegalcatch")
+	@SuppressWarnings({ "checkstyle:illegalcatch", "checkstyle:onestatementperline" })
 	public void execute(String javaCode) {
 
 		//LOG.debug("Executing following java code: \n" + javaCode);
@@ -59,16 +59,14 @@ public class JavaScripting extends AbstractScripting {
 		//get an instance of the JavaCompiler.
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
-		Objects.requireNonNull(compiler,
-				"Java compiler must not be null. Please start Eclipse with JDK instead of JRE "
-						+ "(specify path to JDK with -vm option in eclipse.ini).");
+		Objects.requireNonNull(compiler, "Java compiler must not be null. Please start Eclipse with JDK instead of JRE "
+				+ "(specify path to JDK with -vm option in eclipse.ini).");
 
 		//get the class loader from this class to use it as
 		//the parent class loader for the class loaders that are
 		//created by the InMemoryClassFileManager
 		ClassLoader parentClassLoader = this.getClass().getClassLoader();
-		Objects.requireNonNull(parentClassLoader,
-				"The parent class loader must not be null.");
+		Objects.requireNonNull(parentClassLoader, "The parent class loader must not be null.");
 
 		//Create the InMemoryClassFileManager and use it to
 		//compile the class in memory.
@@ -76,18 +74,20 @@ public class JavaScripting extends AbstractScripting {
 		//contains the compiled class.
 		ClassLoader memoryClassLoader;
 		String fullClassName;
-		try (StandardJavaFileManager standardFileManager = compiler
-				.getStandardFileManager(null, null, null);
+
+		try (
+				StandardJavaFileManager standardFileManager = compiler.getStandardFileManager(null, null, null);
 				InMemoryClassFileManager initialFileManager = new InMemoryClassFileManager(
-						javaCode, standardFileManager, parentClassLoader);) {
+						javaCode,
+						standardFileManager,
+						parentClassLoader);) {
 
 			//get full class name
 			fullClassName = initialFileManager.getFullClassName();
 
 			//compile class and create an in memory class loader that
 			//contains the compiled class
-			memoryClassLoader = compileClassAndCreateInMemoryClassLoader(
-					compiler, initialFileManager);
+			memoryClassLoader = compileClassAndCreateInMemoryClassLoader(compiler, initialFileManager);
 
 		} catch (Exception exception) {
 			String message = "Could not create InMemoryClassFileManager.";
@@ -96,16 +96,14 @@ public class JavaScripting extends AbstractScripting {
 		}
 
 		//Create an object instance using the in memory class loader
-		instance = createObjectInstanceFromCompiledClass(fullClassName,
-				memoryClassLoader);
+		instance = createObjectInstanceFromCompiledClass(fullClassName, memoryClassLoader);
 		Objects.requireNonNull(instance, "Instance must not be null.");
 
 	}
 
 	/**
-	 * Compile the class and create a new file manager that contains the
-	 * compiled class and a corresponding in memory class loader. Finaly return
-	 * the new class loader.
+	 * Compile the class and create a new file manager that contains the compiled class and a corresponding in memory
+	 * class loader. Finaly return the new class loader.
 	 *
 	 * @param compiler
 	 * @param initialFileManager
@@ -116,8 +114,8 @@ public class JavaScripting extends AbstractScripting {
 			InMemoryClassFileManager initialFileManager) {
 
 		ClassLoader memoryClassLoader;
-		try (JavaFileManager memoryFileManager = compileClass(
-				initialFileManager, compiler);) {
+		try (
+				JavaFileManager memoryFileManager = compileClass(initialFileManager, compiler);) {
 
 			//Get final class loader from our fileManager (the argument
 			//null is not used here; it is just required to implement the
@@ -126,8 +124,7 @@ public class JavaScripting extends AbstractScripting {
 			Objects.requireNonNull(memoryClassLoader,
 					"Could not create memory class loader. Please check if an import is missing in your Treez java file.");
 
-		} catch (SecurityException | IllegalStateException
-				| IOException exception) {
+		} catch (SecurityException | IllegalStateException | IOException exception) {
 			String message = "Could not create memory file manager and memory class loader.";
 			LOG.error(message, exception);
 			throw new IllegalArgumentException(message, exception);
@@ -136,40 +133,36 @@ public class JavaScripting extends AbstractScripting {
 	}
 
 	/**
-	 * Tries to get the root adaptable object (=model) from the scripted java
-	 * class object instance. Returns null if the root could not be retrieved.
-	 * This method has to be called after the method execute.
+	 * Tries to get the root adaptable object (=model) from the scripted java class object instance. Returns null if the
+	 * root could not be retrieved. This method has to be called after the method execute.
 	 *
 	 * @return
 	 */
 	@Override
-	public AbstractAtom getRoot() {
+	public AbstractAtom<?> getRoot() {
 		//check instance
-		Objects.requireNonNull(instance,
-				"The document has to be executed before calling this method.");
+		Objects.requireNonNull(instance, "The document has to be executed before calling this method.");
 
 		//try to cast the class instance to a ModelProvider
 		ModelProvider modelProvider = castInstanceToModelProvider();
 
 		//try to retrieve the model (=root) from the ModelProvider
-		AbstractAtom root = retrieveModelFromModelProvider(modelProvider);
+		AbstractAtom<?> root = retrieveModelFromModelProvider(modelProvider);
 
 		return root;
 	}
 
 	/**
-	 * Compiles the javaCode that is contained in the given file manager and
-	 * updates the file manager with the result. The updated file manger
-	 * provides a new class loader that can be used to obtain the compiled class
-	 * (use the method "getClassLoader").
+	 * Compiles the javaCode that is contained in the given file manager and updates the file manager with the result.
+	 * The updated file manger provides a new class loader that can be used to obtain the compiled class (use the method
+	 * "getClassLoader").
 	 *
 	 * @param compiler
 	 * @param fileManager
 	 * @return
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static JavaFileManager compileClass(
-			InMemoryClassFileManager fileManager, JavaCompiler compiler) {
+	private static JavaFileManager compileClass(InMemoryClassFileManager fileManager, JavaCompiler compiler) {
 
 		//check arguments
 		Objects.requireNonNull(compiler, "Java compiler must not be null.");
@@ -187,18 +180,15 @@ public class JavaScripting extends AbstractScripting {
 		LoggingWriter compileLogger = new LoggingWriter(LOG, Level.ERROR);
 		DiagnosticListener<? super JavaFileObject> diagnosticListener = null;
 		Iterable<String> classes = null;
-		CompilationTask compilationTask = compiler.getTask(compileLogger,
-				fileManager, diagnosticListener, options, classes,
-				javaFileObjects);
-		Objects.requireNonNull(compilationTask,
-				"Compilation task must not be null.");
+		CompilationTask compilationTask = compiler.getTask(compileLogger, fileManager, diagnosticListener, options,
+				classes, javaFileObjects);
+		Objects.requireNonNull(compilationTask, "Compilation task must not be null.");
 
 		//run CompilationTask (this will update the wrapped file manager)
 		try {
 			compilationTask.call();
 		} catch (Exception exception) {
-			String message = "Could not compile class "
-					+ fileManager.getFullClassName();
+			String message = "Could not compile class " + fileManager.getFullClassName();
 			LOG.error(message, exception);
 			throw new IllegalArgumentException(message, exception);
 		}
@@ -206,8 +196,7 @@ public class JavaScripting extends AbstractScripting {
 		//check if compile errors have been logged
 		boolean compileErrorsExist = compileLogger.hasData();
 		if (compileErrorsExist) {
-			String message = "Could not compile class '"
-					+ fileManager.getFullClassName() + "\n"
+			String message = "Could not compile class '" + fileManager.getFullClassName() + "\n"
 					+ "------------------\n" //
 					+ compileLogger.getDataAsString() //
 					+ "------------------\n"
@@ -249,9 +238,8 @@ public class JavaScripting extends AbstractScripting {
 	 * @return
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static AbstractAtom retrieveModelFromModelProvider(
-			ModelProvider modelProvider) {
-		AbstractAtom root = null;
+	private static AbstractAtom<?> retrieveModelFromModelProvider(ModelProvider modelProvider) {
+		AbstractAtom<?> root = null;
 		if (modelProvider != null) {
 			try {
 				root = modelProvider.createModel();
@@ -264,15 +252,14 @@ public class JavaScripting extends AbstractScripting {
 	}
 
 	/**
-	 * Creates an object instance from the compiled class with the given name.
-	 * Returns null if the object instance cannot be created
+	 * Creates an object instance from the compiled class with the given name. Returns null if the object instance
+	 * cannot be created
 	 *
 	 * @param fullClassName
 	 * @param classLoader
 	 * @return
 	 */
-	private static Object createObjectInstanceFromCompiledClass(
-			String fullClassName, ClassLoader classLoader) {
+	private static Object createObjectInstanceFromCompiledClass(String fullClassName, ClassLoader classLoader) {
 
 		//check arguments
 		Objects.requireNonNull(fullClassName, "Class name must not be null");
@@ -299,12 +286,10 @@ public class JavaScripting extends AbstractScripting {
 				//LOG.debug("Created object instance for class " +
 				//fullClassName);
 			} catch (InstantiationException exception) {
-				String message = "Could not instanciate an object from the class "
-						+ fullClassName;
+				String message = "Could not instanciate an object from the class " + fullClassName;
 				LOG.error(message, exception);
 			} catch (IllegalAccessException e) {
-				String message = "Could not instanciate an object from the class "
-						+ fullClassName;
+				String message = "Could not instanciate an object from the class " + fullClassName;
 				LOG.error(message, e);
 			}
 		}

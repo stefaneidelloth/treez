@@ -38,7 +38,7 @@ public abstract class AbstractScripting implements Scripting {
 	 * @return
 	 */
 	@Override
-	public abstract AbstractAtom getRoot();
+	public abstract AbstractAtom<?> getRoot();
 
 	/**
 	 * Gets the current document text

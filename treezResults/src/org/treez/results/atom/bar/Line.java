@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -33,46 +33,46 @@ public class Line implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page linePage = root.createPage("line", "   Line    ");
 
-		Section line = linePage.createSection("line", "Line");
+		Section line = linePage.createSection("line");
 
-		line.createColorChooser(color, "color", "black");
+		line.createColorChooser(color, this, "black");
 
-		line.createTextField(width, "width", "3");
+		line.createTextField(width, this, "3");
 
-		line.createLineStyle(style, "style", "solid");
+		line.createLineStyle(style, this, "solid");
 
 		line.createDoubleVariableField(transparency, this, 0.0);
 
-		line.createCheckBox(hide, "hide");
+		line.createCheckBox(hide, this);
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		Selection rectsSelection = barSelection //
 				.select(".bar-rects") //
 				.selectAll("rect");
 
-		GraphicsAtom.bindStringAttribute(rectsSelection, "stroke", color);
-		GraphicsAtom.bindStringAttribute(rectsSelection, "stroke-width", width);
-		GraphicsAtom.bindLineStyle(rectsSelection, style);
-		GraphicsAtom.bindLineTransparency(rectsSelection, transparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(rectsSelection, hide, transparency);
+		AbstractGraphicsAtom.bindStringAttribute(rectsSelection, "stroke", color);
+		AbstractGraphicsAtom.bindStringAttribute(rectsSelection, "stroke-width", width);
+		AbstractGraphicsAtom.bindLineStyle(rectsSelection, style);
+		AbstractGraphicsAtom.bindLineTransparency(rectsSelection, transparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(rectsSelection, hide, transparency);
 
 		return barSelection;
 	}
 
 	public Selection formatLegendSymbolLine(Selection symbolSelection, Refreshable refreshable) {
 
-		GraphicsAtom.bindStringAttribute(symbolSelection, "stroke", color);
-		GraphicsAtom.bindStringAttribute(symbolSelection, "stroke-width", width);
-		GraphicsAtom.bindLineStyle(symbolSelection, style);
-		GraphicsAtom.bindLineTransparency(symbolSelection, transparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(symbolSelection, hide, transparency);
+		AbstractGraphicsAtom.bindStringAttribute(symbolSelection, "stroke", color);
+		AbstractGraphicsAtom.bindStringAttribute(symbolSelection, "stroke-width", width);
+		AbstractGraphicsAtom.bindLineStyle(symbolSelection, style);
+		AbstractGraphicsAtom.bindLineTransparency(symbolSelection, transparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(symbolSelection, hide, transparency);
 
 		Consumer replotLegend = () -> refreshable.refresh();
 		width.addModificationConsumer("lineWidthLegendSymbol", replotLegend);

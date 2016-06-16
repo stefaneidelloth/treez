@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.ComboBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -42,39 +42,37 @@ public class Label implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page labelPage = root.createPage("label", "   Label   ");
 
 		Section label = labelPage.createSection("label");
 
-		ComboBox horzPosComboBox = label.createComboBox(horizontalPosition, "horizontalPosition", "right, centre, left",
-				"centre");
+		ComboBox horzPosComboBox = label.createComboBox(horizontalPosition, this, "right, centre, left", "centre");
 		horzPosComboBox.setLabel("Horz position");
 
-		ComboBox vertPosComboBox = label.createComboBox(verticalPosition, "verticalPosition", "top, centre, bottom",
-				"centre");
+		ComboBox vertPosComboBox = label.createComboBox(verticalPosition, this, "top, centre, bottom", "centre");
 		vertPosComboBox.setLabel("Vert position");
 
-		label.createTextField(angle, "angle", "0");
+		label.createTextField(angle, this, "0");
 
 		label.createFont(font, "font");
 
-		label.createSize(fontSize, "size", "14pt");
+		label.createSize(fontSize, this, "14pt").setLabel("Size");
 
-		label.createColorChooser(color, "color", "black");
+		label.createColorChooser(color, this, "black");
 
-		label.createCheckBox(italic, "italic");
+		label.createCheckBox(italic, this);
 
-		label.createCheckBox(bold, "bold");
+		label.createCheckBox(bold, this);
 
-		label.createCheckBox(underline, "underline");
+		label.createCheckBox(underline, this);
 
-		label.createCheckBox(hide, "hide");
+		label.createCheckBox(hide, this);
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		//parent.bindStringAttribute(selection, "x", leftMargin);
 

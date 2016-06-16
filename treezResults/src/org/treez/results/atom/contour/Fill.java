@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -30,24 +30,24 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page symbolPage = root.createPage("fill", "   Fill   ");
 
 		Section fill = symbolPage.createSection("fill");
 
-		fill.createEnumComboBox(colorScale, "Color scale", ColorScale.JET);
+		fill.createEnumComboBox(colorScale, this, ColorScale.JET).setLabel("olor scale");
 
-		fill.createCheckBox(reverseScale, "Reverse scale", false);
+		fill.createCheckBox(reverseScale, this, false).setLabel("Reverse scale");
 
 		fill.createDoubleVariableField(transparency, this, 0.0);
 
-		fill.createCheckBox(hide, "hide");
+		fill.createCheckBox(hide, this);
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		return contourSelection;
 	}

@@ -10,7 +10,7 @@ import org.treez.core.atom.base.annotation.IsParameter;
 /**
  * An item example
  */
-public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
+public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom<CheckBoxEnableTarget> {
 
 	//#region ATTRIBUTES
 
@@ -48,6 +48,11 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public CheckBoxEnableTarget getThis() {
+		return this;
+	}
 
 	//#region COPY
 
@@ -89,6 +94,12 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom {
 
 	public void setValue(Boolean value) {
 		this.value = value;
+	}
+
+	@Override
+	public CheckBoxEnableTarget setEnabled(boolean enable) {
+		throw new IllegalStateException("not yet implemented");
+		//return getThis();
 	}
 
 	//#end region

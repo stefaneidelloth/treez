@@ -5,9 +5,9 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 
 /**
- * A simple test implementation that extends AbstractAtom to be used by AbstractAtomTest
+ * A simple test implementation that extends AbstractAtom<?> to be used by AbstractAtomTest
  */
-public class TestAtom extends AbstractUiSynchronizingAtom {
+public class TestAtom extends AbstractUiSynchronizingAtom<TestAtom> {
 
 	//#region ATTRIBUTES
 
@@ -69,9 +69,14 @@ public class TestAtom extends AbstractUiSynchronizingAtom {
 	}
 
 	@Override
-	public AbstractAtom copy() {
+	public TestAtom copy() {
 		//not used here
 		return null;
+	}
+
+	@Override
+	protected TestAtom getThis() {
+		return this;
 	}
 
 	//#end region

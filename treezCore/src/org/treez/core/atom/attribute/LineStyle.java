@@ -22,7 +22,7 @@ import org.treez.core.utils.Utils;
 /**
  * Allows the user to choose a line style
  */
-public class LineStyle extends AbstractStringAttributeAtom {
+public class LineStyle extends AbstractStringAttributeAtom<LineStyle> {
 
 	//#region ATTRIBUTES
 
@@ -81,6 +81,11 @@ public class LineStyle extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public LineStyle getThis() {
+		return this;
+	}
+
+	@Override
 	public LineStyle copy() {
 		return new LineStyle(this);
 	}
@@ -91,7 +96,7 @@ public class LineStyle extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<LineStyle> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -181,25 +186,10 @@ public class LineStyle extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public LineStyle setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
-
-	/*
-	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key, (event) -> {
-			if (event.data == null) {
-				consumer.accept(null);
-			} else {
-				String data = event.data.toString();
-				consumer.accept(data);
-			}
-
-		});
-	}
-	*/
 
 	//#end region
 
@@ -209,8 +199,9 @@ public class LineStyle extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public LineStyle setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -218,8 +209,9 @@ public class LineStyle extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public LineStyle setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		return getThis();
 	}
 
 	public void setDefaultValue(LineStyleValue lineStyleValue) {
@@ -230,8 +222,9 @@ public class LineStyle extends AbstractStringAttributeAtom {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public LineStyle setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	/**

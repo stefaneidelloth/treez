@@ -14,16 +14,15 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.variablefield.DoubleVariableField;
-import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.springspel.VectorEvaluation;
 import org.treez.core.swt.CustomLabel;
 
 /**
- * Allows a user to enter a string that is interpreted as a list of numeric
- * values. This is use for example by the study atom DoubleVariableRange
+ * Allows a user to enter a string that is interpreted as a list of numeric values. This is use for example by the study
+ * atom DoubleVariableRange
  */
-public class DoubleVariableListField extends AbstractVariableListField<Double> {
+public class DoubleVariableListField extends AbstractVariableListField<DoubleVariableListField, Double> {
 
 	//#region ATTRIBUTES
 
@@ -42,8 +41,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	private String valueString;
 
 	/**
-	 * The value text field, may contain a single number or an expression to
-	 * create a list of numbers
+	 * The value text field, may contain a single number or an expression to create a list of numbers
 	 */
 	private Text valueField = null;
 
@@ -79,6 +77,11 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	//#region METHODS
 
 	@Override
+	protected DoubleVariableListField getThis() {
+		return this;
+	}
+
+	@Override
 	public DoubleVariableListField copy() {
 		return new DoubleVariableListField(this);
 	}
@@ -90,8 +93,9 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractAttributeAtom<List<Double>> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public AbstractAttributeAtom<DoubleVariableListField, List<Double>> createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize Double list value at the first call
@@ -108,8 +112,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 		fillHorizontal.horizontalAlignment = GridData.FILL;
 
 		//create container control for labels  and text fields
-		Composite container = createContainerComposite(parent, toolkit,
-				fillHorizontal);
+		Composite container = createContainerComposite(parent, toolkit, fillHorizontal);
 
 		//label
 		CustomLabel labelComposite = new CustomLabel(toolkit, container, label);
@@ -121,8 +124,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 		return this;
 	}
 
-	private void createValueTextField(FormToolkit toolkit,
-			Composite container) {
+	private void createValueTextField(FormToolkit toolkit, Composite container) {
 		valueField = toolkit.createText(container, getValueString());
 		valueField.setToolTipText(tooltip);
 		valueField.setEnabled(isEnabled());
@@ -152,11 +154,9 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainerComposite(Composite parent,
-			FormToolkit toolkit, GridData fillHorizontal) {
+	private static Composite createContainerComposite(Composite parent, FormToolkit toolkit, GridData fillHorizontal) {
 		Composite container = toolkit.createComposite(parent);
-		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(
-				8, false);
+		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(8, false);
 		gridLayout.horizontalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		container.setLayout(gridLayout);
@@ -165,18 +165,16 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	}
 
 	@Override
-	public DoubleVariableListFieldCodeAdaption createCodeAdaption(
-			ScriptType scriptType) {
+	public DoubleVariableListFieldCodeAdaption createCodeAdaption(ScriptType scriptType) {
 
 		DoubleVariableListFieldCodeAdaption codeAdaption;
 		switch (scriptType) {
-			case JAVA :
-				codeAdaption = new DoubleVariableListFieldCodeAdaption(this);
-				break;
-			default :
-				String message = "The ScriptType " + scriptType
-						+ " is not yet implemented.";
-				throw new IllegalStateException(message);
+		case JAVA:
+			codeAdaption = new DoubleVariableListFieldCodeAdaption(this);
+			break;
+		default:
+			String message = "The ScriptType " + scriptType + " is not yet implemented.";
+			throw new IllegalStateException(message);
 		}
 
 		return codeAdaption;
@@ -201,8 +199,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	 * @return
 	 */
 	private static List<Double> createDoubleList(String valueString) {
-		List<Double> values = vectorEvaluation
-				.parseStringToDoubleList(valueString);
+		List<Double> values = vectorEvaluation.parseStringToDoubleList(valueString);
 		return values;
 	}
 
@@ -220,7 +217,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	}
 
 	@Override
-	public VariableField<Double> createVariableField() {
+	public DoubleVariableField createVariableField() {
 		DoubleVariableField variableField = new DoubleVariableField(name);
 		List<Double> currentValues = get();
 		if (currentValues == null || currentValues.isEmpty()) {
@@ -238,25 +235,25 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	//#region ACCESSORS
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public DoubleVariableListField setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public DoubleVariableListField setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(valueField)) {
 			valueField.setEnabled(state);
 		}
+		return getThis();
 	}
 
 	//#region VALUE
 
 	/**
-	 * Returns the Double list. This does not use the attributeValue to store
-	 * the state of this attribute atom but uses the valueString
+	 * Returns the Double list. This does not use the attributeValue to store the state of this attribute atom but uses
+	 * the valueString
 	 */
 	@Override
 	public List<Double> get() {
@@ -270,8 +267,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 		if (valueList.isEmpty()) {
 			setValueString("");
 		} else {
-			String currentValueString = VectorEvaluation
-					.doubleListToDisplayString(valueList);
+			String currentValueString = VectorEvaluation.doubleListToDisplayString(valueList);
 			setValueString(currentValueString);
 		}
 		enableModificationListeners();
@@ -287,12 +283,11 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	}
 
 	/**
-	 * Sets the value string. If the given value is null, the value string is
-	 * set to "".
+	 * Sets the value string. If the given value is null, the value string is set to "".
 	 *
 	 * @param valueString
 	 */
-	public void setValueString(String valueString) {
+	public DoubleVariableListField setValueString(String valueString) {
 		if (valueString == null) {
 			boolean valueChanged = !"".equals(this.valueString);
 			if (valueChanged) {
@@ -305,6 +300,7 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 			}
 		}
 		setInitialized();
+		return getThis();
 	}
 
 	//#end region
@@ -316,8 +312,9 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 	}
 
 	@Override
-	public void setLabel(String label) {
+	public DoubleVariableListField setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	//#end region
@@ -330,22 +327,23 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 		return defaultValues;
 	}
 
-	public void setDefaultValue(List<Double> valueList) {
+	public DoubleVariableListField setDefaultValue(List<Double> valueList) {
 		if (valueList.isEmpty()) {
 			setDefaultValueString("");
 		} else {
-			String currentDefaultValueString = VectorEvaluation
-					.doubleListToDisplayString(valueList);
+			String currentDefaultValueString = VectorEvaluation.doubleListToDisplayString(valueList);
 			setDefaultValueString(currentDefaultValueString);
 		}
+		return getThis();
 	}
 
 	public String getDefaultValueString() {
 		return defaultValueString;
 	}
 
-	public void setDefaultValueString(String defaultValueString) {
+	public DoubleVariableListField setDefaultValueString(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
+		return getThis();
 	}
 
 	//#end region
@@ -356,8 +354,9 @@ public class DoubleVariableListField extends AbstractVariableListField<Double> {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public DoubleVariableListField setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	//#end region

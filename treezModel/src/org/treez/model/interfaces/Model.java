@@ -18,7 +18,7 @@ public interface Model {
 	 *
 	 * @param modelInput
 	 * @return
-	 * @returns an AbstractAtom that represents the results
+	 * @returns an AbstractAtom<?> that represents the results
 	 */
 	ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, IProgressMonitor monitor);
 

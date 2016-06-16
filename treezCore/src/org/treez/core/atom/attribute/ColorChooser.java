@@ -26,7 +26,7 @@ import org.treez.core.utils.Utils;
 /**
  * Allows the user to choose a value
  */
-public class ColorChooser extends AbstractStringAttributeAtom {
+public class ColorChooser extends AbstractStringAttributeAtom<ColorChooser> {
 
 	//#region ATTRIBUTES
 
@@ -84,6 +84,11 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 	//#region COPY
 
 	@Override
+	public ColorChooser getThis() {
+		return this;
+	}
+
+	@Override
 	public ColorChooser copy() {
 		return new ColorChooser(this);
 	}
@@ -99,7 +104,7 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<ColorChooser> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -286,7 +291,7 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
 	}
 	*/
@@ -299,8 +304,9 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public ColorChooser setLabel(String label) {
 		this.label = label;
+		return this;
 	}
 
 	@Override
@@ -312,7 +318,7 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 	 * @param defaultColor
 	 *            :hex color string or color name
 	 */
-	public void setDefaultValue(String defaultColor) {
+	public ColorChooser setDefaultValue(String defaultColor) {
 
 		boolean isHexColor = defaultColor.substring(0, 1).equals("#");
 		if (isHexColor) {
@@ -327,18 +333,20 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 		}
 
 		this.defaultValue = attributeValue;
+		return this;
 	}
 
-	public void setDefaultValue(ColorValue colorValue) {
-		setDefaultValue(colorValue.getHexCode());
+	public ColorChooser setDefaultValue(ColorValue colorValue) {
+		return setDefaultValue(colorValue.getHexCode());
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public ColorChooser setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return this;
 	}
 
 	public String getColorString() {
@@ -364,9 +372,10 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 		return new RGB(red, green, blue);
 	}
 
-	public void setColorRGB(RGB rgb) {
+	public ColorChooser setColorRGB(RGB rgb) {
 		String valueString = String.format("#%02x%02x%02x", rgb.red, rgb.green, rgb.blue);
 		super.set(valueString);
+		return this;
 	}
 
 	/**
@@ -394,7 +403,7 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public ColorChooser setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(colorCombo)) {
 			colorCombo.setEnabled(state);
@@ -406,6 +415,8 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 			//treeViewRefreshable.refresh(); //creates flickering when targets are updated
 		}
 		refreshAttributeAtomControl();
+		return getThis();
+
 	}
 
 	/**
@@ -427,9 +438,9 @@ public class ColorChooser extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public ColorChooser setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
-
+		//return getThis();
 	}
 
 	//#end region

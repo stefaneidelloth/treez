@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -41,36 +41,35 @@ public class MajorTicks implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page majorTicksPage = root.createPage("majorTicks", "   Major ticks   ");
 
-		Section ticksSection = majorTicksPage.createSection("ticks", "Ticks");
+		Section ticksSection = majorTicksPage.createSection("ticks");
 
-		ticksSection.createTextField(number, "number", "6");
+		ticksSection.createTextField(number, this, "6");
 
-		ticksSection.createColorChooser(color, "color", "black");
+		ticksSection.createColorChooser(color, this, "black");
 
-		ticksSection.createTextField(width, "width", "2");
+		ticksSection.createTextField(width, this, "2");
 
-		ticksSection.createTextField(length, "length", "10");
+		ticksSection.createTextField(length, this, "10");
 
-		ticksSection.createLineStyle(style, "style", "solid");
+		ticksSection.createLineStyle(style, this, "solid");
 
 		ticksSection.createDoubleVariableField(transparency, this, 0.0);
 
-		ticksSection.createCheckBox(hide, "hide");
+		ticksSection.createCheckBox(hide, this);
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		//Hint: The major tick lines already have been created with the axis (see Data).
 		//Here only the properties of the ticks need to be applied.
 
 		Axis axis = (Axis) parent;
-		boolean isLog = axis.data.log.get();
 
 		Selection primary = axisSelection //
 				.selectAll(".primary");
@@ -78,7 +77,7 @@ public class MajorTicks implements GraphicsPropertiesPageFactory {
 		Selection secondary = axisSelection //
 				.selectAll(".secondary");
 
-		markMajorTicksWithCssClass(isLog, primary, secondary);
+		markMajorTicksWithCssClass(axis, primary, secondary);
 
 		Selection primaryMajorTickLines = primary //
 				.selectAll(".major") //
@@ -108,43 +107,49 @@ public class MajorTicks implements GraphicsPropertiesPageFactory {
 			}
 		});
 
-		GraphicsAtom.bindStringAttribute(majorTickLines, "stroke", color);
-		GraphicsAtom.bindStringAttribute(majorTickLines, "stroke-width", width);
-		GraphicsAtom.bindLineStyle(majorTickLines, style);
-		GraphicsAtom.bindLineTransparency(majorTickLines, transparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(majorTickLines, hide, transparency);
+		AbstractGraphicsAtom.bindStringAttribute(majorTickLines, "stroke", color);
+		AbstractGraphicsAtom.bindStringAttribute(majorTickLines, "stroke-width", width);
+		AbstractGraphicsAtom.bindLineStyle(majorTickLines, style);
+		AbstractGraphicsAtom.bindLineTransparency(majorTickLines, transparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(majorTickLines, hide, transparency);
 
 		return axisSelection;
 	}
 
-	private static void markMajorTicksWithCssClass(boolean isLog, Selection primary, Selection secondary) {
-		if (isLog) {
+	private static void markMajorTicksWithCssClass(Axis axis, Selection primary, Selection secondary) {
 
-			primary //
-					.selectAll(".tick:nth-child(1)") //
-					.classed("major", true);
+		if (axis.data.isQuantitative()) {
+			boolean isLog = axis.data.log.get();
+			if (isLog) {
 
-			primary //
-					.selectAll(".tick:nth-child(9n+1)") //
-					.classed("major", true);
+				primary //
+						.selectAll(".tick:nth-child(1)") //
+						.classed("major", true);
 
-			secondary //
-					.selectAll(".tick:nth-child(1)") //
-					.classed("major", true);
+				primary //
+						.selectAll(".tick:nth-child(9n+1)") //
+						.classed("major", true);
 
-			secondary //
-					.selectAll(".tick:nth-child(9n+1)") //
-					.classed("major", true);
+				secondary //
+						.selectAll(".tick:nth-child(1)") //
+						.classed("major", true);
 
-		} else {
-			primary //
-					.selectAll(".tick") //
-					.classed("major", true);
+				secondary //
+						.selectAll(".tick:nth-child(9n+1)") //
+						.classed("major", true);
+				return;
 
-			secondary //
-					.selectAll(".tick") //
-					.classed("major", true);
+			}
 		}
+
+		primary //
+				.selectAll(".tick") //
+				.classed("major", true);
+
+		secondary //
+				.selectAll(".tick") //
+				.classed("major", true);
+
 	}
 
 	//#end region

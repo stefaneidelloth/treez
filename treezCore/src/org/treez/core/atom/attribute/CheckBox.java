@@ -20,7 +20,7 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-public class CheckBox extends AbstractBooleanAttributeAtom {
+public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 
 	//#region ATTRIBUTES
 
@@ -77,6 +77,11 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 
 	//#region METHODS
 
+	@Override
+	public CheckBox getThis() {
+		return this;
+	}
+
 	//#region COPY
 
 	@Override
@@ -94,7 +99,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractBooleanAttributeAtom createAttributeAtomControl(
+	public AbstractBooleanAttributeAtom<CheckBox> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.attributeAtomParent = parent;
@@ -168,7 +173,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public CheckBox setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(valueCheckBox)) {
 			valueCheckBox.setEnabled(state);
@@ -177,6 +182,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 			treeViewRefreshable.refresh();
 		}
 		this.refreshAttributeAtomControl();
+		return getThis();
 	}
 
 	@Override
@@ -204,7 +210,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 			Boolean enableValue = enableProperty.getValue();
 			String targetPath = enableProperty.getTargetPath();
 			AttributeRoot root = (AttributeRoot) getRoot();
-			AbstractAttributeAtom<?> target = (AbstractAttributeAtom<?>) root.getChild(targetPath);
+			AbstractAttributeAtom<?, ?> target = (AbstractAttributeAtom<?, ?>) root.getChild(targetPath);
 			boolean enableTarget = enableValue.equals(currentValue);
 			if (enableTarget) {
 				target.setEnabled(true);
@@ -237,16 +243,18 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public CheckBox setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public CheckBox setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return this;
 	}
 
 	@Override
@@ -254,12 +262,13 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(boolean defaultValue) {
+	public CheckBox setDefaultValue(boolean defaultValue) {
 		this.defaultValue = defaultValue;
+		return this;
 	}
 
 	@Override
-	public void setBackgroundColor(Color color) {
+	public CheckBox setBackgroundColor(Color color) {
 		this.backgroundColor = color;
 		if (isAvailable(contentContainer)) {
 			contentContainer.setBackground(color);
@@ -271,6 +280,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom {
 		if (isAvailable(valueCheckBox)) {
 			valueCheckBox.setBackground(color);
 		}
+		return getThis();
 	}
 
 	//#end region

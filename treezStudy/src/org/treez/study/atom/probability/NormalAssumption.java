@@ -61,7 +61,7 @@ public class NormalAssumption extends AbstractAssumption {
 		//source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
 				.createModelPath(sourceVariableModelPath, this, defaultValue, DoubleVariableField.class, selectionType,
@@ -73,20 +73,22 @@ public class NormalAssumption extends AbstractAssumption {
 		}
 
 		//mean
-		TextField meanField = data.createTextField(mean, "mean", "0");
+		TextField meanField = data.createTextField(mean, this, "0");
 		meanField.setLabel("Mean value");
 		meanField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(mean.get(), standardDeviation.get());
 		});
 
 		//standard deviation
-		TextField standardDeviationField = data.createTextField(standardDeviation, "Standard deviation", "1");
+		TextField standardDeviationField = data.createTextField(standardDeviation, this, "1");
+		standardDeviationField.setLabel("Standard deviation");
 		standardDeviationField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(mean.get(), standardDeviation.get());
 		});
 
 		//function plotter
-		plotter = data.createFunctionPlotter(functionPlotter, "plotter");
+		plotter = data.createFunctionPlotter(functionPlotter, this);
+		plotter.setLabel("Plotter");
 
 		setModel(root);
 	}
@@ -132,7 +134,7 @@ public class NormalAssumption extends AbstractAssumption {
 	protected void assignRealtiveRootToSourceVariablePath() {
 		Objects.requireNonNull(sourceModelModelPath, "Source model path must not be null when calling this function.");
 		data.setLabel("Data for " + sourceModelModelPath);
-		AbstractAtom relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
+		AbstractAtom<?> relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
 		AttributeWrapper<String> pathWrapper = (AttributeWrapper<String>) sourceVariableModelPath;
 		ModelPath modelPath = (ModelPath) pathWrapper.getAttribute();
 		modelPath.setModelRelativeRoot(relativeRootAtom);

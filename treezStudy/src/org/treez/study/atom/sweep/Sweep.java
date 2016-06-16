@@ -75,7 +75,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		//choose selection type and entry atom
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 
 		//model to run
 		String modelToRunDefaultValue = "";
@@ -96,11 +96,11 @@ public class Sweep extends AbstractParameterVariation {
 		studyInfoSection.setLabel("Export study info");
 
 		//export study info check box
-		CheckBox exportStudy = studyInfoSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);
+		CheckBox exportStudy = studyInfoSection.createCheckBox(exportStudyInfo, this, true);
 		exportStudy.setLabel("Export study information");
 
 		//export sweep info path
-		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",
+		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
 		filePath.addModifyListener("updateEnabledState", new ModifyListener() {
@@ -184,7 +184,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		//get sweep output atom
 		String sweepOutputAtomPath = getStudyOutputAtomPath();
-		AbstractAtom sweepOutputAtom = this.getChildFromRoot(sweepOutputAtomPath);
+		AbstractAtom<?> sweepOutputAtom = this.getChildFromRoot(sweepOutputAtomPath);
 
 		//remove all old children if they exist
 		sweepOutputAtom.removeAllChildren();
@@ -206,7 +206,7 @@ public class Sweep extends AbstractParameterVariation {
 			IProgressMonitor monitor,
 			int numberOfSimulations,
 			List<ModelInput> modelInputs,
-			AbstractAtom sweepOutputAtom) {
+			AbstractAtom<?> sweepOutputAtom) {
 		int counter = 1;
 		Model model = getModelToRun();
 		long startTime = System.currentTimeMillis();
@@ -227,7 +227,7 @@ public class Sweep extends AbstractParameterVariation {
 				ModelOutput modelOutput = model.runModel(modelInput, refreshable, subMonitor);
 
 				//post process model output
-				AbstractAtom modelOutputAtom = modelOutput.getOutputAtom();
+				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
 				String modelOutputName = getName() + "OutputId" + modelInput.getId();
 				modelOutputAtom.setName(modelOutputName);
 				sweepOutputAtom.addChild(modelOutputAtom);
@@ -250,7 +250,7 @@ public class Sweep extends AbstractParameterVariation {
 		List<String> inactiveVariables = new ArrayList<>();
 		for (AbstractVariableRange<?> variableRange : variableRanges) {
 			String variableModelPath = variableRange.getSourceVariableModelPath();
-			VariableField<?> variableField;
+			VariableField<?,?> variableField;
 			try {
 				variableField = this.getChildFromRoot(variableModelPath);
 			} catch (IllegalArgumentException exception) {
@@ -330,7 +330,7 @@ public class Sweep extends AbstractParameterVariation {
 		boolean sweepOutputAtomExists = this.rootHasChild(sweepPutputAtomPath);
 		if (!sweepOutputAtomExists) {
 			OutputAtom sweepOutputAtom = new OutputAtom(sweepOutputAtomName, provideImage());
-			AbstractAtom data = this.getChildFromRoot(dataAtomPath);
+			AbstractAtom<?> data = this.getChildFromRoot(dataAtomPath);
 			data.addChild(sweepOutputAtom);
 			LOG.info("Created " + sweepPutputAtomPath + " for sweep output.");
 		}

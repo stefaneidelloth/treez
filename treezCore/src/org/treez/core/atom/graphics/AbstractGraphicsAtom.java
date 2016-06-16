@@ -16,9 +16,9 @@ import org.treez.javafxd3.d3.functions.MouseClickFunction;
  * Parent class for the atoms that are used for plotting with javafx-d3. It contains some helper methods that make it
  * easier to bind atom attributes to d3 properties.
  */
-public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
+public abstract class AbstractGraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 
-	private static final Logger LOG = Logger.getLogger(GraphicsAtom.class);
+	private static final Logger LOG = Logger.getLogger(AbstractGraphicsAtom.class);
 
 	//#region ATTRIBUTES
 
@@ -26,7 +26,7 @@ public class GraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 
 	//#region CONSTRUCTORS
 
-	public GraphicsAtom(String name) {
+	public AbstractGraphicsAtom(String name) {
 		super(name);
 	}
 

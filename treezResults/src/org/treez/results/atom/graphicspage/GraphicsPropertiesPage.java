@@ -6,7 +6,7 @@ import java.util.List;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.scripting.ScriptType;
 import org.treez.javafxd3.d3.D3;
@@ -15,7 +15,7 @@ import org.treez.javafxd3.d3.core.Selection;
 /**
  * Represents a single properties page that is shown as a tab in the properties of a graphics atom
  */
-public abstract class GraphicsPropertiesPage extends GraphicsAtom {
+public abstract class GraphicsPropertiesPage extends AbstractGraphicsAtom {
 
 	//#region ATTRIBUTES
 

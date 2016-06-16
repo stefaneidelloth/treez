@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -43,68 +43,68 @@ public class Line implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page linePage = root.createPage("line", "   Line    ");
 
 		Section left = linePage.createSection("left");
 
-		left.createColorChooser(leftColor, "color", "black");
+		left.createColorChooser(leftColor, this, "black").setLabel("Color");
 
-		left.createTextField(leftWidth, "width", "3");
+		left.createTextField(leftWidth, this, "3").setLabel("width");
 
-		left.createLineStyle(leftStyle, "style", "solid");
+		left.createLineStyle(leftStyle, this, "solid").setLabel("Style");
 
 		left.createDoubleVariableField(leftTransparency, this, 0.0);
 
-		left.createCheckBox(leftHide, "hide", true);
+		left.createCheckBox(leftHide, this, true).setLabel("Hide");
 
 		Section right = linePage.createSection("right");
 
-		right.createColorChooser(rightColor, "color", "black");
+		right.createColorChooser(rightColor, this, "black").setLabel("Color");
 
-		right.createTextField(rightWidth, "width", "3");
+		right.createTextField(rightWidth, this, "3").setLabel("width");
 
-		right.createLineStyle(rightStyle, "style", "solid");
+		right.createLineStyle(rightStyle, this, "solid").setLabel("Style");
 
 		right.createDoubleVariableField(rightTransparency, this, 0.0);
 
-		right.createCheckBox(rightHide, "hide", true);
+		right.createCheckBox(rightHide, this, true).setLabel("Hide");
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		Selection rectsLeftSelection = barSelection //
 				.select(".bar-rects-left") //
 				.selectAll("rect");
 
-		GraphicsAtom.bindStringAttribute(rectsLeftSelection, "stroke", leftColor);
-		GraphicsAtom.bindStringAttribute(rectsLeftSelection, "stroke-width", leftWidth);
-		GraphicsAtom.bindLineStyle(rectsLeftSelection, leftStyle);
-		GraphicsAtom.bindLineTransparency(rectsLeftSelection, leftTransparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(rectsLeftSelection, leftHide, leftTransparency);
+		AbstractGraphicsAtom.bindStringAttribute(rectsLeftSelection, "stroke", leftColor);
+		AbstractGraphicsAtom.bindStringAttribute(rectsLeftSelection, "stroke-width", leftWidth);
+		AbstractGraphicsAtom.bindLineStyle(rectsLeftSelection, leftStyle);
+		AbstractGraphicsAtom.bindLineTransparency(rectsLeftSelection, leftTransparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(rectsLeftSelection, leftHide, leftTransparency);
 
 		Selection rectsRightSelection = barSelection //
 				.select(".bar-rects-right") //
 				.selectAll("rect");
 
-		GraphicsAtom.bindStringAttribute(rectsRightSelection, "stroke", rightColor);
-		GraphicsAtom.bindStringAttribute(rectsRightSelection, "stroke-width", rightWidth);
-		GraphicsAtom.bindLineStyle(rectsRightSelection, rightStyle);
-		GraphicsAtom.bindLineTransparency(rectsRightSelection, rightTransparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(rectsRightSelection, rightHide, rightTransparency);
+		AbstractGraphicsAtom.bindStringAttribute(rectsRightSelection, "stroke", rightColor);
+		AbstractGraphicsAtom.bindStringAttribute(rectsRightSelection, "stroke-width", rightWidth);
+		AbstractGraphicsAtom.bindLineStyle(rectsRightSelection, rightStyle);
+		AbstractGraphicsAtom.bindLineTransparency(rectsRightSelection, rightTransparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(rectsRightSelection, rightHide, rightTransparency);
 
 		return barSelection;
 	}
 
 	public Selection formatLegendSymbolLine(Selection symbolSelection, Refreshable refreshable) {
 
-		GraphicsAtom.bindStringAttribute(symbolSelection, "stroke", leftColor);
-		GraphicsAtom.bindStringAttribute(symbolSelection, "stroke-width", leftWidth);
-		GraphicsAtom.bindLineStyle(symbolSelection, leftStyle);
-		GraphicsAtom.bindLineTransparency(symbolSelection, leftTransparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(symbolSelection, leftHide, leftTransparency);
+		AbstractGraphicsAtom.bindStringAttribute(symbolSelection, "stroke", leftColor);
+		AbstractGraphicsAtom.bindStringAttribute(symbolSelection, "stroke-width", leftWidth);
+		AbstractGraphicsAtom.bindLineStyle(symbolSelection, leftStyle);
+		AbstractGraphicsAtom.bindLineTransparency(symbolSelection, leftTransparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(symbolSelection, leftHide, leftTransparency);
 
 		Consumer replotLegend = () -> refreshable.refresh();
 		leftWidth.addModificationConsumer("lineWidthLegendSymbol", replotLegend);

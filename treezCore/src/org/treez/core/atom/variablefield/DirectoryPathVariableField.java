@@ -1,14 +1,16 @@
 package org.treez.core.atom.variablefield;
 
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.DirectoryPath;
-import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
-public class DirectoryPathVariableField extends DirectoryPath implements VariableField<String> {
+public class DirectoryPathVariableField extends DirectoryPath
+		implements
+		VariableField<DirectoryPathVariableField, String> {
 
 	//#region CONSTRUCTORS
 
@@ -28,18 +30,16 @@ public class DirectoryPathVariableField extends DirectoryPath implements Variabl
 
 	//#region METHODS
 
-	//#region COPY
+	@Override
+	public DirectoryPathVariableField getThis() {
+		return this;
+	}
 
 	@Override
 	public DirectoryPathVariableField copy() {
 		return new DirectoryPathVariableField(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		Image baseImage = Activator.getImage("directoryPathVariable.png");
@@ -53,7 +53,7 @@ public class DirectoryPathVariableField extends DirectoryPath implements Variabl
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public DirectoryPathVariableField createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
@@ -64,8 +64,7 @@ public class DirectoryPathVariableField extends DirectoryPath implements Variabl
 	}
 
 	@Override
-	public AbstractVariableListField<String> createVariableListField() {
-
+	public AbstractVariableListField<?, String> createVariableListField() {
 		throw new IllegalStateException("Not yet implemented");
 	}
 
@@ -74,14 +73,33 @@ public class DirectoryPathVariableField extends DirectoryPath implements Variabl
 	//#region ACCESSORS
 
 	@Override
+	public DirectoryPathVariableField setEnabled(boolean state) {
+		super.setEnabled(state);
+		return getThis();
+	}
+
+	@Override
+	public DirectoryPathVariableField setLabel(String label) {
+		super.setLabel(label);
+		return getThis();
+	}
+
+	@Override
 	public String getValueString() {
 		String value = this.get();
 		return value;
 	}
 
 	@Override
-	public void setValueString(String valueString) {
+	public DirectoryPathVariableField setValueString(String valueString) {
 		this.set(valueString);
+		return getThis();
+	}
+
+	@Override
+	public DirectoryPathVariableField setBackgroundColor(Color color) {
+		super.setBackgroundColor(color);
+		return getThis();
 	}
 
 	//#end region

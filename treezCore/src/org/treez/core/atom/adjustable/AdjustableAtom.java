@@ -23,21 +23,20 @@ import org.treez.core.treeview.action.ActionSeparator;
 import org.treez.core.treeview.action.TreeViewerAction;
 
 /**
- * An implementation of the AbstractAtom which is defined by an underlying model
- * tree. See the package description for more information.
+ * An implementation of the AbstractAtom<?> which is defined by an underlying model tree. See the package description for
+ * more information.
  */
-public class AdjustableAtom extends AbstractUiSynchronizingAtom {
+public class AdjustableAtom extends AbstractUiSynchronizingAtom<AdjustableAtom> {
 
 	//#region ATTRIBUTES
 
 	/**
-	 * This AbstractAtom represents the model of this AdjustableAtom
+	 * This AbstractAtom<?> represents the model of this AdjustableAtom
 	 */
-	private AbstractAtom model = null;
+	private AbstractAtom<?> model = null;
 
 	/**
-	 * Specifies if this AdjustableAtom should show a run button in the context
-	 * menu
+	 * Specifies if this AdjustableAtom should show a run button in the context menu
 	 */
 	private Boolean runnable = false;
 
@@ -75,20 +74,19 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 
 	//#region METHODS
 
-	//#region COPY
-
-	/**
-	 * Overrides the copy method of AbstractAtom using the copy constructor of
-	 * this atom
-	 */
 	@Override
-	public AbstractAtom copy() {
+	public AdjustableAtom getThis() {
+		return this;
+	}
+
+	@Override
+	public AbstractAtom<AdjustableAtom> copy() {
 		return new AdjustableAtom(this);
 	}
 
-	//#end region
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent,
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
 			FocusChangingRefreshable treeViewRefreshable) {
 
 		//store refreshable tree view
@@ -108,7 +106,9 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 			contentContainer.setLayout(new FillLayout());
 
 			AdjustableAtomControlAdaption newControlAdaption = new AdjustableAtomControlAdaption(
-					contentContainer, this, treeViewRefreshable);
+					contentContainer,
+					this,
+					treeViewRefreshable);
 
 			contentContainer.layout();
 			afterCreateControlAdaptionHook();
@@ -116,16 +116,14 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 			controlAdaptionWrapper.setValue(newControlAdaption);
 		};
 		runUiJobBlocking(createControlAdaptionRunnable);
-		AdjustableAtomControlAdaption controlAdaption = controlAdaptionWrapper
-				.getValue();
+		AdjustableAtomControlAdaption controlAdaption = controlAdaptionWrapper.getValue();
 
 		return controlAdaption;
 	}
 
 	/**
-	 * Method that might perform some additional actions after creating the
-	 * control adaption. Can be overridden by inheriting classes. This default
-	 * implementation does nothing.
+	 * Method that might perform some additional actions after creating the control adaption. Can be overridden by
+	 * inheriting classes. This default implementation does nothing.
 	 */
 	protected void afterCreateControlAdaptionHook() {
 		//nothing to do here
@@ -139,13 +137,12 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 
 		CodeAdaption codeAdaption;
 		switch (scriptType) {
-			case JAVA :
-				codeAdaption = new AdjustableAtomCodeAdaption(this);
-				break;
-			default :
-				String message = "The ScriptType " + scriptType
-						+ " is not known.";
-				throw new IllegalStateException(message);
+		case JAVA:
+			codeAdaption = new AdjustableAtomCodeAdaption(this);
+			break;
+		default:
+			String message = "The ScriptType " + scriptType + " is not known.";
+			throw new IllegalStateException(message);
 		}
 		return codeAdaption;
 	}
@@ -162,8 +159,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 	 * Creates the context menu actions
 	 */
 	@Override
-	protected List<Object> createContextMenuActions(
-			final TreeViewerRefreshable treeViewerRefreshable) {
+	protected List<Object> createContextMenuActions(final TreeViewerRefreshable treeViewerRefreshable) {
 
 		List<Object> actions = new ArrayList<>();
 
@@ -171,8 +167,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 		if (isRunnable()) {
 			Image image = Activator.getImage("run.png");
 			actions.add(
-					new TreeViewerAction("Run", image, treeViewerRefreshable,
-							() -> execute(treeViewerRefreshable)));
+					new TreeViewerAction("Run", image, treeViewerRefreshable, () -> execute(treeViewerRefreshable)));
 		}
 
 		//add separator
@@ -186,22 +181,21 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 		//add separator
 		actions.add(new ActionSeparator());
 
-		List<Object> superActions = super.createContextMenuActions(
-				treeViewerRefreshable);
+		List<Object> superActions = super.createContextMenuActions(treeViewerRefreshable);
 		actions.addAll(superActions);
 
 		return actions;
 	}
 
 	/**
-	 * Adds additional actions to the context menu. Might be overridden by
-	 * deriving classes.
+	 * Adds additional actions to the context menu. Might be overridden by deriving classes.
 	 *
 	 * @param actions
 	 * @param treeViewer
 	 * @return
 	 */
-	protected List<Object> extendContextMenuActions(List<Object> actions,
+	protected List<Object> extendContextMenuActions(
+			List<Object> actions,
 			@SuppressWarnings("unused") TreeViewerRefreshable treeViewerRefreshable) {
 		return actions;
 	}
@@ -216,8 +210,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 	}
 
 	/**
-	 * Get a model attribute from the model that is identified by the given
-	 * model attribute path
+	 * Get a model attribute from the model that is identified by the given model attribute path
 	 *
 	 * @param <T>
 	 * @param modelAttributePath
@@ -227,16 +220,14 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 	public <T> T getAttribute(String modelAttributePath) {
 
 		final int rootPrefixLength = 5;
-		boolean pathStartsWithRoot = modelAttributePath
-				.substring(0, rootPrefixLength).equals("root.");
+		boolean pathStartsWithRoot = modelAttributePath.substring(0, rootPrefixLength).equals("root.");
 
 		if (pathStartsWithRoot) {
-			String remainingAttributePath = modelAttributePath
-					.substring(rootPrefixLength, modelAttributePath.length());
+			String remainingAttributePath = modelAttributePath.substring(rootPrefixLength, modelAttributePath.length());
 
-			AbstractAtom root = getModel();
-			AbstractAtom atom = root.getChild(remainingAttributePath);
-			AbstractAttributeAtom<?> attributeAtom = (AbstractAttributeAtom<?>) atom;
+			AbstractAtom<?> root = getModel();
+			AbstractAtom<?> atom = root.getChild(remainingAttributePath);
+			AbstractAttributeAtom<?, ?> attributeAtom = (AbstractAttributeAtom<?, ?>) atom;
 			Object attribute = attributeAtom.get();
 
 			if (attribute != null) {
@@ -247,33 +238,30 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 					T result = (T) attribute;
 					return result;
 				} catch (ClassCastException exception) {
-					throw new IllegalArgumentException("Could not cast from '"
-							+ attribute.getClass().getSimpleName()
-							+ "' to the wanted generic return type.");
+					throw new IllegalArgumentException(
+							"Could not cast from '" + attribute.getClass().getSimpleName()
+									+ "' to the wanted generic return type.");
 				}
 			} else {
 				throw new IllegalArgumentException(
-						"The attribute path '" + remainingAttributePath
-								+ "' resulted in a null value.");
+						"The attribute path '" + remainingAttributePath + "' resulted in a null value.");
 			}
 
 		} else {
-			throw new IllegalArgumentException(
-					"The model path has to start with 'root.' ");
+			throw new IllegalArgumentException("The model path has to start with 'root.' ");
 		}
 
 	}
 
 	/**
-	 * Set the value for the attribute with the given attribute path and string
-	 * value. The path can be relative or absolute (=starting with "root").
+	 * Set the value for the attribute with the given attribute path and string value. The path can be relative or
+	 * absolute (=starting with "root").
 	 *
 	 * @param modelAttributePath
 	 * @param value
 	 */
 	public void setAttribute(String modelAttributePath, String value) {
-		AbstractAttributeAtom<String> propertyAtom = getAttributeAtom(
-				modelAttributePath);
+		AbstractAttributeAtom<?, String> propertyAtom = getAttributeAtom(modelAttributePath);
 		propertyAtom.set(value);
 	}
 
@@ -284,16 +272,13 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 	 * @param modelAttributePath
 	 * @return
 	 */
-	public <T extends AbstractAttributeAtom<?>> T getAttributeAtom(
-			String modelAttributePath) {
+	public <T extends AbstractAttributeAtom<?, ?>> T getAttributeAtom(String modelAttributePath) {
 
 		final int rootPrefixLength = 5;
-		boolean pathStartsWithRoot = modelAttributePath
-				.substring(0, rootPrefixLength).equals("root.");
+		boolean pathStartsWithRoot = modelAttributePath.substring(0, rootPrefixLength).equals("root.");
 
 		if (pathStartsWithRoot) {
-			String remainingAttributePath = modelAttributePath
-					.substring(rootPrefixLength, modelAttributePath.length());
+			String remainingAttributePath = modelAttributePath.substring(rootPrefixLength, modelAttributePath.length());
 
 			//initialize model if required
 			boolean modelIsInitialized = model != null;
@@ -303,7 +288,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 			}
 
 			if (model != null) {
-				AbstractAtom child = model.getChild(remainingAttributePath);
+				AbstractAtom<?> child = model.getChild(remainingAttributePath);
 				@SuppressWarnings("unchecked")
 				T attributeAtom = (T) child;
 				return attributeAtom;
@@ -314,8 +299,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 			}
 
 		} else {
-			throw new IllegalArgumentException(
-					"The model path has to start with 'root.' ");
+			throw new IllegalArgumentException("The model path has to start with 'root.' ");
 		}
 	}
 
@@ -323,8 +307,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 	 * Initializes the model
 	 */
 	private void initializeModel() {
-		Composite dummyParent = new Composite(
-				Display.getCurrent().getActiveShell(), SWT.NULL);
+		Composite dummyParent = new Composite(Display.getCurrent().getActiveShell(), SWT.NULL);
 		this.createControlAdaption(dummyParent, null);
 	}
 
@@ -332,11 +315,11 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 
 	//#region ACCESSORS
 
-	public AbstractAtom getModel() {
+	public AbstractAtom<?> getModel() {
 		return model;
 	}
 
-	public void setModel(AbstractAtom model) {
+	public void setModel(AbstractAtom<?> model) {
 		this.model = model;
 	}
 
@@ -345,9 +328,8 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom {
 	}
 
 	/**
-	 * Set runnable to true: a run action will be shown in the context menu. You
-	 * might also want to add a run button at the header of the section in the
-	 * control adaption.
+	 * Set runnable to true: a run action will be shown in the context menu. You might also want to add a run button at
+	 * the header of the section in the control adaption.
 	 */
 	public void setRunnable() {
 		this.runnable = true;

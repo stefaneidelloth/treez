@@ -24,7 +24,7 @@ import org.treez.core.treeview.action.TreeViewerAction;
 /**
  * Represents a single action that can be performed from within a section
  */
-public class SectionAction extends AbstractAttributeContainerAtom {
+public class SectionAction extends AbstractAttributeContainerAtom<SectionAction> {
 
 	private static final Logger LOG = Logger.getLogger(SectionAction.class);
 
@@ -83,8 +83,7 @@ public class SectionAction extends AbstractAttributeContainerAtom {
 		this.image = Activator.getImage("run.png");
 	}
 
-	public SectionAction(String name, String description, Runnable runnable,
-			Image image) {
+	public SectionAction(String name, String description, Runnable runnable, Image image) {
 		super(name);
 		this.name = name;
 		this.description = description;
@@ -108,6 +107,11 @@ public class SectionAction extends AbstractAttributeContainerAtom {
 	//#region METHODS
 
 	@Override
+	public SectionAction getThis() {
+		return this;
+	}
+
+	@Override
 	public SectionAction copy() {
 		return new SectionAction(this);
 	}
@@ -118,36 +122,34 @@ public class SectionAction extends AbstractAttributeContainerAtom {
 	}
 
 	@Override
-	protected ArrayList<Object> createContextMenuActions(
-			final TreeViewerRefreshable treeViewer) {
+	protected ArrayList<Object> createContextMenuActions(final TreeViewerRefreshable treeViewer) {
 		ArrayList<Object> actions = new ArrayList<>();
 
 		//delete
-		actions.add(new TreeViewerAction("Delete",
-				Activator.getImage(ISharedImages.IMG_TOOL_DELETE), treeViewer,
+		actions.add(new TreeViewerAction(
+				"Delete",
+				Activator.getImage(ISharedImages.IMG_TOOL_DELETE),
+				treeViewer,
 				() -> createTreeNodeAdaption().delete()));
 
 		return actions;
 	}
 
 	@Override
-	public void createAtomControl(Composite sectionClient,
-			FocusChangingRefreshable treeViewerRefreshable) {
+	public void createAtomControl(Composite sectionClient, FocusChangingRefreshable treeViewerRefreshable) {
 
 		//toolkit
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
 		//action button
-		org.eclipse.ui.forms.widgets.Section section = (org.eclipse.ui.forms.widgets.Section) sectionClient
-				.getParent();
+		org.eclipse.ui.forms.widgets.Section section = (org.eclipse.ui.forms.widgets.Section) sectionClient.getParent();
 		Composite toolbar = (Composite) section.getTextClient();
 
 		//check if action already exist in tool bar
 		boolean alreadyExists = checkIfActionAlreadyExists(toolbar);
 		if (!alreadyExists) {
 
-			ImageHyperlink actionLink = toolkit.createImageHyperlink(toolbar,
-					SWT.NULL);
+			ImageHyperlink actionLink = toolkit.createImageHyperlink(toolbar, SWT.NULL);
 			actionLink.setData(getName());
 			actionLink.setImage(provideImage());
 			actionLink.setToolTipText(getDescription());
@@ -202,8 +204,14 @@ public class SectionAction extends AbstractAttributeContainerAtom {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public SectionAction setDescription(String description) {
 		this.description = description;
+		return getThis();
+	}
+
+	@Override
+	public SectionAction setEnabled(boolean enable) {
+		throw new IllegalStateException("not yet implemented");
 	}
 
 	//#end region

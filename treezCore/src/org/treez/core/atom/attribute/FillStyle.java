@@ -21,7 +21,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Allows the user to choose a fill style
  */
-public class FillStyle extends AbstractStringAttributeAtom {
+public class FillStyle extends AbstractStringAttributeAtom<FillStyle> {
 
 	//#region ATTRIBUTES
 
@@ -85,19 +85,10 @@ public class FillStyle extends AbstractStringAttributeAtom {
 
 	//#region METHODS
 
-	/*
 	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key, (event) -> {
-			if (event.data == null) {
-				consumer.accept(null);
-			} else {
-				String data = event.data.toString();
-				consumer.accept(data);
-			}
-
-		});
-	}*/
+	public FillStyle getThis() {
+		return this;
+	}
 
 	@Override
 	public FillStyle copy() {
@@ -110,7 +101,7 @@ public class FillStyle extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<FillStyle> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -200,7 +191,7 @@ public class FillStyle extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public FillStyle setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -213,8 +204,9 @@ public class FillStyle extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public FillStyle setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -222,8 +214,9 @@ public class FillStyle extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public FillStyle setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		return getThis();
 	}
 
 	public void setDefaultValue(FillStyleValue style) {
@@ -234,8 +227,9 @@ public class FillStyle extends AbstractStringAttributeAtom {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public FillStyle setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	@Override

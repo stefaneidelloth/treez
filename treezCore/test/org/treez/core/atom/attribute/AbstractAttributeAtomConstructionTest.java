@@ -26,15 +26,14 @@ import org.treez.testutils.TestUtils;
  */
 public abstract class AbstractAttributeAtomConstructionTest<T> {
 
-	private static final Logger LOG = Logger
-			.getLogger(AbstractAttributeAtomConstructionTest.class);
+	private static final Logger LOG = Logger.getLogger(AbstractAttributeAtomConstructionTest.class);
 
 	//#region ATTRIBUTES
 
 	/**
 	 * The atom to test
 	 */
-	protected AbstractAttributeAtom<T> atom;
+	protected AbstractAttributeAtom<?, T> atom;
 
 	/**
 	 * The name of atom to test
@@ -83,31 +82,25 @@ public abstract class AbstractAttributeAtomConstructionTest<T> {
 
 		//get ant show control
 		Composite controlComposite = previewWindow.getControlComposite();
-		AbstractControlAdaption controlAdaption = atom
-				.createControlAdaption(controlComposite, null);
+		AbstractControlAdaption controlAdaption = atom.createControlAdaption(controlComposite, null);
 
 		//get and show AttributeAtom control
-		Composite parameterControlComposite = previewWindow
-				.getAttributeControlComposite();
+		Composite parameterControlComposite = previewWindow.getAttributeControlComposite();
 		atom.createAttributeAtomControl(parameterControlComposite, null);
 
 		//get and show CAD adaption
 		Composite graphicsComposite = previewWindow.getGraphicsComposite();
-		GraphicsAdaption graphicsAdaption = atom
-				.createGraphicsAdaption(graphicsComposite);
+		GraphicsAdaption graphicsAdaption = atom.createGraphicsAdaption(graphicsComposite);
 
 		//get and show code
 		CodeAdaption codeAdaption = atom.createCodeAdaption(ScriptType.JAVA);
 
 		CodeContainer codeContainer = new CodeContainer(ScriptType.JAVA);
-		Optional<CodeContainer> injectedChildContainer = Optional
-				.ofNullable(null);
+		Optional<CodeContainer> injectedChildContainer = Optional.ofNullable(null);
 
 		String code = "#Error#";
 		try {
-			code = codeAdaption
-					.buildCodeContainer(codeContainer, injectedChildContainer)
-					.buildCode();
+			code = codeAdaption.buildCodeContainer(codeContainer, injectedChildContainer).buildCode();
 		} catch (IllegalStateException exception) {
 			String message = "Could not build code";
 			LOG.error(message, exception);
@@ -121,8 +114,7 @@ public abstract class AbstractAttributeAtomConstructionTest<T> {
 		performAdditionalTests(previewWindow);
 
 		//check obtained objects
-		checkOptainedObjects(name, atomImage, controlAdaption, graphicsAdaption,
-				codeAdaption, treeNodeAdaption);
+		checkOptainedObjects(name, atomImage, controlAdaption, graphicsAdaption, codeAdaption, treeNodeAdaption);
 
 		//show preview window
 		previewWindow.showUntilManuallyClosed();
@@ -140,9 +132,12 @@ public abstract class AbstractAttributeAtomConstructionTest<T> {
 		//empty implementation
 	}
 
-	private void checkOptainedObjects(String name, Image atomImage,
+	private void checkOptainedObjects(
+			String name,
+			Image atomImage,
 			AbstractControlAdaption controlAdaption,
-			GraphicsAdaption graphicsAdaption, CodeAdaption codeAdaption,
+			GraphicsAdaption graphicsAdaption,
+			CodeAdaption codeAdaption,
 			TreeNodeAdaption treeNodeAdaption) {
 
 		//name
@@ -155,14 +150,11 @@ public abstract class AbstractAttributeAtomConstructionTest<T> {
 		assertEquals("adaptable", atom, codeAdaption.getAdaptable());
 
 		CodeContainer codeContainer = new CodeContainer(ScriptType.JAVA);
-		Optional<CodeContainer> injectedChildContainer = Optional
-				.ofNullable(null);
+		Optional<CodeContainer> injectedChildContainer = Optional.ofNullable(null);
 
 		String code = "#Error#";
 		try {
-			code = codeAdaption
-					.buildCodeContainer(codeContainer, injectedChildContainer)
-					.buildCode();
+			code = codeAdaption.buildCodeContainer(codeContainer, injectedChildContainer).buildCode();
 		} catch (IllegalStateException exception) {
 			String message = "Could not build code";
 			LOG.error(message, exception);
@@ -176,8 +168,7 @@ public abstract class AbstractAttributeAtomConstructionTest<T> {
 		TreeNodeAdaption parent = treeNodeAdaption.getParent();
 		assertEquals("parent", null, parent);
 		Image nodeImage = treeNodeAdaption.getImage();
-		assertEquals("image", atomImage.getBackground(),
-				nodeImage.getBackground());
+		assertEquals("image", atomImage.getBackground(), nodeImage.getBackground());
 		assertEquals("label", atomName, treeNodeAdaption.getLabel());
 		assertEquals("tree path", atomName, treeNodeAdaption.getTreePath());
 

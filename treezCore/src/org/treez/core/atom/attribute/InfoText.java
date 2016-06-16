@@ -19,7 +19,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Shows a non editable info text
  */
-public class InfoText extends AbstractStringAttributeAtom {
+public class InfoText extends AbstractStringAttributeAtom<InfoText> {
 
 	private static final Logger LOG = Logger.getLogger(InfoText.class);
 
@@ -60,6 +60,11 @@ public class InfoText extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public InfoText getThis() {
+		return this;
+	}
+
+	@Override
 	public InfoText copy() {
 		return new InfoText(this);
 	}
@@ -71,7 +76,7 @@ public class InfoText extends AbstractStringAttributeAtom {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<InfoText> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -111,10 +116,11 @@ public class InfoText extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public InfoText setEnabled(boolean state) {
 		if (isAvailable(labelField)) {
 			labelField.setEnabled(state);
 		}
+		return getThis();
 	}
 
 	@Override
@@ -133,7 +139,7 @@ public class InfoText extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public InfoText setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -166,8 +172,9 @@ public class InfoText extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public InfoText setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -175,16 +182,18 @@ public class InfoText extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public InfoText setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	void setTooltip(String tooltip) {
+	public InfoText setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	//#end region

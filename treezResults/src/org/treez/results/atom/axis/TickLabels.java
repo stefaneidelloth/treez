@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
@@ -44,45 +44,45 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<Boolean> hide = new Wrap<>();
 
-	private Double tickLabelHeight = null;
+	private Double tickLabelHeight = 0.0;
 
-	private Double tickLabelWidth = null;
+	private Double tickLabelWidth = 0.0;
 
 	//#end region
 
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page axisLabelPage = root.createPage("tickLabels", "   Tick labels   ");
 
 		Section tickLabels = axisLabelPage.createSection("tickLabels", "Tick labels");
 
-		tickLabels.createFont(font, "font");
+		tickLabels.createFont(font, this);
 
-		tickLabels.createTextField(size, "size", "20");
+		tickLabels.createTextField(size, this, "20");
 
-		tickLabels.createColorChooser(color, "color", "black");
+		tickLabels.createColorChooser(color, this, "black");
 
-		tickLabels.createTextField(format, "format", "");
+		tickLabels.createTextField(format, this, "");
 
-		tickLabels.createCheckBox(italic, "italic");
+		tickLabels.createCheckBox(italic, this);
 
-		tickLabels.createCheckBox(bold, "bold");
+		tickLabels.createCheckBox(bold, this);
 
-		tickLabels.createCheckBox(underline, "underline");
+		tickLabels.createCheckBox(underline, this);
 
-		tickLabels.createCheckBox(hide, "hide");
+		tickLabels.createCheckBox(hide, this);
 
-		tickLabels.createComboBox(rotate, "rotate", "-180,-135,-90,-45,0,45,90,135,180", "0");
+		tickLabels.createComboBox(rotate, this, "-180,-135,-90,-45,0,45,90,135,180", "0");
 
-		tickLabels.createTextField(offset, "offset", "4");
+		tickLabels.createTextField(offset, this, "4");
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		//Hint: The major ticks already have been created with the axis (see Data).
 		//Here only the properties of the tick labels need to be applied.
@@ -109,13 +109,13 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 		geometryConsumer.consume();
 
 		//bind attributes
-		GraphicsAtom.bindStringAttribute(tickLabels, "font-family", font);
-		GraphicsAtom.bindStringAttribute(tickLabels, "font-size", size);
-		GraphicsAtom.bindStringAttribute(tickLabels, "fill", color);
-		GraphicsAtom.bindFontItalicStyle(tickLabels, italic);
-		GraphicsAtom.bindFontBoldStyle(tickLabels, bold);
-		GraphicsAtom.bindFontUnderline(tickLabels, underline);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(tickLabels, hide);
+		AbstractGraphicsAtom.bindStringAttribute(tickLabels, "font-family", font);
+		AbstractGraphicsAtom.bindStringAttribute(tickLabels, "font-size", size);
+		AbstractGraphicsAtom.bindStringAttribute(tickLabels, "fill", color);
+		AbstractGraphicsAtom.bindFontItalicStyle(tickLabels, italic);
+		AbstractGraphicsAtom.bindFontBoldStyle(tickLabels, bold);
+		AbstractGraphicsAtom.bindFontUnderline(tickLabels, underline);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(tickLabels, hide);
 
 		format.addModificationConsumer("replotAxis", () -> axis.updatePlotWithD3(d3));
 
@@ -144,11 +144,14 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 		} else {
 
 			Element firstNode = tickLabels.node();
-			Element tickNode = firstNode.getParentElement();
-			BoundingBox boundingBox = tickNode.getBBox();
-			tickLabelWidth = boundingBox.getWidth();
-			double deltaX = -boundingBox.getMaxX();
-			x += deltaX - tickOffset;
+			if (firstNode != null) {
+				Element tickNode = firstNode.getParentElement();
+				BoundingBox boundingBox = tickNode.getBBox();
+				tickLabelWidth = boundingBox.getWidth();
+				double deltaX = -boundingBox.getMaxX();
+				x += deltaX - tickOffset;
+			}
+
 		}
 
 		applyTransformation(tickLabels, x, y, rotation);
@@ -161,7 +164,7 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 		String fontName = font.get();
 		String fontSizeString = size.get();
 		int fontSize = (int) Double.parseDouble(fontSizeString);
-		double awtTextHeight = GraphicsAtom.estimateTextHeight(fontName, fontSize);
+		double awtTextHeight = AbstractGraphicsAtom.estimateTextHeight(fontName, fontSize);
 
 		double height = Math.max(svgTickLabelHeight, awtTextHeight);
 		return height;

@@ -7,9 +7,7 @@ import org.treez.core.atom.attribute.base.AttributeAtomCodeAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.utils.Utils;
 
-public class IntegerVariableListFieldCodeAdaption
-		extends
-			AttributeAtomCodeAdaption<List<Integer>> {
+public class IntegerVariableListFieldCodeAdaption extends AttributeAtomCodeAdaption<List<Integer>> {
 
 	//#region CONSTRUCTORS
 
@@ -23,7 +21,8 @@ public class IntegerVariableListFieldCodeAdaption
 
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
-			AbstractAtom parentAtom, CodeContainer parentContainer) {
+			AbstractAtom<?> parentAtom,
+			CodeContainer parentContainer) {
 
 		CodeContainer extendedContainer = parentContainer;
 
@@ -37,11 +36,9 @@ public class IntegerVariableListFieldCodeAdaption
 
 			String valueString = variableListField.getValueString();
 			if (valueString != null) {
-				String setterName = "set"
-						+ Utils.firstToUpperCase(attributeName) + "ValueString";
+				String setterName = "set" + Utils.firstToUpperCase(attributeName) + "ValueString";
 				checkIfSetterExists(parentAtom, setterName, String.class);
-				extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "."
-						+ setterName + "(\"" + valueString + "\");");
+				extendedContainer.extendBulk("\t\t" + VARIABLE_NAME + "." + setterName + "(\"" + valueString + "\");");
 			}
 
 			return extendedContainer;

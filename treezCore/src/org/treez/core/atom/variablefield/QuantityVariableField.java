@@ -16,9 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
-import org.treez.core.atom.variablelist.AbstractVariableListField;
 import org.treez.core.atom.variablelist.QuantityVariableListField;
 import org.treez.core.quantity.Quantity;
 import org.treez.core.swt.CustomLabel;
@@ -26,7 +24,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Represents a model variable (-text field)
  */
-public class QuantityVariableField extends AbstractVariableField<Quantity> {
+public class QuantityVariableField extends AbstractVariableField<QuantityVariableField, Quantity> {
 
 	//#region ATTRIBUTES
 
@@ -66,6 +64,11 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	//#region METHODS
 
 	@Override
+	protected QuantityVariableField getThis() {
+		return this;
+	}
+
+	@Override
 	public QuantityVariableField copy() {
 		return new QuantityVariableField(this);
 	}
@@ -77,7 +80,7 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	}
 
 	@Override
-	public AbstractAttributeAtom<Quantity> createAttributeAtomControl(
+	public QuantityVariableField createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
@@ -245,7 +248,7 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public QuantityVariableField setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(valueField)) {
 			valueField.setEnabled(state);
@@ -258,6 +261,7 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 			treeViewRefreshable.refresh();
 		}
 		refreshAttributeAtomControl();
+		return getThis();
 	}
 
 	@Override
@@ -294,12 +298,13 @@ public class QuantityVariableField extends AbstractVariableField<Quantity> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public QuantityVariableField setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
+		return getThis();
 	}
 
 	@Override
-	public AbstractVariableListField<Quantity> createVariableListField() {
+	public QuantityVariableListField createVariableListField() {
 
 		QuantityVariableListField listField = new QuantityVariableListField(name);
 		List<Quantity> valueList = new ArrayList<>();

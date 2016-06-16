@@ -25,6 +25,11 @@ public class FilePathList extends StringList {
 
 	//#region METHODS
 
+	@Override
+	public FilePathList getThis() {
+		return this;
+	}
+
 	/**
 	 * Creates a treez list that contains Strings/text
 	 */

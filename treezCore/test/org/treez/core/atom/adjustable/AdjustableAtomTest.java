@@ -21,7 +21,7 @@ public class AdjustableAtomTest extends AbstractAbstractAtomTest {
 	public void createTestAtom() {
 
 		//create model for adjustable atom
-		AbstractAtom model = new AttributeRoot("root");
+		AbstractAtom<?> model = new AttributeRoot("root");
 		Page page = new Page("properties");
 		model.addChild(page);
 		Section section = new Section("section");
@@ -31,10 +31,10 @@ public class AdjustableAtomTest extends AbstractAbstractAtomTest {
 		section.addChild(text);
 
 		//create test atom
-		AdjustableAtom adjustableAtom = new AdjustableAtom(atomName);
-		adjustableAtom.setModel(model);
-		adjustableAtom.setRunnable();
-		atom = adjustableAtom;
+		//AbstractAdjustableAtom<?> adjustableAtom = new AbstractAdjustableAtom(atomName);
+		//adjustableAtom.setModel(model);
+		//adjustableAtom.setRunnable();
+		//atom = adjustableAtom;
 
 	}
 

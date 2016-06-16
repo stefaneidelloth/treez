@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -44,30 +44,30 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page minorTicksPage = root.createPage("minorTicks", "   Minor ticks   ");
 
 		Section ticksSection = minorTicksPage.createSection("ticks", "Ticks");
 
-		ticksSection.createTextField(number, "number", "40");
+		ticksSection.createTextField(number, this, "40");
 
-		ticksSection.createColorChooser(color, "color", "black");
+		ticksSection.createColorChooser(color, this, "black");
 
-		ticksSection.createTextField(width, "width", "2");
+		ticksSection.createTextField(width, this, "2");
 
-		ticksSection.createTextField(length, "length", "5");
+		ticksSection.createTextField(length, this, "5");
 
-		ticksSection.createLineStyle(style, "style", "solid");
+		ticksSection.createLineStyle(style, this, "solid");
 
 		ticksSection.createDoubleVariableField(transparency, this, 0.0);
 
-		ticksSection.createCheckBox(hide, "hide");
+		ticksSection.createCheckBox(hide, this);
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		number.addModificationConsumerAndRun("replotMinorTicks", () -> {
 			replotMinorTicks(axisSelection, parent);
@@ -75,9 +75,14 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 		return axisSelection;
 	}
 
-	private void replotMinorTicks(Selection axisSelection, GraphicsAtom parent) {
+	private void replotMinorTicks(Selection axisSelection, AbstractGraphicsAtom parent) {
 
 		Axis axis = (Axis) parent;
+
+		if (axis.data.isOrdinal()) {
+			return; //ordinal axis has no minor ticks
+		}
+
 		Scale<?> scale = axis.getScale();
 		boolean isHorizontal = axis.data.direction.get().equals("horizontal");
 		boolean isLog = axis.data.log.get();
@@ -105,11 +110,11 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 		Selection allMinorTickLines = axisSelection //
 				.selectAll("g").selectAll(".minor").selectAll("line");
 
-		GraphicsAtom.bindStringAttribute(allMinorTickLines, "stroke", color);
-		GraphicsAtom.bindStringAttribute(allMinorTickLines, "stroke-width", width);
-		GraphicsAtom.bindLineStyle(allMinorTickLines, style);
-		GraphicsAtom.bindLineTransparency(allMinorTickLines, transparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(allMinorTickLines, hide, transparency);
+		AbstractGraphicsAtom.bindStringAttribute(allMinorTickLines, "stroke", color);
+		AbstractGraphicsAtom.bindStringAttribute(allMinorTickLines, "stroke-width", width);
+		AbstractGraphicsAtom.bindLineStyle(allMinorTickLines, style);
+		AbstractGraphicsAtom.bindLineTransparency(allMinorTickLines, transparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(allMinorTickLines, hide, transparency);
 	}
 
 	private PrimaryAndSecondarySelection createMinorTickLinesForLogScale(

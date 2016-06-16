@@ -11,9 +11,10 @@ import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
+import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 import org.treez.results.atom.legend.LegendContributor;
 
@@ -143,9 +144,12 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 	}
 
 	public String getLeftBarDataString() {
+		List<Object> domainLabelData = getDomainLabelData();
 		List<Object> rangeBaseData = getRangeBaseData();
 		List<Object> rangeLeftData = getRangeLeftData();
 		int dataSize = rangeBaseData.size();
+
+		boolean domainIsOrdinal = checkIfDomainIsOrdinal();
 
 		List<String> rowList = new java.util.ArrayList<>();
 		for (int rowIndex = 0; rowIndex < dataSize; rowIndex++) {
@@ -162,17 +166,41 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 				size = -difference;
 			}
 
-			String rowString = "[" + (rowIndex + 1) + "," + position + "," + size + "]";
+			String domainValue;
+			if (domainIsOrdinal) {
+				domainValue = "'" + domainLabelData.get(rowIndex).toString() + "'";
+			} else {
+				domainValue = "" + (rowIndex + 1);
+			}
+
+			String rowString = "{key:" + domainValue + ", value:" + position + ",size:" + size + "}";
 			rowList.add(rowString);
 		}
 		String dataString = "[" + String.join(",", rowList) + "]";
 		return dataString;
 	}
 
+	private boolean checkIfDomainIsOrdinal() {
+		String direction = data.barDirection.get();
+		boolean isVertical = direction.equals(Direction.VERTICAL.toString());
+		boolean domainIsOrdinal = false;
+		if (isVertical) {
+			org.treez.results.atom.axis.Axis domainAxis = getDomainAxis();
+			domainIsOrdinal = domainAxis.isOrdinal();
+		} else {
+			org.treez.results.atom.axis.Axis rangeAxis = getRangeAxis();
+			domainIsOrdinal = rangeAxis.isOrdinal();
+		}
+		return domainIsOrdinal;
+	}
+
 	public String getRightBarDataString() {
+		List<Object> domainLabelData = getDomainLabelData();
 		List<Object> rangeBaseData = getRangeBaseData();
 		List<Object> rangeRightData = getRangeRightData();
 		int dataSize = rangeBaseData.size();
+
+		boolean domainIsOrdinal = checkIfDomainIsOrdinal();
 
 		List<String> rowList = new java.util.ArrayList<>();
 		for (int rowIndex = 0; rowIndex < dataSize; rowIndex++) {
@@ -188,7 +216,14 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 				size = -difference;
 			}
 
-			String rowString = "[" + (rowIndex + 1) + "," + position + "," + size + "]";
+			String domainValue;
+			if (domainIsOrdinal) {
+				domainValue = "'" + domainLabelData.get(rowIndex).toString() + "'";
+			} else {
+				domainValue = "" + (rowIndex + 1);
+			}
+
+			String rowString = "{key:" + domainValue + ",value:" + position + ",size:" + size + "}";
 			rowList.add(rowString);
 		}
 		String dataString = "[" + String.join(",", rowList) + "]";
@@ -200,25 +235,25 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 		return domainBaseData.size();
 	}
 
-	public QuantitativeScale<?> getXScale() {
-		Axis xAxisAtom = getXAxis();
+	public Scale<?> getDomainScale() {
+		Axis xAxisAtom = getDomainAxis();
 		if (xAxisAtom == null) {
 			return null;
 		}
-		QuantitativeScale<?> scale = (QuantitativeScale<?>) xAxisAtom.getScale();
+		Scale<?> scale = xAxisAtom.getScale();
 		return scale;
 	}
 
-	public QuantitativeScale<?> getYScale() {
-		Axis yAxisAtom = getYAxis();
+	public Scale<?> getRangeScale() {
+		Axis yAxisAtom = getRangeAxis();
 		if (yAxisAtom == null) {
 			return null;
 		}
-		QuantitativeScale<?> scale = (QuantitativeScale<?>) yAxisAtom.getScale();
+		Scale<?> scale = yAxisAtom.getScale();
 		return scale;
 	}
 
-	private Axis getXAxis() {
+	public Axis getDomainAxis() {
 		String xAxisPath = data.domainAxis.get();
 		if (xAxisPath == null || xAxisPath.isEmpty()) {
 			return null;
@@ -227,7 +262,7 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 		return xAxisAtom;
 	}
 
-	private Axis getYAxis() {
+	public Axis getRangeAxis() {
 		String yAxisPath = data.rangeAxis.get();
 		if (yAxisPath == null || yAxisPath.isEmpty()) {
 			return null;
@@ -253,6 +288,11 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 
 	private List<Object> getDomainBaseData() {
 		String dataPath = data.domainBase.get();
+		return getValuesWithColumnPath(dataPath);
+	}
+
+	public List<Object> getDomainLabelData() {
+		String dataPath = data.domainLabel.get();
 		return getValuesWithColumnPath(dataPath);
 	}
 

@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
@@ -41,7 +41,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page symbolPage = root.createPage("fill", "   Fill   ");
 
@@ -55,13 +55,13 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 		fill.createDoubleVariableField(transparency, this, 0.0);
 
-		fill.createCheckBox(hide, "hide");
+		fill.createCheckBox(hide, this);
 
 		//#end region
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		String parentName = parent.getName();
 
@@ -94,7 +94,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 				.attr("height", height);
 
 		//bind attributes
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideRects", rectsSelection, hide);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideRects", rectsSelection, hide);
 
 		Consumer replotRects = () -> {
 			rePlotRects(parent);
@@ -106,20 +106,20 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		return barSelection;
 	}
 
-	private static Graph getGraph(GraphicsAtom parent) {
-		AbstractAtom grandParent = parent.getParentAtom();
+	private static Graph getGraph(AbstractGraphicsAtom parent) {
+		AbstractAtom<?> grandParent = parent.getParentAtom();
 		Graph graph;
 		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
 		if (isGraph) {
 			graph = (Graph) grandParent;
 		} else {
-			AbstractAtom greatGrandParent = grandParent.getParentAtom();
+			AbstractAtom<?> greatGrandParent = grandParent.getParentAtom();
 			graph = (Graph) greatGrandParent;
 		}
 		return graph;
 	}
 
-	private void rePlotRects(GraphicsAtom parent) {
+	private void rePlotRects(AbstractGraphicsAtom parent) {
 		removeOldRects();
 		plotNewRects(parent);
 
@@ -130,7 +130,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 				.remove();
 	}
 
-	private void plotNewRects(GraphicsAtom parent) {
+	private void plotNewRects(AbstractGraphicsAtom parent) {
 
 		Bar bar = (Bar) parent;
 		Graph graph = getGraph(parent);
@@ -178,9 +178,9 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		}
 
 		//bind attributes
-		GraphicsAtom.bindStringAttribute(rectsSelection, "fill", color);
-		GraphicsAtom.bindTransparency(rectsSelection, transparency);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(rectsSelection, hide, transparency);
+		AbstractGraphicsAtom.bindStringAttribute(rectsSelection, "fill", color);
+		AbstractGraphicsAtom.bindTransparency(rectsSelection, transparency);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(rectsSelection, hide, transparency);
 
 	}
 
@@ -225,9 +225,9 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		symbolSelection.attr("width", symbolSize);
 		symbolSelection.attr("height", "10");
 
-		GraphicsAtom.bindStringAttribute(symbolSelection, "fill", color);
-		GraphicsAtom.bindTransparency(symbolSelection, transparency);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(symbolSelection, hide, transparency);
+		AbstractGraphicsAtom.bindStringAttribute(symbolSelection, "fill", color);
+		AbstractGraphicsAtom.bindTransparency(symbolSelection, transparency);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(symbolSelection, hide, transparency);
 
 		//refreshable.refresh();
 

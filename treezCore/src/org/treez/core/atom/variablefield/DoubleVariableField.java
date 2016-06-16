@@ -10,13 +10,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.variablelist.AbstractVariableListField;
 import org.treez.core.atom.variablelist.DoubleVariableListField;
 
 /**
  * Represents a model variable (-text field) that is used to enter a Double value
  */
-public class DoubleVariableField extends AbstractVariableField<Double> {
+public class DoubleVariableField extends AbstractVariableField<DoubleVariableField, Double> {
 
 	//#region CONSTRUCTORS
 
@@ -36,19 +35,14 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	//#region METHODS
 
 	@Override
+	public DoubleVariableField getThis() {
+		return this;
+	}
+
+	@Override
 	public DoubleVariableField copy() {
 		return new DoubleVariableField(this);
 	}
-
-	/*
-	@Override
-	public void addModificationConsumer(String key, Consumer<Double> consumer) {
-	
-		addModifyListener(key, (event) -> {
-			Double doubleValue = Double.parseDouble(event.data.toString());
-			consumer.accept(doubleValue);
-		});
-	}*/
 
 	@Override
 	public Image provideBaseImage() {
@@ -121,12 +115,13 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public DoubleVariableField setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
+		return getThis();
 	}
 
 	@Override
-	public AbstractVariableListField<Double> createVariableListField() {
+	public DoubleVariableListField createVariableListField() {
 
 		DoubleVariableListField listField = new DoubleVariableListField(name);
 		List<Double> valueList = new ArrayList<>();
@@ -190,12 +185,13 @@ public class DoubleVariableField extends AbstractVariableField<Double> {
 		}
 	}
 
-	public void setDefaultValue(Double defaultValue) {
+	public DoubleVariableField setDefaultValue(Double defaultValue) {
 		if (defaultValue == null) {
 			setDefaultValueString("");
 		} else {
 			setDefaultValueString("" + defaultValue);
 		}
+		return getThis();
 	}
 
 	//#end region

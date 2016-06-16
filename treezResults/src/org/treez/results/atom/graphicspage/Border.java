@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -31,31 +31,31 @@ public class Border implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
-		Page borderPage = root.createPage("border", "Border");
+		Page borderPage = root.createPage("border");
 
 		Section border = borderPage.createSection("border");
 
-		border.createColorChooser(color, "color", "black");
+		border.createColorChooser(color, this, "black");
 
-		border.createTextField(width, "width", "2");
+		border.createTextField(width, this, "2");
 
-		border.createLineStyle(style, "style", "solid");
+		border.createLineStyle(style, this, "solid");
 
 		border.createDoubleVariableField(transparency, this, 0.0);
 
-		border.createCheckBox(hide, "hide");
+		border.createCheckBox(hide, this);
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection parentSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection parentSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
-		GraphicsAtom.bindStringAttribute(rectSelection, "stroke", color);
-		GraphicsAtom.bindStringAttribute(rectSelection, "stroke-width", width);
-		GraphicsAtom.bindLineStyle(rectSelection, style);
-		GraphicsAtom.bindLineTransparency(rectSelection, transparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(rectSelection, hide, transparency);
+		AbstractGraphicsAtom.bindStringAttribute(rectSelection, "stroke", color);
+		AbstractGraphicsAtom.bindStringAttribute(rectSelection, "stroke-width", width);
+		AbstractGraphicsAtom.bindLineStyle(rectSelection, style);
+		AbstractGraphicsAtom.bindLineTransparency(rectSelection, transparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(rectSelection, hide, transparency);
 
 		return parentSelection;
 	}

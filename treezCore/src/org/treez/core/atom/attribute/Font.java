@@ -22,7 +22,7 @@ import org.treez.core.utils.Utils;
 /**
  * Allows the user to choose a font
  */
-public class Font extends AbstractStringAttributeAtom {
+public class Font extends AbstractStringAttributeAtom<Font> {
 
 	//#region ATTRIBUTES
 
@@ -80,6 +80,11 @@ public class Font extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public Font getThis() {
+		return this;
+	}
+
+	@Override
 	public Font copy() {
 		return new Font(this);
 	}
@@ -90,7 +95,7 @@ public class Font extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<Font> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -168,21 +173,10 @@ public class Font extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public Font setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
-
-	/*
-	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key, (event) -> {
-			if (isAvailable(fontCombo)) {
-				String value = fontCombo.getText();
-				consumer.accept(value);
-			}
-		});
-	}*/
 
 	//#end region
 
@@ -207,8 +201,9 @@ public class Font extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public Font setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -216,16 +211,18 @@ public class Font extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public Font setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public Font setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	@Override

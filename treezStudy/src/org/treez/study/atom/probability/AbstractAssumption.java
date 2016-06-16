@@ -75,7 +75,7 @@ public class AbstractAssumption extends AdjustableAtom {
 		//source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
 				.createModelPath(sourceVariableModelPath, this, defaultValue, DoubleVariableField.class, selectionType,
@@ -96,7 +96,7 @@ public class AbstractAssumption extends AdjustableAtom {
 	protected void assignRealtiveRootToSourceVariablePath() {
 		Objects.requireNonNull(sourceModelModelPath, "Source model path must not be null when calling this function.");
 		data.setLabel("Data for " + sourceModelModelPath);
-		AbstractAtom relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
+		AbstractAtom<?> relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
 		AttributeWrapper<String> pathWrapper = (AttributeWrapper<String>) sourceVariableModelPath;
 		ModelPath modelPath = (ModelPath) pathWrapper.getAttribute();
 		modelPath.setModelRelativeRoot(relativeRootAtom);

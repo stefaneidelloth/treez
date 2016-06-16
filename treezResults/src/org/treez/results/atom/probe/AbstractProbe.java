@@ -141,7 +141,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	 * @param wantedClass
 	 */
 	private boolean hasChildTable() {
-		for (AbstractAtom child : children) {
+		for (AbstractAtom<?> child : children) {
 			Class<?> currentClass = child.getClass();
 			boolean isTable = currentClass.equals(Table.class);
 			if (isTable) {
@@ -158,7 +158,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	 * @param wantedClass
 	 */
 	private Table getFirstChildTable() {
-		for (AbstractAtom child : children) {
+		for (AbstractAtom<?> child : children) {
 			Class<?> currentClass = child.getClass();
 			boolean isTable = currentClass.equals(Table.class);
 			if (isTable) {

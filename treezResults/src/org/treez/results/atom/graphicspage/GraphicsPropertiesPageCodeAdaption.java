@@ -36,7 +36,7 @@ public class GraphicsPropertiesPageCodeAdaption extends AdjustableAtomCodeAdapti
 
 		AdjustableAtom adjustableAtom = initializeModelIfRequired();
 
-		AbstractAtom model = adjustableAtom.getModel();
+		AbstractAtom<?> model = adjustableAtom.getModel();
 		if (model != null) {
 			CodeContainer codeContainer = createCodeForAttributesFromModel(adjustableAtom);
 			//codeContainer = addCodeForPropertyPages(codeContainer);
@@ -58,7 +58,7 @@ public class GraphicsPropertiesPageCodeAdaption extends AdjustableAtomCodeAdapti
 
 		CodeContainer attributeContainer = new CodeContainer(scriptType);
 
-		AbstractAtom model = parentAtom.getModel();
+		AbstractAtom<?> model = parentAtom.getModel();
 		List<TreeNodeAdaption> pageNodes = model.createTreeNodeAdaption().getChildren();
 
 		for (TreeNodeAdaption pageNode : pageNodes) {
@@ -107,7 +107,7 @@ public class GraphicsPropertiesPageCodeAdaption extends AdjustableAtomCodeAdapti
 		String prefix = "\t" + atomName + "." + pageName + ".";
 
 		AdjustableAtom adjustableAtom = (AdjustableAtom) atom;
-		AbstractAtom model = adjustableAtom.getModel();
+		AbstractAtom<?> model = adjustableAtom.getModel();
 
 		String command = prefix + "name.set('foo');";
 		codeContainer.extendBulk(command);

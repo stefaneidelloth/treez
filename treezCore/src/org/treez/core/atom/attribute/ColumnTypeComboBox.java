@@ -2,7 +2,7 @@ package org.treez.core.atom.attribute;
 
 import org.treez.core.data.column.ColumnType;
 
-public class ColumnTypeComboBox extends AbstractComboBox {
+public class ColumnTypeComboBox extends AbstractComboBox<ColumnTypeComboBox> {
 
 	//#region CONSTRUCTORS
 
@@ -14,7 +14,7 @@ public class ColumnTypeComboBox extends AbstractComboBox {
 	/**
 	 * Copy constructor
 	 */
-	public ColumnTypeComboBox(AbstractComboBox comboBoxToCopy) {
+	public ColumnTypeComboBox(ColumnTypeComboBox comboBoxToCopy) {
 		super(comboBoxToCopy);
 	}
 
@@ -32,13 +32,17 @@ public class ColumnTypeComboBox extends AbstractComboBox {
 	//#region ACCESSORS
 
 	@Override
+	public ColumnTypeComboBox getThis() {
+		return this;
+	}
+
+	@Override
 	public void set(String columnTypeString) {
 		boolean isColumnType = ColumnType.representsType(columnTypeString);
 		if (isColumnType) {
 			super.setValue(columnTypeString);
 		} else {
-			String message = "The specified column type '" + columnTypeString
-					+ "' is not known.";
+			String message = "The specified column type '" + columnTypeString + "' is not known.";
 			throw new IllegalArgumentException(message);
 		}
 	}
@@ -54,30 +58,29 @@ public class ColumnTypeComboBox extends AbstractComboBox {
 	}
 
 	@Override
-	public void setDefaultValue(String defaultValue) {
+	public ColumnTypeComboBox setDefaultValue(String defaultValue) {
 		boolean valueAllowed = ColumnType.representsType(defaultValue);
 		if (valueAllowed) {
 			this.defaultValue = defaultValue;
 		} else {
-			String message = "The defaultValue '" + defaultValue
-					+ "' is not known.";
+			String message = "The defaultValue '" + defaultValue + "' is not known.";
 			throw new IllegalArgumentException(message);
 		}
+		return getThis();
 
 	}
 
 	@Override
-	public void setDefaultValue(Enum<?> defaultEnumValue) {
-		boolean isColumnType = defaultEnumValue.getClass()
-				.equals(ColumnType.class);
+	public ColumnTypeComboBox setDefaultValue(Enum<?> defaultEnumValue) {
+		boolean isColumnType = defaultEnumValue.getClass().equals(ColumnType.class);
 		if (isColumnType) {
 			ColumnType columnType = (ColumnType) defaultEnumValue;
 			set(columnType);
 		} else {
-			String message = "The value " + defaultEnumValue
-					+ " is no ColumnType.";
+			String message = "The value " + defaultEnumValue + " is no ColumnType.";
 			throw new IllegalArgumentException(message);
 		}
+		return getThis();
 
 	}
 

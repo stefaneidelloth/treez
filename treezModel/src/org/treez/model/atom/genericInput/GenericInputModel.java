@@ -96,7 +96,7 @@ public class GenericInputModel extends AbstractModel {
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
 			Adaptable adaptable = childNode.getAdaptable();
-			AbstractAtom variableField = (AbstractAtom) adaptable;
+			AbstractAtom<?> variableField = (AbstractAtom<?>) adaptable;
 			data.addChildReference(variableField);
 		}
 
@@ -118,7 +118,7 @@ public class GenericInputModel extends AbstractModel {
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
 
 		//disable children
-		List<AbstractAtom> children = this.getChildAtoms();
+		List<AbstractAtom<?>> children = this.getChildAtoms();
 		boolean hasChildren = children != null && !children.isEmpty();
 		if (hasChildren) {
 			actions.add(new TreeViewerAction(
@@ -206,11 +206,11 @@ public class GenericInputModel extends AbstractModel {
 	 * Enables all variable field children
 	 */
 	private void enableAllVariableFields() {
-		List<AbstractAtom> children = this.getChildAtoms();
-		for (AbstractAtom child : children) {
+		List<AbstractAtom<?>> children = this.getChildAtoms();
+		for (AbstractAtom<?> child : children) {
 			boolean isVariableField = VariableField.class.isAssignableFrom(child.getClass());
 			if (isVariableField) {
-				VariableField<?> variableField = (VariableField<?>) child;
+				VariableField<?, ?> variableField = (VariableField<?, ?>) child;
 				variableField.setEnabled(true);
 			}
 
@@ -221,11 +221,11 @@ public class GenericInputModel extends AbstractModel {
 	 * Disable all variable field children
 	 */
 	private void disableAllVariableFields() {
-		List<AbstractAtom> children = this.getChildAtoms();
-		for (AbstractAtom child : children) {
+		List<AbstractAtom<?>> children = this.getChildAtoms();
+		for (AbstractAtom<?> child : children) {
 			boolean isVariableField = VariableField.class.isAssignableFrom(child.getClass());
 			if (isVariableField) {
-				VariableField<?> variableField = (VariableField<?>) child;
+				VariableField<?, ?> variableField = (VariableField<?, ?>) child;
 				variableField.setEnabled(false);
 			}
 
@@ -244,7 +244,7 @@ public class GenericInputModel extends AbstractModel {
 	 * Overrides the method addChild to update the generic model after adding the child
 	 */
 	@Override
-	public void addChild(AbstractAtom child) {
+	public void addChild(AbstractAtom<?> child) {
 		super.addChild(child);
 		createGenericModel();
 	}
@@ -349,23 +349,23 @@ public class GenericInputModel extends AbstractModel {
 		setAttribute("root.data.data." + variableName, valueString);
 	}
 
-	public List<VariableField<?>> getVariableFields() {
-		List<VariableField<?>> variableFields = new ArrayList<>();
+	public List<VariableField<?, ?>> getVariableFields() {
+		List<VariableField<?, ?>> variableFields = new ArrayList<>();
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
 			@SuppressWarnings("unchecked")
-			VariableField<?> variableField = (VariableField<?>) childNode.getAdaptable();
+			VariableField<?, ?> variableField = (VariableField<?, ?>) childNode.getAdaptable();
 			variableFields.add(variableField);
 		}
 		return variableFields;
 	}
 
-	public List<VariableField<?>> getEnabledVariableFields() {
-		List<VariableField<?>> variableFields = new ArrayList<>();
+	public List<VariableField<?, ?>> getEnabledVariableFields() {
+		List<VariableField<?, ?>> variableFields = new ArrayList<>();
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
 			@SuppressWarnings("unchecked")
-			VariableField<?> variableField = (VariableField<?>) childNode.getAdaptable();
+			VariableField<?, ?> variableField = (VariableField<?, ?>) childNode.getAdaptable();
 			if (variableField.isEnabled()) {
 				variableFields.add(variableField);
 			}

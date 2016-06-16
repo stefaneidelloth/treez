@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -34,26 +34,26 @@ public class AxisLine implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page axisLinePage = root.createPage("axisLine", "   Axis line   ");
 
 		Section axisLineSection = axisLinePage.createSection("axisLine", "Axis line");
 
-		axisLineSection.createColorChooser(color, "color", "black");
+		axisLineSection.createColorChooser(color, this, "black");
 
-		axisLineSection.createTextField(width, "width", "2");
+		axisLineSection.createTextField(width, this, "2");
 
-		axisLineSection.createLineStyle(style, "style", "solid");
+		axisLineSection.createLineStyle(style, this, "solid");
 
 		axisLineSection.createDoubleVariableField(transparency, this, 0.0);
 
-		axisLineSection.createCheckBox(hide, "hide");
+		axisLineSection.createCheckBox(hide, this);
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		Selection axisDomainLine = axisSelection //
 				.selectAll(".domain") //
@@ -61,11 +61,11 @@ public class AxisLine implements GraphicsPropertiesPageFactory {
 				.style("stroke-linecap", "square") //
 				.style("shape-rendering", "geometricPrecision");
 
-		GraphicsAtom.bindStringAttribute(axisDomainLine, "stroke", color);
-		GraphicsAtom.bindStringAttribute(axisDomainLine, "stroke-width", width);
-		GraphicsAtom.bindLineStyle(axisDomainLine, style);
-		GraphicsAtom.bindLineTransparency(axisDomainLine, transparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(axisDomainLine, hide, transparency);
+		AbstractGraphicsAtom.bindStringAttribute(axisDomainLine, "stroke", color);
+		AbstractGraphicsAtom.bindStringAttribute(axisDomainLine, "stroke-width", width);
+		AbstractGraphicsAtom.bindLineStyle(axisDomainLine, style);
+		AbstractGraphicsAtom.bindLineTransparency(axisDomainLine, transparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(axisDomainLine, hide, transparency);
 
 		return axisSelection;
 	}

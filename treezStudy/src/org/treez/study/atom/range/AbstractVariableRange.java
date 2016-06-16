@@ -100,14 +100,14 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	protected void assignRealtiveRootToSourceVariablePath() {
 		Objects.requireNonNull(sourceModelModelPath, "Source model path must not be null when calling this function.");
 		data.setLabel("Data for " + sourceModelModelPath);
-		AbstractAtom relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
+		AbstractAtom<?> relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
 		AttributeWrapper<String> pathWrapper = (AttributeWrapper<String>) sourceVariableModelPath;
 		ModelPath modelPath = (ModelPath) pathWrapper.getAttribute();
 		modelPath.setModelRelativeRoot(relativeRootAtom);
 	}
 
 	@Override
-	public void setParentAtom(AbstractAtom parent) {
+	public void setParentAtom(AbstractAtom<?> parent) {
 		super.setParentAtom(parent);
 		checkParentAndUpdateSourceModel(parent);
 	}
@@ -118,7 +118,7 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	 *
 	 * @param parent
 	 */
-	private void checkParentAndUpdateSourceModel(AbstractAtom parent) {
+	private void checkParentAndUpdateSourceModel(AbstractAtom<?> parent) {
 
 		if (parent == null) {
 			// throw exception if the parent is null
@@ -157,7 +157,7 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 
 	protected void createEnabledCheckBox() {
 		// enabled state
-		CheckBox enabledCheck = data.createCheckBox(enabled, "enabled", enabled.get());
+		CheckBox enabledCheck = data.createCheckBox(enabled, this, enabled.get());
 		enabledCheck.addModifyListener("updateEnabledState", (event) -> {
 			boolean enabledState = enabled.get();
 			setEnabled(enabledState);

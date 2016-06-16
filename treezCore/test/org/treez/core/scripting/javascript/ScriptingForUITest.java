@@ -77,7 +77,7 @@ public class ScriptingForUITest {
 		scripting.execute(code);
 
 		//retrieve root atom from scripting
-		AbstractAtom root = scripting.getRoot();
+		AbstractAtom<?> root = scripting.getRoot();
 
 		//show root atom on preview window
 		Composite controlComposite = previewWindow.getControlComposite();
@@ -105,7 +105,7 @@ public class ScriptingForUITest {
 		scripting.execute(code);
 
 		//retrieve root atom from scripting
-		AbstractAtom root = scripting.getRoot();
+		AbstractAtom<?> root = scripting.getRoot();
 
 		//retrive table from root
 		TreezTable table = (TreezTable) root.getChild("table");

@@ -9,7 +9,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.utils.Utils;
 
 /**
- * This action adds a new child atom of the given class. The class has to extend AbstractAtom and implement
+ * This action adds a new child atom of the given class. The class has to extend AbstractAtom<?> and implement
  * VariableField to be able to set the background color.
  */
 public class AddColoredChildAtomTreeViewerAction extends TreeViewerAction {
@@ -26,7 +26,7 @@ public class AddColoredChildAtomTreeViewerAction extends TreeViewerAction {
 	/**
 	 * The parent atom of the new child atom(s)
 	 */
-	private AbstractAtom parentAtom;
+	private AbstractAtom<?> parentAtom;
 
 	/**
 	 * The image for the new child atom (that will be decorated)
@@ -36,17 +36,17 @@ public class AddColoredChildAtomTreeViewerAction extends TreeViewerAction {
 	/**
 	 * The class of the new child(s) to add.
 	 */
-	private Class<? extends AbstractAtom> atomClass;
+	private Class<? extends AbstractAtom<?>> atomClass;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
 	public AddColoredChildAtomTreeViewerAction(
-			Class<? extends AbstractAtom> atomClass,
+			Class<? extends AbstractAtom<?>> atomClass,
 			String namePrefix,
 			Image image,
-			AbstractAtom parentAtom,
+			AbstractAtom<?> parentAtom,
 			TreeViewerRefreshable treeViewer) {
 
 		super(createLabel(namePrefix), image, treeViewer, null);
@@ -72,10 +72,10 @@ public class AddColoredChildAtomTreeViewerAction extends TreeViewerAction {
 
 	private void createRunnable() {
 		runnable = () -> {
-			AbstractAtom newChild = parentAtom.createChildAtom(atomClass, namePrefix);
-			boolean isVariableField = newChild instanceof VariableField<?>;
+			AbstractAtom<?> newChild = parentAtom.createChildAtom(atomClass, namePrefix);
+			boolean isVariableField = newChild instanceof VariableField<?, ?>;
 			if (isVariableField) {
-				VariableField<?> fieldAtom = (VariableField<?>) newChild;
+				VariableField<?, ?> fieldAtom = (VariableField<?, ?>) newChild;
 				fieldAtom.setBackgroundColor(BACKGROUND_COLOR);
 			} else {
 				throw new IllegalStateException("This class must only be used for VariableFields");

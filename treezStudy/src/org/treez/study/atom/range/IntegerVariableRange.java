@@ -48,7 +48,7 @@ public class IntegerVariableRange extends AbstractVariableRange<Integer> {
 		// source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
 				.createModelPath(sourceVariableModelPath, this, defaultValue, IntegerVariableField.class, selectionType,

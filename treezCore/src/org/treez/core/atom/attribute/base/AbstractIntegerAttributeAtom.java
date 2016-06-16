@@ -1,10 +1,8 @@
 package org.treez.core.atom.attribute.base;
 
-public abstract class AbstractIntegerAttributeAtom extends AbstractNumberAttributeAtom {
-
-	//#region ATTRIBUTES
-
-	//#end region
+public abstract class AbstractIntegerAttributeAtom<A extends AbstractIntegerAttributeAtom<A>>
+		extends
+		AbstractNumberAttributeAtom<A> {
 
 	//#region CONSTRUCTORS
 
@@ -15,17 +13,9 @@ public abstract class AbstractIntegerAttributeAtom extends AbstractNumberAttribu
 	/**
 	 * Copy constructor
 	 */
-	public AbstractIntegerAttributeAtom(AbstractIntegerAttributeAtom attributeAtomToCopy) {
+	public AbstractIntegerAttributeAtom(AbstractIntegerAttributeAtom<A> attributeAtomToCopy) {
 		super(attributeAtomToCopy);
 	}
-
-	//#end region
-
-	//#region METHODS
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

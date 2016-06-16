@@ -1,14 +1,14 @@
 package org.treez.core.atom.variablefield;
 
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.CheckBox;
-import org.treez.core.atom.attribute.base.AbstractBooleanAttributeAtom;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
-public class BooleanVariableField extends CheckBox implements VariableField<Boolean> {
+public class BooleanVariableField extends CheckBox implements VariableField<BooleanVariableField, Boolean> {
 
 	//#region CONSTRUCTORS
 
@@ -28,6 +28,11 @@ public class BooleanVariableField extends CheckBox implements VariableField<Bool
 	//#region METHODS
 
 	@Override
+	public BooleanVariableField getThis() {
+		return this;
+	}
+
+	@Override
 	public BooleanVariableField copy() {
 		return new BooleanVariableField(this);
 	}
@@ -45,25 +50,34 @@ public class BooleanVariableField extends CheckBox implements VariableField<Bool
 	}
 
 	@Override
-	public AbstractBooleanAttributeAtom createAttributeAtomControl(
+	public BooleanVariableField createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
-
 		super.createAttributeAtomControl(parent, treeViewerRefreshable);
-
-		return this;
+		return getThis();
 	}
 
 	@Override
-	public AbstractVariableListField<Boolean> createVariableListField() {
-
+	public AbstractVariableListField<?, Boolean> createVariableListField() {
 		throw new IllegalStateException("Not yet implemented");
 	}
 
 	//#end region
 
 	//#region ACCESSORS
+
+	@Override
+	public BooleanVariableField setEnabled(boolean state) {
+		super.setEnabled(state);
+		return getThis();
+	}
+
+	@Override
+	public BooleanVariableField setLabel(String label) {
+		super.setLabel(label);
+		return getThis();
+	}
 
 	@Override
 	public String getValueString() {
@@ -74,7 +88,7 @@ public class BooleanVariableField extends CheckBox implements VariableField<Bool
 
 	@SuppressWarnings("checkstyle:illegalcatch")
 	@Override
-	public void setValueString(String valueString) {
+	public BooleanVariableField setValueString(String valueString) {
 		try {
 			Boolean value = new Boolean(valueString);
 			this.set(value);
@@ -82,6 +96,13 @@ public class BooleanVariableField extends CheckBox implements VariableField<Bool
 			String message = "The string value '" + valueString + "' could not be inteprted as Boolean value";
 			throw new IllegalStateException(message);
 		}
+		return getThis();
+	}
+
+	@Override
+	public BooleanVariableField setBackgroundColor(Color color) {
+		super.setBackgroundColor(color);
+		return getThis();
 	}
 
 	//#end region

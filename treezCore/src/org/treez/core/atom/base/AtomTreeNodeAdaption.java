@@ -24,13 +24,13 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	/**
 	 * The adaptable that is adapted
 	 */
-	private AbstractAtom atomAdaptable;
+	private AbstractAtom<?> atomAdaptable;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public AtomTreeNodeAdaption(AbstractAtom correspondingAtomAdaptable) {
+	public AtomTreeNodeAdaption(AbstractAtom<?> correspondingAtomAdaptable) {
 		this.atomAdaptable = correspondingAtomAdaptable;
 	}
 
@@ -68,7 +68,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 		}
 
 		//get parent
-		AbstractAtom parent = (AbstractAtom) getParent().getAdaptable();
+		AbstractAtom<?> parent = (AbstractAtom<?>) getParent().getAdaptable();
 
 		//delete self
 		parent.createTreeNodeAdaption().removeChild(this);
@@ -160,7 +160,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	 * @return
 	 */
 	private TreeNodeAdaption getParentNode() {
-		AbstractAtom parentAtom = atomAdaptable.getParentAtom();
+		AbstractAtom<?> parentAtom = atomAdaptable.getParentAtom();
 		if (parentAtom != null) {
 			return parentAtom.createTreeNodeAdaption();
 		} else {
@@ -175,7 +175,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	 * @param defaultName
 	 * @return
 	 */
-	public static String createChildNameStartingWith(AbstractAtom atom, String defaultName) {
+	public static String createChildNameStartingWith(AbstractAtom<?> atom, String defaultName) {
 
 		NameAndNumber currentNameAndNumber = new NameAndNumber(defaultName, 0);
 		NameAndNumber nextNameAndNumber;
@@ -201,7 +201,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	 * @param start
 	 * @return
 	 */
-	private static NameAndNumber getNextDummyChildName(AbstractAtom atom, NameAndNumber start) {
+	private static NameAndNumber getNextDummyChildName(AbstractAtom<?> atom, NameAndNumber start) {
 		NameAndNumber next = start.copy();
 		boolean childWithSameNameAlreadyExists = false;
 
@@ -239,7 +239,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
 	/**
 	 * Implements TreeNodeAdaption.setName() by setting the name of the corresponding AbstractAtom. (In order to be able
-	 * to identify an AbstractAtom by its tree path, this name should only be used once for all children of the parent
+	 * to identify an AbstractAtom<?> by its tree path, this name should only be used once for all children of the parent
 	 * AbstractAtom.)
 	 */
 	@Override
@@ -248,7 +248,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	}
 
 	/**
-	 * Returns the corresponding AbstractAtom for this AtomTreeNodeAdaption
+	 * Returns the corresponding AbstractAtom<?> for this AtomTreeNodeAdaption
 	 */
 	@Override
 	public Adaptable getAdaptable() {
@@ -299,7 +299,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	@Override
 	public void setParent(TreeNodeAdaption parent) {
 		if (parent != null) {
-			atomAdaptable.parentAtom = (AbstractAtom) parent.getAdaptable();
+			atomAdaptable.parentAtom = (AbstractAtom<?>) parent.getAdaptable();
 		}
 	}
 
@@ -308,7 +308,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	 *
 	 * @param parentAtom
 	 */
-	public void setParentByAtom(AbstractAtom parentAtom) {
+	public void setParentByAtom(AbstractAtom<?> parentAtom) {
 		if (parentAtom != null) {
 			atomAdaptable.parentAtom = parentAtom;
 		}

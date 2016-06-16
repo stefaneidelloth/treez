@@ -29,7 +29,7 @@ public class ModelPathValidatorTest {
 	/**
 	 * The model that is used for the tests
 	 */
-	private AbstractAtom model;
+	private AbstractAtom<?> model;
 
 	/**
 	 * The name of the model

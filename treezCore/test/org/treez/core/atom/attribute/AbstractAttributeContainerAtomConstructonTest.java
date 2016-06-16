@@ -14,8 +14,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.treez.core.adaptable.AbstractControlAdaption;
-import org.treez.core.adaptable.GraphicsAdaption;
 import org.treez.core.adaptable.CodeAdaption;
+import org.treez.core.adaptable.GraphicsAdaption;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.scripting.ScriptType;
@@ -37,7 +37,7 @@ public abstract class AbstractAttributeContainerAtomConstructonTest {
 	/**
 	 * The atom to test
 	 */
-	protected AbstractAttributeContainerAtom atom;
+	protected AbstractAttributeContainerAtom<?> atom;
 
 	/**
 	 * The name of atom to test

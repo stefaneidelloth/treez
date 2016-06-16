@@ -15,22 +15,20 @@ import org.treez.core.scripting.ScriptType;
 import org.treez.core.scripting.VariableNameRegistry;
 
 /**
- * CodeAdaption for AbstractAtoms: used to create java code from the tree. The
- * creation of the code is separated in two parts: one for creating the imports
- * and one for creating the main code. This allows to put the imports for all
+ * CodeAdaption for AbstractAtoms: used to create java code from the tree. The creation of the code is separated in two
+ * parts: one for creating the imports and one for creating the main code. This allows to put the imports for all
  * children at the beginning of the java code.
  */
 public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 
-	private static final Logger LOG = Logger
-			.getLogger(AbstractAtomCodeAdaption.class);
+	private static final Logger LOG = Logger.getLogger(AbstractAtomCodeAdaption.class);
 
 	//#region ATTRIBUTES
 
 	/**
-	 * The AbstractAtom that corresponds to this code adaption
+	 * The AbstractAtom<?> that corresponds to this code adaption
 	 */
-	protected AbstractAtom atom;
+	protected AbstractAtom<?> atom;
 
 	/**
 	 * The script type
@@ -51,9 +49,8 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 
 	//#region CONSTRUCTORS
 
-	public AbstractAtomCodeAdaption(AbstractAtom atom, ScriptType scriptType) {
-		Objects.requireNonNull(atom,
-				"The corresponding atom must not be null.");
+	public AbstractAtomCodeAdaption(AbstractAtom<?> atom, ScriptType scriptType) {
+		Objects.requireNonNull(atom, "The corresponding atom must not be null.");
 		Objects.requireNonNull(scriptType, "The ScriptType must not be null.");
 		this.atom = atom;
 		this.scriptType = scriptType;
@@ -66,19 +63,18 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	//#region CODE CONTAINER
 
 	/**
-	 * Returns the CodeContainer for the AbstractAtom that corresponds to this
-	 * code adaption and for all of its children.
+	 * Returns the CodeContainer for the AbstractAtom<?> that corresponds to this code adaption and for all of its
+	 * children.
 	 */
 	@Override
-	public CodeContainer buildCodeContainer(CodeContainer parentCodeContainer,
+	public CodeContainer buildCodeContainer(
+			CodeContainer parentCodeContainer,
 			Optional<CodeContainer> injectedChildCodeContainer) {
-		Objects.requireNonNull(parentCodeContainer,
-				"Parent code container must not be null.");
+		Objects.requireNonNull(parentCodeContainer, "Parent code container must not be null.");
 		Objects.requireNonNull(parentCodeContainer,
 				"Child code container must not be null. Pass at least an Optional off null.");
 
-		CodeContainer codeContainer = extendParentCodeContainer(
-				parentCodeContainer, injectedChildCodeContainer);
+		CodeContainer codeContainer = extendParentCodeContainer(parentCodeContainer, injectedChildCodeContainer);
 		return codeContainer;
 
 	}
@@ -93,10 +89,9 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	public abstract CodeContainer buildRootCodeContainer(String className);
 
 	/**
-	 * Extends the given parent code container with the code for the
-	 * AbstractAtom that corresponds to this code adaption and all of its
-	 * children. (This basic implementation of the method, that only modifies
-	 * the imports and the bulk, might be overridden by inheriting classes.)
+	 * Extends the given parent code container with the code for the AbstractAtom<?> that corresponds to this code adaption
+	 * and all of its children. (This basic implementation of the method, that only modifies the imports and the bulk,
+	 * might be overridden by inheriting classes.)
 	 *
 	 * @param parentContainer
 	 * @param injectedChildContainer
@@ -105,8 +100,7 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	protected CodeContainer extendParentCodeContainer(
 			CodeContainer parentContainer,
 			Optional<CodeContainer> injectedChildContainer) {
-		Objects.requireNonNull(parentContainer,
-				"Parent code container must not be null.");
+		Objects.requireNonNull(parentContainer, "Parent code container must not be null.");
 		Objects.requireNonNull(injectedChildContainer,
 				"Child code container must not be null. Pass at least an optional of null.");
 
@@ -120,12 +114,10 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 		boolean childContainerHasEmptyBulk = childContainer.hasEmptyBulk();
 
 		//check if bulk of injected child container is empty
-		boolean injectedChildContainerHasEmptyBulk = checkIfOptionalContainerHasEmptyBulk(
-				injectedChildContainer);
+		boolean injectedChildContainerHasEmptyBulk = checkIfOptionalContainerHasEmptyBulk(injectedChildContainer);
 
 		//check if bulk child code exists
-		boolean hasEmptyChildBulk = (childContainerHasEmptyBulk
-				&& injectedChildContainerHasEmptyBulk);
+		boolean hasEmptyChildBulk = (childContainerHasEmptyBulk && injectedChildContainerHasEmptyBulk);
 
 		//create attribute code container and check if it its bulk is empty.
 		//Instead of actual variable names place holders will be used. Those
@@ -146,8 +138,7 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 			String variableName = createVariableName(atom);
 
 			//create current container using the variable name
-			currentContainer = buildCreationCodeContainerWithVariableName(
-					variableName);
+			currentContainer = buildCreationCodeContainerWithVariableName(variableName);
 
 			//replace variable name place holders with the actual variable names
 			childContainer.replaceInBulk(PARENT_VARIABLE_NAME, variableName);
@@ -179,32 +170,28 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	}
 
 	/**
-	 * Creates a code container that contains the code for all children of the
-	 * atom that corresponds to this code adaption.
+	 * Creates a code container that contains the code for all children of the atom that corresponds to this code
+	 * adaption.
 	 *
 	 * @return
 	 */
 	protected CodeContainer createCodeContainerForChildAtoms() {
 
 		//get child node adaptions
-		List<TreeNodeAdaption> childNodes = atom.createTreeNodeAdaption()
-				.getChildren();
+		List<TreeNodeAdaption> childNodes = atom.createTreeNodeAdaption().getChildren();
 
 		//loop through the child nodes and create code container
 		CodeContainer allChildrenCodeContainer = new CodeContainer(scriptType);
 		for (TreeNodeAdaption childNode : childNodes) {
-			LOG.debug(
-					"creating code container for child " + childNode.getName());
+			LOG.debug("creating code container for child " + childNode.getName());
 			Adaptable childAdaptable = childNode.getAdaptable();
-			CodeAdaption childCodeAdaption = childAdaptable
-					.createCodeAdaption(ScriptType.JAVA);
-			allChildrenCodeContainer = childCodeAdaption.buildCodeContainer(
-					allChildrenCodeContainer, Optional.ofNullable(null));
+			CodeAdaption childCodeAdaption = childAdaptable.createCodeAdaption(ScriptType.JAVA);
+			allChildrenCodeContainer = childCodeAdaption.buildCodeContainer(allChildrenCodeContainer,
+					Optional.ofNullable(null));
 		}
 
 		//post process the container
-		allChildrenCodeContainer = postProcessAllChildrenCodeContainer(
-				allChildrenCodeContainer);
+		allChildrenCodeContainer = postProcessAllChildrenCodeContainer(allChildrenCodeContainer);
 
 		return allChildrenCodeContainer;
 	}
@@ -215,18 +202,15 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	 * @param allChildrenCodeContainer
 	 * @return
 	 */
-	protected abstract CodeContainer postProcessAllChildrenCodeContainer(
-			CodeContainer allChildrenCodeContainer);
+	protected abstract CodeContainer postProcessAllChildrenCodeContainer(CodeContainer allChildrenCodeContainer);
 
 	/**
-	 * Returns true if the given optional container is not present or has an
-	 * empty bulk.
+	 * Returns true if the given optional container is not present or has an empty bulk.
 	 *
 	 * @param optionalContainer
 	 * @return
 	 */
-	protected static boolean checkIfOptionalContainerHasEmptyBulk(
-			Optional<CodeContainer> optionalContainer) {
+	protected static boolean checkIfOptionalContainerHasEmptyBulk(Optional<CodeContainer> optionalContainer) {
 		if (optionalContainer.isPresent()) {
 			CodeContainer container = optionalContainer.get();
 			return container.hasEmptyBulk();
@@ -245,8 +229,7 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	 * @param variableName
 	 * @return
 	 */
-	protected abstract CodeContainer buildCreationCodeContainerWithVariableName(
-			String variableName);
+	protected abstract CodeContainer buildCreationCodeContainerWithVariableName(String variableName);
 
 	/**
 	 * Builds code for the constructor call, using a variable names
@@ -256,42 +239,35 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	protected abstract CodeContainer buildCreationCodeContainerWithoutVariableName();
 
 	/**
-	 * Returns true if the TreeNodeAdaption that corresponds to this
-	 * CodeAdaption is the first child of its parent TreeNodeAdaption. Throws an
-	 * exception if the TreeNodeAdaption has no parent.
+	 * Returns true if the TreeNodeAdaption that corresponds to this CodeAdaption is the first child of its parent
+	 * TreeNodeAdaption. Throws an exception if the TreeNodeAdaption has no parent.
 	 *
 	 * @return
 	 */
 	protected boolean isFirstChild() {
-		TreeNodeAdaption thisNode = this.getAdaptable()
-				.createTreeNodeAdaption();
+		TreeNodeAdaption thisNode = this.getAdaptable().createTreeNodeAdaption();
 		TreeNodeAdaption parentNode = thisNode.getParent();
 		if (parentNode == null) {
-			throw new IllegalStateException(
-					"There is no parent tree node adaption.");
+			throw new IllegalStateException("There is no parent tree node adaption.");
 		}
 		TreeNodeAdaption firstChildNode = parentNode.getChildren().get(0);
-		boolean isFirstChild = thisNode.getTreePath()
-				.equals(firstChildNode.getTreePath());
+		boolean isFirstChild = thisNode.getTreePath().equals(firstChildNode.getTreePath());
 		return isFirstChild;
 	}
 
 	/**
-	 * Returns true if the previous sibling TreeNodeAdaption has children.
-	 * Throws an exception if the TreeNodeAdaption has no parent or no previous
-	 * sibling.
+	 * Returns true if the previous sibling TreeNodeAdaption has children. Throws an exception if the TreeNodeAdaption
+	 * has no parent or no previous sibling.
 	 *
 	 * @return
 	 */
 	protected boolean previousSiblingHasChildren() {
-		TreeNodeAdaption thisNode = this.getAdaptable()
-				.createTreeNodeAdaption();
+		TreeNodeAdaption thisNode = this.getAdaptable().createTreeNodeAdaption();
 
 		//get parent tree node adaption
 		TreeNodeAdaption parentNode = thisNode.getParent();
 		if (parentNode == null) {
-			throw new IllegalStateException(
-					"There is no parent tree node adaption.");
+			throw new IllegalStateException("There is no parent tree node adaption.");
 		}
 
 		//get child index of current TreeNodeAdaption
@@ -328,9 +304,8 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	 * @param atom
 	 * @return
 	 */
-	protected static String createVariableName(AbstractAtom atom) {
-		String variableName = VariableNameRegistry.getInstance()
-				.getNewVariableName(atom);
+	protected String createVariableName(AbstractAtom<?> atom) {
+		String variableName = VariableNameRegistry.getInstance().getNewVariableName(atom);
 		return variableName;
 	}
 
@@ -339,9 +314,8 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	//#region ATTRIBUTE CODE
 
 	/**
-	 * Creates a new code container that contains code for setting the attribute
-	 * values of the AbstractAtom that corresponds to this code adaption. Might
-	 * be overridden by inheriting classes.
+	 * Creates a new code container that contains code for setting the attribute values of the AbstractAtom<?> that
+	 * corresponds to this code adaption. Might be overridden by inheriting classes.
 	 *
 	 * @return
 	 */
@@ -353,32 +327,28 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 			attribute.setAccessible(true);
 			boolean isAnnotated = IsParameters.isAnnotated(attribute);
 			if (isAnnotated) {
-				attributeContainer = extendCodeForChangedAttribute(
-						attributeContainer, attribute);
+				attributeContainer = extendCodeForChangedAttribute(attributeContainer, attribute);
 			}
 		}
 		return attributeContainer;
 	}
 
 	/**
-	 * Adds the code for the given attribute to the given initial code container
-	 * if the value of the attribute is not the default value.
+	 * Adds the code for the given attribute to the given initial code container if the value of the attribute is not
+	 * the default value.
 	 *
 	 * @param attributeContainer
 	 * @param attribute
 	 * @return
 	 */
-	private CodeContainer extendCodeForChangedAttribute(
-			CodeContainer attributeContainer, Field attribute) {
+	private CodeContainer extendCodeForChangedAttribute(CodeContainer attributeContainer, Field attribute) {
 		//LOG.debug("Existing field: " + field.getName());
 
 		//LOG.debug("The field " + field.getName() + " is annotated.");
 
 		//get data from the attribute
-		String defaultValueString = IsParameters
-				.getDefaultValueString(attribute);
-		String currentValueString = IsParameters
-				.getCurrentValueString(attribute, atom);
+		String defaultValueString = IsParameters.getDefaultValueString(attribute);
+		String currentValueString = IsParameters.getCurrentValueString(attribute, atom);
 
 		//LOG.debug("Default value: " + defaultValueString);
 		//LOG.debug("Current value: " + currentValueString);
@@ -389,15 +359,14 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 			//parameter does not need to be included in code
 			return attributeContainer;
 		} else {
-			CodeContainer extendedContainer = extendCodeForAttributeIfSetterExists(
-					attributeContainer, attribute, currentValueString);
+			CodeContainer extendedContainer = extendCodeForAttributeIfSetterExists(attributeContainer, attribute,
+					currentValueString);
 			return extendedContainer;
 		}
 	}
 
 	/**
-	 * Adds the code for the given attribute to the given initial code if a
-	 * setter exists
+	 * Adds the code for the given attribute to the given initial code if a setter exists
 	 *
 	 * @param attributeContainer
 	 * @param attribute
@@ -405,19 +374,18 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	 * @return
 	 */
 	private CodeContainer extendCodeForAttributeIfSetterExists(
-			CodeContainer attributeContainer, Field attribute,
+			CodeContainer attributeContainer,
+			Field attribute,
 			String valueString) {
 
 		//check if setter exists
 		boolean setterExists = IsParameters.simpleSetterExists(attribute, atom);
 		if (setterExists) {
 			//generate code
-			CodeContainer extendedContainer = extendCodeForAttribute(
-					attributeContainer, attribute, valueString);
+			CodeContainer extendedContainer = extendCodeForAttribute(attributeContainer, attribute, valueString);
 			return extendedContainer;
 		} else {
-			String message = "Could not find the setter for the attribute '"
-					+ attribute.getName() + "'!";
+			String message = "Could not find the setter for the attribute '" + attribute.getName() + "'!";
 			LOG.error(message);
 			throw new IllegalStateException(message);
 		}
@@ -431,9 +399,9 @@ public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 	 * @param valueString
 	 * @return
 	 */
-	protected abstract CodeContainer extendCodeForAttribute(
-			CodeContainer attributeContainer, Field attribute,
-			String valueString);
+	protected abstract
+			CodeContainer
+			extendCodeForAttribute(CodeContainer attributeContainer, Field attribute, String valueString);
 
 	//#end region
 

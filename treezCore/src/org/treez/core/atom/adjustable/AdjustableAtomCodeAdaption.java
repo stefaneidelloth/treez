@@ -8,6 +8,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.base.parent.AttributeParentCodeAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.AtomCodeAdaption;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 
 /**
  * CodeAdaption for atoms
@@ -21,7 +22,7 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 	 *
 	 * @param atom
 	 */
-	public AdjustableAtomCodeAdaption(AbstractAtom atom) {
+	public AdjustableAtomCodeAdaption(AbstractUiSynchronizingAtom<?> atom) {
 		super(atom);
 	}
 
@@ -30,8 +31,7 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 	//#region METHODS
 
 	/**
-	 * Builds the code for setting attribute values of the atom. Might be
-	 * overridden by inheriting classes.
+	 * Builds the code for setting attribute values of the atom. Might be overridden by inheriting classes.
 	 *
 	 * @return
 	 */
@@ -41,10 +41,9 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 
 		AdjustableAtom adjustableAtom = initializeModelIfRequired();
 
-		AbstractAtom model = adjustableAtom.getModel();
+		AbstractAtom<?> model = adjustableAtom.getModel();
 		if (model != null) {
-			CodeContainer codeContainer = createCodeForAttributesFromModel(
-					adjustableAtom);
+			CodeContainer codeContainer = createCodeForAttributesFromModel(adjustableAtom);
 			return codeContainer;
 		} else {
 			throw new IllegalStateException(
@@ -65,14 +64,12 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 	 * @param parentAtom
 	 * @return
 	 */
-	protected CodeContainer createCodeForAttributesFromModel(
-			AdjustableAtom parentAtom) {
+	protected CodeContainer createCodeForAttributesFromModel(AdjustableAtom parentAtom) {
 
 		CodeContainer attributeContainer = new CodeContainer(scriptType);
 
-		AbstractAtom model = parentAtom.getModel();
-		List<TreeNodeAdaption> pageNodes = model.createTreeNodeAdaption()
-				.getChildren();
+		AbstractAtom<?> model = parentAtom.getModel();
+		List<TreeNodeAdaption> pageNodes = model.createTreeNodeAdaption().getChildren();
 
 		for (TreeNodeAdaption pageNode : pageNodes) {
 
@@ -81,8 +78,8 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 			String pageType = Page.class.getSimpleName();
 			boolean isPage = type.equals(pageType);
 			if (!isPage) {
-				String message = "The type of the first children of an AdjustableAtom has to be "
-						+ pageType + " and not '" + type + "'.";
+				String message = "The type of the first children of an AdjustableAtom has to be " + pageType
+						+ " and not '" + type + "'.";
 				throw new IllegalArgumentException(message);
 			}
 
@@ -91,12 +88,9 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 
 			//extend code with attribute code for page
 
-			AttributeParentCodeAdaption codeAdaption = page
-					.createCodeAdaption(scriptType);
+			AttributeParentCodeAdaption codeAdaption = page.createCodeAdaption(scriptType);
 
-			attributeContainer = codeAdaption
-					.extendAttributeCodeContainerForModelParent(null,
-							attributeContainer);
+			attributeContainer = codeAdaption.extendAttributeCodeContainerForModelParent(null, attributeContainer);
 		}
 
 		return attributeContainer;

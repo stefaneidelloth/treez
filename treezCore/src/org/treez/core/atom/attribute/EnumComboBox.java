@@ -19,7 +19,7 @@ import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 import org.treez.javafxd3.javafx.EnumValueProvider;
 
-public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractStringAttributeAtom {
+public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractStringAttributeAtom<EnumComboBox<T>> {
 
 	//#region ATTRIBUTES
 
@@ -81,6 +81,11 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 	//#region METHODS
 
 	@Override
+	public EnumComboBox<T> getThis() {
+		return this;
+	}
+
+	@Override
 	public EnumComboBox<T> copy() {
 		return new EnumComboBox<T>(this);
 	}
@@ -91,7 +96,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<EnumComboBox<T>> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -168,7 +173,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public EnumComboBox<T> setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 	}
 
@@ -195,8 +200,9 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public EnumComboBox<T> setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -204,26 +210,27 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public EnumComboBox<T> setDefaultValue(String defaultValue) {
 		boolean isAllowedValue = enumValueProviderInstance.getValues().contains(defaultValue);
 		if (isAllowedValue) {
 			this.defaultValue = defaultValue;
 		} else {
 			throw new IllegalArgumentException("The specified value '" + defaultValue + "' is not known.");
 		}
-
+		return getThis();
 	}
 
-	public void setDefaultValue(T enumValue) {
-		setDefaultValue(enumValue.toString());
+	public EnumComboBox<T> setDefaultValue(T enumValue) {
+		return setDefaultValue(enumValue.toString());
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public EnumComboBox<T> setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	@Override
@@ -244,7 +251,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public EnumComboBox<T> setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(comboBox)) {
 			comboBox.setEnabled(state);
@@ -253,6 +260,7 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 			//treeViewRefreshable.refresh(); //creates flickering when targets are updated
 		}
 		refreshAttributeAtomControl();
+		return getThis();
 	}
 
 	//#end region

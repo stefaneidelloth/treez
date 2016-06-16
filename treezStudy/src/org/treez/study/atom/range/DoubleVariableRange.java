@@ -19,9 +19,6 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Used to enter the range
-	 */
 	private DoubleVariableListField range;
 
 	//#end region
@@ -46,7 +43,7 @@ public class DoubleVariableRange extends AbstractVariableRange<Double> {
 		// source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
 				.createModelPath(sourceVariableModelPath, this, defaultValue, DoubleVariableField.class, selectionType,

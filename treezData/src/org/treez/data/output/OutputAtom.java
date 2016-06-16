@@ -17,7 +17,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 /**
  * Contains the output of a Model or Study
  */
-public class OutputAtom extends AbstractUiSynchronizingAtom {
+public class OutputAtom extends AbstractUiSynchronizingAtom<OutputAtom> {
 
 	//#region ATTRIBUTES
 
@@ -55,12 +55,19 @@ public class OutputAtom extends AbstractUiSynchronizingAtom {
 	//#region METHODS
 
 	@Override
+	public OutputAtom getThis() {
+		return this;
+	}
+
+	@Override
 	public OutputAtom copy() {
 		return new OutputAtom(this);
 	}
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		//LOG.debug("get root control");
 		return new EmptyControlAdaption(parent, this, "");

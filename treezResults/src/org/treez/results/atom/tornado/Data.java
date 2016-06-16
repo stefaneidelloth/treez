@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -71,14 +71,14 @@ public class Data implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 		Page dataPage = root.createPage("data", "   Data   ");
 		createDomainSection(parent, dataPage);
 		createRangeSection(parent, dataPage);
 		createGeneralSection(dataPage);
 	}
 
-	private void createDomainSection(AbstractAtom parent, Page dataPage) {
+	private void createDomainSection(AbstractAtom<?> parent, Page dataPage) {
 		Section domainSection = dataPage.createSection("domain", "Domain data");
 
 		Class<?> targetClass = org.treez.data.column.Column.class;
@@ -111,7 +111,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 		domainSection.createEnumComboBox(labelMode, this, LabelMode.ABSOLUTE).setLabel("Label mode");
 	}
 
-	private void createRangeSection(AbstractAtom parent, Page dataPage) {
+	private void createRangeSection(AbstractAtom<?> parent, Page dataPage) {
 		Class<?> targetClass;
 		String defaultValue;
 		Section rangeSection = dataPage.createSection("range", "Range data");
@@ -137,14 +137,15 @@ public class Data implements GraphicsPropertiesPageFactory {
 				.createModelPath(rangeAxis, this, defaultValue, targetClass, parent) //
 				.setLabel("Axis");
 
-		rangeSection.createEnumComboBox(sortingMode, this, SortingMode.LARGEST_DIFFERENCE).setLabel("Sorting mode");
+		rangeSection.createEnumComboBox(sortingMode, this, SortingMode.LARGEST_DIFFERENCE) //
+				.setLabel("Sorting mode");
 
 	}
 
 	private void createGeneralSection(Page dataPage) {
 		Section generalSection = dataPage.createSection("general");
 
-		generalSection.createTextField(legendText, "legendText", "").setLabel("Legend text");
+		generalSection.createTextField(legendText, this, "").setLabel("Legend text");
 		generalSection.createTextField(leftLabel, this).setLabel("Left label");
 		generalSection.createTextField(rightLabel, this).setLabel("Right label");
 
@@ -155,7 +156,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		Consumer dataChangedConsumer = () -> {
 			Tornado bar = (Tornado) parent;

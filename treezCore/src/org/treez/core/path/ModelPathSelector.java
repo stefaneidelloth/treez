@@ -22,63 +22,58 @@ public final class ModelPathSelector {
 	/**
 	 * Private Constructor that prevents construction.
 	 */
-	private ModelPathSelector() {
-	}
+	private ModelPathSelector() {}
 
 	//#end region
 
 	//#region METHODS
 
 	/**
-	 * Selects a model path from the given model. The targetClassName restricts
-	 * the types of atoms that can be selected, e.g. AttributeAtom.
+	 * Selects a model path from the given model. The targetClassName restricts the types of atoms that can be selected,
+	 * e.g. AttributeAtom.
 	 *
 	 * @param model
 	 * @param targetClassNames
 	 * @param defaultModelPath
 	 * @return
 	 */
-	public static String selectTreePath(AbstractAtom model,
-			String targetClassNames, String defaultModelPath) {
+	public static String selectTreePath(AbstractAtom<?> model, String targetClassNames, String defaultModelPath) {
 
 		LOG.debug("Selecting tree path");
 		ModelPathTreeSelectionWindow selectionWindow = new ModelPathTreeSelectionWindow();
-		selectionWindow.selectModelPath(model, targetClassNames,
-				defaultModelPath);
+		selectionWindow.selectModelPath(model, targetClassNames, defaultModelPath);
 		String modelPath = selectionWindow.getModelPath();
 
 		return modelPath;
 	}
 
 	/**
-	 * Returns a list with the target paths that are available in the given
-	 * model for the given targetClassName(s). If several target class names are
-	 * used, they have to be separated with ",".
+	 * Returns a list with the target paths that are available in the given model for the given targetClassName(s). If
+	 * several target class names are used, they have to be separated with ",".
 	 *
 	 * @param model
 	 * @param typeNames
 	 * @return
 	 */
-	public static List<String> getAvailableTargetPaths(AbstractAtom model,
-			String typeNames, boolean hasToBeEnabled) {
+	public static
+			List<String>
+			getAvailableTargetPaths(AbstractAtom<?> model, String typeNames, boolean hasToBeEnabled) {
 
 		//convert comma separated type names to array of type names
 		String[] typeNameArray = typeNames.split(",");
 
 		//get child nodes
-		List<TreeNodeAdaption> childNodes = model.createTreeNodeAdaption()
-				.getChildren();
+		List<TreeNodeAdaption> childNodes = model.createTreeNodeAdaption().getChildren();
 
 		//loop through the child nodes to collect the available paths
 		List<String> availablePaths = new ArrayList<>();
 		for (TreeNodeAdaption childNode : childNodes) {
 			//get child atom
-			AbstractAtom child = (AbstractAtom) childNode.getAdaptable();
+			AbstractAtom<?> child = (AbstractAtom<?>) childNode.getAdaptable();
 
 			//add path of child atom if it has the wanted type
 			for (String typeName : typeNameArray) {
-				boolean hasWantedType = Utils.checkIfHasWantedType(child,
-						typeName);
+				boolean hasWantedType = Utils.checkIfHasWantedType(child, typeName);
 				if (hasWantedType) {
 					String path = childNode.getTreePath();
 					if (hasToBeEnabled) {
@@ -93,8 +88,7 @@ public final class ModelPathSelector {
 			}
 
 			//collect available paths from sub children
-			availablePaths.addAll(
-					getAvailableTargetPaths(child, typeNames, hasToBeEnabled));
+			availablePaths.addAll(getAvailableTargetPaths(child, typeNames, hasToBeEnabled));
 
 		}
 
@@ -102,13 +96,12 @@ public final class ModelPathSelector {
 	}
 
 	/**
-	 * Checks if the given atom has a method isEnabled and this method returns
-	 * true
+	 * Checks if the given atom has a method isEnabled and this method returns true
 	 *
 	 * @param child
 	 * @return
 	 */
-	private static boolean checkIfAtomIsEnabled(AbstractAtom atom) {
+	private static boolean checkIfAtomIsEnabled(AbstractAtom<?> atom) {
 
 		Method method;
 		try {
@@ -126,8 +119,7 @@ public final class ModelPathSelector {
 		try {
 			Object[] arguments = null;
 			isEnabled = (boolean) method.invoke(atom, arguments);
-		} catch (IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException exception) {
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
 			String message = "Could not access method 'isEnabled'. Returning false";
 			LOG.warn(message, exception);
 			return false;

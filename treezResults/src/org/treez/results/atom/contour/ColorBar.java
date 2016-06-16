@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.EnumComboBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
@@ -107,20 +107,20 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page page = root.createPage("colorBar", "   ColorBar   ");
 
 		Section geometrySection = page.createSection("Geometry");
 
-		positionReferenceBox = geometrySection.createEnumComboBox(positionReference, "Position reference",
-				PositionReference.GRAPH);
+		positionReferenceBox = geometrySection.createEnumComboBox(positionReference, this, PositionReference.GRAPH);
+		positionReferenceBox.setLabel("Position reference");
 
-		horizontalPositionBox = geometrySection.createEnumComboBox(horizontalPosition, "Horizontal position",
-				HorizontalPosition.RIGHT);
+		horizontalPositionBox = geometrySection.createEnumComboBox(horizontalPosition, this, HorizontalPosition.RIGHT);
+		horizontalPositionBox.setLabel("Horizontal position");
 
-		verticalPositionBox = geometrySection.createEnumComboBox(verticalPosition, "Vertical position",
-				VerticalPosition.TOP);
+		verticalPositionBox = geometrySection.createEnumComboBox(verticalPosition, this, VerticalPosition.TOP);
+		verticalPositionBox.setLabel("Vertical position");
 
 		geometrySection.createIntegerVariableField(manualHorizontalPosition, this, 0) //
 				.setLabel("Manual horizontal position");
@@ -134,20 +134,20 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 		final int defaultBarHeight = 200;
 		geometrySection.createIntegerVariableField(height, this, defaultBarHeight);
 
-		geometrySection.createCheckBox(hide, "hide");
+		geometrySection.createCheckBox(hide, this);
 
 		Section backgroundSection = page.createSection("background");
 
 		backgroundSection.createColorChooser(backgroundColor, "Color", "white");
 		backgroundSection.createDoubleVariableField(backgroundTransparency, this, 0.0).setLabel("Transparency");
-		backgroundSection.createCheckBox(backgroundHide, "hide");
+		backgroundSection.createCheckBox(backgroundHide, this);
 
 		Section borderSection = page.createSection("border");
 
 		borderSection.createColorChooser(borderColor, "Color", "black");
 		borderSection.createDoubleVariableField(borderWidth, this, 1.0);
 		borderSection.createDoubleVariableField(borderTransparency, this, 0.0).setLabel("Transparency");
-		borderSection.createCheckBox(borderHide, "hide");
+		borderSection.createCheckBox(borderHide, this);
 
 		Section titleSection = page.createSection("title");
 
@@ -179,7 +179,7 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 		//not used here
 		return contourSelection;
 	}
@@ -262,15 +262,15 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 
 		Selection backgroundSelection = colorBarSelection.select(".cbbg");
 
-		GraphicsAtom.bindStringStyle(backgroundSelection, "fill", backgroundColor);
-		GraphicsAtom.bindTransparencyByStyle(backgroundSelection, backgroundTransparency);
-		GraphicsAtom.bindTransparencyToBooleanAttributeByStyle(backgroundSelection, backgroundHide,
+		AbstractGraphicsAtom.bindStringStyle(backgroundSelection, "fill", backgroundColor);
+		AbstractGraphicsAtom.bindTransparencyByStyle(backgroundSelection, backgroundTransparency);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttributeByStyle(backgroundSelection, backgroundHide,
 				backgroundTransparency);
 
-		GraphicsAtom.bindStringStyle(backgroundSelection, "stroke", borderColor);
-		GraphicsAtom.bindDoubleStyle(backgroundSelection, "stroke-width", borderWidth);
-		GraphicsAtom.bindLineTransparency(backgroundSelection, borderTransparency);
-		GraphicsAtom.bindLineTransparencyToBooleanAttribute(backgroundSelection, borderHide, borderTransparency);
+		AbstractGraphicsAtom.bindStringStyle(backgroundSelection, "stroke", borderColor);
+		AbstractGraphicsAtom.bindDoubleStyle(backgroundSelection, "stroke-width", borderWidth);
+		AbstractGraphicsAtom.bindLineTransparency(backgroundSelection, borderTransparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(backgroundSelection, borderHide, borderTransparency);
 
 	}
 

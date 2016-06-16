@@ -9,7 +9,7 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
-public class Spacer extends AbstractAttributeContainerAtom {
+public class Spacer extends AbstractAttributeContainerAtom<Spacer> {
 
 	//#region ATTRIBUTES
 
@@ -41,6 +41,11 @@ public class Spacer extends AbstractAttributeContainerAtom {
 	//#region METHODS
 
 	@Override
+	public Spacer getThis() {
+		return this;
+	}
+
+	@Override
 	public Spacer copy() {
 		return new Spacer(this);
 	}
@@ -51,8 +56,7 @@ public class Spacer extends AbstractAttributeContainerAtom {
 	}
 
 	@Override
-	public void createAtomControl(Composite parent,
-			FocusChangingRefreshable treeViewerRefreshable) {
+	public void createAtomControl(Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
 
 		//get data
 		String currentWidth = getWidth();
@@ -65,17 +69,6 @@ public class Spacer extends AbstractAttributeContainerAtom {
 		sizeData.heightHint = Integer.parseInt(currentHeight);
 		spacerComposite.setLayoutData(sizeData);
 
-		//create spacer	without border and title and with empty content
-
-		/*
-		 * Composite spacerComposite; if (parentID.equals("0")){
-		 * //spacerComposite = new Composite(form, SWT.NONE); spacerComposite =
-		 * toolkit.createComposite(form);
-		 *
-		 * } else{ Composite parentSection = mapOfSections.get(parentID);
-		 * spacerComposite = new Composite(parentSection, SWT.NONE); }
-		 */
-
 	}
 
 	//#end region
@@ -86,16 +79,23 @@ public class Spacer extends AbstractAttributeContainerAtom {
 		return width;
 	}
 
-	public void setWidth(String width) {
+	public Spacer setWidth(String width) {
 		this.width = width;
+		return getThis();
 	}
 
 	public String getHeight() {
 		return height;
 	}
 
-	public void setHeight(String height) {
+	public Spacer setHeight(String height) {
 		this.height = height;
+		return getThis();
+	}
+
+	@Override
+	public Spacer setEnabled(boolean enable) {
+		throw new IllegalStateException("not yet implemented");
 	}
 
 	//#end region

@@ -61,7 +61,7 @@ public class EqualAssumption extends AbstractAssumption {
 		//source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 		data
 				.createModelPath(sourceVariableModelPath, this, defaultValue, DoubleVariableField.class, selectionType,
@@ -73,19 +73,20 @@ public class EqualAssumption extends AbstractAssumption {
 		}
 
 		//min
-		TextField minField = data.createTextField(min, "min", "0");
+		TextField minField = data.createTextField(min, this, "0");
 		minField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(min.get(), max.get());
 		});
 
 		//max
-		TextField maxField = data.createTextField(max, "max", "1");
+		TextField maxField = data.createTextField(max, this, "1");
 		maxField.addModifyListener("plotProbability", (event) -> {
 			plotProbability(min.get(), max.get());
 		});
 
 		//function plotter
-		plotter = data.createFunctionPlotter(functionPlotter, "plotter");
+		plotter = data.createFunctionPlotter(functionPlotter, this);
+		plotter.setLabel("Plotter");
 
 		//thumbnail plot
 		setModel(root);
@@ -133,7 +134,7 @@ public class EqualAssumption extends AbstractAssumption {
 	protected void assignRealtiveRootToSourceVariablePath() {
 		Objects.requireNonNull(sourceModelModelPath, "Source model path must not be null when calling this function.");
 		data.setLabel("Data for " + sourceModelModelPath);
-		AbstractAtom relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
+		AbstractAtom<?> relativeRootAtom = this.getChildFromRoot(sourceModelModelPath);
 		AttributeWrapper<String> pathWrapper = (AttributeWrapper<String>) sourceVariableModelPath;
 		ModelPath modelPath = (ModelPath) pathWrapper.getAttribute();
 		modelPath.setModelRelativeRoot(relativeRootAtom);

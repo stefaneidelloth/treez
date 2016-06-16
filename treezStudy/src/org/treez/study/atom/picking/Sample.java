@@ -28,6 +28,7 @@ import org.treez.study.Activator;
 /**
  * Represents a picking sample for a picking parameter variation.
  */
+@SuppressWarnings("checkstyle:visibilitymodifier")
 public class Sample extends AdjustableAtom {
 
 	//#region ATTRIBUTES
@@ -43,27 +44,27 @@ public class Sample extends AdjustableAtom {
 	 * Contains all data of the sample, maps from VariableField name to VariableField atom. The values are stored in the
 	 * VariableField atoms.
 	 */
-	private Map<String, VariableField<?>> variableData;
+	private Map<String, VariableField<?, ?>> variableData;
 
 	/**
 	 * Same as variableData, but for temporary data storage during update. The temporary map allows to circumvent issues
 	 * with the order of the VariableField atoms: its easier to create a new ordered map than inserting new entries
 	 * between existing old entries.
 	 */
-	private Map<String, VariableField<?>> tempVariableData;
+	private Map<String, VariableField<?, ?>> tempVariableData;
 
 	/**
 	 * Contains all time series data of the sample, maps from VariableField name to VariableListField atom. The values
 	 * are stored in the VariableListField atoms.
 	 */
-	private Map<String, AbstractVariableListField<?>> variableSeriesData;
+	private Map<String, AbstractVariableListField<?, ?>> variableSeriesData;
 
 	/**
 	 * Same as variableListData, but for temporary data storage during update. The temporary map allows to circumvent
 	 * issues with the order of the VariableListField atoms: its easier to create a new ordered map than inserting new
 	 * entries between existing old entries.
 	 */
-	private Map<String, AbstractVariableListField<?>> tempVariableSeriesData;
+	private Map<String, AbstractVariableListField<?, ?>> tempVariableSeriesData;
 
 	//#region CONSTRUCTORS
 
@@ -76,7 +77,9 @@ public class Sample extends AdjustableAtom {
 	//#region METHODS
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 		updateSampleModel();
 		AbstractControlAdaption controlAdaption = super.createControlAdaption(parent, treeViewRefreshable);
 		return controlAdaption;
@@ -113,7 +116,7 @@ public class Sample extends AdjustableAtom {
 		Picking pickingParent = getPickingParent();
 		boolean isTimeDependent = pickingParent.isTimeDependent.get();
 
-		List<VariableField<?>> variableFields = getVariableFieldsFromPickingParent();
+		List<VariableField<?, ?>> variableFields = getVariableFieldsFromPickingParent();
 
 		if (variableData == null) {
 			variableData = new LinkedHashMap<>();
@@ -126,7 +129,7 @@ public class Sample extends AdjustableAtom {
 		//exists and create or update new variable fields
 		tempVariableData = new LinkedHashMap<>();
 		tempVariableSeriesData = new LinkedHashMap<>();
-		for (VariableField<?> variableField : variableFields) {
+		for (VariableField<?, ?> variableField : variableFields) {
 			if (variableField != null) {
 				if (isTimeDependent) {
 					String timeVariableName = getTimeVariableName(pickingParent);
@@ -146,7 +149,7 @@ public class Sample extends AdjustableAtom {
 			createTimeSeriesLabelField(pickingSection, pickingParent);
 
 			for (String variableName : tempVariableSeriesData.keySet()) {
-				AbstractVariableListField<?> variableListField = tempVariableSeriesData.get(variableName);
+				AbstractVariableListField<?, ?> variableListField = tempVariableSeriesData.get(variableName);
 				variableSeriesData.put(variableName, variableListField);
 				pickingSection.addChild(variableListField);
 			}
@@ -154,9 +157,9 @@ public class Sample extends AdjustableAtom {
 		} else {
 
 			for (String variableName : tempVariableData.keySet()) {
-				VariableField<?> variableField = tempVariableData.get(variableName);
+				VariableField<?, ?> variableField = tempVariableData.get(variableName);
 				variableData.put(variableName, variableField);
-				AbstractAtom variableFieldAtom = (AbstractAtom) variableField;
+				AbstractAtom<?> variableFieldAtom = (AbstractAtom<?>) variableField;
 				pickingSection.addChild(variableFieldAtom);
 			}
 		}
@@ -214,7 +217,7 @@ public class Sample extends AdjustableAtom {
 		return timeVariableName;
 	}
 
-	private void createOrUpdateVariableFieldWithTempMap(VariableField<?> variableFieldAtom) {
+	private void createOrUpdateVariableFieldWithTempMap(VariableField<?, ?> variableFieldAtom) {
 		String variableFieldName = variableFieldAtom.getName();
 		boolean alreadyExists = variableData.containsKey(variableFieldName);
 		if (!alreadyExists) {
@@ -224,28 +227,28 @@ public class Sample extends AdjustableAtom {
 		}
 	}
 
-	private void createVariableField(VariableField<?> variableField) {
-		AbstractAtom variableFieldAtom = (AbstractAtom) variableField;
-		AbstractAtom newVariableFieldAtom = variableFieldAtom.copy();
-		VariableField<?> newVariableField = (VariableField<?>) newVariableFieldAtom;
+	private void createVariableField(VariableField<?, ?> variableField) {
+		AbstractAtom<?> variableFieldAtom = (AbstractAtom<?>) variableField;
+		AbstractAtom<?> newVariableFieldAtom = variableFieldAtom.copy();
+		VariableField<?, ?> newVariableField = (VariableField<?, ?>) newVariableFieldAtom;
 		String variableFieldName = newVariableFieldAtom.getName();
 		tempVariableData.put(variableFieldName, newVariableField);
 	}
 
-	private void updateVariableField(VariableField<?> variableField) {
+	private void updateVariableField(VariableField<?, ?> variableField) {
 		String name = variableField.getName();
-		VariableField<?> oldVariableField = variableData.get(name);
+		VariableField<?, ?> oldVariableField = variableData.get(name);
 		String newLabel = variableField.getLabel();
 		oldVariableField.setLabel(newLabel);
 
-		AbstractAtom variableFieldAtom = (AbstractAtom) oldVariableField;
-		AbstractAtom newVariableFieldAtom = variableFieldAtom.copy();
-		VariableField<?> newVariableField = (VariableField<?>) newVariableFieldAtom;
+		AbstractAtom<?> variableFieldAtom = (AbstractAtom<?>) oldVariableField;
+		AbstractAtom<?> newVariableFieldAtom = variableFieldAtom.copy();
+		VariableField<?, ?> newVariableField = (VariableField<?, ?>) newVariableFieldAtom;
 		tempVariableData.put(name, newVariableField);
 	}
 
 	private void createOrUpdateVariableListFieldWithTempMap(
-			VariableField<?> variableFieldAtom,
+			VariableField<?, ?> variableFieldAtom,
 			String timeVariableName) {
 		String variableFieldName = variableFieldAtom.getName();
 		boolean alreadyExists = variableSeriesData.containsKey(variableFieldName);
@@ -256,39 +259,39 @@ public class Sample extends AdjustableAtom {
 		}
 	}
 
-	private void createVariableListField(VariableField<?> variableField, String timeVariableName) {
-		AbstractVariableListField<?> newVariableListField = variableField.createVariableListField();
+	private void createVariableListField(VariableField<?, ?> variableField, String timeVariableName) {
+		AbstractVariableListField<?, ?> newVariableListField = variableField.createVariableListField();
 		String variableFieldName = variableField.getName();
 		String label = variableFieldName + "(" + timeVariableName + ")";
 		newVariableListField.setLabel(label);
 		tempVariableSeriesData.put(variableFieldName, newVariableListField);
 	}
 
-	private void updateVariableListField(VariableField<?> variableField, String timeVariableName) {
+	private void updateVariableListField(VariableField<?, ?> variableField, String timeVariableName) {
 		String name = variableField.getName();
-		AbstractVariableListField<?> oldVariableListField = variableSeriesData.get(name);
+		AbstractVariableListField<?, ?> oldVariableListField = variableSeriesData.get(name);
 
-		AbstractVariableListField<?> newVariableListField = oldVariableListField.copy();
+		AbstractVariableListField<?, ?> newVariableListField = oldVariableListField.copy();
 		String newLabel = variableField.getLabel();
 		String label = newLabel + "(" + timeVariableName + ")";
 		newVariableListField.setLabel(label);
 		tempVariableSeriesData.put(name, newVariableListField);
 	}
 
-	private List<VariableField<?>> getVariableFieldsFromPickingParent() {
+	private List<VariableField<?, ?>> getVariableFieldsFromPickingParent() {
 		Picking picking = getPickingParent();
-		List<VariableField<?>> variableFields = picking.getPickingVariables();
+		List<VariableField<?, ?>> variableFields = picking.getPickingVariables();
 		return variableFields;
 	}
 
 	private Picking getPickingParent() {
-		AbstractAtom parent = this.getParentAtom();
+		AbstractAtom<?> parent = this.getParentAtom();
 		checkIfParentIsPicking(parent);
 		Picking picking = (Picking) parent;
 		return picking;
 	}
 
-	private static void checkIfParentIsPicking(AbstractAtom parent) {
+	private static void checkIfParentIsPicking(AbstractAtom<?> parent) {
 		boolean parentIsPicking = parent instanceof Picking;
 		if (!parentIsPicking) {
 			String message = "Sample atoms must be used with a Picking parent.";
@@ -297,7 +300,7 @@ public class Sample extends AdjustableAtom {
 	}
 
 	protected void createEnabledCheckBox() {
-		CheckBox enabledCheck = pickingSection.createCheckBox(enabled, "enabled", enabled.get());
+		CheckBox enabledCheck = pickingSection.createCheckBox(enabled, this, enabled.get());
 		enabledCheck.addModifyListener("updateEnabledState", (event) -> {
 			boolean enabledState = enabled.get();
 			setEnabled(enabledState);
@@ -381,7 +384,7 @@ public class Sample extends AdjustableAtom {
 			updateSampleModel();
 		}
 
-		VariableField<?> variableField = variableData.get(variableName);
+		VariableField<?, ?> variableField = variableData.get(variableName);
 		if (variableField != null) {
 			variableField.setValueString(valueString);
 		} else {
@@ -395,7 +398,7 @@ public class Sample extends AdjustableAtom {
 	 *
 	 * @return
 	 */
-	public Map<String, VariableField<?>> getVariableData() {
+	public Map<String, VariableField<?, ?>> getVariableData() {
 		return variableData;
 	}
 
@@ -404,7 +407,7 @@ public class Sample extends AdjustableAtom {
 	 *
 	 * @return
 	 */
-	public Map<String, AbstractVariableListField<?>> getVariableSeriesData() {
+	public Map<String, AbstractVariableListField<?, ?>> getVariableSeriesData() {
 		return variableSeriesData;
 	}
 

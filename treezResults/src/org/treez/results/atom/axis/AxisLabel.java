@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
@@ -53,40 +53,40 @@ public class AxisLabel implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page axisLabelPage = root.createPage("axisLabel", "   Axis label   ");
 
 		Section axisLabel = axisLabelPage.createSection("axisLabel", "Axis label");
 
-		axisLabel.createFont(font, "font");
+		axisLabel.createFont(font, this);
 
-		axisLabel.createTextField(size, "size", "22");
+		axisLabel.createTextField(size, this, "22");
 
-		axisLabel.createColorChooser(color, "color", "black");
+		axisLabel.createColorChooser(color, this, "black");
 
-		axisLabel.createCheckBox(italic, "italic");
+		axisLabel.createCheckBox(italic, this);
 
-		axisLabel.createCheckBox(bold, "bold");
+		axisLabel.createCheckBox(bold, this);
 
-		axisLabel.createCheckBox(underline, "underline");
+		axisLabel.createCheckBox(underline, this);
 
-		axisLabel.createCheckBox(hide, "hide");
+		axisLabel.createCheckBox(hide, this);
 
 		//CheckBox atEdgeCheck = axisLabel.createCheckBox(atEdge, "atEdge");
 		//atEdgeCheck.setLabel("At edge");
 
-		axisLabel.createComboBox(rotate, "rotate", "-180,-135,-90,-45,0,45,90,135,180", "0");
+		axisLabel.createComboBox(rotate, this, "-180,-135,-90,-45,0,45,90,135,180", "0");
 
-		TextField offsetField = axisLabel.createTextField(labelOffset, "labelOffset", "4");
+		TextField offsetField = axisLabel.createTextField(labelOffset, this, "4");
 		offsetField.setLabel("Label offset");
 
-		axisLabel.createComboBox(position, "position", "at-minimum,centre,at-maximum", "centre");
+		axisLabel.createComboBox(position, this, "at-minimum,centre,at-maximum", "centre");
 
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection axisSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		Axis axis = (Axis) parent;
 
@@ -110,14 +110,14 @@ public class AxisLabel implements GraphicsPropertiesPageFactory {
 		geometryConsumer.consume();
 
 		Attribute<String> labelAttribute = axis.data.label;
-		GraphicsAtom.bindText(label, labelAttribute);
-		GraphicsAtom.bindStringAttribute(label, "font-family", font);
-		GraphicsAtom.bindStringAttribute(label, "font-size", size);
-		GraphicsAtom.bindStringAttribute(label, "fill", color);
-		GraphicsAtom.bindFontItalicStyle(label, italic);
-		GraphicsAtom.bindFontBoldStyle(label, bold);
-		GraphicsAtom.bindFontUnderline(label, underline);
-		GraphicsAtom.bindTransparencyToBooleanAttribute(label, hide);
+		AbstractGraphicsAtom.bindText(label, labelAttribute);
+		AbstractGraphicsAtom.bindStringAttribute(label, "font-family", font);
+		AbstractGraphicsAtom.bindStringAttribute(label, "font-size", size);
+		AbstractGraphicsAtom.bindStringAttribute(label, "fill", color);
+		AbstractGraphicsAtom.bindFontItalicStyle(label, italic);
+		AbstractGraphicsAtom.bindFontBoldStyle(label, bold);
+		AbstractGraphicsAtom.bindFontUnderline(label, underline);
+		AbstractGraphicsAtom.bindTransparencyToBooleanAttribute(label, hide);
 
 		return axisSelection;
 	}
@@ -223,7 +223,7 @@ public class AxisLabel implements GraphicsPropertiesPageFactory {
 		String fontName = font.get();
 		String fontSizeString = size.get();
 		int fontSize = (int) Double.parseDouble(fontSizeString);
-		double awtTextHeight = GraphicsAtom.estimateTextHeight(fontName, fontSize);
+		double awtTextHeight = AbstractGraphicsAtom.estimateTextHeight(fontName, fontSize);
 
 		double height = Math.max(svgLabelHeight, awtTextHeight);
 		return height;

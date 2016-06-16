@@ -55,7 +55,7 @@ public class BooleanVariableRange extends AbstractVariableRange<Boolean> {
 		// source variable
 		String defaultValue = "";
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 		boolean hasToBeEnabled = true;
 
 		data

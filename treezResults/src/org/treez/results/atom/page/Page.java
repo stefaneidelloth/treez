@@ -16,7 +16,7 @@ import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.standallone.StandAloneWorkbench;
@@ -34,7 +34,7 @@ import org.treez.results.atom.graph.Graph;
  * Represents a plotting page that might include several graphs
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Page extends GraphicsAtom {
+public class Page extends AbstractGraphicsAtom {
 
 	//#region ATTRIBUTES
 
@@ -85,17 +85,15 @@ public class Page extends GraphicsAtom {
 		section.createSectionAction("action", "Build page", runAction);
 
 		//page settings
-		section
-				.createTextField(width, "width", "15 cm") //
+		section.createTextField(width, this, "15 cm") //
 				.setLabel("Page width");
 
-		section
-				.createTextField(height, "height", "15 cm") //
+		section.createTextField(height, this, "15 cm") //
 				.setLabel("Page Height");
 
-		section.createColorChooser(color, "color", "white");
+		section.createColorChooser(color, this, "white");
 
-		section.createCheckBox(hide, "hide");
+		section.createCheckBox(hide, this);
 
 		setModel(root);
 
@@ -141,8 +139,8 @@ public class Page extends GraphicsAtom {
 
 			Selection svgSelection = d3 //
 					.select("#svg");
-			GraphicsAtom.bindStringAttribute(svgSelection, "width", width);
-			GraphicsAtom.bindStringAttribute(svgSelection, "height", height);
+			AbstractGraphicsAtom.bindStringAttribute(svgSelection, "width", width);
+			AbstractGraphicsAtom.bindStringAttribute(svgSelection, "height", height);
 
 			plotWithD3(d3, svgSelection, treeViewRefreshable);
 		};
@@ -160,15 +158,14 @@ public class Page extends GraphicsAtom {
 
 		//remove old page group if it already exists
 		svgSelection //
-				.select("#" + name)
-				.remove();
+				.select("#" + name).remove();
 
 		//create new page group
 		pageSelection = svgSelection //
 				.append("g"); //
 		bindNameToId(pageSelection);
 
-		GraphicsAtom.bindDisplayToBooleanAttribute("hidePage", pageSelection, hide);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hidePage", pageSelection, hide);
 
 		//create rect
 		rectSelection = pageSelection //
@@ -243,8 +240,7 @@ public class Page extends GraphicsAtom {
 
 		boolean isRunningInEclipse = AbstractActivator.isRunningInEclipse();
 		if (isRunningInEclipse) {
-			IViewReference[] viewReferences = PlatformUI
-					.getWorkbench()
+			IViewReference[] viewReferences = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow()
 					.getActivePage()
 					.getViewReferences();

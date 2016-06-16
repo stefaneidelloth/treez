@@ -5,7 +5,7 @@ import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -36,32 +36,32 @@ public class Data implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page mainPage = root.createPage("data", "   Data   ");
 
 		Section main = mainPage.createSection("data");
 
-		TextField leftMarginField = main.createTextField(leftMargin, "leftMargin", "2.5 cm");
+		TextField leftMarginField = main.createTextField(leftMargin, this, "2.5 cm");
 		leftMarginField.setLabel("Left margin");
 
-		TextField topMarginField = main.createTextField(topMargin, "topMargin", "0.5 cm");
+		TextField topMarginField = main.createTextField(topMargin, this, "0.5 cm");
 		topMarginField.setLabel("Top margin");
 
-		main.createTextField(width, "width", "12 cm");
+		main.createTextField(width, this, "12 cm");
 
-		main.createTextField(height, "height", "12 cm");
+		main.createTextField(height, this, "12 cm");
 
-		main.createCheckBox(hide, "hide");
+		main.createCheckBox(hide, this);
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection graphSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
-		GraphicsAtom.bindTranslationAttribute("graphTranslation", graphSelection, leftMargin, topMargin);
-		GraphicsAtom.bindStringAttribute(rectSelection, "width", width);
-		GraphicsAtom.bindStringAttribute(rectSelection, "height", height);
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideGraph", graphSelection, hide);
+		AbstractGraphicsAtom.bindTranslationAttribute("graphTranslation", graphSelection, leftMargin, topMargin);
+		AbstractGraphicsAtom.bindStringAttribute(rectSelection, "width", width);
+		AbstractGraphicsAtom.bindStringAttribute(rectSelection, "height", height);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideGraph", graphSelection, hide);
 
 		Consumer replotGraph = () -> {
 			Graph graph = (Graph) parent;

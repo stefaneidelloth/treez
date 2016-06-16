@@ -21,13 +21,10 @@ import org.treez.core.data.table.TreezTable;
 import org.treez.core.treeview.TreeViewerRefreshable;
 
 /**
- * This atom contains a list that consists of Rows (having a single column).
- * This atom implements TreezTable. The corresponding control adaption shows the
- * list and some additional buttons to edit the list.
+ * This atom contains a list that consists of Rows (having a single column). This atom implements TreezTable. The
+ * corresponding control adaption shows the list and some additional buttons to edit the list.
  */
-public class TreezListAtom extends AbstractUiSynchronizingAtom
-		implements
-			TreezTable {
+public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> implements TreezTable {
 
 	//#region ATTRIBUTES
 
@@ -57,23 +54,20 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	private List<Row> rows = null; //null;
 
 	/**
-	 * If this flag is true, and the column type of the treezList is
-	 * ColumnType.TEXT, an additional button will be shown that allows to edit
-	 * the text entries as file path.
+	 * If this flag is true, and the column type of the treezList is ColumnType.TEXT, an additional button will be shown
+	 * that allows to edit the text entries as file path.
 	 */
 	private boolean showFilePathButton = false;
 
 	/**
-	 * If this flag is true, and the column type of the treezList is
-	 * ColumnType.TEXT, an additional button will be shown that allows to edit
-	 * the text entries as directory path.
+	 * If this flag is true, and the column type of the treezList is ColumnType.TEXT, an additional button will be shown
+	 * that allows to edit the text entries as directory path.
 	 */
 	private boolean showDirectoryPathButton = false;
 
 	/**
-	 * This String specifies the available items as comma separated list, e.g.
-	 * item1,item2. If this attribute is not null a combo box will be used as
-	 * list cell editor instead of a text field.
+	 * This String specifies the available items as comma separated list, e.g. item1,item2. If this attribute is not
+	 * null a combo box will be used as list cell editor instead of a text field.
 	 */
 	private String availableStringItems = null;
 
@@ -115,32 +109,24 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 
 	//#region METHODS
 
-	//#region COPY
+	@Override
+	protected TreezListAtom getThis() {
+		return this;
+	}
 
-	/**
-	 * Overrides the copy method of AbstractAtom using the copy constructor of
-	 * this atom
-	 */
 	@Override
 	public TreezListAtom copy() {
 		return new TreezListAtom(this);
 	}
 
-	//#end region
-
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("column.png");
 	}
 
-	/**
-	 * Provides a control to represent this atom
-	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent,
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
 			FocusChangingRefreshable treeViewRefreshable) {
 		//store tree view to be able to update it
 		this.treeViewRefreshable = treeViewRefreshable;
@@ -158,20 +144,15 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 
 	}
 
-	/**
-	 * Creates the context menu actions for this atom
-	 */
 	@Override
-	protected List<Object> createContextMenuActions(
-			TreeViewerRefreshable treeViewer) {
+	protected List<Object> createContextMenuActions(TreeViewerRefreshable treeViewer) {
 
 		List<Object> actions = new ArrayList<>();
 		return actions;
 	}
 
 	/**
-	 * Returns all row entries of the list as a single String, separated by the
-	 * given row separator
+	 * Returns all row entries of the list as a single String, separated by the given row separator
 	 *
 	 * @return
 	 */
@@ -190,8 +171,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	}
 
 	/**
-	 * Returns all data of the list as a single String, separated by the default
-	 * row separator
+	 * Returns all data of the list as a single String, separated by the default row separator
 	 *
 	 * @return
 	 */
@@ -201,12 +181,11 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	}
 
 	/**
-	 * Adds a new row with the given object (depending on the ColumnType this
-	 * can be of different type) *
+	 * Adds a new row with the given object (depending on the ColumnType this can be of different type) *
 	 *
 	 * @param entry
 	 */
-	public void addRow(Object entry) {
+	public TreezListAtom addRow(Object entry) {
 
 		//initialize rows if they do not yet exist
 		if (rows == null) {
@@ -224,8 +203,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 		try {
 			formattedValue = associatedClass.cast(entry);
 		} catch (ClassCastException exception) {
-			String message = "The value '" + entry.toString()
-					+ "' does not have the required type '"
+			String message = "The value '" + entry.toString() + "' does not have the required type '"
 					+ associatedClass.getSimpleName()
 					+ "'. Please change the type of the list or the type of the value. ";
 			throw new IllegalArgumentException(message);
@@ -239,6 +217,8 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 		rows.add(row);
 
 		//LOG.debug("added");
+
+		return getThis();
 	}
 
 	/**
@@ -246,11 +226,12 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	 *
 	 * @param data
 	 */
-	public void addRows(Object[] data) {
+	public TreezListAtom addRows(Object[] data) {
 		int size = data.length;
 		for (int rowIndex = 0; rowIndex < size; rowIndex++) {
 			addRow(data[rowIndex]);
 		}
+		return getThis();
 	}
 
 	@Override
@@ -311,9 +292,10 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	 *
 	 * @param rows
 	 */
-	public void setRows(List<Row> rows) {
+	public TreezListAtom setRows(List<Row> rows) {
 		this.rows = rows;
 		refreshControlAdaption();
+		return getThis();
 	}
 
 	/**
@@ -321,7 +303,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	 *
 	 * @param data
 	 */
-	public void setRows(Object[] data) {
+	public TreezListAtom setRows(Object[] data) {
 
 		Class<?> associatedClass = getColumnType(header).getAssociatedClass();
 
@@ -346,6 +328,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 		}
 
 		refreshControlAdaption();
+		return getThis();
 	}
 
 	//#end region
@@ -366,8 +349,9 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	 *
 	 * @param header
 	 */
-	public void setHeader(String header) {
+	public TreezListAtom setHeader(String header) {
 		this.header = header;
+		return getThis();
 	}
 
 	/**
@@ -387,8 +371,9 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	 *
 	 * @param headerIsVisible
 	 */
-	public void setShowHeader(boolean headerIsVisible) {
+	public TreezListAtom setShowHeader(boolean headerIsVisible) {
 		this.showHeader = headerIsVisible;
+		return getThis();
 	}
 
 	/**
@@ -418,8 +403,9 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	 *
 	 * @param columnType
 	 */
-	public void setColumnType(ColumnType columnType) {
+	public TreezListAtom setColumnType(ColumnType columnType) {
 		this.columnType = columnType;
+		return getThis();
 	}
 
 	/**
@@ -465,10 +451,8 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	}
 
 	@Override
-	public CellLabelProvider getLabelProvider(String header,
-			ColumnType columnType) {
-		CellLabelProvider labelProvider = new TreezTableJFaceLabelProvider(
-				header, columnType);
+	public CellLabelProvider getLabelProvider(String header, ColumnType columnType) {
+		CellLabelProvider labelProvider = new TreezTableJFaceLabelProvider(header, columnType);
 		return labelProvider;
 	}
 
@@ -480,10 +464,8 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	 * Define cell editor
 	 */
 	@Override
-	public CellEditor getCellEditor(String header, ColumnType columnType,
-			Composite parent) {
-		CellEditor cellEditor = CellEditorFactory.createCellEditor(columnType,
-				parent);
+	public CellEditor getCellEditor(String header, ColumnType columnType, Composite parent) {
+		CellEditor cellEditor = CellEditorFactory.createCellEditor(columnType, parent);
 		return cellEditor;
 	}
 
@@ -520,9 +502,9 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	/**
 	 * Enables the file path button
 	 */
-	public void enableFilePathButton() {
+	public TreezListAtom enableFilePathButton() {
 		showFilePathButton = true;
-
+		return getThis();
 	}
 
 	/**
@@ -536,8 +518,9 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	/**
 	 * Enables the directory path button
 	 */
-	public void enableDirectoryPathButton() {
+	public TreezListAtom enableDirectoryPathButton() {
 		showDirectoryPathButton = true;
+		return getThis();
 
 	}
 
@@ -547,8 +530,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	}
 
 	@Override
-	public boolean checkSourceLink(TableSourceInformation tableSourceInfo)
-			throws IllegalStateException {
+	public boolean checkSourceLink(TableSourceInformation tableSourceInfo) throws IllegalStateException {
 		return false;
 	}
 
@@ -557,8 +539,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	//#region AVAILABLE STRING ITEMS
 
 	/**
-	 * Returns the available items as a list. Returns an empty list if the
-	 * available items have not been set.
+	 * Returns the available items as a list. Returns an empty list if the available items have not been set.
 	 *
 	 * @return
 	 */
@@ -578,10 +559,10 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	/**
 	 * @param availableItems
 	 */
-	public void setAvailableStringItems(String availableItems) {
+	public TreezListAtom setAvailableStringItems(String availableItems) {
 		availableStringItems = availableItems;
 		refreshControlAdaption();
-
+		return getThis();
 	}
 
 	/**
@@ -615,8 +596,9 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom
 	/**
 	 * @param autoCreateFirstRow
 	 */
-	public void setFirstRowAutoCreation(boolean autoCreateFirstRow) {
+	public TreezListAtom setFirstRowAutoCreation(boolean autoCreateFirstRow) {
 		firstRowAutoCreation = autoCreateFirstRow;
+		return getThis();
 	}
 
 	//#end region

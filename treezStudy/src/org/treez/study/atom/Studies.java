@@ -56,7 +56,7 @@ public class Studies extends AdjustableAtom {
 	@Override
 	public void execute(FocusChangingRefreshable refreshable) {
 		this.treeViewRefreshable = refreshable;
-		for (AbstractAtom child : getChildAtoms()) {
+		for (AbstractAtom<?> child : getChildAtoms()) {
 			boolean isStudy = child instanceof Study;
 			if (isStudy) {
 				//get study

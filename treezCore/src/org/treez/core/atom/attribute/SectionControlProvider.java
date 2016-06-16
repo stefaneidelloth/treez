@@ -207,13 +207,13 @@ public class SectionControlProvider {
 
 			try {
 
-				AbstractAttributeAtom<?> propertyAtom = (AbstractAttributeAtom<?>) childNode.getAdaptable();
+				AbstractAttributeAtom<?, ?> propertyAtom = (AbstractAttributeAtom<?, ?>) childNode.getAdaptable();
 				propertyAtom.createAttributeAtomControl(sectionContentComposite, treeViewerRefreshable);
 
 			} catch (Exception exception) {
 				try {
 
-					AbstractAttributeContainerAtom propertyAtom = (AbstractAttributeContainerAtom) childNode
+					AbstractAttributeContainerAtom<?> propertyAtom = (AbstractAttributeContainerAtom<?>) childNode
 							.getAdaptable();
 					propertyAtom.createAtomControl(sectionContentComposite, treeViewerRefreshable);
 

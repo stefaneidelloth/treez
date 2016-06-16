@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.treez.core.adaptable.CodeContainer;
-import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.AtomCodeAdaption;
 import org.treez.core.data.row.Row;
 
@@ -17,7 +16,7 @@ public class TableCodeAdaption extends AtomCodeAdaption {
 
 	//#region CONSTRUCTORS
 
-	public TableCodeAdaption(AbstractAtom atom) {
+	public TableCodeAdaption(Table atom) {
 		super(atom);
 	}
 

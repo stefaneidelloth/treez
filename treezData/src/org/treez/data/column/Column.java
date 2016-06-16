@@ -93,6 +93,11 @@ public class Column extends AdjustableAtom {
 	//#region METHODS
 
 	@Override
+	public Column getThis() {
+		return this;
+	}
+
+	@Override
 	public Column copy() {
 		return new Column(this);
 	}
@@ -107,13 +112,13 @@ public class Column extends AdjustableAtom {
 
 		Section section = page.createSection("section");
 
-		section.createTextField(header, "header", name);
+		section.createTextField(header, this, name);
 
-		section.createTextField(description, "description", "");
+		section.createTextField(description, this, "");
 
-		section.createColumnTypeComboBox(columnType, "Type", ColumnType.TEXT);
+		section.createColumnTypeComboBox(columnType, this, ColumnType.TEXT).setLabel("Type");
 
-		section.createTextField(enumValues, "enumValues", "item1,item2");
+		section.createTextField(enumValues, this, "item1,item2");
 
 		setModel(root);
 

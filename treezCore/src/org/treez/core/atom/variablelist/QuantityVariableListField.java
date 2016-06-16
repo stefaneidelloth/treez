@@ -14,23 +14,18 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.variablefield.QuantityVariableField;
-import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.quantity.Quantity;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.springspel.VectorEvaluation;
 import org.treez.core.swt.CustomLabel;
 
 /**
- * Allows a user to enter a string that is interpreted as a list of numeric
- * values and a string that is interpreted as unit. This is use for example by
- * the study atom QuantityVariableRange
+ * Allows a user to enter a string that is interpreted as a list of numeric values and a string that is interpreted as
+ * unit. This is use for example by the study atom QuantityVariableRange
  */
-public class QuantityVariableListField
-		extends
-			AbstractVariableListField<Quantity> {
+public class QuantityVariableListField extends AbstractVariableListField<QuantityVariableListField, Quantity> {
 
 	//#region ATTRIBUTES
 
@@ -52,22 +47,19 @@ public class QuantityVariableListField
 	private String tooltip;
 
 	/**
-	 * Contains the actual valueString. This is used together with the
-	 * unitString to represent the state of this attribute atom. The
-	 * attributeValue is derived from them.
+	 * Contains the actual valueString. This is used together with the unitString to represent the state of this
+	 * attribute atom. The attributeValue is derived from them.
 	 */
 	private String valueString;
 
 	/**
-	 * Contains the actual unitString. This is used together with the
-	 * valueString to represent the state of this attribute atom. The
-	 * attributeValue is derived from them.
+	 * Contains the actual unitString. This is used together with the valueString to represent the state of this
+	 * attribute atom. The attributeValue is derived from them.
 	 */
 	private String unitString;
 
 	/**
-	 * The value text field, may contain a single number or an expression to
-	 * create a list of numbers
+	 * The value text field, may contain a single number or an expression to create a list of numbers
 	 */
 	private Text valueField = null;
 
@@ -110,6 +102,11 @@ public class QuantityVariableListField
 	//#region METHODS
 
 	@Override
+	protected QuantityVariableListField getThis() {
+		return this;
+	}
+
+	@Override
 	public QuantityVariableListField copy() {
 		return new QuantityVariableListField(this);
 	}
@@ -121,8 +118,9 @@ public class QuantityVariableListField
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractAttributeAtom<List<Quantity>> createAttributeAtomControl(
-			Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
+	public QuantityVariableListField createAttributeAtomControl(
+			Composite parent,
+			FocusChangingRefreshable treeViewerRefreshable) {
 		this.treeViewRefreshable = treeViewerRefreshable;
 
 		//initialize quantity list value at the first call
@@ -139,8 +137,7 @@ public class QuantityVariableListField
 		fillHorizontal.horizontalAlignment = GridData.FILL;
 
 		//create container control for labels and text fields
-		Composite container = createContainerComposite(parent, toolkit,
-				fillHorizontal);
+		Composite container = createContainerComposite(parent, toolkit, fillHorizontal);
 
 		//label
 		CustomLabel labelComposite = new CustomLabel(toolkit, container, label);
@@ -159,15 +156,14 @@ public class QuantityVariableListField
 		int preferredUnitWidth = 40;
 		int unitWidth = unitField.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
 		if (unitWidth < preferredUnitWidth) {
-			GridDataFactory.fillDefaults().hint(preferredUnitWidth, SWT.DEFAULT)
-					.applyTo(unitField);
+			GridDataFactory.fillDefaults().hint(preferredUnitWidth, SWT.DEFAULT).applyTo(unitField);
 		}
 
 		//unit end label
 		@SuppressWarnings("unused")
 		CustomLabel unitEndLabel = new CustomLabel(toolkit, container, "]");
 
-		return this;
+		return getThis();
 	}
 
 	private void createUnitTextField(FormToolkit toolkit, Composite container) {
@@ -206,8 +202,7 @@ public class QuantityVariableListField
 		isUpdating = false;
 	}
 
-	private void createValueTextField(FormToolkit toolkit,
-			Composite container) {
+	private void createValueTextField(FormToolkit toolkit, Composite container) {
 		valueField = toolkit.createText(container, getValueString());
 		valueField.setToolTipText(tooltip);
 		valueField.setEnabled(isEnabled());
@@ -248,11 +243,9 @@ public class QuantityVariableListField
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
-	private static Composite createContainerComposite(Composite parent,
-			FormToolkit toolkit, GridData fillHorizontal) {
+	private static Composite createContainerComposite(Composite parent, FormToolkit toolkit, GridData fillHorizontal) {
 		Composite container = toolkit.createComposite(parent);
-		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(
-				8, false);
+		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(8, false);
 		gridLayout.horizontalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		container.setLayout(gridLayout);
@@ -261,25 +254,23 @@ public class QuantityVariableListField
 	}
 
 	@Override
-	public QuantityVariableListFieldCodeAdaption createCodeAdaption(
-			ScriptType scriptType) {
+	public QuantityVariableListFieldCodeAdaption createCodeAdaption(ScriptType scriptType) {
 
 		QuantityVariableListFieldCodeAdaption codeAdaption;
 		switch (scriptType) {
-			case JAVA :
-				codeAdaption = new QuantityVariableListFieldCodeAdaption(this);
-				break;
-			default :
-				String message = "The ScriptType " + scriptType
-						+ " is not yet implemented.";
-				throw new IllegalStateException(message);
+		case JAVA:
+			codeAdaption = new QuantityVariableListFieldCodeAdaption(this);
+			break;
+		default:
+			String message = "The ScriptType " + scriptType + " is not yet implemented.";
+			throw new IllegalStateException(message);
 		}
 
 		return codeAdaption;
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public QuantityVariableListField setEnabled(boolean state) {
 		if (valueField != null) {
 			valueField.setEnabled(state);
 		}
@@ -287,6 +278,7 @@ public class QuantityVariableListField
 		if (unitField != null) {
 			unitField.setEnabled(state);
 		}
+		return getThis();
 	}
 
 	@Override
@@ -307,19 +299,16 @@ public class QuantityVariableListField
 	}
 
 	/**
-	 * Creates a list of Quantities by evaluating the value string to a double
-	 * list and converting the double list and the given unit to a quantity list
+	 * Creates a list of Quantities by evaluating the value string to a double list and converting the double list and
+	 * the given unit to a quantity list
 	 *
 	 * @param valueString
 	 * @param unitString
 	 * @return
 	 */
-	private static List<Quantity> createQuantityList(String valueString,
-			String unitString) {
-		List<Double> values = vectorEvaluation
-				.parseStringToDoubleList(valueString);
-		List<Quantity> quantityList = Quantity.createQuantityList(values,
-				unitString);
+	private static List<Quantity> createQuantityList(String valueString, String unitString) {
+		List<Double> values = vectorEvaluation.parseStringToDoubleList(valueString);
+		List<Quantity> quantityList = Quantity.createQuantityList(values, unitString);
 		return quantityList;
 
 	}
@@ -351,7 +340,7 @@ public class QuantityVariableListField
 	}
 
 	@Override
-	public VariableField<Quantity> createVariableField() {
+	public QuantityVariableField createVariableField() {
 		QuantityVariableField variableField = new QuantityVariableField(name);
 		List<Quantity> currentValues = get();
 		if (currentValues == null || currentValues.isEmpty()) {
@@ -369,8 +358,7 @@ public class QuantityVariableListField
 	//#region ACCESSORS
 
 	@Override
-	public void setBackgroundColor(
-			org.eclipse.swt.graphics.Color backgroundColor) {
+	public QuantityVariableListField setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -378,14 +366,12 @@ public class QuantityVariableListField
 	//#region VALUE
 
 	/**
-	 * Returns the quantity list. This does not use the attributeValue to store
-	 * the state of this attribute atom but uses the valueString and the
-	 * unitString to do so.
+	 * Returns the quantity list. This does not use the attributeValue to store the state of this attribute atom but
+	 * uses the valueString and the unitString to do so.
 	 */
 	@Override
 	public List<Quantity> get() {
-		List<Quantity> quantities = createQuantityList(getValueString(),
-				getUnitString());
+		List<Quantity> quantities = createQuantityList(getValueString(), getUnitString());
 		return quantities;
 	}
 
@@ -397,8 +383,7 @@ public class QuantityVariableListField
 			setUnitString("");
 		} else {
 			List<Double> doubleList = Quantity.createDoubleList(valueList);
-			String currentValueString = VectorEvaluation
-					.doubleListToDisplayString(doubleList);
+			String currentValueString = VectorEvaluation.doubleListToDisplayString(doubleList);
 			String currentUnitString = valueList.get(0).getUnit();
 			setValueString(currentValueString);
 			setUnitString(currentUnitString);
@@ -413,8 +398,7 @@ public class QuantityVariableListField
 	 * @return
 	 */
 	public List<Double> getDoubleValue() {
-		List<Double> numericValues = vectorEvaluation
-				.parseStringToDoubleList(valueString);
+		List<Double> numericValues = vectorEvaluation.parseStringToDoubleList(valueString);
 		return numericValues;
 	}
 
@@ -427,12 +411,11 @@ public class QuantityVariableListField
 	}
 
 	/**
-	 * Sets the value string. If the given value is null, the value string is
-	 * set to "".
+	 * Sets the value string. If the given value is null, the value string is set to "".
 	 *
 	 * @param valueString
 	 */
-	public void setValueString(String valueString) {
+	public QuantityVariableListField setValueString(String valueString) {
 		if (valueString == null) {
 			boolean valueChanged = !"".equals(this.valueString);
 			if (valueChanged) {
@@ -445,6 +428,7 @@ public class QuantityVariableListField
 			}
 		}
 		setInitialized();
+		return getThis();
 	}
 
 	//#end region
@@ -456,12 +440,12 @@ public class QuantityVariableListField
 	}
 
 	/**
-	 * Sets the unit string. If the given value is null, the unit string is set
-	 * to "". Specify the unit without brackets, e.g. "m" instead of "[m]"
+	 * Sets the unit string. If the given value is null, the unit string is set to "". Specify the unit without
+	 * brackets, e.g. "m" instead of "[m]"
 	 *
 	 * @param unitString
 	 */
-	public void setUnitString(String unitString) {
+	public QuantityVariableListField setUnitString(String unitString) {
 		if (unitString == null) {
 			boolean unitChanged = !"".equals(this.unitString);
 			if (unitChanged) {
@@ -473,6 +457,8 @@ public class QuantityVariableListField
 				setUnitStringUnchecked(unitString);
 			}
 		}
+
+		return getThis();
 	}
 
 	//#end region
@@ -484,8 +470,9 @@ public class QuantityVariableListField
 	}
 
 	@Override
-	public void setLabel(String label) {
+	public QuantityVariableListField setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	//#end region
@@ -494,39 +481,40 @@ public class QuantityVariableListField
 
 	@Override
 	public List<Quantity> getDefaultValue() {
-		List<Quantity> quantities = createQuantityList(defaultValueString,
-				defaultUnitString);
+		List<Quantity> quantities = createQuantityList(defaultValueString, defaultUnitString);
 		return quantities;
 	}
 
-	public void setDefaultValue(List<Quantity> valueList) {
+	public QuantityVariableListField setDefaultValue(List<Quantity> valueList) {
 		if (valueList.isEmpty()) {
 			setDefaultValueString("");
 			setDefaultUnitString("");
 		} else {
 			List<Double> doubleList = Quantity.createDoubleList(valueList);
-			String currentDefaultValueString = VectorEvaluation
-					.doubleListToDisplayString(doubleList);
+			String currentDefaultValueString = VectorEvaluation.doubleListToDisplayString(doubleList);
 			String currentDefaultUnitString = valueList.get(0).getUnit();
 			setDefaultValueString(currentDefaultValueString);
 			setDefaultUnitString(currentDefaultUnitString);
 		}
+		return getThis();
 	}
 
 	public String getDefaultValueString() {
 		return defaultValueString;
 	}
 
-	public void setDefaultValueString(String defaultValueString) {
+	public QuantityVariableListField setDefaultValueString(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
+		return getThis();
 	}
 
 	public String getDefaultUnitString() {
 		return defaultUnitString;
 	}
 
-	public void setDefaultUnitString(String defaultUnitString) {
+	public QuantityVariableListField setDefaultUnitString(String defaultUnitString) {
 		this.defaultUnitString = defaultUnitString;
+		return getThis();
 	}
 
 	//#end region
@@ -537,8 +525,9 @@ public class QuantityVariableListField
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public QuantityVariableListField setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	//#end region

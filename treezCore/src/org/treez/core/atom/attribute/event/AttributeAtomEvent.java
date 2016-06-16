@@ -17,7 +17,7 @@ public class AttributeAtomEvent extends Event {
 		this.widget = new AttributeAtomEventWidget();
 	}
 
-	public AttributeAtomEvent(AbstractAttributeAtom<?> attributeAtom) {
+	public AttributeAtomEvent(AbstractAttributeAtom<?, ?> attributeAtom) {
 		super();
 		this.data = attributeAtom.get();
 		this.widget = new AttributeAtomEventWidget();

@@ -119,7 +119,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 		VariableNameRegistry.reset();
 
 		//get root atom
-		AbstractAtom rootAtom = getRootAtom();
+		AbstractAtom<?> rootAtom = getRootAtom();
 		if (rootAtom == null) {
 			return;
 		}
@@ -196,7 +196,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 	 *
 	 * @return
 	 */
-	private AbstractAtom getRootAtom() {
+	private AbstractAtom<?> getRootAtom() {
 		Objects.requireNonNull(treeViewProvider, "Tree view provider must not be null");
 		TreeViewer treeViewer = treeViewProvider.getTreeViewer();
 		Objects.requireNonNull(treeViewer, "Tree viewer must not be null");
@@ -215,12 +215,12 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 
 		boolean isAbstractAtom = AbstractAtom.class.isAssignableFrom(rootObject.getClass());
 		if (!isAbstractAtom) {
-			String message = "The root object is not an AbstractAtom but " + rootObject.getClass().getSimpleName()
+			String message = "The root object is not an AbstractAtom<?> but " + rootObject.getClass().getSimpleName()
 					+ ". Could not get valid root from tree viewer.";
 			LOG.error(message);
 			return null;
 		}
-		AbstractAtom rootAtom = (AbstractAtom) rootObject;
+		AbstractAtom<?> rootAtom = (AbstractAtom<?>) rootObject;
 		return rootAtom;
 	}
 
@@ -251,10 +251,10 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 		} else {
 
 			// create the invisible root element
-			AbstractAtom invisibleRoot = new Root("invisibleRoot");
+			AbstractAtom<?> invisibleRoot = new Root("invisibleRoot");
 
 			// retrieve the (visible) root element from the scripting support
-			AbstractAtom root = scripting.getRoot();
+			AbstractAtom<?> root = scripting.getRoot();
 
 			// attach the (visible) root to the invisible root of the tree view
 			if (root != null) {

@@ -4,7 +4,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -20,7 +19,9 @@ import org.treez.core.utils.Utils;
 /**
  * Abstract parent class for some variable fields
  */
-public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> implements VariableField<T> {
+public abstract class AbstractVariableField<A extends AbstractVariableField<A, T>, T>
+		extends
+		AbstractAttributeAtom<A, T> implements VariableField<A, T> {
 
 	//#region ATTRIBUTES
 
@@ -32,9 +33,6 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 
 	@IsParameter(defaultValue = "")
 	protected String tooltip;
-
-	@SuppressWarnings("checkstyle:magicnumber")
-	protected Color backgroundColor = new Color(null, 255, 255, 255);
 
 	/**
 	 * Contains the actual valueString. This is used together with the unitString to represent the state of this
@@ -80,7 +78,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	 *
 	 * @param fieldToCopy
 	 */
-	protected AbstractVariableField(AbstractVariableField<T> fieldToCopy) {
+	protected AbstractVariableField(AbstractVariableField<A, T> fieldToCopy) {
 		super(fieldToCopy);
 		label = fieldToCopy.label;
 		defaultValueString = fieldToCopy.defaultValueString;
@@ -335,7 +333,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public A setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(valueField)) {
 			valueField.setEnabled(state);
@@ -344,6 +342,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 			//treeViewRefreshable.refresh(); //creates flickering when targets are updated
 		}
 		refreshAttributeAtomControl();
+		return getThis();
 	}
 
 	@Override
@@ -378,7 +377,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	 * @param valueString
 	 */
 	@Override
-	public void setValueString(String valueString) {
+	public A setValueString(String valueString) {
 		if (valueString == null) {
 			boolean valueChanged = !"".equals(this.valueString);
 			if (valueChanged) {
@@ -390,6 +389,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 				setValueStringUnchecked(valueString);
 			}
 		}
+		return getThis();
 
 	}
 
@@ -409,8 +409,9 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	 * @param label
 	 */
 	@Override
-	public void setLabel(String label) {
+	public A setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	//#end region
@@ -427,8 +428,9 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	/**
 	 * @param defaultValueString
 	 */
-	public void setDefaultValueString(String defaultValueString) {
+	public A setDefaultValueString(String defaultValueString) {
 		this.defaultValueString = defaultValueString;
+		return getThis();
 	}
 
 	//#end region
@@ -445,8 +447,9 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	/**
 	 * @param tooltip
 	 */
-	public void setTooltip(String tooltip) {
+	public A setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	//#end region
@@ -454,7 +457,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 	//#region BACKGROUND COLOR
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color color) {
+	public A setBackgroundColor(org.eclipse.swt.graphics.Color color) {
 		backgroundColor = color;
 		if (isAvailable(container)) {
 			container.setBackground(color);
@@ -463,6 +466,7 @@ public abstract class AbstractVariableField<T> extends AbstractAttributeAtom<T> 
 		if (isAvailable(labelComposite)) {
 			labelComposite.setBackground(color);
 		}
+		return getThis();
 
 	}
 

@@ -22,7 +22,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Allows the user to choose a color map
  */
-public class ColorMap extends AbstractStringAttributeAtom {
+public class ColorMap extends AbstractStringAttributeAtom<ColorMap> {
 
 	//#region ATTRIBUTES
 
@@ -85,6 +85,11 @@ public class ColorMap extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public ColorMap getThis() {
+		return this;
+	}
+
+	@Override
 	public ColorMap copy() {
 		return new ColorMap(this);
 	}
@@ -98,7 +103,7 @@ public class ColorMap extends AbstractStringAttributeAtom {
 	 * Creates the composite on a given parent
 	 */
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<ColorMap> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -243,7 +248,7 @@ public class ColorMap extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public ColorMap setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 	}
 

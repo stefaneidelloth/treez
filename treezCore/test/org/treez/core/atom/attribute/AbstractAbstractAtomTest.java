@@ -26,15 +26,14 @@ import org.treez.testutils.TestUtils;
  */
 public abstract class AbstractAbstractAtomTest {
 
-	private static final Logger LOG = Logger
-			.getLogger(AbstractAbstractAtomTest.class);
+	private static final Logger LOG = Logger.getLogger(AbstractAbstractAtomTest.class);
 
 	//#region ATTRIBUTES
 
 	/**
 	 * The atom to test
 	 */
-	protected AbstractAtom atom;
+	protected AbstractAtom<?> atom;
 
 	/**
 	 * The name of atom to test
@@ -81,37 +80,34 @@ public abstract class AbstractAbstractAtomTest {
 
 		//get and show control
 		Composite controlComposite = previewWindow.getControlComposite();
-		AbstractControlAdaption controlAdaption = atom
-				.createControlAdaption(controlComposite, null);
+		AbstractControlAdaption controlAdaption = atom.createControlAdaption(controlComposite, null);
 
 		//get and show graphics
 		Composite graphicsComposite = previewWindow.getGraphicsComposite();
-		GraphicsAdaption graphicsAdaption = atom
-				.createGraphicsAdaption(graphicsComposite);
+		GraphicsAdaption graphicsAdaption = atom.createGraphicsAdaption(graphicsComposite);
 
 		//get and show code
 		CodeAdaption codeAdaption = atom.createCodeAdaption(ScriptType.JAVA);
 		CodeContainer rootContainer = new CodeContainer(ScriptType.JAVA);
-		Optional<CodeContainer> injectedChildContainer = Optional
-				.ofNullable(null);
-		previewWindow.setCode(codeAdaption
-				.buildCodeContainer(rootContainer, injectedChildContainer)
-				.buildCode());
+		Optional<CodeContainer> injectedChildContainer = Optional.ofNullable(null);
+		previewWindow.setCode(codeAdaption.buildCodeContainer(rootContainer, injectedChildContainer).buildCode());
 
 		//get tree node adaption
 		TreeNodeAdaption treeNodeAdaption = atom.createTreeNodeAdaption();
 
 		//check obtained objects
-		checkOptainedObjects(name, atomImage, controlAdaption, graphicsAdaption,
-				codeAdaption, treeNodeAdaption);
+		checkOptainedObjects(name, atomImage, controlAdaption, graphicsAdaption, codeAdaption, treeNodeAdaption);
 
 		//previewWindow.showUntilManuallyClosed();
 
 	}
 
-	private void checkOptainedObjects(String name, Image atomImage,
+	private void checkOptainedObjects(
+			String name,
+			Image atomImage,
 			AbstractControlAdaption controlAdaption,
-			GraphicsAdaption graphicsAdaption, CodeAdaption codeAdaption,
+			GraphicsAdaption graphicsAdaption,
+			CodeAdaption codeAdaption,
 			TreeNodeAdaption treeNodeAdaption) {
 		//name
 		assertEquals("name", atomName, name);
@@ -123,11 +119,8 @@ public abstract class AbstractAbstractAtomTest {
 		assertEquals("adaptable", atom, codeAdaption.getAdaptable());
 
 		CodeContainer rootContainer = new CodeContainer(ScriptType.JAVA);
-		Optional<CodeContainer> injectedChildContainer = Optional
-				.ofNullable(null);
-		String code = codeAdaption
-				.buildCodeContainer(rootContainer, injectedChildContainer)
-				.buildCode();
+		Optional<CodeContainer> injectedChildContainer = Optional.ofNullable(null);
+		String code = codeAdaption.buildCodeContainer(rootContainer, injectedChildContainer).buildCode();
 		LOG.info("Test Atom Code:\n" + code);
 
 		//tree node adaption
@@ -137,8 +130,7 @@ public abstract class AbstractAbstractAtomTest {
 		TreeNodeAdaption parent = treeNodeAdaption.getParent();
 		assertEquals("parent", null, parent);
 		Image nodeImage = treeNodeAdaption.getImage();
-		assertEquals("image", atomImage.getBackground(),
-				nodeImage.getBackground());
+		assertEquals("image", atomImage.getBackground(), nodeImage.getBackground());
 		assertEquals("label", atomName, treeNodeAdaption.getLabel());
 		assertEquals("tree path", atomName, treeNodeAdaption.getTreePath());
 

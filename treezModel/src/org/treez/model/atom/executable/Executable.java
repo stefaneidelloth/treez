@@ -127,6 +127,11 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	//#region METHODS
 
+	@Override
+	public Executable getThis() {
+		return this;
+	}
+
 	private void createExecutableSection(
 			Page dataPage,
 			ModifyListener updateStatusListener,
@@ -137,7 +142,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 				resetImage);
 		executable.createSectionAction("action", "Run external executable", () -> execute(treeViewRefreshable));
 
-		FilePath filePath = executable.createFilePath(executablePath, "executablePath", "Executable", "notepad.exe");
+		FilePath filePath = executable.createFilePath(executablePath, this, "Executable", "notepad.exe");
 		filePath.addModifyListener("updateStatus", updateStatusListener);
 
 	}
@@ -148,13 +153,13 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			String executableHelpContextId) {
 		Section input = dataPage.createSection("input", executableHelpContextId);
 
-		TextField argumentTextField = input.createTextField(inputArguments, "inputArguments", "");
+		TextField argumentTextField = input.createTextField(inputArguments, this, "");
 		argumentTextField.setLabel("Input arguments");
 		argumentTextField.addModifyListener("updateStatus", updateStatusListener);
 		argumentTextField.setHelpId("org.eclipse.ui.ide.executable");
 
-		FileOrDirectoryPath inputPathChooser = input.createFileOrDirectoryPath(inputPath, "inputPath",
-				"Input file or folder", "");
+		FileOrDirectoryPath inputPathChooser = input.createFileOrDirectoryPath(inputPath, this, "Input file or folder",
+				"");
 		inputPathChooser.addModifyListener("updateStatus", updateStatusListener);
 	}
 
@@ -164,15 +169,15 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			String executableHelpContextId) {
 		Section output = dataPage.createSection("output", executableHelpContextId);
 
-		TextField outputArgs = output.createTextField(outputArguments, "outputArguments", "");
+		TextField outputArgs = output.createTextField(outputArguments, this, "");
 		outputArgs.setLabel("Output arguments");
 		outputArgs.addModifyListener("updateStatus", updateStatusListener);
 
-		FileOrDirectoryPath outputPathChooser = output.createFileOrDirectoryPath(outputPath, "outputPath",
+		FileOrDirectoryPath outputPathChooser = output.createFileOrDirectoryPath(outputPath, this,
 				"Output file or folder", "", false);
 		outputPathChooser.addModifyListener("updateStatus", updateStatusListener);
 
-		CheckBox copyInputField = output.createCheckBox(copyInputFile, "copyInput", true);
+		CheckBox copyInputField = output.createCheckBox(copyInputFile, this, true);
 		copyInputField.setLabel("Copy input file");
 	}
 
@@ -186,17 +191,15 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		outputModification.createLabel("includeDate", "Include date in:");
 
-		CheckBox dateInFolderCheck = outputModification.createCheckBox(includeDateInFolder, "includeDateInFolder",
-				false);
+		CheckBox dateInFolderCheck = outputModification.createCheckBox(includeDateInFolder, this, false);
 		dateInFolderCheck.setLabel("Folder name");
 		dateInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
-		CheckBox dateInSubFolderCheck = outputModification.createCheckBox(includeDateInSubFolder,
-				"includeDateInSubFolder", false);
+		CheckBox dateInSubFolderCheck = outputModification.createCheckBox(includeDateInSubFolder, this, false);
 		dateInFolderCheck.setLabel("Extra folder");
 		dateInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
-		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInFile, "includeDate", false);
+		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInFile, this, false);
 		dateInFileCheck.setLabel("File name");
 		dateInFileCheck.addModifyListener("updateStatus", updateStatusListener);
 
@@ -204,18 +207,16 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		org.treez.core.atom.attribute.Label studyIndexLabel = outputModification.createLabel("studyIndexLabel",
 				"Include study index in:");
 
-		CheckBox studyIndexInFolderCheck = outputModification.createCheckBox(includeStudyIndexInFolder,
-				"includeStudyIndexInFolder", false);
+		CheckBox studyIndexInFolderCheck = outputModification.createCheckBox(includeStudyIndexInFolder, this, false);
 		studyIndexInFolderCheck.setLabel("Folder name");
 		studyIndexInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
-		CheckBox studyIndexInSubFolderCheck = outputModification.createCheckBox(includeStudyIndexInSubFolder,
-				"includeStudyIndexInSubFolder", false);
+		CheckBox studyIndexInSubFolderCheck = outputModification.createCheckBox(includeStudyIndexInSubFolder, this,
+				false);
 		studyIndexInSubFolderCheck.setLabel("Extra folder");
 		studyIndexInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
-		CheckBox studyIndexInFileCheck = outputModification.createCheckBox(includeStudyIndexInFile,
-				"includeStudyIndexInFile", false);
+		CheckBox studyIndexInFileCheck = outputModification.createCheckBox(includeStudyIndexInFile, this, false);
 		studyIndexInFileCheck.setLabel("File name");
 		studyIndexInFileCheck.addModifyListener("updateStatus", updateStatusListener);
 	}
@@ -227,11 +228,11 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		Section logging = dataPage.createSection("logging", executableHelpContextId);
 		logging.setExpanded(false);
 
-		TextField logArgumentsText = logging.createTextField(logArguments, "logArguments", "");
+		TextField logArgumentsText = logging.createTextField(logArguments, this, "");
 		logArgumentsText.setLabel("Log arguments");
 		logArgumentsText.addModifyListener("updateStatus", updateStatusListener);
 
-		FilePath logFilePathChooser = logging.createFilePath(logFilePath, "logFilePath", "Log file", "", false);
+		FilePath logFilePathChooser = logging.createFilePath(logFilePath, this, "Log file", "", false);
 		logFilePathChooser.addModifyListener("updateStatus", updateStatusListener);
 	}
 
@@ -240,7 +241,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		status.setExpanded(false);
 
 		//resulting command
-		status.createInfoText(commandInfo, "commandInfo", "Resulting command", "");
+		status.createInfoText(commandInfo, this, "Resulting command", "");
 
 		//execution status
 		status.createInfoText(executionStatusInfo, "executionStatusInfo", "Execution status", "Not yet executed.");

@@ -32,8 +32,7 @@ import org.treez.core.utils.Utils;
  */
 public class ModelPathTreeSelectionWindow implements TreezView {
 
-	private static final Logger LOG = Logger
-			.getLogger(ModelPathTreeSelectionWindow.class);
+	private static final Logger LOG = Logger.getLogger(ModelPathTreeSelectionWindow.class);
 
 	//#region ATTRIBUTES
 
@@ -130,23 +129,19 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	//#region METHODS
 
 	/**
-	 * Closes the Window and sets the return value to the path of the selected
-	 * node
+	 * Closes the Window and sets the return value to the path of the selected node
 	 */
 	public void okAction() {
 		LOG.debug("ok");
 
 		//get selected node
-		TreeItem[] selectedTreeItems = treeViewProvider.getTreeViewer()
-				.getTree().getSelection();
+		TreeItem[] selectedTreeItems = treeViewProvider.getTreeViewer().getTree().getSelection();
 		boolean itemSelected = selectedTreeItems.length > 0;
 		if (itemSelected) {
 			//only take first selected item
 			TreeItem selectedTreeItem = selectedTreeItems[0];
-			AbstractAtom selectedAtom = (AbstractAtom) selectedTreeItem
-					.getData();
-			String currentModelPath = selectedAtom.createTreeNodeAdaption()
-					.getTreePath();
+			AbstractAtom<?> selectedAtom = (AbstractAtom<?>) selectedTreeItem.getData();
+			String currentModelPath = selectedAtom.createTreeNodeAdaption().getTreePath();
 			LOG.debug(currentModelPath);
 
 			//save the selected model path in the modelPath of this dialog to
@@ -163,8 +158,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	}
 
 	/**
-	 * Closes the Window and sets the return value to the path of the selected
-	 * node
+	 * Closes the Window and sets the return value to the path of the selected node
 	 */
 	public void cancelAction() {
 		LOG.debug("cancel");
@@ -181,8 +175,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	//#region ACCESSORS
 
 	/**
-	 * Returns the parent composite for the control preview as and
-	 * implementation of the TreezView interface
+	 * Returns the parent composite for the control preview as and implementation of the TreezView interface
 	 */
 	@Override
 	public Composite getContentComposite() {
@@ -200,15 +193,13 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	}
 
 	/**
-	 * Allows the user to select a model path by selecting a tree node in a tree
-	 * view
+	 * Allows the user to select a model path by selecting a tree node in a tree view
 	 *
 	 * @param model
 	 * @param targetClassNames
 	 * @param defaultPath
 	 */
-	public void selectModelPath(AbstractAtom model, String targetClassNames,
-			String defaultPath) {
+	public void selectModelPath(AbstractAtom<?> model, String targetClassNames, String defaultPath) {
 
 		//save defaultPath and value as a default result
 		this.defaultPath = defaultPath;
@@ -237,22 +228,20 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	}
 
 	/**
-	 * Tries to select a node for the given model path in the given tree view
-	 * and to expand the nodes so that the wanted node can immediately bee seen
+	 * Tries to select a node for the given model path in the given tree view and to expand the nodes so that the wanted
+	 * node can immediately bee seen
 	 *
 	 * @param treeViewer
 	 * @param defaultPath
 	 */
-	private void selectNodeWithDefaultPath(TreeViewer treeViewer,
-			String defaultPath) {
+	private void selectNodeWithDefaultPath(TreeViewer treeViewer, String defaultPath) {
 
 		//expand all nodes
 		treeViewer.expandAll();
 
 		//get the tree item to be selected by looping through the tree
 		TreeItem[] allRootItems = treeViewer.getTree().getItems();
-		TreeItem wantedTreeItem = tryToGetTreeItemForModelPath(defaultPath,
-				allRootItems);
+		TreeItem wantedTreeItem = tryToGetTreeItemForModelPath(defaultPath, allRootItems);
 
 		boolean itemWasFound = wantedTreeItem != null;
 		if (itemWasFound) {
@@ -264,23 +253,20 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	}
 
 	/**
-	 * Returns the TreeItem for a given model path or null if the model path
-	 * cannot be found
+	 * Returns the TreeItem for a given model path or null if the model path cannot be found
 	 *
 	 * @param defaultPath
 	 * @param allRootItems
 	 * @return
 	 */
-	private TreeItem tryToGetTreeItemForModelPath(String defaultPath,
-			TreeItem[] allRootItems) {
+	private TreeItem tryToGetTreeItemForModelPath(String defaultPath, TreeItem[] allRootItems) {
 
 		for (TreeItem currentItem : allRootItems) {
 
 			//get model path for current item
-			AbstractAtom atom = (AbstractAtom) currentItem.getData();
+			AbstractAtom<?> atom = (AbstractAtom<?>) currentItem.getData();
 			if (atom != null) {
-				String currentModelPath = atom.createTreeNodeAdaption()
-						.getTreePath();
+				String currentModelPath = atom.createTreeNodeAdaption().getTreePath();
 
 				//check model path for current item
 				boolean isWantedItem = currentModelPath.equals(defaultPath);
@@ -290,8 +276,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 
 				//check model paths for sub items
 				TreeItem[] subItems = currentItem.getItems();
-				TreeItem wantedItem = tryToGetTreeItemForModelPath(defaultPath,
-						subItems);
+				TreeItem wantedItem = tryToGetTreeItemForModelPath(defaultPath, subItems);
 				if (wantedItem != null) {
 					return wantedItem;
 				}
@@ -331,8 +316,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 					Adaptable adaptable = (Adaptable) treeItem.getData();
 
 					//check if it has wanted type
-					boolean hasWantedType = Utils
-							.checkIfHasWantedType(adaptable, wantedTypeNames);
+					boolean hasWantedType = Utils.checkIfHasWantedType(adaptable, wantedTypeNames);
 					if (!hasWantedType) {
 						removeAdaptableFromTreeSelection(adaptable, treeViewer);
 					}
@@ -349,8 +333,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 	 * @param adaptable
 	 * @param treeViewer
 	 */
-	private static void removeAdaptableFromTreeSelection(Adaptable adaptable,
-			TreeViewer treeViewer) {
+	private static void removeAdaptableFromTreeSelection(Adaptable adaptable, TreeViewer treeViewer) {
 
 		//get old selection
 		TreeItem[] treeItems = treeViewer.getTree().getSelection();
@@ -367,8 +350,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 				newTreeItems.add(currentTreeItem);
 			}
 		}
-		TreeItem[] newSelection = newTreeItems
-				.toArray(new TreeItem[newTreeItems.size()]);
+		TreeItem[] newSelection = newTreeItems.toArray(new TreeItem[newTreeItems.size()]);
 
 		//set new selection
 		treeViewer.getTree().setSelection(newSelection);
@@ -385,8 +367,7 @@ public class ModelPathTreeSelectionWindow implements TreezView {
 		if (selectionExists) {
 			return modelPath;
 		} else {
-			throw new IllegalStateException(
-					"The method selectModelPath must be called before using this method.");
+			throw new IllegalStateException("The method selectModelPath must be called before using this method.");
 		}
 	}
 

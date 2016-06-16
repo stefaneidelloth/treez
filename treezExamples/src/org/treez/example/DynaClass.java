@@ -1,6 +1,5 @@
 package org.treez.example;
 
-import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.scripting.ModelProvider;
 import org.treez.data.variable.VariableDefinition;
@@ -11,8 +10,8 @@ public class DynaClass extends ModelProvider {
 	public org.treez.core.atom.attribute.AttributeRoot createModel() {
 		AttributeRoot root = new AttributeRoot("root");
 
-		AdjustableAtom adjustableAtom = new AdjustableAtom("adjustableAtom");
-		root.addChild(adjustableAtom);
+		//AbstractAdjustableAtom adjustableAtom = new AbstractAdjustableAtom("adjustableAtom");
+		//root.addChild(adjustableAtom);
 
 		VariableDefinition defItem = new VariableDefinition("defItem");
 		root.addChild(defItem);

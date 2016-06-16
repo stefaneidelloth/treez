@@ -6,9 +6,9 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 /**
  * Abstract base class for all AttributeAtom Containers and Attribute Atoms.
  */
-public abstract class AbstractAttributeContainerAtom
+public abstract class AbstractAttributeContainerAtom<A extends AbstractAttributeContainerAtom<A>>
 		extends
-			AbstractAttributeParentAtom {
+		AbstractAttributeParentAtom<A> {
 
 	//#region ATTRIBUTES
 
@@ -28,8 +28,7 @@ public abstract class AbstractAttributeContainerAtom
 	/**
 	 * Copy constructor
 	 */
-	public AbstractAttributeContainerAtom(
-			AbstractAttributeContainerAtom attributeContainerAtomToCopy) {
+	public AbstractAttributeContainerAtom(AbstractAttributeContainerAtom<A> attributeContainerAtomToCopy) {
 		super(attributeContainerAtomToCopy);
 	}
 
@@ -38,26 +37,25 @@ public abstract class AbstractAttributeContainerAtom
 	//#region METHODS
 
 	/**
-	 * Creates the control for the AttributeContainerAtom. A control for the
-	 * parameters of the AttributeContainerAtom can be created with the method
-	 * ControlAdaption getControlAdaption(Composite parent) which is inherited
-	 * from AbstractAtom
+	 * Creates the control for the AttributeContainerAtom. A control for the parameters of the AttributeContainerAtom
+	 * can be created with the method ControlAdaption getControlAdaption(Composite parent) which is inherited from
+	 * AbstractAtom
 	 *
 	 * @param parent
 	 */
-	public abstract void createAtomControl(Composite parent,
-			FocusChangingRefreshable treeViewerRefreshable);
+	public abstract void createAtomControl(Composite parent, FocusChangingRefreshable treeViewerRefreshable);
 
 	//#end region
 
 	//#region ACCESSORS
 
-	public void setAbsoluteHelpId(String absoluteHelpId) {
-		this.absoluteHelpId = absoluteHelpId;
-	}
-
 	public String getAbsoluteHelpId() {
 		return absoluteHelpId;
+	}
+
+	public A setAbsoluteHelpId(String absoluteHelpId) {
+		this.absoluteHelpId = absoluteHelpId;
+		return getThis();
 	}
 
 	//#end region

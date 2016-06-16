@@ -64,7 +64,7 @@ public class Probability extends AbstractParameterVariation {
 
 		//choose selection type and entry atom
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 
 		//model to run
 		String modelToRunDefaultValue = "";
@@ -81,11 +81,11 @@ public class Probability extends AbstractParameterVariation {
 				.setLabel("Variable source model (provides variables)");
 
 		//export study info check box
-		CheckBox exportStudy = pickingSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);
+		CheckBox exportStudy = pickingSection.createCheckBox(exportStudyInfo, this, true);
 		exportStudy.setLabel("Export study information");
 
 		//export study info path
-		FilePath filePath = pickingSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",
+		FilePath filePath = pickingSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
 		filePath.addModifyListener("updateEnabledState", new ModifyListener() {

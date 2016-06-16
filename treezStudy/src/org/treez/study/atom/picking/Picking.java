@@ -86,12 +86,12 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	/**
 	 * The atom that represents the timeRange
 	 */
-	private AbstractAttributeAtom<?> timeRangeAtom;
+	private AbstractAttributeAtom<?, ?> timeRangeAtom;
 
 	/**
 	 * The variables for which values are picked
 	 */
-	public final Attribute<List<VariableField<?>>> variables = new Wrap<>();
+	public final Attribute<List<VariableField<?, ?>>> variables = new Wrap<>();
 
 	/**
 	 * A handle to the variable list (that is wrapped in the Attribute 'variables')
@@ -136,7 +136,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 		//choose selection type and entry atom
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		AbstractAtom modelEntryPoint = this;
+		AbstractAtom<?> modelEntryPoint = this;
 
 		//model to run
 		String modelToRunDefaultValue = "";
@@ -155,7 +155,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		Section timeDependentSection = dataPage.createSection("timeDependent", absoluteHelpContextId);
 		timeDependentSection.setLabel("Time dependent picking");
 		timeDependentSection.setExpanded(false);
-		CheckBox isTimeDependentCheckBox = timeDependentSection.createCheckBox(isTimeDependent, "isTimeDependent");
+		CheckBox isTimeDependentCheckBox = timeDependentSection.createCheckBox(isTimeDependent, this);
 		isTimeDependentCheckBox.setLabel("Use time series");
 		isTimeDependentCheckBox.set(false);
 
@@ -182,7 +182,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 		//variable list
 		Section variableSection = dataPage.createSection("variables", absoluteHelpContextId);
-		variableList = variableSection.createVariableList(variables, "variables", "Picking variables");
+		variableList = variableSection.createVariableList(variables, this, "Picking variables");
 
 		//add listener to update variable list for new source model path and do initial update
 		modelPath.addModifyListener("updateVariableList", (modifyEvent) -> updateAvailableVariablesForVariableList());
@@ -192,11 +192,11 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		studyInfoSection.setLabel("Export study info");
 
 		//export study info check box
-		CheckBox export = studyInfoSection.createCheckBox(exportStudyInfo, "exportStudyInfo", true);
+		CheckBox export = studyInfoSection.createCheckBox(exportStudyInfo, this, true);
 		export.setLabel("Export study information");
 
 		//export study info path
-		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, "exportStudyInfoPath",
+		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
 		filePath.addModifyListener("updateEnabledState", new ModifyListener() {
@@ -226,7 +226,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		String doubleRangeAtomName = getFieldName(doubleTimeRange, this);
 		section.removeChildIfExists(doubleRangeAtomName);
 
-		if (variablePath == null || variablePath == "") {
+		if (variablePath == null || "".equals(variablePath)) {
 			timeRangeAtom = null;
 			if (treeViewRefreshable != null) {
 				treeViewRefreshable.refresh();
@@ -234,7 +234,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 			return;
 		}
 
-		AbstractAtom variableAtom = this.getChildFromRoot(variablePath);
+		AbstractAtom<?> variableAtom = this.getChildFromRoot(variablePath);
 		Class<?> atomClass = variableAtom.getClass();
 		boolean isDoubleVariable = DoubleVariableField.class.isAssignableFrom(atomClass);
 		if (isDoubleVariable) {
@@ -265,16 +265,16 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	 */
 	private void updateAvailableVariablesForVariableList() {
 
-		AbstractAtom parent = this.getParentAtom();
+		AbstractAtom<?> parent = this.getParentAtom();
 		if (parent != null) {
-			List<VariableField<?>> availableVariables = new ArrayList<>();
+			List<VariableField<?, ?>> availableVariables = new ArrayList<>();
 			AbstractModel sourceModel = getSourceModelAtom();
 			if (sourceModel != null) {
-				List<AbstractAtom> children = sourceModel.getChildAtoms();
-				for (AbstractAtom child : children) {
+				List<AbstractAtom<?>> children = sourceModel.getChildAtoms();
+				for (AbstractAtom<?> child : children) {
 					boolean isVariableField = child instanceof VariableField;
 					if (isVariableField) {
-						VariableField<?> variableField = (VariableField<?>) child;
+						VariableField<?, ?> variableField = (VariableField<?, ?>) child;
 						availableVariables.add(variableField);
 					}
 				}
@@ -363,13 +363,13 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	 */
 	private boolean checkIfAllReferencedVariablesAreActive(Sample sample) {
 
-		Map<String, VariableField<?>> variableData = sample.getVariableData();
+		Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
 
 		List<String> inactiveVariables = new ArrayList<>();
 		for (String variableName : variableData.keySet()) {
 			String sourceModelPath = this.sourceModelPath.get();
 			String variableModelPath = sourceModelPath + "." + variableName;
-			VariableField<?> variableField;
+			VariableField<?, ?> variableField;
 			try {
 				variableField = this.getChildFromRoot(variableModelPath);
 			} catch (IllegalArgumentException exception) {
@@ -425,7 +425,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 		//get sweep output atom
 		String studyOutputAtomPath = getStudyOutputAtomPath();
-		AbstractAtom studyOutputAtom = this.getChildFromRoot(studyOutputAtomPath);
+		AbstractAtom<?> studyOutputAtom = this.getChildFromRoot(studyOutputAtomPath);
 
 		//remove all old children if they exist
 		studyOutputAtom.removeAllChildren();
@@ -457,9 +457,9 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		for (Sample sample : samples) {
 			studyInfo += "== Sample '" + sample.getName() + "' ===\r\n";
 
-			Map<String, VariableField<?>> variableData = sample.getVariableData();
+			Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
 			for (String variableName : variableData.keySet()) {
-				VariableField<?> variableField = variableData.get(variableName);
+				VariableField<?, ?> variableField = variableData.get(variableName);
 				String valueString = variableField.getValueString();
 				studyInfo += variableName + ": " + valueString + "\r\n";
 			}
@@ -500,7 +500,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		boolean pickingOutputAtomExists = this.rootHasChild(pickingPutputAtomPath);
 		if (!pickingOutputAtomExists) {
 			OutputAtom pickingOutputAtom = new OutputAtom(pickingOutputAtomName, provideImage());
-			AbstractAtom data = this.getChildFromRoot(dataAtomPath);
+			AbstractAtom<?> data = this.getChildFromRoot(dataAtomPath);
 			data.addChild(pickingOutputAtom);
 			LOG.info("Created " + pickingPutputAtomPath + " for picking output.");
 		}
@@ -511,7 +511,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 			IProgressMonitor monitor,
 			int numberOfSimulations,
 			List<ModelInput> modelInputs,
-			AbstractAtom pickingOutputAtom) {
+			AbstractAtom<?> pickingOutputAtom) {
 		int counter = 1;
 		Model model = getModelToRun();
 		long startTime = System.currentTimeMillis();
@@ -532,7 +532,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 				ModelOutput modelOutput = model.runModel(modelInput, refreshable, subMonitor);
 
 				//post process model output
-				AbstractAtom modelOutputAtom = modelOutput.getOutputAtom();
+				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
 				String modelOutputName = getName() + "OutputId" + modelInput.getId();
 				modelOutputAtom.setName(modelOutputName);
 				pickingOutputAtom.addChild(modelOutputAtom);
@@ -557,7 +557,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		String sourceModel = sourceModelPath.get();
 		if (sourceModel != null) {
 			String variablePath = sourceModel + "." + variableName;
-			VariableField<?> variableAtom = this.getChildFromRoot(variablePath);
+			VariableField<?, ?> variableAtom = this.getChildFromRoot(variablePath);
 			if (variableAtom != null) {
 				variableList.addVariable(variableAtom);
 			}
@@ -592,8 +592,8 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	 *
 	 * @return
 	 */
-	public List<VariableField<?>> getPickingVariables() {
-		List<VariableField<?>> selectedVariables = variableList.get();
+	public List<VariableField<?, ?>> getPickingVariables() {
+		List<VariableField<?, ?>> selectedVariables = variableList.get();
 		return selectedVariables;
 	}
 

@@ -364,10 +364,10 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 	 */
 	private void createRoot() {
 		//create invisible root
-		AbstractAtom invisibleRoot = new Root("invisibleRoot");
+		AbstractAtom<?> invisibleRoot = new Root("invisibleRoot");
 
 		//create visible root
-		AbstractAtom root = new Root("root");
+		AbstractAtom<?> root = new Root("root");
 		invisibleRoot.addChild(root);
 
 		//set invisible root as content of the tree viewer
@@ -559,7 +559,7 @@ public class TreeViewActionProvider implements ActionProviderRefreshable {
 	}
 
 	@Override
-	public void setFocus(AbstractAtom atomToFocus) {
+	public void setFocus(AbstractAtom<?> atomToFocus) {
 		treeViewer.setFocus(atomToFocus);
 
 	}

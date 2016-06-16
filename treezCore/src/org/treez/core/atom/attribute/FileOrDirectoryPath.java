@@ -23,7 +23,7 @@ import org.treez.core.atom.base.annotation.IsParameter;
 /**
  * Allows the user to choose a file path or directory path
  */
-public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
+public class FileOrDirectoryPath extends AbstractStringAttributeAtom<FileOrDirectoryPath> {
 
 	//#region ATTRIBUTES
 
@@ -105,6 +105,11 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public FileOrDirectoryPath getThis() {
+		return this;
+	}
+
+	@Override
 	public FileOrDirectoryPath copy() {
 		return new FileOrDirectoryPath(this);
 	}
@@ -115,7 +120,7 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<FileOrDirectoryPath> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -354,7 +359,7 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public FileOrDirectoryPath setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
@@ -367,8 +372,9 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public FileOrDirectoryPath setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -376,16 +382,18 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultFilePath) {
+	public FileOrDirectoryPath setDefaultValue(String defaultFilePath) {
 		this.defaultValue = defaultFilePath;
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public FileOrDirectoryPath setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	/**
@@ -403,8 +411,9 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 	 * @param extensions
 	 *            the extensions to set
 	 */
-	public void setFileExtensions(String extensions) {
+	public FileOrDirectoryPath setFileExtensions(String extensions) {
 		this.fileExtensions = extensions;
+		return getThis();
 	}
 
 	/**
@@ -422,8 +431,9 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 	 * @param extensionNames
 	 *            the extensionNames to set
 	 */
-	public void setFileExtensionNames(String extensionNames) {
+	public FileOrDirectoryPath setFileExtensionNames(String extensionNames) {
 		this.fileExtensionNames = extensionNames;
+		return getThis();
 	}
 
 	/**
@@ -431,9 +441,9 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom {
 	 *
 	 * @param validatePath
 	 */
-	public void setValidatePath(Boolean validatePath) {
+	public FileOrDirectoryPath setValidatePath(Boolean validatePath) {
 		this.validatePath = validatePath;
-
+		return getThis();
 	}
 
 	//#end region

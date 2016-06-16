@@ -10,7 +10,6 @@ import org.treez.core.adaptable.GraphicsAdaption;
 
 /**
  * Default GraphicsAdaption for atoms
- *
  */
 public class AtomGraphicsAdaption implements GraphicsAdaption {
 
@@ -19,7 +18,7 @@ public class AtomGraphicsAdaption implements GraphicsAdaption {
 	/**
 	 * The abstract atom that is adapted
 	 */
-	private AbstractAtom adaptedAtom;
+	private AbstractAtom<?> adaptedAtom;
 
 	/**
 	 * The parent composite
@@ -35,7 +34,7 @@ public class AtomGraphicsAdaption implements GraphicsAdaption {
 
 	//#region CONSTRUCTORS
 
-	AtomGraphicsAdaption(Composite parentComposite, AbstractAtom adaptedAtom) {
+	AtomGraphicsAdaption(Composite parentComposite, AbstractAtom<?> adaptedAtom) {
 		this.parentComposite = parentComposite;
 		this.adaptedAtom = adaptedAtom;
 		createGraphicsContents(parentComposite);

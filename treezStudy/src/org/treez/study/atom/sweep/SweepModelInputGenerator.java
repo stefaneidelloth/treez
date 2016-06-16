@@ -119,9 +119,9 @@ public class SweepModelInputGenerator {
 	 * @param parentAtom
 	 * @return
 	 */
-	public List<AbstractVariableRange<?>> getEnabledVariableRanges(AbstractAtom parentAtom) {
+	public List<AbstractVariableRange<?>> getEnabledVariableRanges(AbstractAtom<?> parentAtom) {
 		List<AbstractVariableRange<?>> variableRanges = new ArrayList<>();
-		for (AbstractAtom child : parentAtom.getChildAtoms()) {
+		for (AbstractAtom<?> child : parentAtom.getChildAtoms()) {
 			boolean isVariableRange = child instanceof AbstractVariableRange;
 			if (isVariableRange) {
 				AbstractVariableRange<?> variableRange = (AbstractVariableRange<?>) child;

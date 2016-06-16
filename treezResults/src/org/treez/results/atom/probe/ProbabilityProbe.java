@@ -82,7 +82,7 @@ public class ProbabilityProbe extends AbstractProbe {
 		Section timeSection = page.createSection("timeSection", "Time");
 		timeSection.createSectionAction("action", "Run probe", () -> execute(treeViewRefreshable));
 
-		TextField timeLabelField = timeSection.createTextField(timeLabel, "timeLabel", "Year");
+		TextField timeLabelField = timeSection.createTextField(timeLabel, this, "Year");
 		timeLabelField.setLabel("Label for time axis");
 		ModelPath timeRangePath = timeSection.createModelPath(timeRange, this, "", VariableRange.class, this);
 		timeRangePath.setLabel("Range for time axis");
@@ -92,7 +92,7 @@ public class ProbabilityProbe extends AbstractProbe {
 		//y section
 		Section ySection = page.createSection("ySection", "Y");
 
-		TextField yLabelField = ySection.createTextField(yLabel, "yLabel", "y");
+		TextField yLabelField = ySection.createTextField(yLabel, this, "y");
 		yLabelField.setLabel("Label for y-Axis");
 
 		//tuple list section
@@ -106,7 +106,7 @@ public class ProbabilityProbe extends AbstractProbe {
 		//probe section
 		Section probeSection = page.createSection("probe", "Probe");
 
-		TextField probeNameField = probeSection.createTextField(probeName, "propeName", "MyProbe");
+		TextField probeNameField = probeSection.createTextField(probeName, this, "MyProbe");
 		probeNameField.setLabel("Name");
 		ModelPath sweepOutputModelPath = probeSection.createModelPath(propabilityOutput, this, "", OutputAtom.class,
 				this);
@@ -116,9 +116,9 @@ public class ProbabilityProbe extends AbstractProbe {
 				Table.class);
 		firstProbeTablePath.setLabel("First probe table");
 
-		TextField columnIndex = probeSection.createTextField(probeColumnIndex, "probeColumnIndex", "0");
+		TextField columnIndex = probeSection.createTextField(probeColumnIndex, this, "0");
 		columnIndex.setLabel("Column index");
-		TextField rowIndex = probeSection.createTextField(probeRowIndex, "probeRowIndex", "0");
+		TextField rowIndex = probeSection.createTextField(probeRowIndex, this, "0");
 		rowIndex.setLabel("Row index");
 
 		setModel(root);

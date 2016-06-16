@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -38,29 +38,29 @@ public class Line implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page linePage = root.createPage("line", "   Line    ");
 
-		Section line = linePage.createSection("line", "Line");
+		Section line = linePage.createSection("line");
 
-		line.createEnumComboBox(interpolation, "interpolation", InterpolationMode.LINEAR);
+		line.createEnumComboBox(interpolation, this, InterpolationMode.LINEAR);
 
-		//line.createCheckBox(bezierJoin, "bezierJoin", "Bezier join");
+		//line.createCheckBox(bezierJoin, this).setLabel("Bezier join");
 
-		line.createColorChooser(color, "color", "black");
+		line.createColorChooser(color, this, "black");
 
-		line.createTextField(width, "width", "3");
+		line.createTextField(width, this, "3");
 
-		line.createLineStyle(style, "style", "solid");
+		line.createLineStyle(style, this, "solid");
 
 		line.createDoubleVariableField(transparency, this, 0.0);
 
-		line.createCheckBox(hide, "hide");
+		line.createCheckBox(hide, this);
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		String parentName = parent.getName();
 		String id = "lines_" + parentName;
@@ -103,11 +103,11 @@ public class Line implements GraphicsPropertiesPageFactory {
 				.attr("fill", "none");
 
 		//bind attributes
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideLine", lines, hide);
-		GraphicsAtom.bindStringAttribute(lines, "stroke", color);
-		GraphicsAtom.bindStringAttribute(lines, "stroke-width", width);
-		GraphicsAtom.bindLineTransparency(lines, transparency);
-		GraphicsAtom.bindLineStyle(lines, style);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideLine", lines, hide);
+		AbstractGraphicsAtom.bindStringAttribute(lines, "stroke", color);
+		AbstractGraphicsAtom.bindStringAttribute(lines, "stroke-width", width);
+		AbstractGraphicsAtom.bindLineTransparency(lines, transparency);
+		AbstractGraphicsAtom.bindLineStyle(lines, style);
 
 		interpolation.addModificationConsumer("replot", () -> {
 			//if the line interpolation changes other stuff like the area
@@ -134,11 +134,11 @@ public class Line implements GraphicsPropertiesPageFactory {
 				.attr("fill", "none");
 
 		//bind attributes
-		GraphicsAtom.bindDisplayToBooleanAttribute("hide", legendLine, hide);
-		GraphicsAtom.bindStringAttribute(legendLine, "stroke", color);
-		GraphicsAtom.bindStringAttribute(legendLine, "stroke-width", width);
-		GraphicsAtom.bindLineTransparency(legendLine, transparency);
-		GraphicsAtom.bindLineStyle(legendLine, style);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hide", legendLine, hide);
+		AbstractGraphicsAtom.bindStringAttribute(legendLine, "stroke", color);
+		AbstractGraphicsAtom.bindStringAttribute(legendLine, "stroke-width", width);
+		AbstractGraphicsAtom.bindLineTransparency(legendLine, transparency);
+		AbstractGraphicsAtom.bindLineStyle(legendLine, style);
 
 		return parentSelection;
 	}

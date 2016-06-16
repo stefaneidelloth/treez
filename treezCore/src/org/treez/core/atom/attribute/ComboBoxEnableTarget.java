@@ -10,7 +10,7 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 
-public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
+public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom<ComboBoxEnableTarget> {
 
 	//#region ATTRIBUTES
 
@@ -26,13 +26,11 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 
 	/**
 	 * @param enableValues
-	 *            a comma separated list of values for which the target is
-	 *            enabled
+	 *            a comma separated list of values for which the target is enabled
 	 * @param targetPath
 	 *            the model path to the target whose enabled state is controlled
 	 */
-	public ComboBoxEnableTarget(String name, String enableValues,
-			String targetPath) {
+	public ComboBoxEnableTarget(String name, String enableValues, String targetPath) {
 		super(name);
 		setValue(enableValues);
 		setTargetPath(targetPath);
@@ -41,8 +39,7 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 	/**
 	 * Copy constructor
 	 */
-	private ComboBoxEnableTarget(
-			ComboBoxEnableTarget comboBoxEnableTargetToCopy) {
+	private ComboBoxEnableTarget(ComboBoxEnableTarget comboBoxEnableTargetToCopy) {
 		super(comboBoxEnableTargetToCopy);
 		valueString = comboBoxEnableTargetToCopy.valueString;
 		targetPath = comboBoxEnableTargetToCopy.targetPath;
@@ -51,6 +48,11 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public ComboBoxEnableTarget getThis() {
+		return this;
+	}
 
 	@Override
 	public ComboBoxEnableTarget copy() {
@@ -66,8 +68,7 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 	}
 
 	@Override
-	public void createAtomControl(Composite parent,
-			FocusChangingRefreshable treeViewerRefreshable) {
+	public void createAtomControl(Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
 
 	}
 
@@ -80,16 +81,23 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom {
 		return Arrays.asList(items);
 	}
 
-	public void setTargetPath(String targetPath) {
+	public ComboBoxEnableTarget setTargetPath(String targetPath) {
 		this.targetPath = targetPath;
+		return getThis();
 	}
 
 	public String getTargetPath() {
 		return targetPath;
 	}
 
-	public void setValue(String value) {
+	public ComboBoxEnableTarget setValue(String value) {
 		this.valueString = value;
+		return getThis();
+	}
+
+	@Override
+	public ComboBoxEnableTarget setEnabled(boolean enable) {
+		throw new IllegalStateException("not yet implemented");
 	}
 
 	//#end region

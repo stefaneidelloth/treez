@@ -32,14 +32,16 @@ import org.treez.core.utils.Utils;
 
 /**
  * This is the main implementation of the interface Adaptable and the parent class for all treez atoms. An AbstractAtom
- * (actually its TreeNodeAdaption) has parents and children. The ControlAdaption of this AbstractAtom is build with the
- * help of the annotation "IsParameter", see the class AtomControlAdaption for more details. * The AttributeAtom and its
- * deriving classes give an example on how to use these annotations. * If you want to create more complex atoms, also
- * have a look at the AdjustableAtom. The ControlAdaption of AdjustableAtoms is created from an underlying tree model.
- * Each implementation of this AbstractAtom should define a copy constructor and use it in the method copy() that must
- * be overridden.
+ * (actually its TreeNodeAdaption) has parents and children. The ControlAdaption of this AbstractAtom<?> is build with
+ * the help of the annotation "IsParameter", see the class AtomControlAdaption for more details. * The AttributeAtom and
+ * its deriving classes give an example on how to use these annotations. * If you want to create more complex atoms,
+ * also have a look at the AdjustableAtom. The ControlAdaption of AdjustableAtoms is created from an underlying tree
+ * model. Each implementation of this AbstractAtom<?> should define a copy constructor and use it in the method copy()
+ * that must be overridden. The purpose of the generic type A is to allow for method chaining calls of inheriting
+ * classes (Also see
+ * http://stackoverflow.com/questions/1069528/method-chaining-inheritance-don-t-play-well-together/1070556#1070556).
  */
-public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> {
+public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptable, Copiable<AbstractAtom<A>> {
 
 	private static final Logger LOG = Logger.getLogger(AbstractAtom.class);
 
@@ -47,7 +49,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 
 	/**
 	 * The name of this AbstractAtom. This name will for example be used by the TreeNodeAdaption. In order to be able to
-	 * identify an AbstractAtom by its tree path, this name should only be used once for all children of the parent
+	 * identify an AbstractAtom<?> by its tree path, this name should only be used once for all children of the parent
 	 * AbstractAtom. The name might also be used in Java code for saving the tree structure. It is recommended to use
 	 * lower case names.
 	 */
@@ -61,12 +63,12 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	/**
 	 * The parent of this AbstractAtom
 	 */
-	protected AbstractAtom parentAtom;
+	protected AbstractAtom<?> parentAtom;
 
 	/**
 	 * The children of this AbstractAtom
 	 */
-	protected List<AbstractAtom> children;
+	protected List<AbstractAtom<?>> children;
 
 	/**
 	 * The context menu actions of this AbstractAtom
@@ -79,7 +81,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	protected ArrayList<String> expandedNodes = new ArrayList<>();
 
 	/**
-	 * Default key for an image that represents this AbstractAtom in a tree view
+	 * Default key for an image that represents this AbstractAtom<?> in a tree view
 	 */
 	protected String IMAGE_KEY = ISharedImages.IMG_OBJ_ELEMENT;
 
@@ -101,14 +103,14 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	public AbstractAtom(String name) {
 		//LOG.debug("Creating abstract atom " + name);
 		this.name = name;
-		this.children = new ArrayList<AbstractAtom>();
+		this.children = new ArrayList<AbstractAtom<?>>();
 		initAttributesWithIsParameterAnnotationValues();
 	}
 
 	/**
 	 * Copy Constructor
 	 */
-	public AbstractAtom(AbstractAtom abstractAtomToCopy) {
+	public AbstractAtom(AbstractAtom<A> abstractAtomToCopy) {
 		this.name = abstractAtomToCopy.name;
 		this.children = copyAbstractAtoms(abstractAtomToCopy.children);
 		this.expandedNodes = abstractAtomToCopy.expandedNodes;
@@ -119,10 +121,12 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 
 	//#region METHODS
 
+	protected abstract A getThis();
+
 	//#region COPY
 
 	@Override
-	public abstract AbstractAtom copy();
+	public abstract AbstractAtom<A> copy();
 
 	/**
 	 * Copies the given list of abstract atoms
@@ -130,10 +134,10 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 * @param abstractAtomsToCopy
 	 * @return
 	 */
-	public static List<AbstractAtom> copyAbstractAtoms(List<AbstractAtom> abstractAtomsToCopy) {
-		List<AbstractAtom> abstractAtoms = new ArrayList<>(abstractAtomsToCopy.size());
-		for (AbstractAtom abstractAtomToCopy : abstractAtomsToCopy) {
-			AbstractAtom abstractAtom = abstractAtomToCopy.copy();
+	public List<AbstractAtom<?>> copyAbstractAtoms(List<AbstractAtom<?>> abstractAtomsToCopy) {
+		List<AbstractAtom<?>> abstractAtoms = new ArrayList<>(abstractAtomsToCopy.size());
+		for (AbstractAtom<?> abstractAtomToCopy : abstractAtomsToCopy) {
+			AbstractAtom<?> abstractAtom = abstractAtomToCopy.copy();
 			abstractAtoms.add(abstractAtom);
 		}
 		return abstractAtoms;
@@ -262,9 +266,9 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	protected void executeChildren(Class<?> wantedClass, FocusChangingRefreshable treeViewerRefreshable)
 			throws IllegalArgumentException {
 
-		AbstractAtom[] childArray = children.toArray(new AbstractAtom[children.size()]);
+		AbstractAtom<?>[] childArray = children.toArray(new AbstractAtom[children.size()]);
 
-		for (AbstractAtom child : childArray) {
+		for (AbstractAtom<?> child : childArray) {
 			Class<?> currentClass = child.getClass();
 			boolean hasWantedClass = wantedClass.isAssignableFrom(currentClass);
 			if (hasWantedClass) {
@@ -333,9 +337,9 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 * @return
 	 */
 	private boolean canBeMovedUp() {
-		AbstractAtom parent = this.getParentAtom();
+		AbstractAtom<?> parent = this.getParentAtom();
 		if (parent != null) {
-			List<AbstractAtom> currentChildren = parent.getChildAtoms();
+			List<AbstractAtom<?>> currentChildren = parent.getChildAtoms();
 			boolean childrenExist = currentChildren != null && currentChildren.size() > 1;
 			if (childrenExist) {
 				int currentIndex = currentChildren.indexOf(this);
@@ -353,8 +357,8 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	private void moveUp() {
 		boolean canBeMovedUp = canBeMovedUp();
 		if (canBeMovedUp) {
-			AbstractAtom parent = this.getParentAtom();
-			List<AbstractAtom> currentChildren = parent.getChildAtoms();
+			AbstractAtom<?> parent = this.getParentAtom();
+			List<AbstractAtom<?>> currentChildren = parent.getChildAtoms();
 			int currentIndex = currentChildren.indexOf(this);
 			Collections.swap(currentChildren, currentIndex, currentIndex - 1);
 			tryToRefreshAtom(parent);
@@ -367,9 +371,9 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 * @return
 	 */
 	private boolean canBeMovedDown() {
-		AbstractAtom parent = this.getParentAtom();
+		AbstractAtom<?> parent = this.getParentAtom();
 		if (parent != null) {
-			List<AbstractAtom> currentChildren = parent.getChildAtoms();
+			List<AbstractAtom<?>> currentChildren = parent.getChildAtoms();
 			boolean childrenExist = currentChildren != null && currentChildren.size() > 1;
 			if (childrenExist) {
 				int currentIndex = currentChildren.indexOf(this);
@@ -387,8 +391,8 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	private void moveDown() {
 		boolean canBeMovedDown = canBeMovedDown();
 		if (canBeMovedDown) {
-			AbstractAtom parent = this.getParentAtom();
-			List<AbstractAtom> currentChildren = parent.getChildAtoms();
+			AbstractAtom<?> parent = this.getParentAtom();
+			List<AbstractAtom<?>> currentChildren = parent.getChildAtoms();
 			int currentIndex = currentChildren.indexOf(this);
 			Collections.swap(currentChildren, currentIndex + 1, currentIndex);
 			tryToRefreshAtom(parent);
@@ -396,11 +400,11 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	}
 
 	/**
-	 * Refreshes the given AbstractAtom if it implements the interface Refreshable
+	 * Refreshes the given AbstractAtom<?> if it implements the interface Refreshable
 	 *
 	 * @param parent
 	 */
-	private static void tryToRefreshAtom(AbstractAtom parent) {
+	private static void tryToRefreshAtom(AbstractAtom<?> parent) {
 		boolean parentIsRefreshable = FocusChangingRefreshable.class.isAssignableFrom(parent.getClass());
 		if (parentIsRefreshable) {
 			FocusChangingRefreshable refreshableParent = (FocusChangingRefreshable) parent;
@@ -510,13 +514,13 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	//#region child operations
 
 	/**
-	 * Add the given AbstractAtom as a child and removes it from the old parent if an old parent exists.
+	 * Add the given AbstractAtom<?> as a child and removes it from the old parent if an old parent exists.
 	 *
 	 * @param child
 	 */
-	public void addChild(AbstractAtom child) {
+	public void addChild(AbstractAtom<?> child) {
 		//LOG.debug("add child to " + getName());
-		AbstractAtom oldParent = child.getParentAtom();
+		AbstractAtom<?> oldParent = child.getParentAtom();
 		child.setParentAtom(this);
 
 		//LOG.debug("parent set");
@@ -529,14 +533,14 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	}
 
 	/**
-	 * Adds the given AbstractAtom as a child but does not set the parent of the child. The given AbstractAtom will be
-	 * listed as a child of this AbstractAtom. If the given AbstractAtom is asked for its parent, the old parent will be
-	 * returned. This way, an AbstractAtom can be used in several trees as a child while the "one and only real parent"
-	 * is kept.
+	 * Adds the given AbstractAtom<?> as a child but does not set the parent of the child. The given AbstractAtom
+	 * <?> will be listed as a child of this AbstractAtom. If the given AbstractAtom<?> is asked for its parent, the old
+	 * parent will be returned. This way, an AbstractAtom<?> can be used in several trees as a child while the
+	 * "one and only real parent" is kept.
 	 *
 	 * @param child
 	 */
-	public void addChildReference(AbstractAtom child) {
+	public void addChildReference(AbstractAtom<?> child) {
 		children.add(child);
 	}
 
@@ -548,7 +552,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractAtom getChild(String childPath) throws IllegalArgumentException {
+	public AbstractAtom<?> getChild(String childPath) throws IllegalArgumentException {
 
 		boolean isPath = childPath.contains(".");
 
@@ -556,7 +560,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 			//iterate through path to get wanted child
 			String[] childNames = childPath.split("\\.");
 			String firstName = childNames[0];
-			AbstractAtom child = getChildByName(firstName);
+			AbstractAtom<?> child = getChildByName(firstName);
 			//go to the wanted child in a loop; each iteration
 			//overrides the previous parent atom in the loop
 			for (int index = 1; index < childNames.length; index++) {
@@ -591,8 +595,8 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 		if (startsWithRoot) {
 			int length = childPathStartingWithRoot.length();
 			String childPath = childPathStartingWithRoot.substring(rootLength, length);
-			AbstractAtom root = getRoot();
-			AbstractAtom child = root.getChild(childPath);
+			AbstractAtom<?> root = getRoot();
+			AbstractAtom<?> child = root.getChild(childPath);
 			if (child == null) {
 				return null;
 			}
@@ -618,14 +622,14 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 * @param namePrefix
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	public AbstractAtom createChildAtom(Class<? extends AbstractAtom> atomClass, String namePrefix) {
+	public AbstractAtom<?> createChildAtom(Class<? extends AbstractAtom<?>> atomClass, String namePrefix) {
 		Objects.requireNonNull(atomClass, "Atom class must not be null");
 		Objects.requireNonNull(namePrefix, "Name prefix must not be null");
 
 		String newName = AtomTreeNodeAdaption.createChildNameStartingWith(this, namePrefix);
-		AbstractAtom newChild;
+		AbstractAtom<?> newChild;
 		try {
-			Constructor<? extends AbstractAtom> atomConstructor = atomClass
+			Constructor<? extends AbstractAtom<?>> atomConstructor = atomClass
 					.getConstructor(new Class[] { String.class });
 			newChild = atomConstructor.newInstance(new Object[] { newName });
 		} catch (Exception exception) {
@@ -661,8 +665,8 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	protected AbstractAtom getChildByName(String childName) throws IllegalArgumentException {
-		for (AbstractAtom currentChild : children) {
+	protected AbstractAtom<?> getChildByName(String childName) throws IllegalArgumentException {
+		for (AbstractAtom<?> currentChild : children) {
 			boolean isWantedChild = currentChild.getName().equals(childName);
 			if (isWantedChild) {
 				return currentChild;
@@ -680,7 +684,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 */
 	public <T> T getChildByClass(Class<T> clazz) {
 
-		for (AbstractAtom currentChild : children) {
+		for (AbstractAtom<?> currentChild : children) {
 			boolean isWantedChild = currentChild.getClass().equals(clazz);
 			if (isWantedChild) {
 				@SuppressWarnings("unchecked")
@@ -701,7 +705,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 */
 	public <T> List<T> getChildrenByClass(Class<T> clazz) {
 		List<T> wantedChildren = new ArrayList<>();
-		for (AbstractAtom currentChild : children) {
+		for (AbstractAtom<?> currentChild : children) {
 			boolean isWantedChild = currentChild.getClass().equals(clazz);
 			if (isWantedChild) {
 				@SuppressWarnings("unchecked")
@@ -721,7 +725,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	public boolean containsChildOfType(String targetClassName) {
 
 		//check if any of the children has the wanted type
-		for (AbstractAtom currentChild : children) {
+		for (AbstractAtom<?> currentChild : children) {
 			boolean hasWantedType = Utils.checkIfHasWantedType(currentChild, targetClassName);
 			if (hasWantedType) {
 				return true;
@@ -730,7 +734,7 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 
 		//go on and check if any of the children of the children has the wanted
 		//type
-		for (AbstractAtom currentChild : children) {
+		for (AbstractAtom<?> currentChild : children) {
 			boolean hasWantedType = Utils.checkIfHasWantedType(currentChild, targetClassName);
 			if (hasWantedType) {
 				return true;
@@ -764,8 +768,8 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 */
 	public void removeChildIfExists(String childName) {
 
-		AbstractAtom childToRemove = null;
-		for (AbstractAtom child : children) {
+		AbstractAtom<?> childToRemove = null;
+		for (AbstractAtom<?> child : children) {
 			String currentChildName = child.getName();
 			boolean isWantedChild = currentChildName.equals(childName);
 			if (isWantedChild) {
@@ -815,17 +819,17 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 *
 	 * @return
 	 */
-	public AbstractAtom getRoot() {
+	public AbstractAtom<?> getRoot() {
 
 		//get parent node
 		TreeNodeAdaption parentNode = this.createTreeNodeAdaption().getParent();
 
 		if (parentNode == null) {
 			throw new IllegalStateException(
-					"The AbstractAtom '" + this.getName() + "' has no parent. Could not get root.");
+					"The AbstractAtom<?> '" + this.getName() + "' has no parent. Could not get root.");
 		} else {
 			//get parent atom
-			AbstractAtom parent = (AbstractAtom) parentNode.getAdaptable();
+			AbstractAtom<?> parent = (AbstractAtom<?>) parentNode.getAdaptable();
 
 			//check if parent is root
 			boolean parentIsRoot = parent.getName().equals("root");
@@ -904,37 +908,39 @@ public abstract class AbstractAtom implements Adaptable, Copiable<AbstractAtom> 
 	 *
 	 * @param name
 	 */
-	public void setName(String name) {
+	public A setName(String name) {
 		boolean isDifferentName = (name != null && !name.equals(this.name)) || (name == null && this.name != null);
 		if (isDifferentName) {
 			this.name = name;
 			triggerNameListeners(name);
 		}
+		return getThis();
 	}
 
 	/**
-	 * Returns the parent AbstractAtom. Returns null if this AbstractAtom has no parent AbstractAtom.
+	 * Returns the parent AbstractAtom. Returns null if this AbstractAtom<?> has no parent AbstractAtom.
 	 *
 	 * @return
 	 */
-	public AbstractAtom getParentAtom() {
+	public AbstractAtom<?> getParentAtom() {
 		return parentAtom;
 	}
 
-	public void setParentAtom(AbstractAtom parent) {
+	public void setParentAtom(AbstractAtom<?> parent) {
 		this.parentAtom = parent;
 	}
 
-	public List<AbstractAtom> getChildAtoms() {
+	public List<AbstractAtom<?>> getChildAtoms() {
 		return children;
-	}
-
-	public void setHelpId(String helpId) {
-		this.helpId = helpId;
 	}
 
 	public String getHelpId() {
 		return helpId;
+	}
+
+	public A setHelpId(String helpId) {
+		this.helpId = helpId;
+		return getThis();
 	}
 
 	//#end region

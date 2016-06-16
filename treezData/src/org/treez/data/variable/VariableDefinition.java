@@ -26,7 +26,7 @@ import org.treez.data.table.VariableDefinitionTable;
 /**
  * An item example
  */
-public class VariableDefinition extends AbstractUiSynchronizingAtom {
+public class VariableDefinition extends AbstractUiSynchronizingAtom<VariableDefinition> {
 
 	private static final Logger LOG = Logger.getLogger(VariableDefinition.class);
 
@@ -71,6 +71,11 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 	//#region METHODS
 
 	@Override
+	public VariableDefinition getThis() {
+		return this;
+	}
+
+	@Override
 	public VariableDefinition copy() {
 		return new VariableDefinition(this);
 	}
@@ -102,7 +107,9 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom {
 	 * Provides a control adaption for this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite propertyMainForm, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite propertyMainForm,
+			FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		return new VariableDefinitionControlAdaption(propertyMainForm, this);
 	}

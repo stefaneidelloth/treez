@@ -18,7 +18,7 @@ public interface Probe {
 	 *
 	 * @param modelInput
 	 * @return
-	 * @returns an AbstractAtom that represents the results
+	 * @returns an AbstractAtom<?> that represents the results
 	 */
 	Table runProbe(FocusChangingRefreshable refreshable, IProgressMonitor monitor);
 

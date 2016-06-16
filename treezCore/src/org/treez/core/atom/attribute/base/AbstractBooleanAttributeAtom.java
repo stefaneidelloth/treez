@@ -1,10 +1,8 @@
 package org.treez.core.atom.attribute.base;
 
-public abstract class AbstractBooleanAttributeAtom extends AbstractAttributeAtom<Boolean> {
-
-	//#region ATTRIBUTES
-
-	//#end region
+public abstract class AbstractBooleanAttributeAtom<A extends AbstractBooleanAttributeAtom<A>>
+		extends
+		AbstractAttributeAtom<A, Boolean> {
 
 	//#region CONSTRUCTORS
 
@@ -15,17 +13,9 @@ public abstract class AbstractBooleanAttributeAtom extends AbstractAttributeAtom
 	/**
 	 * Copy constructor
 	 */
-	public AbstractBooleanAttributeAtom(AbstractBooleanAttributeAtom attributeAtomToCopy) {
+	public AbstractBooleanAttributeAtom(AbstractBooleanAttributeAtom<A> attributeAtomToCopy) {
 		super(attributeAtomToCopy);
 	}
-
-	//#end region
-
-	//#region METHODS
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

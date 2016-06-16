@@ -21,7 +21,7 @@ import org.treez.core.swt.CustomLabel;
 /**
  * Allows the user to choose a symbol type
  */
-public class SymbolType extends AbstractStringAttributeAtom {
+public class SymbolType extends AbstractStringAttributeAtom<SymbolType> {
 
 	//#region ATTRIBUTES
 
@@ -80,6 +80,11 @@ public class SymbolType extends AbstractStringAttributeAtom {
 	//#region METHODS
 
 	@Override
+	public SymbolType getThis() {
+		return this;
+	}
+
+	@Override
 	public SymbolType copy() {
 		return new SymbolType(this);
 	}
@@ -90,7 +95,7 @@ public class SymbolType extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<SymbolType> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -186,25 +191,10 @@ public class SymbolType extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public SymbolType setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
 
 	}
-
-	/*
-	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key, (event) -> {
-			if (event.data == null) {
-				consumer.accept(null);
-			} else {
-				String data = event.data.toString();
-				consumer.accept(data);
-			}
-
-		});
-	}
-	*/
 
 	//#end region
 
@@ -214,8 +204,9 @@ public class SymbolType extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public SymbolType setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	@Override
@@ -223,20 +214,23 @@ public class SymbolType extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public SymbolType setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		return getThis();
 	}
 
-	public void setDefaultValue(SymbolStyleValue symbolStyleValue) {
+	public SymbolType setDefaultValue(SymbolStyleValue symbolStyleValue) {
 		setDefaultValue(symbolStyleValue.toString());
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public SymbolType setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	@Override

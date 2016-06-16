@@ -155,6 +155,10 @@ public class Axis extends GraphicsPropertiesPage {
 		}
 	}
 
+	public void addOrdinalValue(String ordinalValue) {
+		this.data.addOrdinalValue(ordinalValue);
+	}
+
 	//#end region
 
 	//#region ACCESSORS
@@ -165,10 +169,19 @@ public class Axis extends GraphicsPropertiesPage {
 	 *
 	 * @return
 	 */
-	public Boolean hasQuantitativeScale() {
+	public Boolean isQuantitative() {
 		if (data != null) {
-			boolean hasQuantitativeScale = this.data.hasQuantitativeScale();
+			boolean hasQuantitativeScale = this.data.isQuantitative();
 			return hasQuantitativeScale;
+		} else {
+			throw new IllegalStateException("The scale has not yet been defined");
+		}
+	}
+
+	public boolean isOrdinal() {
+		if (data != null) {
+			boolean isOrdinal = this.data.isOrdinal();
+			return isOrdinal;
 		} else {
 			throw new IllegalStateException("The scale has not yet been defined");
 		}

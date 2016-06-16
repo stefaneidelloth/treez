@@ -8,12 +8,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.AtomTreeNodeAdaption;
 import org.treez.core.atom.base.annotation.IsParameter;
-import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.atom.variablefield.DoubleVariableField;
 import org.treez.core.atom.variablefield.IntegerVariableField;
 import org.treez.core.atom.variablefield.QuantityVariableField;
@@ -33,7 +31,7 @@ import org.treez.javafxd3.javafx.EnumValueProvider;
  * An item example
  */
 @SuppressWarnings({ "checkstyle:classfanoutcomplexity", "checkstyle:cyclomaticcomplexity" })
-public class Section extends AbstractAttributeContainerAtom {
+public class Section extends AbstractAttributeContainerAtom<Section> {
 
 	//#region ATTRIBUTES
 
@@ -72,6 +70,11 @@ public class Section extends AbstractAttributeContainerAtom {
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	protected Section getThis() {
+		return this;
+	}
 
 	@Override
 	public Section copy() {
@@ -136,11 +139,13 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	@Override
 	public void createAtomControl(Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
-
 		SectionControlProvider controlProvider = new SectionControlProvider(this, parent, treeViewerRefreshable);
 		controlProvider.createAtomControl();
-
 	}
+
+	//#end region
+
+	//#region SECTION
 
 	void addSection(TreeViewerRefreshable treeViewer) {
 		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "mySection");
@@ -154,6 +159,97 @@ public class Section extends AbstractAttributeContainerAtom {
 		return section;
 	}
 
+	//#end region
+
+	//#region SECTION ACTION
+
+	void addSectionAction(TreeViewerRefreshable treeViewer, String description, Runnable runnable) {
+		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "mySectionAction");
+		createSectionAction(name, description, runnable);
+		createTreeNodeAdaption().expand(treeViewer);
+	}
+
+	public SectionAction createSectionAction(String name, String description, Runnable runnable) {
+		SectionAction action = new SectionAction(name, description, runnable);
+		addChild(action);
+		return action;
+	}
+
+	public SectionAction createSectionAction(String name, String description, Runnable runnable, Image image) {
+		SectionAction action = new SectionAction(name, description, runnable, image);
+		addChild(action);
+		return action;
+	}
+
+	//#end region
+
+	//#region TEXT FIELD
+
+	private void addTextField(TreeViewerRefreshable treeViewer) {
+		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myTextField");
+		createTextField(name);
+		createTreeNodeAdaption().expand(treeViewer);
+	}
+
+	private TextField createTextField(String name) {
+		TextField textField = new TextField(name);
+		addChild(textField);
+		return textField;
+	}
+
+	public TextField createTextField(Attribute<String> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		TextField textField = new TextField(attributeName);
+		addChild(textField);
+		textField.wrap(wrap);
+		return textField;
+	}
+
+	public TextField createTextField(Attribute<String> wrap, Object attributeParent, String defaultValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		TextField textField = new TextField(attributeName);
+		textField.setDefaultValue(defaultValue);
+		textField.set(defaultValue);
+		addChild(textField);
+		textField.wrap(wrap);
+		return textField;
+	}
+
+	//#end region
+
+	//#region LABEL
+
+	public org.treez.core.atom.attribute.Label createLabel(String name, String labelText) {
+		org.treez.core.atom.attribute.Label label = new org.treez.core.atom.attribute.Label(name);
+		label.setLabel(labelText);
+		addChild(label);
+		return label;
+	}
+
+	//#end region
+
+	//#region INFO TEXT
+
+	public InfoText createInfoText(Attribute<String> wrap, Object attributeParent, String label, String defaultValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		InfoText infoText = createInfoText(attributeName, defaultValue);
+		infoText.setLabel(label);
+		infoText.wrap(wrap);
+		return infoText;
+	}
+
+	private InfoText createInfoText(String name, String defaultValue) {
+		InfoText infoText = new InfoText(name);
+		infoText.setDefaultValue(defaultValue);
+		infoText.set(defaultValue);
+		addChild(infoText);
+		return infoText;
+	}
+
+	//#end region
+
+	//#region CHECK BOX
+
 	void addCheckBox(TreeViewerRefreshable treeViewer) {
 		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myCheckBox");
 		createCheckBox(name);
@@ -166,19 +262,24 @@ public class Section extends AbstractAttributeContainerAtom {
 		return checkBox;
 	}
 
-	public CheckBox createCheckBox(Attribute<Boolean> wrap, String name) {
-		CheckBox checkBox = new CheckBox(name);
+	public CheckBox createCheckBox(Attribute<Boolean> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		CheckBox checkBox = new CheckBox(attributeName);
 		addChild(checkBox);
 		checkBox.wrap(wrap);
 		return checkBox;
 	}
 
-	public CheckBox createCheckBox(Attribute<Boolean> wrap, String name, boolean defaultValue) {
-		CheckBox checkBox = createCheckBox(wrap, name);
+	public CheckBox createCheckBox(Attribute<Boolean> wrap, Object attributeParent, boolean defaultValue) {
+		CheckBox checkBox = createCheckBox(wrap, attributeParent);
 		checkBox.setDefaultValue(defaultValue);
 		checkBox.set(defaultValue);
 		return checkBox;
 	}
+
+	//#end region
+
+	//#region COMBO BOX
 
 	void addComboBox(TreeViewerRefreshable treeViewer) {
 		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myComboBox");
@@ -186,75 +287,13 @@ public class Section extends AbstractAttributeContainerAtom {
 		createTreeNodeAdaption().expand(treeViewer);
 	}
 
-	public ColorChooser createColorChooser(String name) {
-		ColorChooser colorChooser = new ColorChooser(name);
-		addChild(colorChooser);
-		return colorChooser;
-	}
-
-	public ColorChooser createColorChooser(Attribute<String> wrap, String name) {
-		ColorChooser colorChooser = new ColorChooser(name);
-		addChild(colorChooser);
-		colorChooser.wrap(wrap);
-		return colorChooser;
-	}
-
-	public ColorChooser createColorChooser(Attribute<String> wrap, String name, String defaultValue) {
-		ColorChooser colorChooser = createColorChooser(wrap, name);
-		colorChooser.setDefaultValue(defaultValue);
-		return colorChooser;
-	}
-
-	public AbstractStringAttributeAtom createColorMap(Attribute<String> wrap, AbstractAtom attributeParent) {
-
-		String attributeName = getFieldName(wrap, attributeParent);
-		ColorMap colorMap = new ColorMap(attributeName);
-		addChild(colorMap);
-		colorMap.wrap(wrap);
-		return colorMap;
-	}
-
-	void addColorChooser(TreeViewerRefreshable treeViewer) {
-		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myColor");
-		createColorChooser(name);
-		createTreeNodeAdaption().expand(treeViewer);
-	}
-
-	public ComboBox createComboBox(String name) {
+	private ComboBox createComboBox(String name) {
 		ComboBox comboBox = new ComboBox(name);
 		addChild(comboBox);
 		return comboBox;
 	}
 
-	public ComboBox createComboBox(Attribute<String> wrap, String name, String items, String defaultValue) {
-		ComboBox comboBox = new ComboBox(name);
-		comboBox.setItems(items);
-		comboBox.setDefaultValue(defaultValue);
-		comboBox.setValue(defaultValue);
-		addChild(comboBox);
-		comboBox.wrap(wrap);
-		return comboBox;
-	}
-
-	/**
-	 * Creates a new combo box with a given enum value. The enum provides the available values and the enum value is
-	 * used as default value.
-	 *
-	 * @param name
-	 * @param defaultEnumValue
-	 * @return
-	 */
-	public ComboBox createComboBox(Attribute<String> wrap, String name, Enum<?> defaultEnumValue) {
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		ComboBox comboBox = new ComboBox(name);
-		comboBox.setItems(defaultEnumValue);
-		comboBox.setDefaultValue(defaultEnumValue);
-		addChild(comboBox);
-		comboBox.wrap(wrap);
-		return comboBox;
-	}
-
-	public ComboBox createComboBox(Attribute<String> wrap, AbstractAtom attributeParent) {
+	public ComboBox createComboBox(Attribute<String> wrap, Object attributeParent) {
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		String attributeName = getFieldName(wrap, attributeParent);
 		ComboBox comboBox = new ComboBox(attributeName);
@@ -263,16 +302,30 @@ public class Section extends AbstractAttributeContainerAtom {
 		return comboBox;
 	}
 
-	public <T extends EnumValueProvider<?>> EnumComboBox<T> createEnumComboBox(
-			Attribute<String> wrap,
-			String name,
-			EnumValueProvider<?> defaultEnumValue) {
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		EnumComboBox<T> comboBox = new EnumComboBox(defaultEnumValue, name);
+	public ComboBox createComboBox(Attribute<String> wrap, Object attributeParent, String items, String defaultValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		ComboBox comboBox = new ComboBox(attributeName);
+		comboBox.setItems(items);
+		comboBox.setDefaultValue(defaultValue);
+		comboBox.setValue(defaultValue);
 		addChild(comboBox);
 		comboBox.wrap(wrap);
 		return comboBox;
 	}
+
+	//#end region
+
+	//#region COMBO BOX ENABLE TARGET
+
+	public ComboBoxEnableTarget createComboBoxEnableTarget(String name, String enableValues, String targetPath) {
+		ComboBoxEnableTarget comboBoxEnableTarget = new ComboBoxEnableTarget(name, enableValues, targetPath);
+		addChild(comboBoxEnableTarget);
+		return comboBoxEnableTarget;
+	}
+
+	//#end region
+
+	//#region ENUM COMBO BOX
 
 	public <T extends EnumValueProvider<?>> EnumComboBox<T> createEnumComboBox(
 			Attribute<String> wrap,
@@ -286,67 +339,118 @@ public class Section extends AbstractAttributeContainerAtom {
 		return comboBox;
 	}
 
-	public ComboBoxEnableTarget createComboBoxEnableTarget(String name, String enableValues, String targetPath) {
-		ComboBoxEnableTarget comboBoxEnableTarget = new ComboBoxEnableTarget(name, enableValues, targetPath);
-		addChild(comboBoxEnableTarget);
-		return comboBoxEnableTarget;
-	}
+	//#end region
 
-	public ColumnTypeComboBox createColumnTypeComboBox(Attribute<String> wrap, String name, ColumnType defaultValue) {
-		ColumnTypeComboBox combo = new ColumnTypeComboBox(name);
+	//#region COLUMN TYPE COMBO BOX
+
+	public ColumnTypeComboBox createColumnTypeComboBox(
+			Attribute<String> wrap,
+			Object attributeParent,
+			ColumnType defaultValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		ColumnTypeComboBox combo = new ColumnTypeComboBox(attributeName);
 		combo.setDefaultValue(defaultValue.getValue());
 		combo.wrap(wrap);
 		return combo;
 	}
 
-	public InfoText createInfoText(String name) {
-		InfoText infoText = new InfoText(name);
-		addChild(infoText);
-		return infoText;
+	//#end region
+
+	//#region COLOR CHOOSER
+
+	void addColorChooser(TreeViewerRefreshable treeViewer) {
+		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myColor");
+		createColorChooser(name);
+		createTreeNodeAdaption().expand(treeViewer);
 	}
 
-	public InfoText createInfoText(String name, String defaultValue) {
-		InfoText infoText = new InfoText(name);
-		infoText.setDefaultValue(defaultValue);
-		infoText.set(defaultValue);
-		addChild(infoText);
-		return infoText;
+	private ColorChooser createColorChooser(String name) {
+		ColorChooser colorChooser = new ColorChooser(name);
+		addChild(colorChooser);
+		return colorChooser;
 	}
 
-	public InfoText createInfoText(Attribute<String> wrap, String name, String label, String defaultValue) {
-		InfoText infoText = createInfoText(name, defaultValue);
-		infoText.setLabel(label);
-		infoText.wrap(wrap);
-		return infoText;
+	public ColorChooser createColorChooser(Attribute<String> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		ColorChooser colorChooser = new ColorChooser(attributeName);
+		addChild(colorChooser);
+		colorChooser.wrap(wrap);
+		return colorChooser;
 	}
 
-	public LineStyle createLineStyle(String name) {
-		LineStyle lineStyle = new LineStyle(name);
-		addChild(lineStyle);
-		return lineStyle;
+	public ColorChooser createColorChooser(Attribute<String> wrap, Object attributeParent, String defaultValue) {
+		ColorChooser colorChooser = createColorChooser(wrap, attributeParent);
+		colorChooser.setDefaultValue(defaultValue);
+		return colorChooser;
 	}
 
-	public LineStyle createLineStyle(Attribute<String> wrap, String name) {
-		LineStyle lineStyle = new LineStyle(name);
+	//#end region
+
+	//#region COLOR MAP
+
+	public ColorMap createColorMap(Attribute<String> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		ColorMap colorMap = new ColorMap(attributeName);
+		addChild(colorMap);
+		colorMap.wrap(wrap);
+		return colorMap;
+	}
+
+	//#end region
+
+	//#region LINE STYLE
+
+	public LineStyle createLineStyle(Attribute<String> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		LineStyle lineStyle = new LineStyle(attributeName);
 		addChild(lineStyle);
 		lineStyle.wrap(wrap);
 		return lineStyle;
 	}
 
-	public LineStyle createLineStyle(Attribute<String> wrap, String name, String defaultValue) {
-		LineStyle lineStyle = new LineStyle(name, defaultValue);
+	public LineStyle createLineStyle(Attribute<String> wrap, Object attributeParent, String defaultValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		LineStyle lineStyle = new LineStyle(attributeName, defaultValue);
 		addChild(lineStyle);
 		lineStyle.wrap(wrap);
 		return lineStyle;
 	}
 
-	//#region FUNCTION PLOTTER
+	//#end region
 
-	public FunctionPlotter createFunctionPlotter(Attribute<String> wrap, String name) {
-		FunctionPlotter plotter = new FunctionPlotter(name);
-		addChild(plotter);
-		plotter.wrap(wrap);
-		return plotter;
+	//#region FILL STYLE
+
+	public FillStyle createFillStyle(Attribute<String> wrap, Object attributeParent, String label) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		FillStyle fillStyle = new FillStyle(attributeName, label);
+		addChild(fillStyle);
+		fillStyle.wrap(wrap);
+		return fillStyle;
+	}
+
+	//#end region
+
+	//#region ERROR BAR STYLE
+
+	public ErrorBarStyle createErrorBarStyle(Attribute<String> wrap, Object attributeParent, String label) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		ErrorBarStyle errorBarStyle = new ErrorBarStyle(attributeName);
+		errorBarStyle.setLabel(label);
+		addChild(errorBarStyle);
+		errorBarStyle.wrap(wrap);
+		return errorBarStyle;
+	}
+
+	//#end region
+
+	//#region FONT
+
+	public Font createFont(Attribute<String> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		Font font = new Font(attributeName, "Arial");
+		addChild(font);
+		font.wrap(wrap);
+		return font;
 	}
 
 	//#end region
@@ -368,7 +472,19 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	public ModelPath createModelPath(
 			Attribute<String> wrap,
-			AbstractAtom attributeParent,
+			Object attributeParent,
+			ModelPath parentModelPath,
+			Class<?> atomType) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		ModelPath modelPath = new ModelPath(attributeName, parentModelPath, atomType);
+		addChild(modelPath);
+		modelPath.wrap(wrap);
+		return modelPath;
+	}
+
+	public ModelPath createModelPath(
+			Attribute<String> wrap,
+			AbstractAtom<?> attributeParent,
 			String defaultPath,
 			Class<?>[] atomTypes) {
 		String attributeName = getFieldName(wrap, attributeParent);
@@ -387,19 +503,7 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	public ModelPath createModelPath(
 			Attribute<String> wrap,
-			AbstractAtom attributeParent,
-			ModelPath parentModelPath,
-			Class<?> atomType) {
-		String attributeName = getFieldName(wrap, attributeParent);
-		ModelPath modelPath = new ModelPath(attributeName, parentModelPath, atomType);
-		addChild(modelPath);
-		modelPath.wrap(wrap);
-		return modelPath;
-	}
-
-	public ModelPath createModelPath(
-			Attribute<String> wrap,
-			AbstractAtom attributeParent,
+			AbstractAtom<?> attributeParent,
 			String defaultPath,
 			Class<?> atomType,
 			ModelPathSelectionType selectionType) {
@@ -421,7 +525,7 @@ public class Section extends AbstractAttributeContainerAtom {
 			Object attributeParent,
 			String defaultPath,
 			Class<?> atomType,
-			AbstractAtom modelEntryAtom) {
+			AbstractAtom<?> modelEntryAtom) {
 		String attributeName = getFieldName(wrap, attributeParent);
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
 		ModelPath modelPath = new ModelPath(attributeName, defaultPath, atomType, selectionType, modelEntryAtom, false);
@@ -437,7 +541,7 @@ public class Section extends AbstractAttributeContainerAtom {
 			String defaultPath,
 			Class<?> atomType,
 			ModelPathSelectionType selectionType,
-			AbstractAtom modelEntryPoint,
+			AbstractAtom<?> modelEntryPoint,
 			boolean hasToBeEnabled) {
 		String attributeName = getFieldName(wrap, attributeParent);
 		ModelPath modelPath = new ModelPath(
@@ -454,78 +558,7 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	//#end region
 
-	void addLineStyle(TreeViewerRefreshable treeViewer) {
-		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myColor");
-		createLineStyle(name);
-		createTreeNodeAdaption().expand(treeViewer);
-	}
-
-	//#region TEXT FIELD
-
-	void addTextField(TreeViewerRefreshable treeViewer) {
-		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myTextField");
-		createTextField(name);
-		createTreeNodeAdaption().expand(treeViewer);
-	}
-
-	public TextField createTextField(String name) {
-		TextField textField = new TextField(name);
-		addChild(textField);
-		return textField;
-	}
-
-	public TextField createTextField(Attribute<String> wrap, String name) {
-		TextField textField = new TextField(name);
-		addChild(textField);
-		textField.wrap(wrap);
-		return textField;
-	}
-
-	public TextField createTextField(Attribute<String> wrap, String name, String defaultValue) {
-		TextField textField = new TextField(name);
-		textField.setDefaultValue(defaultValue);
-		textField.set(defaultValue);
-		addChild(textField);
-		textField.wrap(wrap);
-		return textField;
-	}
-
-	public TextField createTextField(Attribute<String> wrap, AbstractAtom attributeParent) {
-		String attributeName = getFieldName(wrap, attributeParent);
-		TextField textField = new TextField(attributeName);
-		addChild(textField);
-		textField.wrap(wrap);
-		return textField;
-	}
-
-	public TextField createTextField(Attribute<String> wrap, GraphicsPropertiesPageFactory attributeParent) {
-		String attributeName = getFieldName(wrap, attributeParent);
-		TextField textField = new TextField(attributeName);
-		addChild(textField);
-		textField.wrap(wrap);
-		return textField;
-	}
-
-	//#end region
-
-	//#region LABEL
-
-	public org.treez.core.atom.attribute.Label createLabel(String name) {
-		org.treez.core.atom.attribute.Label label = new org.treez.core.atom.attribute.Label(name);
-		addChild(label);
-		return label;
-	}
-
-	public org.treez.core.atom.attribute.Label createLabel(String name, String labelText) {
-		org.treez.core.atom.attribute.Label label = new org.treez.core.atom.attribute.Label(name);
-		label.setLabel(labelText);
-		addChild(label);
-		return label;
-	}
-
-	//#end region
-
-	//#region QUANTITY VARIABLE FIELD
+	//#region QUANTITY VARIABLE
 
 	public QuantityVariableField createQuantityVariableField(String name) {
 		QuantityVariableField variableField = new QuantityVariableField(name);
@@ -548,24 +581,11 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	//#end region
 
-	//#region DOUBLE VARIABLE FIELD
+	//#region DOUBLE VARIABLE
 
 	public DoubleVariableField createDoubleVariableField(
 			Attribute<Double> wrap,
-			AbstractAtom attributeParent,
-			Double defaultValue) {
-		String attributeName = getFieldName(wrap, attributeParent);
-		DoubleVariableField variableField = new DoubleVariableField(attributeName);
-		variableField.setDefaultValue(defaultValue);
-		variableField.set(defaultValue);
-		variableField.wrap(wrap);
-		addChild(variableField);
-		return variableField;
-	}
-
-	public DoubleVariableField createDoubleVariableField(
-			Attribute<Double> wrap,
-			GraphicsPropertiesPageFactory attributeParent,
+			Object attributeParent,
 			Double defaultValue) {
 		String attributeName = getFieldName(wrap, attributeParent);
 		DoubleVariableField variableField = new DoubleVariableField(attributeName);
@@ -591,7 +611,7 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	public DoubleVariableListField createDoubleVariableListField(
 			Attribute<List<Double>> wrap,
-			AbstractAtom attributeParent,
+			Object attributeParent,
 			String label) {
 
 		String attributeName = getFieldName(wrap, attributeParent);
@@ -606,24 +626,11 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	//#end region
 
-	//#region INTEGER VARIABLE FIELD
+	//#region INTEGER VARIABLE
 
 	public IntegerVariableField createIntegerVariableField(
 			Attribute<Integer> wrap,
-			AbstractAtom attributeParent,
-			Integer defaultValue) {
-		String attributeName = getFieldName(wrap, attributeParent);
-		IntegerVariableField variableField = new IntegerVariableField(attributeName);
-		variableField.setDefaultValue(defaultValue);
-		variableField.set(defaultValue);
-		variableField.wrap(wrap);
-		addChild(variableField);
-		return variableField;
-	}
-
-	public IntegerVariableField createIntegerVariableField(
-			Attribute<Integer> wrap,
-			GraphicsPropertiesPageFactory attributeParent,
+			Object attributeParent,
 			Integer defaultValue) {
 		String attributeName = getFieldName(wrap, attributeParent);
 		IntegerVariableField variableField = new IntegerVariableField(attributeName);
@@ -655,7 +662,7 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	public IntegerVariableListField createIntegerVariableListField(
 			Attribute<List<Integer>> wrap,
-			AbstractAtom attributeParent,
+			Object attributeParent,
 			String label) {
 		String attributeName = getFieldName(wrap, attributeParent);
 		IntegerVariableListField variableListField = new IntegerVariableListField(attributeName);
@@ -669,41 +676,46 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	//#end region
 
+	//#region VARIABLE LIST
+
+	public VariableList createVariableList(
+			Attribute<List<VariableField<?, ?>>> wrap,
+			Object attributeParent,
+			String label) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		VariableList variableList = new VariableList(attributeName, null);
+		variableList.setLabel(label);
+		addChild(variableList);
+		variableList.wrap(wrap);
+		return variableList;
+	}
+
+	//#end region
+
 	//#region FILE PATH
 
-	void addFilePath(TreeViewerRefreshable treeViewer) {
-		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myFilePath");
-		createFilePath(name);
-		createTreeNodeAdaption().expand(treeViewer);
-	}
-
-	public FilePath createFilePath(String name) {
-		FilePath filePath = new FilePath(name);
-		addChild(filePath);
-		return filePath;
-	}
-
-	public FilePath createFilePath(Attribute<String> wrap, String name, String defaultPath) {
-		FilePath filePath = new FilePath(name);
+	public FilePath createFilePath(Attribute<String> wrap, Object attributeParent, String defaultPath) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		FilePath filePath = new FilePath(attributeName);
 		filePath.setDefaultValue(defaultPath);
 		addChild(filePath);
 		filePath.wrap(wrap);
 		return filePath;
 	}
 
-	public FilePath createFilePath(Attribute<String> wrap, String name, String label, String defaultPath) {
-		FilePath filePath = createFilePath(wrap, name, defaultPath);
+	public FilePath createFilePath(Attribute<String> wrap, Object attributeParent, String label, String defaultPath) {
+		FilePath filePath = createFilePath(wrap, attributeParent, defaultPath);
 		filePath.setLabel(label);
 		return filePath;
 	}
 
 	public FilePath createFilePath(
 			Attribute<String> wrap,
-			String name,
+			Object attributeParent,
 			String label,
 			String defaultPath,
 			Boolean validatePath) {
-		FilePath filePath = createFilePath(wrap, name, defaultPath);
+		FilePath filePath = createFilePath(wrap, attributeParent, defaultPath);
 		filePath.setLabel(label);
 		filePath.setValidatePath(validatePath);
 		return filePath;
@@ -719,7 +731,7 @@ public class Section extends AbstractAttributeContainerAtom {
 		createTreeNodeAdaption().expand(treeViewer);
 	}
 
-	public FilePathList createFilePathList(String name) {
+	private FilePathList createFilePathList(String name) {
 		FilePathList filePathList = new FilePathList(name);
 		addChild(filePathList);
 		return filePathList;
@@ -729,24 +741,46 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	//#region DIRECTORY PATH
 
+	public DirectoryPath createDirectoryPath(
+			Attribute<String> wrap,
+			Object attributeParent,
+			String label,
+			String defaultPath) {
+		DirectoryPath directoryPath = createDirectoryPath(wrap, attributeParent, defaultPath);
+		directoryPath.setLabel(label);
+		return directoryPath;
+	}
+
+	public DirectoryPath createDirectoryPath(Attribute<String> wrap, Object attributeParent, String defaultPath) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		DirectoryPath directoryPath = createDirectoryPath(attributeName);
+		directoryPath.setDefaultValue(defaultPath);
+		directoryPath.wrap(wrap);
+		return directoryPath;
+	}
+
 	void addDirectoryPath(TreeViewerRefreshable treeViewer) {
 		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "myDirectoryPath");
 		createDirectoryPath(name);
 		createTreeNodeAdaption().expand(treeViewer);
 	}
 
+	private DirectoryPath createDirectoryPath(String name) {
+		DirectoryPath directoryPath = new DirectoryPath(name);
+		addChild(directoryPath);
+		return directoryPath;
+	}
+
 	//#end region
 
 	//#region FILE OR DIRECTORY PATH
 
-	public FileOrDirectoryPath createFileOrDirectoryPath(String name) {
-		FileOrDirectoryPath fileOrDirectoryPath = new FileOrDirectoryPath(name);
-		addChild(fileOrDirectoryPath);
-		return fileOrDirectoryPath;
-	}
-
-	public FileOrDirectoryPath createFileOrDirectoryPath(Attribute<String> wrap, String name, String defaultPath) {
-		FileOrDirectoryPath fileOrDirectoryPath = new FileOrDirectoryPath(name);
+	private FileOrDirectoryPath createFileOrDirectoryPath(
+			Attribute<String> wrap,
+			Object attributeParent,
+			String defaultPath) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		FileOrDirectoryPath fileOrDirectoryPath = new FileOrDirectoryPath(attributeName);
 		fileOrDirectoryPath.setDefaultValue(defaultPath);
 		addChild(fileOrDirectoryPath);
 		fileOrDirectoryPath.wrap(wrap);
@@ -755,21 +789,21 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	public FileOrDirectoryPath createFileOrDirectoryPath(
 			Attribute<String> wrap,
-			String name,
+			Object attributeParent,
 			String label,
 			String defaultPath) {
-		FileOrDirectoryPath fileOrDirectoryPath = createFileOrDirectoryPath(wrap, name, defaultPath);
+		FileOrDirectoryPath fileOrDirectoryPath = createFileOrDirectoryPath(wrap, attributeParent, defaultPath);
 		fileOrDirectoryPath.setLabel(label);
 		return fileOrDirectoryPath;
 	}
 
 	public FileOrDirectoryPath createFileOrDirectoryPath(
 			Attribute<String> wrap,
-			String name,
+			Object attributeParent,
 			String label,
 			String defaultPath,
 			Boolean validatePath) {
-		FileOrDirectoryPath fileOrDirectoryPath = createFileOrDirectoryPath(wrap, name, defaultPath);
+		FileOrDirectoryPath fileOrDirectoryPath = createFileOrDirectoryPath(wrap, attributeParent, defaultPath);
 		fileOrDirectoryPath.setLabel(label);
 		fileOrDirectoryPath.setValidatePath(validatePath);
 		return fileOrDirectoryPath;
@@ -785,7 +819,7 @@ public class Section extends AbstractAttributeContainerAtom {
 		createTreeNodeAdaption().expand(treeViewer);
 	}
 
-	public DirectoryPathList createDirectoryPathList(String name) {
+	private DirectoryPathList createDirectoryPathList(String name) {
 		DirectoryPathList directoryPathList = new DirectoryPathList(name);
 		addChild(directoryPathList);
 		return directoryPathList;
@@ -793,61 +827,25 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	//#end region
 
-	public AbstractStringAttributeAtom createErrorBarStyle(Attribute<String> wrap, String name, String label) {
-		ErrorBarStyle errorBarStyle = new ErrorBarStyle(name);
-		errorBarStyle.setLabel(label);
-		addChild(errorBarStyle);
-		errorBarStyle.wrap(wrap);
-		return errorBarStyle;
-	}
+	//#region SPACER
 
-	public DirectoryPath createDirectoryPath(String name) {
-		DirectoryPath directoryPath = new DirectoryPath(name);
-		addChild(directoryPath);
-		return directoryPath;
-	}
-
-	public DirectoryPath createDirectoryPath(Attribute<String> wrap, String name, String defaultPath) {
-		DirectoryPath directoryPath = new DirectoryPath(name);
-		directoryPath.setDefaultValue(defaultPath);
-		addChild(directoryPath);
-		directoryPath.wrap(wrap);
-		return directoryPath;
-	}
-
-	public DirectoryPath createDirectoryPath(Attribute<String> wrap, String name, String label, String defaultPath) {
-		DirectoryPath directoryPath = createDirectoryPath(wrap, name, defaultPath);
-		directoryPath.setLabel(label);
-		return directoryPath;
-	}
-
-	public AbstractStringAttributeAtom createFillStyle(Attribute<String> wrap, String name, String label) {
-		FillStyle fillStyle = new FillStyle(name, label);
-		addChild(fillStyle);
-		fillStyle.wrap(wrap);
-		return fillStyle;
-	}
-
-	public AbstractStringAttributeAtom createFont(Attribute<String> wrap, String name) {
-		Font font = new Font(name, "Arial");
-		addChild(font);
-		font.wrap(wrap);
-		return font;
-	}
-
-	void addSpacer(TreeViewerRefreshable treeViewer) {
+	private void addSpacer(TreeViewerRefreshable treeViewer) {
 		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "mySpacer");
 		createSpacer(name);
 		createTreeNodeAdaption().expand(treeViewer);
 	}
 
-	public Spacer createSpacer(String name) {
+	private Spacer createSpacer(String name) {
 		Spacer spacer = new Spacer(name);
 		addChild(spacer);
 		return spacer;
 	}
 
-	public AbstractStringAttributeAtom createSymbolType(
+	//#end region
+
+	//#region SYMBOL TYPE
+
+	public SymbolType createSymbolType(
 			Attribute<String> wrap,
 			Object attributeParent,
 			String label,
@@ -859,45 +857,30 @@ public class Section extends AbstractAttributeContainerAtom {
 		return symbolType;
 	}
 
-	void addSectionAction(TreeViewerRefreshable treeViewer, String description, Runnable runnable) {
-		String name = AtomTreeNodeAdaption.createChildNameStartingWith(this, "mySectionAction");
-		createSectionAction(name, description, runnable);
-		createTreeNodeAdaption().expand(treeViewer);
-	}
+	//#end region
 
-	public SectionAction createSectionAction(String name, String description, Runnable runnable) {
-		SectionAction action = new SectionAction(name, description, runnable);
-		addChild(action);
-		return action;
-	}
+	//#region SIZE
 
-	public SectionAction createSectionAction(String name, String description, Runnable runnable, Image image) {
-		SectionAction action = new SectionAction(name, description, runnable, image);
-		addChild(action);
-		return action;
-	}
-
-	public AbstractStringAttributeAtom createSize(Attribute<String> wrap, String name) {
-		Size size = new Size(name);
+	public Size createSize(Attribute<String> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		Size size = new Size(attributeName);
 		addChild(size);
 		size.wrap(wrap);
 		return size;
 	}
 
-	public AbstractStringAttributeAtom createSize(Attribute<String> wrap, String name, String defaultValue) {
-		Size size = new Size(name);
+	public Size createSize(Attribute<String> wrap, Object attributeParent, String defaultValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		Size size = new Size(attributeName);
 		size.setDefaultValue(defaultValue);
 		addChild(size);
 		size.wrap(wrap);
 		return size;
 	}
 
-	public AbstractStringAttributeAtom createSize(
-			Attribute<String> wrap,
-			String name,
-			String label,
-			String defaultValue) {
-		Size size = new Size(name);
+	public Size createSize(Attribute<String> wrap, Object attributeParent, String label, String defaultValue) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		Size size = new Size(attributeName);
 		size.setDefaultValue(defaultValue);
 		size.setLabel(label);
 		addChild(size);
@@ -907,15 +890,14 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	//#end region
 
-	//#region VARIABLE LIST
+	//#region FUNCTION PLOTTER
 
-	public VariableList createVariableList(Attribute<List<VariableField<?>>> wrap, String name, String label) {
-
-		VariableList variableList = new VariableList(name, null);
-		variableList.setLabel(label);
-		addChild(variableList);
-		variableList.wrap(wrap);
-		return variableList;
+	public FunctionPlotter createFunctionPlotter(Attribute<String> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		FunctionPlotter plotter = new FunctionPlotter(attributeName);
+		addChild(plotter);
+		plotter.wrap(wrap);
+		return plotter;
 	}
 
 	//#end region
@@ -954,6 +936,11 @@ public class Section extends AbstractAttributeContainerAtom {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Override
+	public Section setEnabled(boolean enable) {
+		throw new IllegalStateException("not yet implemented");
 	}
 
 	//#end region

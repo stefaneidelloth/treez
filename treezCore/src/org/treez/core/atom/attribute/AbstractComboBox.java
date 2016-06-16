@@ -25,7 +25,7 @@ import org.treez.core.utils.Utils;
 /**
  * An item example
  */
-public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
+public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends AbstractStringAttributeAtom<A> {
 
 	//#region ATTRIBUTES
 
@@ -73,7 +73,7 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 	/**
 	 * Copy constructor
 	 */
-	protected AbstractComboBox(AbstractComboBox comboBoxToCopy) {
+	protected AbstractComboBox(AbstractComboBox<A> comboBoxToCopy) {
 		super(comboBoxToCopy);
 		label = comboBoxToCopy.label;
 		defaultValue = comboBoxToCopy.defaultValue;
@@ -92,7 +92,7 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractAttributeAtom<String> createAttributeAtomControl(
+	public AbstractAttributeAtom<A, String> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.attributeAtomParent = parent;
@@ -199,7 +199,7 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 			List<String> enableValues = comboBoxEnableTarget.getItems();
 			String targetPath = comboBoxEnableTarget.getTargetPath();
 			AttributeRoot root = (AttributeRoot) getRoot();
-			AbstractAttributeAtom<?> target = (AbstractAttributeAtom<?>) root.getChild(targetPath);
+			AbstractAttributeAtom<?, ?> target = (AbstractAttributeAtom<?, ?>) root.getChild(targetPath);
 			boolean enableTarget = enableValues.contains(currentValue);
 			if (enableTarget) {
 				target.setEnabled(true);
@@ -224,7 +224,7 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color color) {
+	public A setBackgroundColor(org.eclipse.swt.graphics.Color color) {
 		this.backgroundColor = color;
 		if (isAvailable(contentContainer)) {
 			contentContainer.setBackground(color);
@@ -233,26 +233,8 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 		if (isAvailable(labelComposite)) {
 			labelComposite.setBackground(color);
 		}
-
+		return getThis();
 	}
-
-	/*
-
-	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-	
-		addModifyListener(key, (event) -> {
-			if (event.data == null) {
-				consumer.accept(null);
-			} else {
-				String data = event.data.toString();
-				consumer.accept(data);
-			}
-	
-		});
-	
-	}
-	*/
 
 	//#end region
 
@@ -262,8 +244,9 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public A setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
 	/**
@@ -292,7 +275,7 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public A setDefaultValue(String defaultValue) {
 		boolean valueAllowed = items.contains(defaultValue);
 		if (valueAllowed) {
 			this.defaultValue = defaultValue;
@@ -301,12 +284,14 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 					+ "' is not allowed since it is not contained in the items " + items;
 			throw new IllegalArgumentException(message);
 		}
+		return getThis();
 
 	}
 
-	public void setDefaultValue(Enum<?> defaultEnumValue) {
+	public A setDefaultValue(Enum<?> defaultEnumValue) {
 		String defaultValueString = defaultEnumValue.name();
 		setDefaultValue(defaultValueString);
+		return getThis();
 	}
 
 	/**
@@ -340,8 +325,9 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 		return items;
 	}
 
-	public void setItems(String items) {
+	public A setItems(String items) {
 		this.items = items;
+		return getThis();
 	}
 
 	/**
@@ -367,7 +353,7 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 	 *
 	 * @param enumValue
 	 */
-	public void setItems(Enum<?> enumValue) {
+	public A setItems(Enum<?> enumValue) {
 		Object[] enumValues = enumValue.getDeclaringClass().getEnumConstants();
 		List<String> enumNameList = new ArrayList<>();
 		for (Object enumObject : enumValues) {
@@ -376,14 +362,16 @@ public abstract class AbstractComboBox extends AbstractStringAttributeAtom {
 		}
 		String itemsString = String.join(",", enumNameList);
 		setItems(itemsString);
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public A setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	//#end region

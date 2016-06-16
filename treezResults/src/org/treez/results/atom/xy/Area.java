@@ -4,7 +4,7 @@ import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.graphics.GraphicsAtom;
+import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -65,7 +65,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 	//#region METHODS
 
 	@Override
-	public void createPage(AttributeRoot root, AbstractAtom parent) {
+	public void createPage(AttributeRoot root, AbstractAtom<?> parent) {
 
 		Page fillPage = root.createPage("fill", "   Fill     ");
 
@@ -80,7 +80,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 		fillAbove.createDoubleVariableField(aboveTransparency, this, 0.0).setLabel("Transparency");
 
-		fillAbove.createCheckBox(aboveHide, "hide", true);
+		fillAbove.createCheckBox(aboveHide, this, true).setLabel("Hide");
 
 		//fillAbove.createCheckBox(aboveHideErrorFill, "hideErrorFill", "Hide error fill");
 
@@ -92,9 +92,9 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 		//fillBelow.createFillStyle(belowFillStyle, "style", "Style");
 
-		fillBelow.createTextField(belowTransparency, "transparency", "0");
+		fillBelow.createTextField(belowTransparency, this, "0").setLabel("transparency");
 
-		fillBelow.createCheckBox(belowHide, "hide", true);
+		fillBelow.createCheckBox(belowHide, this, true).setLabel("Hide");
 
 		//fillBelow.createCheckBox(belowHideErrorFill, "hideErrorFill", "Hide error fill");
 
@@ -102,7 +102,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, GraphicsAtom parent) {
+	public Selection plotWithD3(D3 d3, Selection xySelection, Selection rectSelection, AbstractGraphicsAtom parent) {
 
 		Xy xy = (Xy) parent;
 		String parentName = xy.getName();
@@ -152,9 +152,9 @@ public class Area implements GraphicsPropertiesPageFactory {
 				.append("path") //
 				.attr("d", areaAbovePathGenerator.generate(xyDataString));
 
-		GraphicsAtom.bindStringAttribute(aboveArea, "fill", aboveColor);
-		GraphicsAtom.bindTransparency(aboveArea, aboveTransparency);
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideAboveArea", aboveArea, aboveHide);
+		AbstractGraphicsAtom.bindStringAttribute(aboveArea, "fill", aboveColor);
+		AbstractGraphicsAtom.bindTransparency(aboveArea, aboveTransparency);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideAboveArea", aboveArea, aboveHide);
 	}
 
 	private void plotBelowAreaWithD3(
@@ -192,9 +192,9 @@ public class Area implements GraphicsPropertiesPageFactory {
 				.append("path") //
 				.attr("d", areaBelowPathGenerator.generate(xyDataString));
 
-		GraphicsAtom.bindStringAttribute(belowArea, "fill", belowColor);
-		GraphicsAtom.bindTransparency(belowArea, aboveTransparency);
-		GraphicsAtom.bindDisplayToBooleanAttribute("hideBelowArea", belowArea, belowHide);
+		AbstractGraphicsAtom.bindStringAttribute(belowArea, "fill", belowColor);
+		AbstractGraphicsAtom.bindTransparency(belowArea, aboveTransparency);
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideBelowArea", belowArea, belowHide);
 	}
 
 	//#end region

@@ -15,7 +15,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 /**
  * An atom that is used to show errors
  */
-public class ErrorAtom extends AbstractAtom {
+public class ErrorAtom extends AbstractAtom<ErrorAtom> {
 
 	//#region ATTRIBUTES
 
@@ -49,6 +49,11 @@ public class ErrorAtom extends AbstractAtom {
 	//#region COPY
 
 	@Override
+	protected ErrorAtom getThis() {
+		return this;
+	}
+
+	@Override
 	public ErrorAtom copy() {
 		return new ErrorAtom(this);
 	}
@@ -56,16 +61,15 @@ public class ErrorAtom extends AbstractAtom {
 	//#end region
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent,
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
 			FocusChangingRefreshable treeViewRefreshable) {
-		String displayString = message + "\n"
-				+ ExceptionUtils.getStackTrace(exception);
+		String displayString = message + "\n" + ExceptionUtils.getStackTrace(exception);
 		return new EmptyControlAdaption(parent, this, displayString);
 	}
 
 	@Override
-	protected ArrayList<Object> createContextMenuActions(
-			final TreeViewerRefreshable treeViewer) {
+	protected ArrayList<Object> createContextMenuActions(final TreeViewerRefreshable treeViewer) {
 
 		ArrayList<Object> actions = new ArrayList<>();
 		return actions;

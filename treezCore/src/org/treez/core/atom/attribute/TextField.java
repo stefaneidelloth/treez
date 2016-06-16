@@ -15,7 +15,7 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-public class TextField extends AbstractStringAttributeAtom {
+public class TextField extends AbstractStringAttributeAtom<TextField> {
 
 	private static final Logger LOG = Logger.getLogger(TextField.class);
 
@@ -84,6 +84,12 @@ public class TextField extends AbstractStringAttributeAtom {
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public TextField getThis() {
+		return this;
+	}
+
 	@Override
 	public TextField copy() {
 		return new TextField(this);
@@ -95,7 +101,7 @@ public class TextField extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom createAttributeAtomControl(
+	public AbstractStringAttributeAtom<TextField> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 
@@ -260,11 +266,12 @@ public class TextField extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setEnabled(boolean state) {
+	public TextField setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(textField)) {
 			textField.setEnabled(state);
 		}
+		return getThis();
 	}
 
 	@Override
@@ -278,22 +285,10 @@ public class TextField extends AbstractStringAttributeAtom {
 	}
 
 	@Override
-	public void setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+	public TextField setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
-
+		//return getThis();
 	}
-
-	/*
-	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key, (event) -> {
-			if (isAvailable(textField)) {
-				String value = textField.getText();
-				consumer.accept(value);
-			}
-		});
-	}
-	*/
 
 	//#end region
 
@@ -303,12 +298,14 @@ public class TextField extends AbstractStringAttributeAtom {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public TextField setLabel(String label) {
 		this.label = label;
+		return getThis();
 	}
 
-	public void setPrefferedLabelWidth(int width) {
+	public TextField setPrefferedLabelWidth(int width) {
 		prefferedLabelWidth = width;
+		return getThis();
 	}
 
 	@Override
@@ -316,64 +313,72 @@ public class TextField extends AbstractStringAttributeAtom {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
+	public TextField setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		return getThis();
 	}
 
 	public String getTooltip() {
 		return tooltip;
 	}
 
-	public void setTooltip(String tooltip) {
+	public TextField setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+		return getThis();
 	}
 
 	public boolean isPatternValidation() {
 		return usingPatternValidation;
 	}
 
-	public void setPatternValidation(boolean patternValidation) {
+	public TextField setPatternValidation(boolean patternValidation) {
 		this.usingPatternValidation = patternValidation;
+		return getThis();
 	}
 
 	public String getValidationPattern() {
 		return validationPattern;
 	}
 
-	public void setValidationPattern(String validationPattern) {
+	public TextField setValidationPattern(String validationPattern) {
 		this.validationPattern = validationPattern;
+		return getThis();
 	}
 
 	public boolean isNumberValidation() {
 		return usingNumberRangeValidation;
 	}
 
-	public void setNumberValidation(boolean numberValidation) {
+	public TextField setNumberValidation(boolean numberValidation) {
 		this.usingNumberRangeValidation = numberValidation;
+		return getThis();
 	}
 
 	public String getMin() {
 		return min;
 	}
 
-	public void setMin(String min) {
+	public TextField setMin(String min) {
 		this.min = min;
+		return getThis();
 	}
 
 	public String getMax() {
 		return max;
 	}
 
-	public void setMax(String max) {
+	public TextField setMax(String max) {
 		this.max = max;
+		return getThis();
 	}
 
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 
-	public void setErrorMessage(String errorMessage) {
+	public TextField setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+		return getThis();
 	}
 
 	//#end region
