@@ -12,7 +12,7 @@ import org.treez.results.atom.results.Results;
 import org.treez.results.atom.tornado.Tornado;
 import org.treez.views.tree.rootAtom.Root;
 
-public class TornadoExample extends ModelProvider {
+public class TornadoExampleHorizontal extends ModelProvider {
 
 	@Override
 	public Root createModel() {
@@ -55,12 +55,12 @@ public class TornadoExample extends ModelProvider {
 		tornado.data.outputRight.set("root.results.data.table.columns.rangeRight");
 
 		Axis xAxis = graph.createAxis("xAxis");
-		xAxis.data.direction.set("vertical");
+		xAxis.data.direction.set("horizontal");
 		xAxis.data.min.set(-100.0);
 		xAxis.data.max.set(100.0);
 
 		Axis yAxis = graph.createAxis("yAxis");
-		yAxis.data.direction.set("horizontal");
+		yAxis.data.direction.set("vertical");
 		yAxis.data.mode.set(AxisMode.ORDINAL.toString());
 
 		graph.createLegend("legend");

@@ -18,6 +18,7 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
+import org.treez.core.atom.attribute.base.parent.AbstractAttributeParentAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
@@ -46,15 +47,9 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 	 */
 	private Composite contentContainer;
 
-	/**
-	 * The label
-	 */
 	private CustomLabel labelComposite;
 
-	/**
-	 * The combo box
-	 */
-	private Combo combo;
+	private Combo comboBox;
 
 	/**
 	 * The parent composite for the attribute atom control can be stored here to be able to refresh it.
@@ -153,28 +148,28 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 		comboFillHorizontal.grabExcessHorizontalSpace = true;
 		//comboFillHorizontal.horizontalAlignment = GridData.FILL;
 
-		combo = new Combo(contentContainer, SWT.READ_ONLY);
-		combo.setEnabled(isEnabled());
-		combo.setLayoutData(comboFillHorizontal);
+		comboBox = new Combo(contentContainer, SWT.READ_ONLY);
+		comboBox.setEnabled(isEnabled());
+		comboBox.setLayoutData(comboFillHorizontal);
 
 		List<String> availableItems = getItemList();
-		combo.setItems(availableItems.toArray(new String[availableItems.size()]));
+		comboBox.setItems(availableItems.toArray(new String[availableItems.size()]));
 		String value = get();
 		if (value != null) {
-			combo.setText(value);
+			comboBox.setText(value);
 		}
 
 		//action listener
-		combo.addSelectionListener(new SelectionAdapter() {
+		comboBox.addSelectionListener(new SelectionAdapter() {
 
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				//update value
-				String currentValue = combo.getItem(combo.getSelectionIndex());
+				String currentValue = comboBox.getItem(comboBox.getSelectionIndex());
 				set(currentValue);
 
-				//updated enabled states if ComboBoxEnableTarget children exist
+				//updates enabled states if ComboBoxEnableTarget children exist
 				updateTargetsEnabledStates(currentValue);
 
 				//trigger modification listeners
@@ -182,6 +177,17 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 			}
 
 		});
+
+		//updates enabled states if ComboBoxEnableTarget children exist
+		updateTargetsEnabledStates(get());
+	}
+
+	/**
+	 * activeValues: for those values the target will be enabled; for all other values the target will be disabled
+	 */
+	public void createEnableTarget(String name, String activeValues, String targetPath) {
+		ComboBoxEnableTarget enableDomainSection = new ComboBoxEnableTarget(name, activeValues, targetPath);
+		addChild(enableDomainSection);
 	}
 
 	/**
@@ -199,7 +205,7 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 			List<String> enableValues = comboBoxEnableTarget.getItems();
 			String targetPath = comboBoxEnableTarget.getTargetPath();
 			AttributeRoot root = (AttributeRoot) getRoot();
-			AbstractAttributeAtom<?, ?> target = (AbstractAttributeAtom<?, ?>) root.getChild(targetPath);
+			AbstractAttributeParentAtom<?> target = (AbstractAttributeParentAtom<?>) root.getChild(targetPath);
 			boolean enableTarget = enableValues.contains(currentValue);
 			if (enableTarget) {
 				target.setEnabled(true);
@@ -211,14 +217,14 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 
 	@Override
 	public void refreshAttributeAtomControl() {
-		if (isAvailable(combo)) {
+		if (isAvailable(comboBox)) {
 
 			List<String> availableItems = getItemList();
-			combo.setItems(availableItems.toArray(new String[availableItems.size()]));
+			comboBox.setItems(availableItems.toArray(new String[availableItems.size()]));
 
 			String value = get();
-			if (!combo.getText().equals(value)) {
-				combo.setText(value);
+			if (!comboBox.getText().equals(value)) {
+				comboBox.setText(value);
 			}
 		}
 	}

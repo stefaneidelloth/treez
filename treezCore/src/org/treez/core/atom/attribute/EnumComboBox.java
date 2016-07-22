@@ -13,7 +13,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
+import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
+import org.treez.core.atom.attribute.base.parent.AbstractAttributeParentAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
@@ -147,8 +149,14 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 				int index = comboBox.getSelectionIndex();
 				String currentValue = enumValueProviderInstance.getValues().get(index);
 				set(currentValue);
+
+				//updates enabled states if ComboBoxEnableTarget children exist
+				updateTargetsEnabledStates(currentValue);
 			}
 		});
+
+		//updates enabled states if ComboBoxEnableTarget children exist
+		updateTargetsEnabledStates(get());
 
 		return this;
 
@@ -172,25 +180,50 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 		}
 	}
 
-	@Override
-	public EnumComboBox<T> setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
-		throw new IllegalStateException("Not yet implemented");
+	public void createEnableTarget(String name, T enablingEnumValue, String targetPath) {
+		ComboBoxEnableTarget enableDomainSection = new ComboBoxEnableTarget(
+				name,
+				enablingEnumValue.toString(),
+				targetPath);
+		addChild(enableDomainSection);
 	}
 
-	/*
-	@Override
-	public void addModificationConsumer(String key, Consumer<String> consumer) {
-		addModifyListener(key, (event) -> {
-			if (event.data == null) {
-				consumer.accept(null);
+	public void createDisableTarget(String name, T disablingEnumValue, String targetPath) {
+
+		List<String> enablingValues = disablingEnumValue.getValues();
+		enablingValues.remove(disablingEnumValue.toString());
+
+		ComboBoxEnableTarget enableDomainSection = new ComboBoxEnableTarget(
+				name,
+				String.join(",", enablingValues),
+				targetPath);
+		addChild(enableDomainSection);
+	}
+
+	/**
+	 * Updates the enabled/disabled state of other components, dependent on the current value
+	 *
+	 * @param currentValue
+	 */
+	@SuppressWarnings("checkstyle:linelength")
+	private void updateTargetsEnabledStates(String currentValue) {
+		List<TreeNodeAdaption> enableNodes = createTreeNodeAdaption().getChildren();
+		for (TreeNodeAdaption enableNode : enableNodes) {
+			org.treez.core.atom.attribute.ComboBoxEnableTarget comboBoxEnableTarget = (org.treez.core.atom.attribute.ComboBoxEnableTarget) enableNode
+					.getAdaptable();
+
+			List<String> enableValues = comboBoxEnableTarget.getItems();
+			String targetPath = comboBoxEnableTarget.getTargetPath();
+			AttributeRoot root = (AttributeRoot) getRoot();
+			AbstractAttributeParentAtom<?> target = (AbstractAttributeParentAtom<?>) root.getChild(targetPath);
+			boolean enableTarget = enableValues.contains(currentValue);
+			if (enableTarget) {
+				target.setEnabled(true);
 			} else {
-				String data = event.data.toString();
-				consumer.accept(data);
+				target.setEnabled(false);
 			}
-
-		});
+		}
 	}
-	*/
 
 	//#end region
 
@@ -261,6 +294,11 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 		}
 		refreshAttributeAtomControl();
 		return getThis();
+	}
+
+	@Override
+	public EnumComboBox<T> setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
+		throw new IllegalStateException("Not yet implemented");
 	}
 
 	//#end region

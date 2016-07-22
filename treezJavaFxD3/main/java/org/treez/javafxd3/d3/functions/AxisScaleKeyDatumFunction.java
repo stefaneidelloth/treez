@@ -13,7 +13,7 @@ public class AxisScaleKeyDatumFunction implements DatumFunction<Double> {
 	
 	//#region ATTRIBUTES
 	
-	Scale<?> scale;	
+	private Scale<?> scale;	
 	
 	//#end region
 	

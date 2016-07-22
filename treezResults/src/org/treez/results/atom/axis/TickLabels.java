@@ -159,6 +159,9 @@ public class TickLabels implements GraphicsPropertiesPageFactory {
 
 	private double determineTickLabelHeight(Selection tickLabels) {
 		Element firstNode = tickLabels.node();
+		if (firstNode == null) {
+			return 0.0;
+		}
 		BoundingBox boundingBox = firstNode.getBBox();
 		double svgTickLabelHeight = boundingBox.getHeight();
 		String fontName = font.get();

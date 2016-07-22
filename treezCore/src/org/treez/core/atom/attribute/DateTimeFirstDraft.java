@@ -1,5 +1,6 @@
 package org.treez.core.atom.attribute;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -15,12 +16,12 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
-import org.treez.core.atom.attribute.base.AbstractBooleanAttributeAtom;
+import org.treez.core.atom.attribute.base.AbstractZonedDateTimeAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.swt.CustomLabel;
 import org.treez.core.utils.Utils;
 
-public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
+public class DateTimeFirstDraft extends AbstractZonedDateTimeAttributeAtom<DateTimeFirstDraft> {
 
 	//#region ATTRIBUTES
 
@@ -30,12 +31,9 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 	@IsParameter(defaultValue = "Tooltip")
 	private String tooltip;
 
-	@IsParameter(defaultValue = "false")
-	private Boolean defaultValue;
+	@IsParameter(defaultValue = "2016-01-30T10:15:30+01:00[Europe/Paris].")
+	private String defaultValueString;
 
-	/**
-	 * Container for label and check box
-	 */
 	private Composite contentContainer;
 
 	private CustomLabel labelComposite;
@@ -51,25 +49,25 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 
 	//#region CONSTRUCTORS
 
-	public CheckBox(String name) {
+	public DateTimeFirstDraft(String name) {
 		super(name);
 		label = Utils.firstToUpperCase(name); //this default label might be overridden by explicitly setting the label
 	}
 
-	public CheckBox(String name, boolean state) {
+	public DateTimeFirstDraft(String name, ZonedDateTime dateTime) {
 		super(name);
 		label = name;
-		set(state);
+		set(dateTime);
 	}
 
 	/**
 	 * Copy constructor
 	 */
-	protected CheckBox(CheckBox checkBoxToCopy) {
-		super(checkBoxToCopy);
-		label = checkBoxToCopy.label;
-		tooltip = checkBoxToCopy.tooltip;
-		defaultValue = checkBoxToCopy.defaultValue;
+	protected DateTimeFirstDraft(DateTimeFirstDraft atomToCopy) {
+		super(atomToCopy);
+		label = atomToCopy.label;
+		tooltip = atomToCopy.tooltip;
+		defaultValueString = atomToCopy.defaultValueString;
 
 	}
 
@@ -78,28 +76,28 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 	//#region METHODS
 
 	@Override
-	public CheckBox getThis() {
+	public DateTimeFirstDraft getThis() {
 		return this;
 	}
 
 	//#region COPY
 
 	@Override
-	public CheckBox copy() {
-		return new CheckBox(this);
+	public DateTimeFirstDraft copy() {
+		return new DateTimeFirstDraft(this);
 	}
 
 	//#end region
 
 	@Override
 	public Image provideImage() {
-		Image baseImage = Activator.getImage("CheckBox.png");
+		Image baseImage = Activator.getImage("DateTime.png");
 		return baseImage;
 	}
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public AbstractBooleanAttributeAtom<CheckBox> createAttributeAtomControl(
+	public AbstractZonedDateTimeAttributeAtom<DateTimeFirstDraft> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {
 		this.attributeAtomParent = parent;
@@ -107,6 +105,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 
 		//initialize value at the first call
 		if (!isInitialized()) {
+			ZonedDateTime defaultValue = getDateTimeFromString(defaultValueString);
 			set(defaultValue);
 		}
 
@@ -135,9 +134,14 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 		createCheckBox(toolkit);
 
 		//initialize filePath
-		set(valueCheckBox.getSelection());
+		//set(valueCheckBox.getSelection());
 
 		return this;
+	}
+
+	private ZonedDateTime getDateTimeFromString(String defaultValueString2) {
+		//TODO Auto-generated method stub
+		return null;
 	}
 
 	private void createLabel(FormToolkit toolkit) {
@@ -150,7 +154,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 	private void createCheckBox(FormToolkit toolkit) {
 		valueCheckBox = toolkit.createButton(contentContainer, "", SWT.CHECK);
 		valueCheckBox.setEnabled(isEnabled());
-		valueCheckBox.setSelection(get());
+		//valueCheckBox.setSelection(get());
 		valueCheckBox.setToolTipText(tooltip);
 		valueCheckBox.setBackground(backgroundColor);
 
@@ -161,7 +165,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean currentValue = valueCheckBox.getSelection();
-				set(currentValue);
+				//set(currentValue);
 				//updated enabled states if ComboBoxEnableTarget children exist
 				updateTargetsEnabledStates(currentValue);
 
@@ -173,7 +177,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 	}
 
 	@Override
-	public CheckBox setEnabled(boolean state) {
+	public DateTimeFirstDraft setEnabled(boolean state) {
 		super.setEnabled(state);
 		if (isAvailable(valueCheckBox)) {
 			valueCheckBox.setEnabled(state);
@@ -188,10 +192,10 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 	@Override
 	public void refreshAttributeAtomControl() {
 		if (isAvailable(valueCheckBox)) {
-			Boolean value = get();
-			if (valueCheckBox.getSelection() != value) {
-				valueCheckBox.setSelection(value);
-			}
+			ZonedDateTime value = get();
+			//if (valueCheckBox.getSelection() != value) {
+			//valueCheckBox.setSelection(value);
+			//}
 		}
 	}
 
@@ -238,7 +242,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 		return label;
 	}
 
-	public CheckBox setLabel(String label) {
+	public DateTimeFirstDraft setLabel(String label) {
 		this.label = label;
 		return getThis();
 	}
@@ -247,23 +251,23 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 		return tooltip;
 	}
 
-	public CheckBox setTooltip(String tooltip) {
+	public DateTimeFirstDraft setTooltip(String tooltip) {
 		this.tooltip = tooltip;
 		return this;
 	}
 
 	@Override
-	public Boolean getDefaultValue() {
-		return defaultValue;
+	public ZonedDateTime getDefaultValue() {
+		return getDateTimeFromString(defaultValueString);
 	}
 
-	public CheckBox setDefaultValue(boolean defaultValue) {
-		this.defaultValue = defaultValue;
-		return this;
+	public DateTimeFirstDraft setDefaultValue(ZonedDateTime defaultValue) {
+		this.defaultValueString = defaultValue.toString();
+		return getThis();
 	}
 
 	@Override
-	public CheckBox setBackgroundColor(Color color) {
+	public DateTimeFirstDraft setBackgroundColor(Color color) {
 		this.backgroundColor = color;
 		if (isAvailable(contentContainer)) {
 			contentContainer.setBackground(color);

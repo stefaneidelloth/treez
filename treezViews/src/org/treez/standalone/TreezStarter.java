@@ -47,7 +47,7 @@ public final class TreezStarter {
 		//XySeriesExample example = new XySeriesExample();
 		//BarExample example = new BarExample();
 		//ContourExample example = new ContourExample();
-		TornadoExample example = new TornadoExample();
+		TornadoExampleHorizontal example = new TornadoExampleHorizontal();
 		AbstractAtom<?> root = example.createModel();
 		startTreez(root);
 

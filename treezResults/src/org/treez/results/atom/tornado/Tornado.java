@@ -1,20 +1,18 @@
 package org.treez.results.atom.tornado;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.Refreshable;
+import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
-import org.treez.results.atom.axis.Axis;
-import org.treez.results.atom.axis.Direction;
+import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 import org.treez.results.atom.legend.LegendContributor;
 
@@ -29,7 +27,9 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 
 	public Line line;
 
-	private Selection barSelection;
+	public Labels labels;
+
+	private Selection tornadoSelection;
 
 	//#end region
 
@@ -54,6 +54,9 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 
 		line = new Line();
 		propertyPageFactories.add(line);
+
+		labels = new Labels();
+		propertyPageFactories.add(labels);
 
 	}
 
@@ -88,15 +91,15 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 				.remove();
 
 		//create new axis group
-		barSelection = graphOrBarSeriesSelection //
+		tornadoSelection = graphOrBarSeriesSelection //
 				.insert("g", ".axis") //
-				.attr("class", "bar") //
+				.attr("class", "tornado") //
 				.onMouseClick(this);
-		bindNameToId(barSelection);
+		bindNameToId(tornadoSelection);
 
 		updatePlotWithD3(d3);
 
-		return barSelection;
+		return tornadoSelection;
 	}
 
 	@Override
@@ -106,7 +109,7 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 
 	private void plotPageModels(D3 d3) {
 		for (GraphicsPropertiesPageFactory pageModel : propertyPageFactories) {
-			barSelection = pageModel.plotWithD3(d3, barSelection, null, this);
+			tornadoSelection = pageModel.plotWithD3(d3, tornadoSelection, null, this);
 		}
 	}
 
@@ -124,7 +127,7 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 
 	@Override
 	public String getLegendText() {
-		return data.legendText.get();
+		return data.leftLegendText.get();
 	}
 
 	@Override
@@ -135,7 +138,7 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 			Refreshable refreshable) {
 		Selection symbolSelection = parentSelection //
 				.append("rect") //
-				.classed("bar-legend-entry-symbol", true);
+				.classed("tornado-legend-entry-symbol", true);
 
 		this.fill.formatLegendSymbol(symbolSelection, symbolLengthInPx);
 		this.line.formatLegendSymbolLine(symbolSelection, refreshable);
@@ -143,176 +146,17 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 		return symbolSelection;
 	}
 
-	public String getLeftBarDataString() {
-		List<Object> domainLabelData = getDomainLabelData();
-		List<Object> rangeBaseData = getRangeBaseData();
-		List<Object> rangeLeftData = getRangeLeftData();
-		int dataSize = rangeBaseData.size();
-
-		boolean domainIsOrdinal = checkIfDomainIsOrdinal();
-
-		List<String> rowList = new java.util.ArrayList<>();
-		for (int rowIndex = 0; rowIndex < dataSize; rowIndex++) {
-			String rangeBaseString = rangeBaseData.get(rowIndex).toString();
-			String rangeLeftString = rangeLeftData.get(rowIndex).toString();
-			Double rangeBase = Double.parseDouble(rangeBaseString);
-			Double rangeLeft = Double.parseDouble(rangeLeftString);
-			Double difference = rangeBase - rangeLeft;
-
-			Double position = rangeLeft;
-			Double size = difference;
-			if (difference < 0) {
-				position = rangeBase;
-				size = -difference;
-			}
-
-			String domainValue;
-			if (domainIsOrdinal) {
-				domainValue = "'" + domainLabelData.get(rowIndex).toString() + "'";
-			} else {
-				domainValue = "" + (rowIndex + 1);
-			}
-
-			String rowString = "{key:" + domainValue + ", value:" + position + ",size:" + size + "}";
-			rowList.add(rowString);
-		}
-		String dataString = "[" + String.join(",", rowList) + "]";
-		return dataString;
-	}
-
-	private boolean checkIfDomainIsOrdinal() {
-		String direction = data.barDirection.get();
-		boolean isVertical = direction.equals(Direction.VERTICAL.toString());
-		boolean domainIsOrdinal = false;
-		if (isVertical) {
-			org.treez.results.atom.axis.Axis domainAxis = getDomainAxis();
-			domainIsOrdinal = domainAxis.isOrdinal();
+	public Graph getGraph() {
+		AbstractAtom<?> grandParent = getParentAtom();
+		Graph graph;
+		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
+		if (isGraph) {
+			graph = (Graph) grandParent;
 		} else {
-			org.treez.results.atom.axis.Axis rangeAxis = getRangeAxis();
-			domainIsOrdinal = rangeAxis.isOrdinal();
+			AbstractAtom<?> greatGrandParent = grandParent.getParentAtom();
+			graph = (Graph) greatGrandParent;
 		}
-		return domainIsOrdinal;
-	}
-
-	public String getRightBarDataString() {
-		List<Object> domainLabelData = getDomainLabelData();
-		List<Object> rangeBaseData = getRangeBaseData();
-		List<Object> rangeRightData = getRangeRightData();
-		int dataSize = rangeBaseData.size();
-
-		boolean domainIsOrdinal = checkIfDomainIsOrdinal();
-
-		List<String> rowList = new java.util.ArrayList<>();
-		for (int rowIndex = 0; rowIndex < dataSize; rowIndex++) {
-			String rangeBaseString = rangeBaseData.get(rowIndex).toString();
-			String rangeRightString = rangeRightData.get(rowIndex).toString();
-			Double rangeBase = Double.parseDouble(rangeBaseString);
-			Double rangeRight = Double.parseDouble(rangeRightString);
-			Double difference = rangeRight - rangeBase;
-			Double position = rangeBase;
-			Double size = difference;
-			if (difference < 0) {
-				position = rangeRight;
-				size = -difference;
-			}
-
-			String domainValue;
-			if (domainIsOrdinal) {
-				domainValue = "'" + domainLabelData.get(rowIndex).toString() + "'";
-			} else {
-				domainValue = "" + (rowIndex + 1);
-			}
-
-			String rowString = "{key:" + domainValue + ",value:" + position + ",size:" + size + "}";
-			rowList.add(rowString);
-		}
-		String dataString = "[" + String.join(",", rowList) + "]";
-		return dataString;
-	}
-
-	public int getDataSize() {
-		List<Object> domainBaseData = getDomainBaseData();
-		return domainBaseData.size();
-	}
-
-	public Scale<?> getDomainScale() {
-		Axis xAxisAtom = getDomainAxis();
-		if (xAxisAtom == null) {
-			return null;
-		}
-		Scale<?> scale = xAxisAtom.getScale();
-		return scale;
-	}
-
-	public Scale<?> getRangeScale() {
-		Axis yAxisAtom = getRangeAxis();
-		if (yAxisAtom == null) {
-			return null;
-		}
-		Scale<?> scale = yAxisAtom.getScale();
-		return scale;
-	}
-
-	public Axis getDomainAxis() {
-		String xAxisPath = data.domainAxis.get();
-		if (xAxisPath == null || xAxisPath.isEmpty()) {
-			return null;
-		}
-		Axis xAxisAtom = getChildFromRoot(xAxisPath);
-		return xAxisAtom;
-	}
-
-	public Axis getRangeAxis() {
-		String yAxisPath = data.rangeAxis.get();
-		if (yAxisPath == null || yAxisPath.isEmpty()) {
-			return null;
-		}
-		Axis yAxisAtom = getChildFromRoot(yAxisPath);
-		return yAxisAtom;
-	}
-
-	private List<Object> getRangeBaseData() {
-		String dataPath = data.rangeBase.get();
-		return getValuesWithColumnPath(dataPath);
-	}
-
-	private List<Object> getRangeLeftData() {
-		String dataPath = data.rangeLeft.get();
-		return getValuesWithColumnPath(dataPath);
-	}
-
-	private List<Object> getRangeRightData() {
-		String dataPath = data.rangeRight.get();
-		return getValuesWithColumnPath(dataPath);
-	}
-
-	private List<Object> getDomainBaseData() {
-		String dataPath = data.domainBase.get();
-		return getValuesWithColumnPath(dataPath);
-	}
-
-	public List<Object> getDomainLabelData() {
-		String dataPath = data.domainLabel.get();
-		return getValuesWithColumnPath(dataPath);
-	}
-
-	private List<Object> getDomainLeftData() {
-		String dataPath = data.domainLeft.get();
-		return getValuesWithColumnPath(dataPath);
-	}
-
-	private List<Object> getDomainRightData() {
-		String dataPath = data.domainRight.get();
-		return getValuesWithColumnPath(dataPath);
-	}
-
-	private List<Object> getValuesWithColumnPath(String dataPath) {
-		if (dataPath.isEmpty()) {
-			return new ArrayList<>();
-		}
-		org.treez.data.column.Column dataColumn = getChildFromRoot(dataPath);
-		List<Object> dataValues = dataColumn.getValues();
-		return dataValues;
+		return graph;
 	}
 
 	//#end region

@@ -15,11 +15,13 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.functions.AttributeStringDatumFunction;
+import org.treez.javafxd3.d3.functions.AxisScaleInversedSizeDatumFunction;
+import org.treez.javafxd3.d3.functions.AxisScaleInversedValueDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleKeyDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSizeDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleValueDatumFunction;
 import org.treez.javafxd3.d3.scales.Scale;
-import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.graph.Graph;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -75,29 +77,35 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection barSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
+	public Selection plotWithD3(
+			D3 d3,
+			Selection tornadoSelection,
+			Selection rectSelection,
+			AbstractGraphicsAtom parent) {
 
 		String parentName = parent.getName();
 
 		String clipPathId = "bar-rects-" + parentName + "-clip-path";
 
-		//remove old groups if they already exist
-		barSelection //
+		//remove old groups and clip path if they already exist
+		tornadoSelection //
 				.select(".bar-rects-left") //
 				.remove();
 
-		barSelection //
+		tornadoSelection //
 				.select(".bar-rects-right") //
 				.remove();
 
+		tornadoSelection.select(clipPathId).remove();
+
 		//create new groups
-		rectsLeftSelection = barSelection //
+		rectsLeftSelection = tornadoSelection //
 				.append("g") //
 				.attr("id", "bar-rects-left") //
 				.attr("class", "bar-rects-left") //
 				.attr("clip-path", "url(#" + clipPathId);
 
-		rectsRightSelection = barSelection //
+		rectsRightSelection = tornadoSelection //
 				.append("g") //
 				.attr("id", "bar-rects-right") //
 				.attr("class", "bar-rects-right") //
@@ -109,7 +117,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 		double width = Length.toPx(graph.data.width.get());
 		double height = Length.toPx(graph.data.width.get());
-		barSelection.append("clipPath") //
+		tornadoSelection.append("clipPath") //
 				.attr("id", clipPathId) //
 				.append("rect") //
 				.attr("x", 0) //
@@ -128,20 +136,12 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		//initially plot rects
 		replotRects.consume();
 
-		return barSelection;
+		return tornadoSelection;
 	}
 
 	private static Graph getGraph(AbstractGraphicsAtom parent) {
-		AbstractAtom<?> grandParent = parent.getParentAtom();
-		Graph graph;
-		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
-		if (isGraph) {
-			graph = (Graph) grandParent;
-		} else {
-			AbstractAtom<?> greatGrandParent = grandParent.getParentAtom();
-			graph = (Graph) greatGrandParent;
-		}
-		return graph;
+		Tornado tornado = (Tornado) parent;
+		return tornado.getGraph();
 	}
 
 	private void rePlotRects(AbstractGraphicsAtom parent) {
@@ -160,110 +160,94 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	private void plotNewRects(AbstractGraphicsAtom parent) {
 
 		Tornado tornado = (Tornado) parent;
-		Graph graph = getGraph(parent);
+		Graph graph = tornado.getGraph();
 		double graphHeight = Length.toPx(graph.data.height.get());
 		double graphWidth = Length.toPx(graph.data.width.get());
 
-		String direction = tornado.data.barDirection.get();
-		boolean isVertical = direction.equals(Direction.VERTICAL.toString());
+		org.treez.results.atom.axis.Axis inputAxis = tornado.data.getInputAxis();
+		boolean inputAxisIsOrdinal = inputAxis.isOrdinal();
+		boolean inputAxisIsHorizontal = inputAxis.isHorizontal();
+		Scale<?> inputScale = tornado.data.getInputScale();
+
+		org.treez.results.atom.axis.Axis outputAxis = tornado.data.getOutputAxis();
+		boolean outputAxisIsOrdinal = outputAxis.isOrdinal();
+		boolean outputAxisIsHorizontal = outputAxis.isHorizontal();
+		Scale<?> outputScale = tornado.data.getOutputScale();
 
 		Double barFillRatio = tornado.data.barFillRatio.get();
-		if (barFillRatio == null) {
-			barFillRatio = 1.0;
+
+		String leftDataString = tornado.data.getLeftBarDataString();
+		String rightDataString = tornado.data.getRightBarDataString();
+		int numberOfBars = tornado.data.getDataSize();
+
+		if (inputAxisIsOrdinal) {
+			List<Object> labelData = tornado.data.getInputLabelData();
+			for (Object label : labelData) {
+				inputAxis.addOrdinalValue(label.toString());
+			}
+			inputAxis.update();
 		}
 
-		String leftDataString = tornado.getLeftBarDataString();
-		String rightDataString = tornado.getRightBarDataString();
-		int numberOfBars = tornado.getDataSize();
+		List<Double> allOutputData = tornado.data.getAllBarData();
+		outputAxis.includeDataForAutoScale(allOutputData);
+		outputAxis.update();
 
-		Scale<?> xScale = tornado.getDomainScale();
-		Scale<?> yScale = tornado.getRangeScale();
+		if (outputAxisIsHorizontal) {
 
-		if (isVertical) {
-
-			org.treez.results.atom.axis.Axis domainAxis = tornado.getDomainAxis();
-			boolean domainAxisIsOrdinal = domainAxis.isOrdinal();
-
-			org.treez.results.atom.axis.Axis rangeAxis = tornado.getRangeAxis();
-			boolean rangeAxisIsOrdinal = rangeAxis.isOrdinal();
-
-			if (rangeAxisIsOrdinal) {
-				String message = "Range axis must not be ordinal if bar direction is vertical";
-				LOG.error(message);
-				return;
-			}
-
-			if (domainAxisIsOrdinal) {
-				List<Object> labelData = tornado.getDomainLabelData();
-				for (Object label : labelData) {
-					domainAxis.addOrdinalValue(label.toString());
-				}
-			}
-
-			double barWidth = determineBarWidth(graphWidth, xScale, numberOfBars, barFillRatio, domainAxisIsOrdinal);
+			double barHeight = determineBarHeight(graphHeight, inputScale, numberOfBars, barFillRatio,
+					inputAxisIsOrdinal);
 
 			rectsLeftSelection.selectAll("rect") //
 					.data(leftDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleKeyDatumFunction(xScale))
-					.attr("y", new AxisScaleValueDatumFunction(yScale))
-					.attr("width", barWidth)
-					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleSizeDatumFunction(yScale));
+					.attr("x", new AxisScaleValueDatumFunction(outputScale))
+					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("height", barHeight)
+					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
+					.attr("width", new AxisScaleSizeDatumFunction(outputScale));
+
+			rectsLeftSelection.selectAll("text") //
+					.data(leftDataString) //
+					.enter() //
+					.append("text")
+					.attr("x", new AxisScaleValueDatumFunction(outputScale))
+					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.style("fill", "black")
+					.text(new AttributeStringDatumFunction("input"));
 
 			rectsRightSelection.selectAll("rect") //
 					.data(rightDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleKeyDatumFunction(xScale))
-					.attr("y", new AxisScaleValueDatumFunction(yScale))
-					.attr("width", barWidth)
-					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleSizeDatumFunction(yScale));
-
+					.attr("x", new AxisScaleValueDatumFunction(outputScale))
+					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("height", barHeight)
+					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
+					.attr("width", new AxisScaleSizeDatumFunction(outputScale));
 		} else {
 
-			org.treez.results.atom.axis.Axis domainAxis = tornado.getDomainAxis();
-			boolean domainAxisIsOrdinal = domainAxis.isOrdinal();
-
-			org.treez.results.atom.axis.Axis rangeAxis = tornado.getRangeAxis();
-			boolean rangeAxisIsOrdinal = rangeAxis.isOrdinal();
-
-			if (domainAxisIsOrdinal) {
-				String message = "Domain axis must not be ordinal if bar direction is horizontal";
-				LOG.error(message);
-				return;
-			}
-
-			if (rangeAxisIsOrdinal) {
-				List<Object> labelData = tornado.getDomainLabelData();
-				for (Object label : labelData) {
-					rangeAxis.addOrdinalValue(label.toString());
-				}
-			}
-
-			double barHeight = determineBarHeight(graphHeight, yScale, numberOfBars, barFillRatio, rangeAxisIsOrdinal);
+			double barWidth = determineBarWidth(graphWidth, inputScale, numberOfBars, barFillRatio, inputAxisIsOrdinal);
 
 			rectsLeftSelection.selectAll("rect") //
 					.data(leftDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleValueDatumFunction(xScale))
-					.attr("y", new AxisScaleKeyDatumFunction(yScale))
-					.attr("height", barHeight)
-					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleSizeDatumFunction(xScale));
+					.attr("x", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("y", new AxisScaleInversedValueDatumFunction(outputScale, graphHeight))
+					.attr("width", barWidth)
+					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
+					.attr("height", new AxisScaleInversedSizeDatumFunction(outputScale, graphHeight));
 
 			rectsRightSelection.selectAll("rect") //
 					.data(rightDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleValueDatumFunction(xScale))
-					.attr("y", new AxisScaleKeyDatumFunction(yScale))
-					.attr("height", barHeight)
-					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleSizeDatumFunction(xScale));
+					.attr("x", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("y", new AxisScaleInversedValueDatumFunction(outputScale, graphHeight))
+					.attr("width", barWidth)
+					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
+					.attr("height", new AxisScaleInversedSizeDatumFunction(outputScale, graphHeight));
 
 		}
 

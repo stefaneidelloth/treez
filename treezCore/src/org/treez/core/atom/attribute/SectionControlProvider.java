@@ -64,7 +64,7 @@ public class SectionControlProvider {
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
 		//get default expansion state
-		boolean isExpanded = section.getExpanded();
+		boolean isExpanded = section.isExpanded();
 		//LOG.debug("create section. expanded: " + isExpanded);
 
 		//define section style
@@ -111,6 +111,9 @@ public class SectionControlProvider {
 
 		sectionComposite.setClient(contentComposite);
 
+		//enabled state
+		setEnabled(section.isEnabled());
+
 		//add expansion listener to collapsed sections
 		//that will create the section control when a collapsed section is
 		//expanded
@@ -125,9 +128,8 @@ public class SectionControlProvider {
 
 			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
-				boolean isExpanded = section.getExpanded();
+				boolean isExpanded = section.isExpanded();
 				section.setExpanded(!isExpanded);
-				LOG.debug("Expanded:" + isExpanded);
 			}
 
 		});
@@ -225,6 +227,28 @@ public class SectionControlProvider {
 		}
 
 		sectionContentComposite.layout(true, true);
+	}
+
+	private static boolean isAvailable(Control control) {
+		if (control == null) {
+			return false;
+		}
+		return !control.isDisposed();
+	}
+
+	//#end region
+
+	//#region ATTRIBUTES
+
+	public void setEnabled(boolean enable) {
+		if (isAvailable(sectionComposite)) {
+			sectionComposite.setEnabled(enable);
+			if (enable) {
+				sectionComposite.setExpanded(section.isExpanded());
+			} else {
+				sectionComposite.setExpanded(false);
+			}
+		}
 	}
 
 	//#end region

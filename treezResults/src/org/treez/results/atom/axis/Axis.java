@@ -1,5 +1,6 @@
 package org.treez.results.atom.axis;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,47 +12,34 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
+import org.treez.results.atom.axis.scale.OrdinalScaleBuilder;
+import org.treez.results.atom.axis.scale.QuantitativeScaleBuilder;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 
-/**
- * Represents a plot axis
- */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Axis extends GraphicsPropertiesPage {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * The data properties of the axis
-	 */
 	public Data data;
 
-	/**
-	 * The properties of the axis line
-	 */
 	public AxisLine axisLine;
 
-	/**
-	 * The properties of the major ticks
-	 */
 	public MajorTicks majorTicks;
 
-	/**
-	 * The properties of the minor ticks
-	 */
 	public MinorTicks minorTicks;
 
-	/**
-	 * The properties of the tick labels
-	 */
 	public TickLabels tickLabels;
 
-	/**
-	 * The properties of the axis label
-	 */
 	public AxisLabel axisLabel;
 
 	private Selection axisSelection;
+
+	private QuantitativeScaleBuilder quantitativeScaleBuilder;
+
+	private OrdinalScaleBuilder ordinalScaleBuilder;
+
+	private D3 d3;
 
 	//#end region
 
@@ -59,21 +47,19 @@ public class Axis extends GraphicsPropertiesPage {
 
 	public Axis(String name) {
 		super(name);
+		quantitativeScaleBuilder = new QuantitativeScaleBuilder(this);
+		ordinalScaleBuilder = new OrdinalScaleBuilder();
 	}
 
 	public Axis(String name, Direction direction) {
-		super(name);
-		//set value for axis direction
-		setAttribute("root.data.data.direction", direction.toString());
+		this(name);
+		data.direction.set(direction.toString());
 	}
 
 	//#end region
 
 	//#region METHODS
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("axis.png");
@@ -102,51 +88,51 @@ public class Axis extends GraphicsPropertiesPage {
 
 	}
 
-	/**
-	 * Creates the context menu actions
-	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
-
 		//no actions available right now
 		return actions;
 	}
 
-	/**
-	 * @param d3
-	 * @param graphSelection
-	 * @return
-	 */
 	@Override
 	public Selection plotWithD3(
 			D3 d3,
 			Selection graphSelection,
 			Selection graphRectSelection,
 			FocusChangingRefreshable refreshable) {
-		Objects.requireNonNull(d3);
-		this.treeViewRefreshable = refreshable;
 
-		//remove old axis group if it already exists
+		Objects.requireNonNull(d3);
+		this.d3 = d3;
+		this.treeViewRefreshable = refreshable;
+		removeOldAxisGroupIfAlreadyExists(graphSelection);
+		createNewAxisGroup(graphSelection);
+		updatePlotWithD3(d3);
+		return graphSelection;
+	}
+
+	private void removeOldAxisGroupIfAlreadyExists(Selection graphSelection) {
 		graphSelection //
 				.select("#" + name) //
 				.remove(); //
+	}
 
-		//create new axis group
+	private void createNewAxisGroup(Selection graphSelection) {
 		axisSelection = graphSelection //
 				.append("g") //
 				.attr("class", "axis") //
 				.onMouseClick(this);
 		bindNameToId(axisSelection);
-
-		updatePlotWithD3(d3);
-
-		return graphSelection;
-
 	}
 
 	@Override
 	public void updatePlotWithD3(D3 d3) {
 		plotPageModels(d3);
+	}
+
+	public void update() {
+		if (d3 != null) {
+			updatePlotWithD3(d3);
+		}
 	}
 
 	private void plotPageModels(D3 d3) {
@@ -155,50 +141,54 @@ public class Axis extends GraphicsPropertiesPage {
 		}
 	}
 
-	public void addOrdinalValue(String ordinalValue) {
-		this.data.addOrdinalValue(ordinalValue);
-	}
-
 	//#end region
 
 	//#region ACCESSORS
 
-	/**
-	 * Returns true if the scale of this axis is quantitative. Throws an IllegalStateException if the scale has not yet
-	 * been defined.
-	 *
-	 * @return
-	 */
-	public Boolean isQuantitative() {
-		if (data != null) {
-			boolean hasQuantitativeScale = this.data.isQuantitative();
-			return hasQuantitativeScale;
-		} else {
-			throw new IllegalStateException("The scale has not yet been defined");
+	public Scale<?> getScale() {
+
+		AxisMode axisMode = data.getAxisMode();
+		switch (axisMode) {
+		case QUANTITATIVE:
+			return quantitativeScaleBuilder.getScale();
+		case ORDINAL:
+			return ordinalScaleBuilder.getScale();
+		//case TIME:
+		//	throw new IllegalStateException("not yet implemented");
+		default:
+			throw new IllegalStateException("not yet implemented");
 		}
+	}
+
+	public Boolean isQuantitative() {
+		boolean hasQuantitativeScale = this.data.isQuantitative();
+		return hasQuantitativeScale;
+	}
+
+	public QuantitativeScaleBuilder getQuantitativeScaleBuilder() {
+		return quantitativeScaleBuilder;
+	}
+
+	public void includeDataForAutoScale(Collection<Double> dataForAutoScale) {
+		quantitativeScaleBuilder.includeDataForAutScale(dataForAutoScale);
 	}
 
 	public boolean isOrdinal() {
-		if (data != null) {
-			boolean isOrdinal = this.data.isOrdinal();
-			return isOrdinal;
-		} else {
-			throw new IllegalStateException("The scale has not yet been defined");
-		}
+		boolean isOrdinal = this.data.isOrdinal();
+		return isOrdinal;
 	}
 
-	/**
-	 * Returns the scale of the axis. Throws an IllegalStateException if the scale has not yet been defined.
-	 *
-	 * @return
-	 */
-	public Scale<?> getScale() {
-		if (data != null) {
-			Scale<?> scale = this.data.getScale();
-			return scale;
-		} else {
-			throw new IllegalStateException("The scale has not yet been defined");
-		}
+	public OrdinalScaleBuilder getOrdinalScaleBuilder() {
+		return ordinalScaleBuilder;
+	}
+
+	public void addOrdinalValue(String ordinalValue) {
+		ordinalScaleBuilder.addValue(ordinalValue);
+	}
+
+	public boolean isHorizontal() {
+		String direction = data.direction.get();
+		return direction.equals(Direction.HORIZONTAL.toString());
 	}
 
 	//#end region

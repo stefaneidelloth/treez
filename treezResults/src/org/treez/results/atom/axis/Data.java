@@ -1,11 +1,8 @@
 package org.treez.results.atom.axis;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.CheckBox;
+import org.treez.core.atom.attribute.EnumComboBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
@@ -17,10 +14,9 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.scales.OrdinalScale;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
-import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.scales.Scales;
+import org.treez.results.atom.axis.scale.OrdinalScaleBuilder;
+import org.treez.results.atom.axis.scale.QuantitativeScaleBuilder;
 import org.treez.results.atom.graph.Graph;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -41,33 +37,29 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	public Attribute<Boolean> hide = new Wrap<>();
 
-	private Attribute<Boolean> auto = new Wrap<>();
+	public Attribute<Boolean> autoMin = new Wrap<>();
 
-	public final Attribute<String> min = new Wrap<>();
+	public final Attribute<String> borderMin = new Wrap<>();
 
-	public final Attribute<String> max = new Wrap<>();
+	public final Attribute<Double> min = new Wrap<>();
+
+	//public final Attribute<String> minTime = new Wrap<>();
+
+	public Attribute<Boolean> autoMax = new Wrap<>();
+
+	public final Attribute<String> borderMax = new Wrap<>();
+
+	public final Attribute<Double> max = new Wrap<>();
+
+	//public final Attribute<String> maxTime = new Wrap<>();
+
+	//public final Attribute<String> timeFormat = new Wrap<>();
+
+	//public final Attribute<String> timeZone = new Wrap<>();
 
 	public final Attribute<Boolean> log = new Wrap<>();
 
-	//public final Attribute<String> datascale = new Wrap<>();
-
-	//public final Attribute<String> lowerPosition = new Wrap<>();
-
-	//public final Attribute<String> upperPosition = new Wrap<>();
-
-	//public final Attribute<String> otherPosition = new Wrap<>();
-
-	//public final Attribute<String> match = new Wrap<>();
-
-	//private Attribute<Boolean> reflect = new Wrap<>();
-
-	//private Attribute<Boolean> outerTicks = new Wrap<>();
-
-	private QuantitativeScale<?> quantitiativeScale = null;
-
-	private OrdinalScale ordinalScale = null;
-
-	private Set<String> ordinalValues;
+	private org.treez.javafxd3.d3.svg.Axis primaryD3Axis;
 
 	//#end region
 
@@ -79,45 +71,65 @@ public class Data implements GraphicsPropertiesPageFactory {
 		Page dataPage = root.createPage("data");
 		dataPage.setTitle("   Data   ");
 
+		createGeneralSection(dataPage);
+		createDomainSection(dataPage);
+	}
+
+	private void createGeneralSection(Page dataPage) {
 		Section general = dataPage.createSection("general");
 
 		general.createTextField(label, this);
 
-		general.createEnumComboBox(mode, this, AxisMode.QUANTITATIVE);
+		EnumComboBox<AxisMode> modeCombo = general.createEnumComboBox(mode, this, AxisMode.QUANTITATIVE);
+		modeCombo.createDisableTarget("disableDomainSection", AxisMode.ORDINAL, "data.domain");
 
-		general.createComboBox(direction, this, "horizontal, vertical", "horizontal");
+		general.createEnumComboBox(direction, this, Direction.HORIZONTAL);
 
 		CheckBox autoMirrorCheck = general.createCheckBox(autoMirror, this, true);
 		autoMirrorCheck.setLabel("Auto mirror");
 
 		general.createCheckBox(hide, this);
+	}
 
+	private void createDomainSection(Page dataPage) {
 		Section domain = dataPage.createSection("domain");
 
-		domain.createCheckBox(auto, this, true);
+		CheckBox autoMinCheckBox = domain.createCheckBox(autoMin, this, true) //
+				.setLabel("Auto min");
+		autoMinCheckBox.createEnableTarget("enableBorderMin", "data.domain.borderMin");
+		autoMinCheckBox.createDisableTarget("disableMin", "data.domain.min");
 
-		domain.createTextField(min, this, "0");
+		domain.createEnumComboBox(borderMin, this, BorderMode.TWO);
 
-		domain.createTextField(max, this, "1");
+		domain.createDoubleVariableField(min, this, 0.0).setEnabled(false);
+		//domain.createTextField(minTime, this, "0") //
+		//		.setLabel("Min time") //
+		//		.setEnabled(false);
+
+		CheckBox autoMaxCheckBox = domain.createCheckBox(autoMax, this, true) //
+				.setLabel("Auto max");
+		autoMinCheckBox.createEnableTarget("enableBorderMax", "data.domain.borderMax");
+		autoMaxCheckBox.createDisableTarget("disableMax", "data.domain.max");
+
+		domain.createEnumComboBox(borderMax, this, BorderMode.TWO);
+
+		domain.createDoubleVariableField(max, this, 1.0) //
+				.setEnabled(false);
+		/*
+		domain.createTextField(maxTime, this, "1") //
+				.setLabel("Max time") //
+				.setEnabled(false);
+
+		domain.createTextField(timeFormat, this, "%a %d") //
+				.setLabel("Time format") //
+				.setEnabled(false);
+
+		domain.createTextField(timeZone, this, "%a %d") //
+				.setLabel("Time zone") //
+				.setEnabled(false);
+		*/
 
 		domain.createCheckBox(log, this);
-
-		//data.createTextField(datascale, "datascale", "Scale", "1");
-
-		//data.createTextField(lowerPosition, "lowerPosition", "Min position", "0");
-
-		//data.createTextField(upperPosition, "upperPosition", "Max position", "1");
-
-		//data.createTextField(otherPosition, "otherPosition", "Axis position", "0");
-
-		//data.createTextField(match, "match");
-
-		//general.createComboBox(autoRange, "autoRange", "next-tick,+2%,+5%,+10%,+15%", "next-tick");
-
-		//general.createCheckBox(reflect, this);
-
-		//general.createCheckBox(outerTicks, this).setLabel("Outer ticks");
-
 	}
 
 	@Override
@@ -125,135 +137,59 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Axis parentAxis = (Axis) parent;
 		Graph graph = (Graph) parentAxis.getParentAtom();
+
+		addUpdateListeners(d3, graph);
+
+		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideAxis", axisSelection, hide);
+
+		Double graphWidthInPx = Length.toPx(graph.data.width.get());
+		Double graphHeightInPx = Length.toPx(graph.data.height.get());
+
+		createScale(d3, parentAxis, graphWidthInPx, graphHeightInPx);
+		plotAxisWithD3(d3, axisSelection, parentAxis, graphWidthInPx, graphHeightInPx);
+
+		return axisSelection;
+	}
+
+	private void addUpdateListeners(D3 d3, Graph graph) {
 		Consumer replotGraph = () -> {
 			graph.updatePlotWithD3(d3);
 		};
 
 		mode.addModificationConsumer("replotAxis", replotGraph);
-		autoMirror.addModificationConsumer("replotAxis", replotGraph);
 		direction.addModificationConsumer("replotAxis", replotGraph);
+		autoMirror.addModificationConsumer("replotAxis", replotGraph);
+
+		autoMin.addModificationConsumer("replotAxis", replotGraph);
+		borderMin.addModificationConsumer("replotAxis", replotGraph);
 		min.addModificationConsumer("replotAxis", replotGraph);
+
+		autoMax.addModificationConsumer("replotAxis", replotGraph);
+		borderMax.addModificationConsumer("replotAxis", replotGraph);
 		max.addModificationConsumer("replotAxis", replotGraph);
+
 		log.addModificationConsumer("replotAxis", replotGraph);
-
-		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideAxis", axisSelection, hide);
-
-		Attribute<String> height = graph.data.height;
-		Attribute<String> width = graph.data.width;
-
-		initializeScale(d3, width, height);
-		plotAxisWithD3(d3, axisSelection, parentAxis, width, height);
-
-		return axisSelection;
 	}
 
-	private void initializeScale(D3 d3, Attribute<String> width, Attribute<String> height) {
+	private void createScale(D3 d3, Axis axis, Double graphWidthInPx, Double graphHeightInPx) {
 
-		Double graphWidthInPx = Length.toPx(width.get());
-		Double graphHeightInPx = Length.toPx(height.get());
-
-		Scales scales = d3 //
+		Scales scaleFactory = d3 //
 				.scale();
 
 		AxisMode axisMode = getAxisMode();
 		switch (axisMode) {
 		case QUANTITATIVE:
-			createQuantitativeScale(scales, graphWidthInPx, graphHeightInPx);
+			QuantitativeScaleBuilder scaleBuilder = axis.getQuantitativeScaleBuilder();
+			scaleBuilder.createScale(scaleFactory, graphWidthInPx, graphHeightInPx);
 			break;
 		case ORDINAL:
-			createOrdinalScale(scales, graphWidthInPx, graphHeightInPx);
+			OrdinalScaleBuilder ordinalScaleBuilder = axis.getOrdinalScaleBuilder();
+			ordinalScaleBuilder.createScale(scaleFactory, isHorizontal(), graphWidthInPx, graphHeightInPx);
 			break;
-		case TIME:
-			throw new IllegalStateException("not yet implemented");
+		//case TIME:
+		//	throw new IllegalStateException("not yet implemented");
 		default:
 			throw new IllegalStateException("not yet implemented");
-		}
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isHorizontal() {
-		boolean isHorizontal = direction.get().equals("" + Direction.HORIZONTAL);
-		return isHorizontal;
-	}
-
-	private void createQuantitativeScale(Scales scales, Double graphWidthInPx, Double graphHeightInPx) {
-
-		boolean isLog = log.get();
-
-		if (isLog) {
-			quantitiativeScale = scales //
-					.log() //
-					.clamp(true);
-		} else {
-			quantitiativeScale = scales //
-					.linear() //
-					.clamp(true);
-		}
-
-		String minString = min.get();
-		boolean minIsAuto = minString.equals("Auto");
-		Double minValue = determineMinValue(isLog, minString, minIsAuto);
-
-		String maxString = max.get();
-		boolean maxIsAuto = maxString.equals("Auto");
-		Double maxValue = determineMaxValue(maxString, maxIsAuto);
-
-		createQuantitativeScaleRange(graphWidthInPx, graphHeightInPx);
-
-		boolean autoIsUsed = minIsAuto || maxIsAuto;
-		if (!autoIsUsed) {
-			quantitiativeScale.domain(minValue, maxValue);
-		} else {
-			throw new IllegalStateException("Auto scale is not yet implemented"); //TODO
-		}
-	}
-
-	private static Double determineMinValue(boolean isLog, String minString, boolean minIsAuto) {
-		Double minValue = determineMaxValue(minString, minIsAuto);
-
-		if (isLog) {
-			if (minValue.compareTo(0.0) == 0) {
-				final double smallValueNextToZero = 1e-10;
-				minValue = smallValueNextToZero;
-			}
-		}
-		return minValue;
-	}
-
-	private static Double determineMaxValue(String maxString, boolean maxIsAuto) {
-		Double maxValue = null;
-		if (!maxIsAuto) {
-			try {
-				maxValue = Double.parseDouble(maxString);
-			} catch (NumberFormatException exception) {
-				maxValue = 0.0;
-			}
-		}
-		return maxValue;
-	}
-
-	private void createQuantitativeScaleRange(Double graphWidthInPx, Double graphHeightInPx) {
-		if (isHorizontal()) {
-			quantitiativeScale.range(0.0, graphWidthInPx);
-		} else {
-			quantitiativeScale.range(graphHeightInPx, 0.0);
-		}
-	}
-
-	private void createOrdinalScale(Scales scales, Double graphWidthInPx, Double graphHeightInPx) {
-		this.ordinalScale = scales.ordinal();
-		createOrdinalScaleRange(graphWidthInPx, graphHeightInPx);
-		updateOrdinalScaleIfAvailable();
-
-	}
-
-	private void createOrdinalScaleRange(Double graphWidthInPx, Double graphHeightInPx) {
-		if (isHorizontal()) {
-			ordinalScale.rangeRoundPoints(0.0, graphWidthInPx, 1);
-		} else {
-			ordinalScale.rangeRoundPoints(graphHeightInPx, 0.0, 1);
 		}
 	}
 
@@ -261,66 +197,44 @@ public class Data implements GraphicsPropertiesPageFactory {
 			D3 d3,
 			Selection axisSelection,
 			Axis axis,
-			Attribute<String> width,
-			Attribute<String> height) {
+			Double graphWidthInPx,
+			Double graphHeightInPx) {
 
-		String graphWidthString = width.get();
-		Double graphWidthInPx = Length.toPx(graphWidthString);
-
-		String graphHeightString = height.get();
-		Double graphHeightInPx = Length.toPx(graphHeightString);
-
-		boolean isHorizontal = isHorizontal();
-		boolean isMirrored = autoMirror.get();
-
-		//primary axis
 		axisSelection.selectAll(".primary").remove();
+		plotPrimaryAxis(d3, axis, axisSelection, graphHeightInPx);
 
-		Selection primary = axisSelection //
-				.append("g") //
-				.attr("id", "primary")
-				.attr("class", "primary");
-		plotPrimaryAxis(d3, axis, primary, graphHeightInPx, isHorizontal);
-
-		//secondary axis
 		axisSelection.selectAll(".secondary").remove();
-		if (isMirrored) {
-
-			Selection secondary = axisSelection //
-					.append("g") //
-					.attr("id", "secondary")
-					.attr("class", "secondary");
-			plotSecondaryAxis(d3, axis, secondary, graphWidthInPx, isHorizontal);
+		if (autoMirror.get()) {
+			plotSecondaryAxis(d3, axis, axisSelection, graphWidthInPx);
 		}
 
 		return axisSelection;
 	}
 
-	private Selection plotPrimaryAxis(
-			D3 d3,
-			Axis axisAtom,
-			Selection axisSelection,
-			Double graphHeightInPx,
-			boolean isHorizontal) {
+	private Selection plotPrimaryAxis(D3 d3, Axis axisAtom, Selection axisSelection, Double graphHeightInPx) {
 
-		org.treez.javafxd3.d3.svg.Axis axis;
+		Selection primaryAxisSelection = axisSelection //
+				.append("g") //
+				.attr("id", "primary")
+				.attr("class", "primary");
+
 		AxisMode axisMode = getAxisMode();
 		switch (axisMode) {
 		case QUANTITATIVE:
-			axis = createPrimaryQuantitativeD3Axis(d3, axisAtom, axisSelection, graphHeightInPx, isHorizontal);
+			primaryD3Axis = createPrimaryQuantitativeD3Axis(d3, axisAtom, primaryAxisSelection, graphHeightInPx);
 			break;
 		case ORDINAL:
-			axis = createPrimaryOrdinalD3Axis(d3, axisAtom, axisSelection, graphHeightInPx, isHorizontal);
+			primaryD3Axis = createPrimaryOrdinalD3Axis(d3, axisAtom, primaryAxisSelection, graphHeightInPx);
 			break;
-		case TIME:
-			throw new IllegalStateException("not yet implemented");
+		//case TIME:
+		//	throw new IllegalStateException("not yet implemented");
 		default:
 			throw new IllegalStateException("not yet implemented");
 		}
 
-		setAxisDirection(axis, isHorizontal);
-		axis.apply(axisSelection);
-		return axisSelection;
+		setAxisDirection(primaryD3Axis);
+		primaryD3Axis.apply(primaryAxisSelection);
+		return primaryAxisSelection;
 	}
 
 	@SuppressWarnings("checkstyle:magicnumber")
@@ -328,14 +242,13 @@ public class Data implements GraphicsPropertiesPageFactory {
 			D3 d3,
 			Axis axisAtom,
 			Selection axisSelection,
-			Double graphHeightInPx,
-			boolean isHorizontal) {
+			Double graphHeightInPx) {
 		int numberOfTicksAimedFor = Integer.parseInt(axisAtom.majorTicks.number.get());
 		String tickFormat = axisAtom.tickLabels.format.get();
 
 		//set translation and tick padding
 		double tickPadding;
-		if (isHorizontal) {
+		if (isHorizontal()) {
 			axisSelection.attr("transform", "translate(0," + graphHeightInPx + ")");
 			tickPadding = -6.0;
 		} else {
@@ -346,53 +259,23 @@ public class Data implements GraphicsPropertiesPageFactory {
 		//also see https://github.com/mbostock/d3/wiki/Formatting#d3_format
 		String formatFunctionExpression = createFormatFunctionExpression(tickFormat);
 
+		QuantitativeScaleBuilder scaleBuilder = axisAtom.getQuantitativeScaleBuilder();
+
 		//create d3 axis
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(quantitiativeScale) //
+				.scale(scaleBuilder.getScale()) //
 				.outerTickSize(0.0) //
 				.tickPadding(tickPadding);
 
 		if (log.get()) {
 			//for log axis only the number of tick labels will be influenced, not the number of tick lines
-
 			axis.ticksExpression(numberOfTicksAimedFor, formatFunctionExpression);
 		} else {
 			axis.ticks(numberOfTicksAimedFor);
 			axis.tickFormatExpression(formatFunctionExpression);
 		}
-		return axis;
-	}
-
-	@SuppressWarnings("checkstyle:magicnumber")
-	private org.treez.javafxd3.d3.svg.Axis createPrimaryOrdinalD3Axis(
-			D3 d3,
-			Axis axisAtom,
-			Selection axisSelection,
-			Double graphHeightInPx,
-			boolean isHorizontal) {
-
-		//set translation and tick padding
-		double tickPadding;
-		if (isHorizontal) {
-			axisSelection.attr("transform", "translate(0," + graphHeightInPx + ")");
-			tickPadding = -6.0;
-		} else {
-			tickPadding = -12.0;
-		}
-
-		//create d3 axis
-		int size = ordinalScale.domain().sizes().get(0);
-
-		org.treez.javafxd3.d3.svg.Axis axis = d3 //
-				.svg() //
-				.axis() //
-				.scale(ordinalScale) //
-				.outerTickSize(0.0) //
-				.ticks(size)
-				.tickPadding(tickPadding);
-
 		return axis;
 	}
 
@@ -425,23 +308,53 @@ public class Data implements GraphicsPropertiesPageFactory {
 		return formatFunctionExpression;
 	}
 
-	private static void setAxisDirection(org.treez.javafxd3.d3.svg.Axis axis, boolean isHorizontal) {
-		if (isHorizontal) {
+	@SuppressWarnings("checkstyle:magicnumber")
+	private org.treez.javafxd3.d3.svg.Axis createPrimaryOrdinalD3Axis(
+			D3 d3,
+			Axis axisAtom,
+			Selection axisSelection,
+			Double graphHeightInPx) {
+
+		//set translation and tick padding
+		double tickPadding;
+		if (isHorizontal()) {
+			axisSelection.attr("transform", "translate(0," + graphHeightInPx + ")");
+			tickPadding = -6.0;
+		} else {
+			tickPadding = -12.0;
+		}
+
+		OrdinalScaleBuilder scaleBuilder = axisAtom.getOrdinalScaleBuilder();
+
+		//create d3 axis
+		org.treez.javafxd3.d3.svg.Axis axis = d3 //
+				.svg() //
+				.axis() //
+				.scale(scaleBuilder.getScale()) //
+				.outerTickSize(0.0) //
+				.ticks(scaleBuilder.getSize())
+				.tickPadding(tickPadding);
+
+		return axis;
+	}
+
+	private void setAxisDirection(org.treez.javafxd3.d3.svg.Axis axis) {
+		if (isHorizontal()) {
 			axis.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.BOTTOM);
 		} else {
 			axis.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.LEFT);
 		}
 	}
 
-	private Selection plotSecondaryAxis(
-			D3 d3,
-			Axis axisAtom,
-			Selection axisSelection,
-			Double graphWidthInPx,
-			boolean isHorizontal) {
+	private Selection plotSecondaryAxis(D3 d3, Axis axisAtom, Selection axisSelection, Double graphWidthInPx) {
 
-		if (!isHorizontal) {
-			axisSelection.attr("transform", "translate(" + graphWidthInPx + ",0)");
+		Selection secondaryAxisSelection = axisSelection //
+				.append("g") //
+				.attr("id", "secondary")
+				.attr("class", "secondary");
+
+		if (!isHorizontal()) {
+			secondaryAxisSelection.attr("transform", "translate(" + graphWidthInPx + ",0)");
 		}
 
 		org.treez.javafxd3.d3.svg.Axis axis;
@@ -451,49 +364,46 @@ public class Data implements GraphicsPropertiesPageFactory {
 			axis = createSecondaryQuantitativeD3Axis(d3, axisAtom);
 			break;
 		case ORDINAL:
-			axis = createSecondaryOrdinalD3Axis(d3);
+			axis = createSecondaryOrdinalD3Axis(d3, axisAtom);
 			break;
-		case TIME:
-			throw new IllegalStateException("not yet implemented");
+		//case TIME:
+		//	throw new IllegalStateException("not yet implemented");
 		default:
 			throw new IllegalStateException("not yet implemented");
 		}
 
-		setAxisDirection(axis, isHorizontal);
+		setAxisDirection(axis);
 
-		axis.apply(axisSelection);
-		return axisSelection;
+		axis.apply(secondaryAxisSelection);
+		return secondaryAxisSelection;
 	}
 
-	private org.treez.javafxd3.d3.svg.Axis createSecondaryQuantitativeD3Axis(D3 d3, Axis axisAtom) {
+	private static org.treez.javafxd3.d3.svg.Axis createSecondaryQuantitativeD3Axis(D3 d3, Axis axisAtom) {
 		int numberOfTicksAimedFor = Integer.parseInt(axisAtom.majorTicks.number.get());
+
+		QuantitativeScaleBuilder scaleBuilder = axisAtom.getQuantitativeScaleBuilder();
 
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(quantitiativeScale) //
+				.scale(scaleBuilder.getScale()) //
 				.outerTickSize(0.0) //
 				.ticks(numberOfTicksAimedFor) //for log axis only the tick labels will be influenced
 				.tickFormatExpression("function (d) { return ''; }"); //hides the tick labels
 		return axis;
 	}
 
-	private org.treez.javafxd3.d3.svg.Axis createSecondaryOrdinalD3Axis(D3 d3) {
+	private static org.treez.javafxd3.d3.svg.Axis createSecondaryOrdinalD3Axis(D3 d3, Axis axisAtom) {
+
+		OrdinalScaleBuilder scaleBuilder = axisAtom.getOrdinalScaleBuilder();
 
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(ordinalScale) //
+				.scale(scaleBuilder.getScale()) //
 				.outerTickSize(0.0) //
 				.tickFormatExpression("function (d) { return ''; }"); //hides the tick labels
 		return axis;
-	}
-
-	private void updateOrdinalScaleIfAvailable() {
-		if (ordinalScale != null && ordinalValues != null) {
-			String[] values = ordinalValues.toArray(new String[ordinalValues.size()]);
-			ordinalScale.domain(values);
-		}
 	}
 
 	//#end region
@@ -504,6 +414,11 @@ public class Data implements GraphicsPropertiesPageFactory {
 		return AxisMode.from(mode.get());
 	}
 
+	public boolean isHorizontal() {
+		boolean isHorizontal = direction.get().equals("" + Direction.HORIZONTAL);
+		return isHorizontal;
+	}
+
 	public boolean isQuantitative() {
 		AxisMode axisMode = getAxisMode();
 		return axisMode.equals(AxisMode.QUANTITATIVE);
@@ -512,43 +427,6 @@ public class Data implements GraphicsPropertiesPageFactory {
 	public boolean isOrdinal() {
 		AxisMode axisMode = getAxisMode();
 		return axisMode.equals(AxisMode.ORDINAL);
-	}
-
-	public void setOrdinalValues(Set<String> ordinalValues) {
-		this.ordinalValues = ordinalValues;
-		updateOrdinalScaleIfAvailable();
-	}
-
-	public void setOrdinalValues(String... ordinalValues) {
-		Set<String> values = new HashSet<String>(Arrays.asList(ordinalValues));
-		setOrdinalValues(values);
-	}
-
-	public void addOrdinalValue(String ordinalValue) {
-		if (ordinalValues == null) {
-			ordinalValues = new HashSet<>();
-		}
-		ordinalValues.add(ordinalValue);
-		updateOrdinalScaleIfAvailable();
-	}
-
-	public Set<String> getOrdinalValues() {
-		return ordinalValues;
-	}
-
-	public Scale<?> getScale() {
-
-		AxisMode axisMode = getAxisMode();
-		switch (axisMode) {
-		case QUANTITATIVE:
-			return quantitiativeScale;
-		case ORDINAL:
-			return ordinalScale;
-		case TIME:
-			throw new IllegalStateException("not yet implemented");
-		default:
-			throw new IllegalStateException("not yet implemented");
-		}
 	}
 
 	//#end region

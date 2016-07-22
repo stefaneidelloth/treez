@@ -175,8 +175,8 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 			Graph graph = (Graph) this.getParentAtom();
 			Axis domainAxis = graph.createAxis("xAxis");
 			double[] domainAxisLimits = getDomainLimits(sourceTable);
-			domainAxis.data.min.set("" + domainAxisLimits[0]);
-			domainAxis.data.max.set("" + domainAxisLimits[1]);
+			domainAxis.data.min.set(domainAxisLimits[0]);
+			domainAxis.data.max.set(domainAxisLimits[1]);
 
 			domainAxis.data.label.set(domainLabel.get());
 
@@ -231,8 +231,8 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 			Axis rangeAxis = graph.createAxis("yAxis");
 			rangeAxis.data.direction.set("vertical");
 			double[] rangeAxisLimits = getRangeLimits(sourceTable);
-			rangeAxis.data.min.set("" + rangeAxisLimits[0]);
-			rangeAxis.data.max.set("" + rangeAxisLimits[1]);
+			rangeAxis.data.min.set(rangeAxisLimits[0]);
+			rangeAxis.data.max.set(rangeAxisLimits[1]);
 
 			rangeAxis.data.label.set(rangeLabel.get());
 			return rangeAxis;

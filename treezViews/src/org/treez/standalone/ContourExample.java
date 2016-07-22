@@ -46,11 +46,11 @@ public class ContourExample extends ModelProvider {
 
 		Axis xAxis = graph.createAxis("xAxis");
 		xAxis.data.direction.set("horizontal");
-		xAxis.data.max.set("4");
+		xAxis.data.max.set(4.0);
 
 		Axis yAxis = graph.createAxis("yAxis");
 		yAxis.data.direction.set("vertical");
-		yAxis.data.max.set("4");
+		yAxis.data.max.set(4.0);
 
 		graph.createLegend("legend");
 

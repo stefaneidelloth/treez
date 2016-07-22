@@ -186,11 +186,11 @@ public class Contour extends GraphicsPropertiesPage {
 
 	private void createPlotlyAxis(Layout layout) {
 		org.treez.results.atom.axis.Axis xAxisAtom = getXAxis();
-		double xMin = Double.parseDouble(xAxisAtom.data.min.get()); //TODO: consider 'auto' for auto scale
-		double xMax = Double.parseDouble(xAxisAtom.data.max.get());
+		double xMin = xAxisAtom.data.min.get(); //TODO: consider 'auto' for auto scale
+		double xMax = xAxisAtom.data.max.get();
 		org.treez.results.atom.axis.Axis yAxisAtom = getYAxis();
-		double yMin = Double.parseDouble(yAxisAtom.data.min.get());
-		double yMax = Double.parseDouble(yAxisAtom.data.max.get());
+		double yMin = yAxisAtom.data.min.get();
+		double yMax = yAxisAtom.data.max.get();
 
 		org.treez.javafxd3.plotly.layout.Axis xAxisPlotly = plotly.createAxis();
 		xAxisPlotly.setRange(xMin, xMax);

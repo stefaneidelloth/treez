@@ -1,17 +1,16 @@
-package org.treez.results.atom.axis;
+package org.treez.results.atom.tornado;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.treez.javafxd3.javafx.EnumValueProvider;
 
-public enum AxisMode implements EnumValueProvider<AxisMode> {
+public enum DataMode implements EnumValueProvider<DataMode> {
 
 	//#region VALUES
 
-	QUANTITATIVE("quantitative"), //
-	ORDINAL("ordinal"); //
-	//TIME("time"); //maybe implement date time picker before implementing this
+	TABLE("table"), //
+	INDIVIDUAL_COLUMNS("individual columns");
 
 	//#end region
 
@@ -23,7 +22,7 @@ public enum AxisMode implements EnumValueProvider<AxisMode> {
 
 	//#region CONSTRUCTORS
 
-	AxisMode(String value) {
+	DataMode(String value) {
 		this.value = value;
 	}
 
@@ -37,18 +36,14 @@ public enum AxisMode implements EnumValueProvider<AxisMode> {
 	}
 
 	@Override
-	public AxisMode fromString(final String value) {
-		return from(value);
-	}
-
-	public static AxisMode from(final String value) {
+	public DataMode fromString(final String value) {
 		return valueOf(value.toUpperCase().replace("-", "_"));
 	}
 
 	@Override
 	public List<String> getValues() {
 		List<String> values = new ArrayList<>();
-		for (AxisMode enumValue : values()) {
+		for (DataMode enumValue : values()) {
 			String stringValue = enumValue.value;
 			values.add(stringValue);
 		}

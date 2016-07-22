@@ -17,13 +17,7 @@ public class PrimaryAndSecondarySelection {
 
 	//#region CONSTRUCTORS
 
-	PrimaryAndSecondarySelection() {
-
-	}
-
-	//#end region
-
-	//#region METHODS
+	PrimaryAndSecondarySelection() {}
 
 	//#end region
 

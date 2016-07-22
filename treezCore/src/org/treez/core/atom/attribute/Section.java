@@ -47,6 +47,10 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 	@IsParameter(defaultValue = "true")
 	private boolean expanded;
 
+	private SectionControlProvider controlProvider;
+
+	private boolean isEnabled = true;
+
 	//#end region
 
 	//#region CONSTRUCTORS
@@ -139,7 +143,7 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 
 	@Override
 	public void createAtomControl(Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
-		SectionControlProvider controlProvider = new SectionControlProvider(this, parent, treeViewerRefreshable);
+		controlProvider = new SectionControlProvider(this, parent, treeViewerRefreshable);
 		controlProvider.createAtomControl();
 	}
 
@@ -922,7 +926,7 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 		this.layout = layout;
 	}
 
-	public boolean getExpanded() {
+	public boolean isExpanded() {
 		return expanded;
 	}
 
@@ -938,9 +942,17 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 		this.description = description;
 	}
 
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
 	@Override
 	public Section setEnabled(boolean enable) {
-		throw new IllegalStateException("not yet implemented");
+		this.isEnabled = enable;
+		if (controlProvider != null) {
+			controlProvider.setEnabled(enable);
+		}
+		return getThis();
 	}
 
 	//#end region
