@@ -21,6 +21,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.forms,
  org.eclipse.jface,
- org.treez.core,
- org.eclipse.wb.core.lib
+ org.treez.core
 Bundle-Vendor: Stefan Eidelloth
