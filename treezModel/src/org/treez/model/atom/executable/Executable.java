@@ -244,10 +244,10 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		status.createInfoText(commandInfo, this, "Resulting command", "");
 
 		//execution status
-		status.createInfoText(executionStatusInfo, "executionStatusInfo", "Execution status", "Not yet executed.");
+		status.createInfoText(executionStatusInfo, this, "Execution status", "Not yet executed.");
 
 		//study index
-		status.createInfoText(studyIndexInfo, "studyIndexInfo", "Next study index", "1");
+		status.createInfoText(studyIndexInfo, this, "Next study index", "1");
 	}
 
 	@Override

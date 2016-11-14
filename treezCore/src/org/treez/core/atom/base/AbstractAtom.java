@@ -469,6 +469,11 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 
 	protected static String getFieldName(Object fieldObject, Object parent) {
 		Objects.requireNonNull(fieldObject);
+		boolean parentIsString = parent.getClass().equals(String.class);
+		if (parentIsString) {
+			throw new IllegalStateException(
+					"Parent must not be a string. You might want to use 'this' instead of a property name.");
+		}
 
 		Field[] allPublicFieldsWithFieldsOfSuperClasses = parent.getClass().getFields();
 
@@ -482,7 +487,9 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 			return fieldName;
 		}
 
-		throw new IllegalStateException("Could not determine field name.");
+		String message = "Could not determine field name of parent '" + parent.toString() + "'.";
+
+		throw new IllegalStateException(message);
 	}
 
 	@SuppressWarnings("checkstyle:illegalcatch")
@@ -533,10 +540,10 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	}
 
 	/**
-	 * Adds the given AbstractAtom<?> as a child but does not set the parent of the child. The given AbstractAtom
-	 * <?> will be listed as a child of this AbstractAtom. If the given AbstractAtom<?> is asked for its parent, the old
-	 * parent will be returned. This way, an AbstractAtom<?> can be used in several trees as a child while the
-	 * "one and only real parent" is kept.
+	 * Adds the given AbstractAtom<?> as a child but does not set the parent of the child. The given AbstractAtom <?>
+	 * will be listed as a child of this AbstractAtom. If the given AbstractAtom<?> is asked for its parent, the old
+	 * parent will be returned. This way, an AbstractAtom<?> can be used in several trees as a child while the "one and
+	 * only real parent" is kept.
 	 *
 	 * @param child
 	 */
@@ -880,8 +887,7 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	 * @param wrappingAttribute
 	 * @param consumer
 	 */
-	protected static <
-			T>
+	protected static <T>
 			void
 			addModificationConsumerAndRun(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
