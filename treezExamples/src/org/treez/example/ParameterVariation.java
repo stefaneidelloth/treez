@@ -139,7 +139,7 @@ public class ParameterVariation extends ModelProvider {
 		executable.inputPath.set(inputFilePath);
 		executable.outputArguments.set("-outputFolder");
 		executable.outputPath.set(outputFolder + "/output.txt");
-		executable.includeStudyIndexInFile.set(true);
+		executable.includeJobIndexInFile.set(true);
 		models.addChild(executable);
 
 		InputFileGenerator inputFile = new InputFileGenerator("inputFileGenerator");

@@ -40,7 +40,7 @@ public class PickingModelInputGenerator {
 	 * @param samples
 	 * @return
 	 */
-	public List<ModelInput> createModelInputs(List<Sample> samples) {
+	public List<ModelInput> createModelInputs(String studyId, String studyDescription, List<Sample> samples) {
 
 		List<ModelInput> modelInputs = new ArrayList<>();
 
@@ -57,8 +57,8 @@ public class PickingModelInputGenerator {
 				for (int timeIndex = 0; timeIndex < timeRange.size(); timeIndex++) {
 					Number timeValue = timeRange.get(timeIndex);
 					for (Sample sample : samples) {
-						ModelInput modelInput = createModelInputFromSampleForTimeStep(sourceModelPath, sample,
-								timeVariablePath, timeIndex, timeValue);
+						ModelInput modelInput = createModelInputFromSampleForTimeStep(sourceModelPath, studyId,
+								studyDescription, sample, timeVariablePath, timeIndex, timeValue);
 						modelInputs.add(modelInput);
 					}
 				}
@@ -66,7 +66,8 @@ public class PickingModelInputGenerator {
 			} else {
 
 				for (Sample sample : samples) {
-					ModelInput modelInput = createModelInputFromSample(sourceModelPath, sample);
+					ModelInput modelInput = createModelInputFromSample(sourceModelPath, studyId, studyDescription,
+							sample);
 					modelInputs.add(modelInput);
 				}
 			}
@@ -78,12 +79,14 @@ public class PickingModelInputGenerator {
 
 	private ModelInput createModelInputFromSampleForTimeStep(
 			String sourceModelPath,
+			String studyId,
+			String studyDescription,
 			Sample sample,
 			String timeVariablePath,
 			int timeIndex,
 			Number timeValue) {
 
-		ModelInput modelInput = new HashMapModelInput(pickingModelPath);
+		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyId, studyDescription);
 
 		//set time value
 		modelInput.add(timeVariablePath, timeValue);
@@ -118,8 +121,12 @@ public class PickingModelInputGenerator {
 		return sourceModelPath;
 	}
 
-	private ModelInput createModelInputFromSample(String sourceModelPath, Sample sample) {
-		ModelInput modelInput = new HashMapModelInput(pickingModelPath);
+	private ModelInput createModelInputFromSample(
+			String sourceModelPath,
+			String studyId,
+			String studyDescription,
+			Sample sample) {
+		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyId, studyDescription);
 		Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
 		for (String variableName : variableData.keySet()) {
 			VariableField<?, ?> variableField = variableData.get(variableName);

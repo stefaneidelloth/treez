@@ -24,7 +24,7 @@ public class ExecutableOutputPathModifier {
 	//#region METHODS
 
 	/**
-	 * Returns the output path, optionally modified by data and study index
+	 * Returns the output path, optionally modified by data and job index
 	 *
 	 * @return
 	 */
@@ -52,7 +52,7 @@ public class ExecutableOutputPathModifier {
 
 		outputPathExpression = includeDateInFolder(outputPathExpression);
 
-		outputPathExpression = includeStuyIndexInFolder(outputPathExpression);
+		outputPathExpression = includeJobIndexInFolder(outputPathExpression);
 
 		outputPathExpression = includeSubFolder(outputPathExpression);
 
@@ -76,13 +76,13 @@ public class ExecutableOutputPathModifier {
 		return newOutputPath;
 	}
 
-	private String includeStuyIndexInFolder(String outputPathExpression) {
+	private String includeJobIndexInFolder(String outputPathExpression) {
 
 		String newOutputPath = outputPathExpression;
 
-		boolean doIncludeStudyIndexInFolder = executable.includeStudyIndexInFolder.get();
-		if (doIncludeStudyIndexInFolder) {
-			newOutputPath += "#" + executable.getStudyId();
+		boolean doIncludejobIndexInFolder = executable.includeJobIndexInFolder.get();
+		if (doIncludejobIndexInFolder) {
+			newOutputPath += "#" + executable.getJobId();
 		}
 		return newOutputPath;
 	}
@@ -92,8 +92,8 @@ public class ExecutableOutputPathModifier {
 		String newOutputPath = outputPathExpression;
 
 		boolean doIncludeDateInSubFolder = executable.includeDateInSubFolder.get();
-		boolean doIncludeStudyIndexInSubFolder = executable.includeStudyIndexInSubFolder.get();
-		boolean doIncludeSubFolder = doIncludeDateInSubFolder || doIncludeStudyIndexInSubFolder;
+		boolean doIncludejobIndexInSubFolder = executable.includeJobIndexInSubFolder.get();
+		boolean doIncludeSubFolder = doIncludeDateInSubFolder || doIncludejobIndexInSubFolder;
 
 		if (doIncludeSubFolder) {
 			newOutputPath += "/";
@@ -103,8 +103,8 @@ public class ExecutableOutputPathModifier {
 			newOutputPath += Utils.getDateString();
 		}
 
-		if (doIncludeStudyIndexInSubFolder) {
-			newOutputPath += "#" + executable.getStudyId();
+		if (doIncludejobIndexInSubFolder) {
+			newOutputPath += "#" + executable.getJobId();
 		}
 		return newOutputPath;
 	}
@@ -117,8 +117,8 @@ public class ExecutableOutputPathModifier {
 		String newOutputPath = outputPathExpression;
 
 		boolean doIncludeDateInSubFolder = executable.includeDateInSubFolder.get();
-		boolean doIncludeStudyIndexInSubFolder = executable.includeStudyIndexInSubFolder.get();
-		boolean doIncludeSubFolder = doIncludeDateInSubFolder || doIncludeStudyIndexInSubFolder;
+		boolean doIncludejobIndexInSubFolder = executable.includeJobIndexInSubFolder.get();
+		boolean doIncludeSubFolder = doIncludeDateInSubFolder || doIncludejobIndexInSubFolder;
 
 		if (doIncludeSubFolder) {
 			newOutputPath += "/";
@@ -131,9 +131,9 @@ public class ExecutableOutputPathModifier {
 			newOutputPath += "_" + Utils.getDateString();
 		}
 
-		boolean doIncludeStudyIndex = executable.includeStudyIndexInFile.get();
-		if (doIncludeStudyIndex) {
-			newOutputPath += "#" + executable.getStudyId();
+		boolean doIncludejobIndex = executable.includeJobIndexInFile.get();
+		if (doIncludejobIndex) {
+			newOutputPath += "#" + executable.getJobId();
 		}
 		newOutputPath += pathPostFix; //is empty for directories
 		return newOutputPath;

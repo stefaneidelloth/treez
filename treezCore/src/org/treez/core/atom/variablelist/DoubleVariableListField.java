@@ -19,8 +19,8 @@ import org.treez.core.springspel.VectorEvaluation;
 import org.treez.core.swt.CustomLabel;
 
 /**
- * Allows a user to enter a string that is interpreted as a list of numeric values. This is use for example by the study
- * atom DoubleVariableRange
+ * Allows a user to enter a string that is interpreted as a list of numeric values. This is used for example by the
+ * DoubleVariableRange
  */
 public class DoubleVariableListField extends AbstractVariableListField<DoubleVariableListField, Double> {
 

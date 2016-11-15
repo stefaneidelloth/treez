@@ -30,6 +30,16 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 	protected final String DATE_FORMAT_STRING = "yyy-MM-dd HH:mm:ss";
 
 	/**
+	 * Identifies the study (length should be <= 64 characters)
+	 */
+	public final Attribute<String> studyId = new Wrap<>();
+
+	/**
+	 * Describes the purpose of the study
+	 */
+	public final Attribute<String> studyDescription = new Wrap<>();
+
+	/**
 	 * The path to the model that will be executed by the sweep
 	 */
 	public final Attribute<String> modelToRunModelPath = new Wrap<>();
@@ -232,23 +242,25 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 	//#region ACCESSORS
 
-	//#region SOURCE
+	@Override
+	public String getId() {
+		return studyId.get();
+	}
+
+	@Override
+	public String getDescription() {
+		return studyDescription.get();
+	}
 
 	@Override
 	public String getSourceModelPath() {
 		return sourceModelPath.get();
 	}
 
-	//#end region
-
-	//#region MODEL TO RUN
-
 	@Override
 	public String getModelToRunModelPath() {
 		return modelToRunModelPath.get();
 	}
-
-	//#end region
 
 	//#end region
 

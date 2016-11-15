@@ -10,18 +10,28 @@ import org.treez.core.atom.copy.Copiable;
 public interface ModelInput extends Copiable<ModelInput> {
 
 	/**
+	 * The Id of the study this input belongs to
+	 */
+	String getStudyId();
+
+	/**
+	 * The description of the study this input belongs to
+	 */
+	String getStudyDescription();
+
+	/**
 	 * Returns an id with up to 64 characters that can be used to identify this ModelInput in a list of all model inputs
 	 * that belong to a parent study. (If the Quantities are chosen randomly in a study, all Quantities of two
 	 * ModelInputs might be the same. Nevertheless, the Ids should be different.)
 	 *
 	 * @return
 	 */
-	String getId();
+	String getJobId();
 
 	/**
 	 * Increases the Id to the next available value. You might want to use this after copying a ModelInput.
 	 */
-	void increaseId();
+	void increaseJobId();
 
 	/**
 	 * Returns the model path of the parent Study this ModelInput belongs to, e.g root.studies.mySweep
@@ -78,7 +88,7 @@ public interface ModelInput extends Copiable<ModelInput> {
 	 * @return
 	 */
 	default String toDisplayString() {
-		return getId();
+		return getJobId();
 	}
 
 }

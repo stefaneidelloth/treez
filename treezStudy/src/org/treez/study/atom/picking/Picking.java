@@ -408,11 +408,11 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		//initialize progress monitor
 		monitor.beginTask("", numberOfSimulations);
 
-		//reset study index to 1
+		//reset job index to 1
 		HashMapModelInput.resetIdCounter();
 
 		//create model inputs
-		List<ModelInput> modelInputs = inputGenerator.createModelInputs(samples);
+		List<ModelInput> modelInputs = inputGenerator.createModelInputs(studyId.get(), studyDescription.get(), samples);
 
 		//export study info to text file if the corresponding option is enabled
 		if (exportStudyInfo.get()) {
@@ -533,7 +533,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 				//post process model output
 				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
-				String modelOutputName = getName() + "OutputId" + modelInput.getId();
+				String modelOutputName = getName() + "OutputId" + modelInput.getJobId();
 				modelOutputAtom.setName(modelOutputName);
 				pickingOutputAtom.addChild(modelOutputAtom);
 				refresh();

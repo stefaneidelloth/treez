@@ -23,7 +23,7 @@ import org.treez.core.swt.CustomLabel;
 
 /**
  * Allows a user to enter a string that is interpreted as a list of numeric values and a string that is interpreted as
- * unit. This is use for example by the study atom QuantityVariableRange
+ * unit. This is use for example by the QuantityVariableRange
  */
 public class QuantityVariableListField extends AbstractVariableListField<QuantityVariableListField, Quantity> {
 

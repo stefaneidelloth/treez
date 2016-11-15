@@ -21,6 +21,7 @@ import org.treez.core.atom.attribute.FilePath;
 import org.treez.core.atom.attribute.ModelPathSelectionType;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -72,6 +73,14 @@ public class Sweep extends AbstractParameterVariation {
 
 		Section sweepSection = dataPage.createSection("sweep", absoluteHelpContextId);
 		sweepSection.createSectionAction("action", "Run sweep", () -> execute(treeViewRefreshable));
+
+		//studyId
+		TextField studyIdField = sweepSection.createTextField(studyId, this, "");
+		studyIdField.setLabel("Id");
+
+		//description
+		TextField descriptionField = sweepSection.createTextField(studyDescription, this);
+		descriptionField.setLabel("Description");
 
 		//choose selection type and entry atom
 		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
@@ -167,13 +176,13 @@ public class Sweep extends AbstractParameterVariation {
 		//initialize progress monitor
 		monitor.beginTask("", numberOfSimulations);
 
-		//reset study index to 1
+		//reset job index to 1
 		HashMapModelInput.resetIdCounter();
 
 		//create model inputs
 		List<ModelInput> modelInputs = inputGenerator.createModelInputs(variableRanges);
 
-		//export sweep info to text file if the corresponding option is enabled
+		//exports study info if the corresponding option is enabled
 		if (exportStudyInfo.get()) {
 			exportStudyInfo(variableRanges, numberOfSimulations);
 		}
@@ -228,7 +237,7 @@ public class Sweep extends AbstractParameterVariation {
 
 				//post process model output
 				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
-				String modelOutputName = getName() + "OutputId" + modelInput.getId();
+				String modelOutputName = getName() + "OutputId" + modelInput.getJobId();
 				modelOutputAtom.setName(modelOutputName);
 				sweepOutputAtom.addChild(modelOutputAtom);
 				refresh();
@@ -250,7 +259,7 @@ public class Sweep extends AbstractParameterVariation {
 		List<String> inactiveVariables = new ArrayList<>();
 		for (AbstractVariableRange<?> variableRange : variableRanges) {
 			String variableModelPath = variableRange.getSourceVariableModelPath();
-			VariableField<?,?> variableField;
+			VariableField<?, ?> variableField;
 			try {
 				variableField = this.getChildFromRoot(variableModelPath);
 			} catch (IllegalArgumentException exception) {

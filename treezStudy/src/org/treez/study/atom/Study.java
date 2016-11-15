@@ -8,6 +8,10 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
  */
 public interface Study {
 
+	String getId();
+
+	String getDescription();
+
 	/**
 	 * Returns the absolute model path to the model that is executed by this Study
 	 *

@@ -20,10 +20,14 @@ public class HashMapModelInput implements ModelInput {
 	 */
 	private static long nextId = 1;
 
+	private String studyId;
+
+	private String studyDescription;
+
 	/**
 	 * The id of this model input
 	 */
-	private long id;
+	private long jobId;
 
 	/**
 	 * Maps from model path of variable to corresponding Quantity to set
@@ -39,22 +43,26 @@ public class HashMapModelInput implements ModelInput {
 
 	//#region CONSTRUCTORS
 
-	public HashMapModelInput(String parentStuyModelPath) {
-		this.id = getNextId();
+	public HashMapModelInput(String parentStudyModelPath, String studyId, String studyDescription) {
+		this.studyId = studyId;
+		this.studyDescription = studyDescription;
+		this.jobId = getNextId();
 		modelInputMap = new HashMap<>();
-		this.parentStuyModelPath = parentStuyModelPath;
+		this.parentStuyModelPath = parentStudyModelPath;
 	}
 
 	/**
 	 * Copy constructor. Copies the data of the given HashMapModelInput to a new HashMapModelInput. You might want to
 	 * use the function increaseId to increase the id of the new model input to the next available value.
 	 *
-	 * @param hashMapModelInputToCopy
+	 * @param modelInputToCopy
 	 */
-	private HashMapModelInput(HashMapModelInput hashMapModelInputToCopy) {
-		modelInputMap = copyInputMap(hashMapModelInputToCopy.modelInputMap);
-		this.id = hashMapModelInputToCopy.id;
-		this.parentStuyModelPath = hashMapModelInputToCopy.parentStuyModelPath;
+	private HashMapModelInput(HashMapModelInput modelInputToCopy) {
+		modelInputMap = copyInputMap(modelInputToCopy.modelInputMap);
+		this.studyId = modelInputToCopy.studyId;
+		this.studyDescription = modelInputToCopy.studyDescription;
+		this.jobId = modelInputToCopy.jobId;
+		this.parentStuyModelPath = modelInputToCopy.parentStuyModelPath;
 	}
 
 	//#end region
@@ -77,8 +85,8 @@ public class HashMapModelInput implements ModelInput {
 	}
 
 	@Override
-	public void increaseId() {
-		this.id = getNextId();
+	public void increaseJobId() {
+		this.jobId = getNextId();
 	}
 
 	@Override
@@ -127,8 +135,18 @@ public class HashMapModelInput implements ModelInput {
 	//#region ACCESSORS
 
 	@Override
-	public String getId() {
-		String idString = "" + id;
+	public String getStudyId() {
+		return studyId;
+	}
+
+	@Override
+	public String getStudyDescription() {
+		return studyDescription;
+	}
+
+	@Override
+	public String getJobId() {
+		String idString = "" + jobId;
 		return idString;
 	}
 

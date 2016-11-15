@@ -62,11 +62,11 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	public final Attribute<Boolean> includeDateInSubFolder = new Wrap<>();
 
-	public final Attribute<Boolean> includeStudyIndexInFile = new Wrap<>();
+	public final Attribute<Boolean> includeJobIndexInFile = new Wrap<>();
 
-	public final Attribute<Boolean> includeStudyIndexInFolder = new Wrap<>();
+	public final Attribute<Boolean> includeJobIndexInFolder = new Wrap<>();
 
-	public final Attribute<Boolean> includeStudyIndexInSubFolder = new Wrap<>();
+	public final Attribute<Boolean> includeJobIndexInSubFolder = new Wrap<>();
 
 	public final Attribute<String> logArguments = new Wrap<>();
 
@@ -76,7 +76,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	public final Attribute<String> executionStatusInfo = new Wrap<>();
 
-	public final Attribute<String> studyIndexInfo = new Wrap<>();
+	public final Attribute<String> jobIndexInfo = new Wrap<>();
 
 	//#end region
 
@@ -137,9 +137,8 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
 		Section executable = dataPage.createSection("executable", executableHelpContextId);
-		Image resetImage = Activator.getImage("resetStudyIndex.png");
-		executable.createSectionAction("resetStudyIndex", "Reset the study index to 1", () -> resetStudyIndex(),
-				resetImage);
+		Image resetImage = Activator.getImage("resetJobIndex.png");
+		executable.createSectionAction("resetJobIndex", "Reset the job index to 1", () -> resetJobIndex(), resetImage);
 		executable.createSectionAction("action", "Run external executable", () -> execute(treeViewRefreshable));
 
 		FilePath filePath = executable.createFilePath(executablePath, this, "Executable", "notepad.exe");
@@ -204,21 +203,20 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		dateInFileCheck.addModifyListener("updateStatus", updateStatusListener);
 
 		@SuppressWarnings("unused")
-		org.treez.core.atom.attribute.Label studyIndexLabel = outputModification.createLabel("studyIndexLabel",
-				"Include study index in:");
+		org.treez.core.atom.attribute.Label jobIndexLabel = outputModification.createLabel("jobIndexLabel",
+				"Include job index in:");
 
-		CheckBox studyIndexInFolderCheck = outputModification.createCheckBox(includeStudyIndexInFolder, this, false);
-		studyIndexInFolderCheck.setLabel("Folder name");
-		studyIndexInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
+		CheckBox jobIndexInFolderCheck = outputModification.createCheckBox(includeJobIndexInFolder, this, false);
+		jobIndexInFolderCheck.setLabel("Folder name");
+		jobIndexInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
-		CheckBox studyIndexInSubFolderCheck = outputModification.createCheckBox(includeStudyIndexInSubFolder, this,
-				false);
-		studyIndexInSubFolderCheck.setLabel("Extra folder");
-		studyIndexInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
+		CheckBox jobIndexInSubFolderCheck = outputModification.createCheckBox(includeJobIndexInSubFolder, this, false);
+		jobIndexInSubFolderCheck.setLabel("Extra folder");
+		jobIndexInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
-		CheckBox studyIndexInFileCheck = outputModification.createCheckBox(includeStudyIndexInFile, this, false);
-		studyIndexInFileCheck.setLabel("File name");
-		studyIndexInFileCheck.addModifyListener("updateStatus", updateStatusListener);
+		CheckBox jobIndexInFileCheck = outputModification.createCheckBox(includeJobIndexInFile, this, false);
+		jobIndexInFileCheck.setLabel("File name");
+		jobIndexInFileCheck.addModifyListener("updateStatus", updateStatusListener);
 	}
 
 	private void createLoggingSection(
@@ -246,8 +244,8 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		//execution status
 		status.createInfoText(executionStatusInfo, this, "Execution status", "Not yet executed.");
 
-		//study index
-		status.createInfoText(studyIndexInfo, this, "Next study index", "1");
+		//job index
+		status.createInfoText(jobIndexInfo, this, "Next job index", "1");
 	}
 
 	@Override
@@ -270,35 +268,35 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			executionStatusInfoText.resetError();
 			executionStatusInfoText.set("Not yet executed");
 
-			studyIndexInfo.set("" + getStudyId());
+			jobIndexInfo.set("" + getJobId());
 		});
 
 	}
 
 	@Override
-	public ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor progressMonitor) {
 
 		String startMessage = "Running " + this.getClass().getSimpleName() + " '" + getName() + "'.";
 		LOG.info(startMessage);
 
 		//initialize progress monitor
 		final int totalWork = 3;
-		monitor.beginTask(startMessage, totalWork);
+		progressMonitor.beginTask(startMessage, totalWork);
 
 		//delete old output file and old log file if they exist
 		delteOldOutputAndLogFiles();
 
 		//update progress monitor
-		monitor.subTask("=>Running InputFileGenerator children if exist.");
+		progressMonitor.subTask("=>Running InputFileGenerator children if exist.");
 
 		//execute input file generator child(s) if exist
 		executeInputFileGenerator(refreshable);
 
 		//update progress monitor
-		monitor.worked(1);
+		progressMonitor.worked(1);
 
 		//update progress monitor
-		monitor.subTask("=>Executiong system command.");
+		progressMonitor.subTask("=>Executiong system command.");
 
 		//create command
 		String command = buildCommand();
@@ -309,14 +307,14 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		executor.executeCommand(command);
 
 		//update progress monitor
-		monitor.worked(1);
+		progressMonitor.worked(1);
 
 		//create model output
-		monitor.subTask("=>Post processing model output.");
+		progressMonitor.subTask("=>Post processing model output.");
 		ModelOutput modelOutput = createEmptyModelOutput();
 		//if (successful) {
 		//execute data import child(s) if exist
-		ModelOutput dataImportOutput = runDataImport(refreshable, monitor);
+		ModelOutput dataImportOutput = runDataImport(refreshable, progressMonitor);
 		modelOutput.addChildOutput(dataImportOutput);
 		//}
 
@@ -325,26 +323,26 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			copyInputFileToOutputFolder();
 		}
 
-		//increase study index
-		increaseStudyIndex();
+		//increase job index
+		increasejobIndex();
 
 		//inform progress monitor to be done
-		monitor.done();
+		progressMonitor.done();
 
 		return modelOutput;
 	}
 
-	private void increaseStudyIndex() {
+	private void increasejobIndex() {
 		int currentIndex = 0;
 		try {
-			String studyId = getStudyId();
-			currentIndex = Integer.parseInt(studyId);
+			String jobId = getJobId();
+			currentIndex = Integer.parseInt(jobId);
 		} catch (NumberFormatException exception) {
-			LOG.warn("Could not interpret last studyId as Integer. "
-					+ "Starting with 1 for the next study index of the executable.");
+			LOG.warn("Could not interpret last jobId as Integer. "
+					+ "Starting with 1 for the next job index of the executable.");
 		}
 		int newIndex = currentIndex + 1;
-		setStudyId("" + newIndex);
+		setJobId("" + newIndex);
 		refreshStatus();
 	}
 
@@ -432,7 +430,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		boolean inputPathIsFilePath = Utils.isFilePath(inputPathString);
 		if (inputPathIsFilePath) {
 			String inputFileName = Utils.extractFileName(inputPathString);
-			String newInputFileName = Utils.includeNumberInFileName(inputFileName, "#" + getStudyId());
+			String newInputFileName = Utils.includeNumberInFileName(inputFileName, "#" + getJobId());
 			String destinationPath = folderPath + "/" + newInputFileName;
 			return destinationPath;
 		} else {
@@ -487,7 +485,8 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		String command = "\"" + executablePath.get() + "\"";
 		boolean inputArgsIsEmpty = inputArguments.get().isEmpty();
 		if (!inputArgsIsEmpty) {
-			command += " " + inputArguments;
+			String modifiedInputArguments = injectStudyAndJobInfo(inputArguments);
+			command += " " + modifiedInputArguments;
 		}
 
 		boolean inputPathIsEmpty = inputPath.get().isEmpty();
@@ -520,10 +519,43 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	}
 
 	/**
-	 * Resets the study index
+	 * If the input arguments contain place holders, those place holders are replaced by the actual studyId,
+	 * studyDescription and jobId.
+	 *
+	 * @param input
+	 * @return
 	 */
-	public void resetStudyIndex() {
-		setStudyId("1");
+	private String injectStudyAndJobInfo(Attribute<String> input) {
+		String studyIdKey = "{$studyId$}";
+		String studyDescriptionKey = "{$studyDescription$}";
+		String jobIdKey = "{$jobId$}";
+
+		String inputArguments = input.get();
+		if (inputArguments.contains(studyIdKey)) {
+			String studyName = getStudyId();
+			if (studyName == null) {
+				inputArguments = inputArguments.replace(studyIdKey, "");
+			} else {
+				inputArguments = inputArguments.replace(studyIdKey, studyName);
+			}
+
+		}
+
+		if (inputArguments.contains(studyDescriptionKey)) {
+			inputArguments = inputArguments.replace(studyDescriptionKey, getStudyDescription());
+		}
+
+		if (inputArguments.contains(jobIdKey)) {
+			inputArguments = inputArguments.replace(jobIdKey, getJobId());
+		}
+		return inputArguments;
+	}
+
+	/**
+	 * Resets the job index
+	 */
+	public void resetJobIndex() {
+		setJobId("1");
 		refreshStatus();
 	}
 

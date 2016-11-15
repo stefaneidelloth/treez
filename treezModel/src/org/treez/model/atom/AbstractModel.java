@@ -29,10 +29,17 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	private boolean isManualModel = false;
 
 	/**
+	 * If the execution of the model is part of a study, this holds the name of the study.
+	 */
+	protected String studyId = null;
+
+	protected String studyDescription = "";
+
+	/**
 	 * The id for the last execution of the model. This might be the id from a model input while executing a study (e.g.
 	 * sweep). It might also be an id from a manual execution that has been set by the model itself.
 	 */
-	protected String studyId = "1";
+	protected String jobId = "1";
 
 	//#end region
 
@@ -72,9 +79,16 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 
 		if (modelInput != null) {
 
-			//set study index
-			String studyIndex = modelInput.getId();
-			this.setStudyId(studyIndex);
+			//set study data
+			String studyId = modelInput.getStudyId();
+			this.setStudyId(studyId);
+
+			String studyDescription = modelInput.getStudyDescription();
+			this.setStudyDescription(studyDescription);
+
+			//set job index
+			String jobIndex = modelInput.getJobId();
+			this.setJobId(jobIndex);
 
 			//set variable values
 			List<String> allVariableModelPaths = modelInput.getAllVariableModelPaths();
@@ -231,6 +245,28 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	}
 
 	@Override
+	public String getJobId() {
+		return jobId;
+	}
+
+	/**
+	 * Sets the job id for this model and all sub models
+	 *
+	 * @param jobId
+	 */
+	@Override
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+		for (AbstractAtom<?> child : children) {
+			boolean isModel = child instanceof Model;
+			if (isModel) {
+				Model model = (Model) child;
+				model.setJobId(jobId);
+			}
+		}
+	}
+
+	@Override
 	public String getStudyId() {
 		return studyId;
 	}
@@ -248,6 +284,28 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 			if (isModel) {
 				Model model = (Model) child;
 				model.setStudyId(studyId);
+			}
+		}
+	}
+
+	@Override
+	public String getStudyDescription() {
+		return studyDescription;
+	}
+
+	/**
+	 * Sets the study description for this model and all sub models
+	 *
+	 * @param studyDescription
+	 */
+	@Override
+	public void setStudyDescription(String studyDescription) {
+		this.studyDescription = studyDescription;
+		for (AbstractAtom<?> child : children) {
+			boolean isModel = child instanceof Model;
+			if (isModel) {
+				Model model = (Model) child;
+				model.setStudyDescription(studyDescription);
 			}
 		}
 	}

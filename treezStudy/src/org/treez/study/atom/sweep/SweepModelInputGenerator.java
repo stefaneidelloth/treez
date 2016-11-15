@@ -6,6 +6,7 @@ import java.util.List;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.model.input.HashMapModelInput;
 import org.treez.model.input.ModelInput;
+import org.treez.study.atom.Study;
 import org.treez.study.atom.range.AbstractVariableRange;
 
 /**
@@ -41,11 +42,15 @@ public class SweepModelInputGenerator {
 			AbstractVariableRange<?> firstRange = variableRanges.get(0);
 			List<AbstractVariableRange<?>> remainingRanges = variableRanges.subList(1, variableRanges.size());
 			String variableModelPath = firstRange.getSourceVariableModelPath();
+			Study study = (Study) firstRange.getParentAtom();
+			String studyId = study.getId();
+			String studyDescription = study.getDescription();
 
 			List<? extends Object> rangeObjects = firstRange.getRange();
 			for (Object currentRangeObject : rangeObjects) {
 				//create model input that initially contains the current quantity
-				ModelInput initialInput = createInitialModelInput(variableModelPath, currentRangeObject);
+				ModelInput initialInput = createInitialModelInput(variableModelPath, studyId, studyDescription,
+						currentRangeObject);
 
 				//copy and extended the initial model input using the remaining variable ranges
 				List<ModelInput> modelInputsWithCurrentQuantity = extendModelInputs(initialInput, remainingRanges);
@@ -85,7 +90,7 @@ public class SweepModelInputGenerator {
 
 				//increase the id for new model inputs
 				if (counter > 1) {
-					modelInput.increaseId();
+					modelInput.increaseJobId();
 				}
 
 				//add current quantity
@@ -107,8 +112,12 @@ public class SweepModelInputGenerator {
 	 * @param currentQuantity
 	 * @return
 	 */
-	private ModelInput createInitialModelInput(String variableModelPath, Object rangeObject) {
-		ModelInput initialInput = new HashMapModelInput(sweepModelPath);
+	private ModelInput createInitialModelInput(
+			String variableModelPath,
+			String studyId,
+			String studyDescription,
+			Object rangeObject) {
+		ModelInput initialInput = new HashMapModelInput(sweepModelPath, studyId, studyDescription);
 		initialInput.add(variableModelPath, rangeObject);
 		return initialInput;
 	}

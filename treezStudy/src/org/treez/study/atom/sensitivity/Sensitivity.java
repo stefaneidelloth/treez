@@ -12,6 +12,8 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
+import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Wrap;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.study.Activator;
@@ -25,6 +27,18 @@ public class Sensitivity extends AdjustableAtom implements Study {
 	private static final Logger LOG = Logger.getLogger(Sensitivity.class);
 
 	//#region ATTRIBUTES
+
+	/**
+	 * Identifies the study (length should be <= 64 characters)
+	 */
+	public final Attribute<String> studyId = new Wrap<>();
+
+	/**
+	 * Describes the purpose of the study
+	 */
+	public final Attribute<String> studyDescription = new Wrap<>();
+
+	//#end region
 
 	//#region CONSTRUCTORS
 
@@ -42,7 +56,9 @@ public class Sensitivity extends AdjustableAtom implements Study {
 	 * Provides a control to represent this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 
 		String relativeHelpContextId = "sensitivity";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
@@ -84,6 +100,16 @@ public class Sensitivity extends AdjustableAtom implements Study {
 	//#end region
 
 	//#region ACCESSORS
+
+	@Override
+	public String getId() {
+		return studyId.get();
+	}
+
+	@Override
+	public String getDescription() {
+		return studyDescription.get();
+	}
 
 	@Override
 	public String getSourceModelPath() {
