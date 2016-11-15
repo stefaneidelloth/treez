@@ -28,6 +28,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.utils.Utils;
 import org.treez.data.output.OutputAtom;
+import org.treez.data.sqlite.SqLiteDatabase;
 import org.treez.model.input.HashMapModelInput;
 import org.treez.model.input.ModelInput;
 import org.treez.model.interfaces.Model;
@@ -184,7 +185,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		//exports study info if the corresponding option is enabled
 		if (exportStudyInfo.get()) {
-			exportStudyInfo(variableRanges, numberOfSimulations);
+			exportStudyInfo(variableRanges, modelInputs, numberOfSimulations);
 		}
 
 		//prepare result structure
@@ -291,7 +292,94 @@ public class Sweep extends AbstractParameterVariation {
 	 * @param variableRanges
 	 * @param numberOfSimulations
 	 */
-	private void exportStudyInfo(List<AbstractVariableRange<?>> variableRanges, int numberOfSimulations) {
+	private void exportStudyInfo(
+			List<AbstractVariableRange<?>> variableRanges,
+			List<ModelInput> modelInputs,
+			int numberOfSimulations) {
+
+		String filePath = exportStudyInfoPath.get();
+
+		boolean isTextFile = filePath.endsWith(".txt");
+		if (isTextFile) {
+			exportStudyInfoToTextFile(variableRanges, numberOfSimulations, filePath);
+			return;
+		}
+
+		boolean isSqLiteFile = filePath.endsWith(".sqlite");
+		if (isSqLiteFile) {
+			exportStudyInfoToSqLiteDatabase(variableRanges, modelInputs, filePath);
+			return;
+		}
+
+		String message = "Could not export study info due to unknown file format of " + filePath;
+		throw new IllegalStateException(message);
+
+	}
+
+	private void exportStudyInfoToSqLiteDatabase(
+			List<AbstractVariableRange<?>> variableRanges,
+			List<ModelInput> modelInputs,
+			String filePath) {
+
+		SqLiteDatabase database = new SqLiteDatabase(filePath);
+		writeStudyInfo(variableRanges, database);
+		writeJobInfo(modelInputs, database);
+
+	}
+
+	private void writeStudyInfo(List<AbstractVariableRange<?>> variableRanges, SqLiteDatabase database) {
+		String studyInfoTableName = "study_info";
+		createStudyInfoTableIfNotExists(database, studyInfoTableName);
+		deleteOldEntriesForStudyIfExist(database, studyInfoTableName);
+
+		for (AbstractVariableRange<?> range : variableRanges) {
+			String variablePath = range.getSourceVariableModelPath();
+			List<?> rangeValues = range.getRange();
+			for (Object value : rangeValues) {
+				String query = "INSERT INTO '" + studyInfoTableName + "' VALUES(null, '" + studyId + "', '"
+						+ variablePath + "','" + value + "')";
+				database.execute(query);
+			}
+		}
+	}
+
+	private void deleteOldEntriesForStudyIfExist(SqLiteDatabase database, String tableName) {
+		String query = "DELETE FROM '" + tableName + "' WHERE study = '" + studyId + "';";
+		database.execute(query);
+	}
+
+	private static void createStudyInfoTableIfNotExists(SqLiteDatabase database, String tableName) {
+		String query = "CREATE TABLE IF NOT EXISTS '" + tableName
+				+ "' (id INTEGER PRIMARY KEY NOT NULL, study TEXT, variable TEXT, value TEXT);";
+		database.execute(query);
+	}
+
+	private void writeJobInfo(List<ModelInput> modelInputs, SqLiteDatabase database) {
+		String jobInfoTableName = "job_info";
+		createJobInfoTableIfNotExists(database, jobInfoTableName);
+		deleteOldEntriesForStudyIfExist(database, jobInfoTableName);
+		for (ModelInput modelInput : modelInputs) {
+			String jobId = modelInput.getJobId();
+			List<String> variablePaths = modelInput.getAllVariableModelPaths();
+			for (String variablePath : variablePaths) {
+				Object value = modelInput.getVariableValue(variablePath);
+				String query = "INSERT INTO '" + jobInfoTableName + "' VALUES(null, '" + studyId + "', '" + jobId
+						+ "', '" + variablePath + "','" + value + "')";
+				database.execute(query);
+			}
+		}
+	}
+
+	private static void createJobInfoTableIfNotExists(SqLiteDatabase database, String tableName) {
+		String query = "CREATE TABLE IF NOT EXISTS '" + tableName
+				+ "' (id INTEGER PRIMARY KEY NOT NULL, study TEXT, job TEXT, variable TEXT, value TEXT);";
+		database.execute(query);
+	}
+
+	private static void exportStudyInfoToTextFile(
+			List<AbstractVariableRange<?>> variableRanges,
+			int numberOfSimulations,
+			String filePath) {
 		String studyInfo = "---------- SweepInfo ----------\r\n\r\n" + "Total number of simulations:\r\n"
 				+ numberOfSimulations + "\r\n\r\n" + "Variable model paths and values:\r\n\r\n";
 
@@ -305,7 +393,6 @@ public class Sweep extends AbstractParameterVariation {
 			studyInfo += "\r\n";
 		}
 
-		String filePath = exportStudyInfoPath.get();
 		File file = new File(filePath);
 
 		try {
@@ -315,7 +402,6 @@ public class Sweep extends AbstractParameterVariation {
 					+ "' is not valid. Export of study info is skipped.";
 			LOG.error(message);
 		}
-
 	}
 
 	/**
