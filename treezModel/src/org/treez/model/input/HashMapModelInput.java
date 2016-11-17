@@ -37,7 +37,7 @@ public class HashMapModelInput implements ModelInput {
 	/**
 	 * The model path of the parent study
 	 */
-	private String parentStuyModelPath = null;
+	private String parentStudyModelPath = null;
 
 	//#end region
 
@@ -48,7 +48,7 @@ public class HashMapModelInput implements ModelInput {
 		this.studyDescription = studyDescription;
 		this.jobId = getNextId();
 		modelInputMap = new HashMap<>();
-		this.parentStuyModelPath = parentStudyModelPath;
+		this.parentStudyModelPath = parentStudyModelPath;
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class HashMapModelInput implements ModelInput {
 		this.studyId = modelInputToCopy.studyId;
 		this.studyDescription = modelInputToCopy.studyDescription;
 		this.jobId = modelInputToCopy.jobId;
-		this.parentStuyModelPath = modelInputToCopy.parentStuyModelPath;
+		this.parentStudyModelPath = modelInputToCopy.parentStudyModelPath;
 	}
 
 	//#end region
@@ -152,7 +152,7 @@ public class HashMapModelInput implements ModelInput {
 
 	@Override
 	public String getParentStudyModelPath() {
-		return parentStuyModelPath;
+		return parentStudyModelPath;
 	}
 
 	@Override

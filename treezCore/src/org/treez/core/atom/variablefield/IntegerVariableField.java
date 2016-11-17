@@ -72,6 +72,15 @@ public class IntegerVariableField extends AbstractVariableField<IntegerVariableF
 	}
 
 	@Override
+	protected void setAttributeValueWithString(String valueString) {
+		if (valueString == null) {
+			attributeValue = null;
+		} else {
+			attributeValue = Integer.parseInt(valueString);
+		}
+	}
+
+	@Override
 	public AbstractAttributeAtom<IntegerVariableField, Integer> createAttributeAtomControl(
 			Composite parent,
 			FocusChangingRefreshable treeViewerRefreshable) {

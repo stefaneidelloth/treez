@@ -148,6 +148,12 @@ public class InputFileGenerator extends AdjustableAtom {
 		String inputFileString = applyTemplateToSourceModel(templateString, sourceModelAtom, nameExpression.get(),
 				valueExpression.get(), deleteUnassignedRows.get());
 
+		if (inputFileString.isEmpty()) {
+			String message = "The input file '" + inputFilePath.get()
+					+ "' is empty. Please check the place holder and the source variables.";
+			LOG.warn(message);
+		}
+
 		//save result as new input file
 		saveResult(inputFileString, inputFilePath.get());
 
@@ -184,8 +190,20 @@ public class InputFileGenerator extends AdjustableAtom {
 			}
 
 			//get regular expression to replace
-			String placeholderExpression = nameExpression.replace(NAME_TAG, variableName);
-			placeholderExpression = placeholderExpression.replace(LABEL_TAG, variableLabel);
+			String placeholderExpression;
+			boolean containsName = nameExpression.contains(NAME_TAG);
+			if (containsName) {
+				placeholderExpression = nameExpression.replace(NAME_TAG, variableName);
+			} else {
+				boolean containsLabel = nameExpression.contains(LABEL_TAG);
+				if (containsLabel) {
+					placeholderExpression = nameExpression.replace(LABEL_TAG, variableLabel);
+				} else {
+					String message = "The placeholder must contain either a " + NAME_TAG + " or a " + LABEL_TAG
+							+ " tag.";
+					throw new IllegalStateException(message);
+				}
+			}
 
 			//get expression to inject
 			if (valueString == null) {

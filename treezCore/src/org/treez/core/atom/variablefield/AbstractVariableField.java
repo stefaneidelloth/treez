@@ -328,8 +328,26 @@ public abstract class AbstractVariableField<A extends AbstractVariableField<A, T
 		if (isAvailable(valueField)) {
 			valueField.setText(valueString);
 		}
+		setAttributeValueWithString(valueString);
 		setInitialized();
 		triggerListeners();
+	}
+
+	/**
+	 * Default implementation for strings. If the variable does not represent as string, this method must be overridden
+	 * by the inheriting class.
+	 *
+	 * @param valueString
+	 */
+	@SuppressWarnings("unchecked")
+	protected void setAttributeValueWithString(String valueString) {
+		try {
+			attributeValue = (T) valueString;
+		} catch (ClassCastException exception) {
+			String message = "The variable does not represent a string value. "
+					+ "This default method has to be correctly overridden by the inerhiting class.";
+			throw new IllegalStateException(message);
+		}
 	}
 
 	@Override

@@ -132,6 +132,15 @@ public class DoubleVariableField extends AbstractVariableField<DoubleVariableFie
 		return listField;
 	}
 
+	@Override
+	protected void setAttributeValueWithString(String valueString) {
+		if (valueString == null) {
+			attributeValue = null;
+		} else {
+			attributeValue = Double.parseDouble(valueString);
+		}
+	}
+
 	//#end region
 
 	//#region ACCESSORS

@@ -154,6 +154,16 @@ public class QuantityVariableField extends AbstractVariableField<QuantityVariabl
 		return useIndividualLines;
 	}
 
+	@Override
+	protected void setAttributeValueWithString(String valueString) {
+
+		if (attributeValue == null) {
+			attributeValue = new Quantity(valueString, "");
+		} else {
+			attributeValue.setValue(valueString);
+		}
+	}
+
 	/**
 	 * Creates a container that shows the unit in square brackets
 	 *
@@ -333,6 +343,7 @@ public class QuantityVariableField extends AbstractVariableField<QuantityVariabl
 
 	@Override
 	public void set(Quantity quantity) {
+		super.set(quantity);
 		disableModificationListeners();
 		if (quantity == null) {
 			setValueString("");

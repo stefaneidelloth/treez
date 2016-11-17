@@ -91,17 +91,20 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 			this.setJobId(jobIndex);
 
 			//set variable values
-			List<String> allVariableModelPaths = modelInput.getAllVariableModelPaths();
-			for (String variableModelPath : allVariableModelPaths) {
-				Object quantityToAssign = modelInput.getVariableValue(variableModelPath);
-				AbstractAttributeAtom<?, Object> variableAtom = getVariableAtom(variableModelPath);
-				if (variableAtom != null) {
-					variableAtom.set(quantityToAssign);
-				} else {
-					String message = "Could not get variable atom for model path " + variableModelPath;
-					throw new IllegalStateException(message);
+			this.runUiJobBlocking(() -> {
+				List<String> allVariableModelPaths = modelInput.getAllVariableModelPaths();
+				for (String variableModelPath : allVariableModelPaths) {
+					Object quantityToAssign = modelInput.getVariableValue(variableModelPath);
+					AbstractAttributeAtom<?, Object> variableAtom = getVariableAtom(variableModelPath);
+					if (variableAtom != null) {
+						variableAtom.set(quantityToAssign);
+					} else {
+						String message = "Could not get variable atom for model path " + variableModelPath;
+						throw new IllegalStateException(message);
+					}
 				}
-			}
+			});
+
 		}
 	}
 

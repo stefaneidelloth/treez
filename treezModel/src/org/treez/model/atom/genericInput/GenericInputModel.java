@@ -251,84 +251,48 @@ public class GenericInputModel extends AbstractModel {
 
 	//#region CREATE CHILD ATOMS
 
-	/**
-	 * Creates a DoubleVariableField child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public DoubleVariableField createDoubleVariableField(String name) {
 		DoubleVariableField child = new DoubleVariableField(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a QuantityVariableField child
-	 *
-	 * @param name
-	 * @return
-	 */
+	public IntegerVariableField createIntegerVariableField(String name) {
+		IntegerVariableField child = new IntegerVariableField(name);
+		addChild(child);
+		return child;
+	}
+
 	public QuantityVariableField createQuantityVariableField(String name) {
 		QuantityVariableField child = new QuantityVariableField(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a StringVariableField child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public StringVariableField createStringVariableField(String name) {
 		StringVariableField child = new StringVariableField(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a StringVariableField child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public FilePathVariableField createFilePathVariableField(String name) {
 		FilePathVariableField child = new FilePathVariableField(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a StringVariableField child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public DirectoryPathVariableField createDirectoryPathVariableField(String name) {
 		DirectoryPathVariableField child = new DirectoryPathVariableField(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a BooleanVariableField child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public BooleanVariableField createBooleanVariableField(String name) {
 		BooleanVariableField child = new BooleanVariableField(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a StringItemVariableField child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public StringItemVariableField createStringItemVariableField(String name) {
 		StringItemVariableField child = new StringItemVariableField(name);
 		addChild(child);
@@ -364,8 +328,9 @@ public class GenericInputModel extends AbstractModel {
 		List<VariableField<?, ?>> variableFields = new ArrayList<>();
 		List<TreeNodeAdaption> childNodes = this.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
+			Adaptable child = childNode.getAdaptable();
 			@SuppressWarnings("unchecked")
-			VariableField<?, ?> variableField = (VariableField<?, ?>) childNode.getAdaptable();
+			VariableField<?, ?> variableField = (VariableField<?, ?>) child;
 			if (variableField.isEnabled()) {
 				variableFields.add(variableField);
 			}
