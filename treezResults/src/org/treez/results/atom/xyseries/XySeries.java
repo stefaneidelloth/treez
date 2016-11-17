@@ -84,7 +84,7 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 
 		section.createTextField(rangeLabel, this).setLabel("Range label");
 
-		section.createColorMap(colorMap, this);
+		section.createColorMap(colorMap, this).setLabel("Color map");
 
 		section.createCheckBox(hide, this);
 

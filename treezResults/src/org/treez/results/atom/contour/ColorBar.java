@@ -138,13 +138,13 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 
 		Section backgroundSection = page.createSection("background");
 
-		backgroundSection.createColorChooser(backgroundColor, "Color", "white");
+		backgroundSection.createColorChooser(backgroundColor, this, "white").setLabel("Color");
 		backgroundSection.createDoubleVariableField(backgroundTransparency, this, 0.0).setLabel("Transparency");
 		backgroundSection.createCheckBox(backgroundHide, this);
 
 		Section borderSection = page.createSection("border");
 
-		borderSection.createColorChooser(borderColor, "Color", "black");
+		borderSection.createColorChooser(borderColor, this, "black").setLabel("Color");
 		borderSection.createDoubleVariableField(borderWidth, this, 1.0);
 		borderSection.createDoubleVariableField(borderTransparency, this, 0.0).setLabel("Transparency");
 		borderSection.createCheckBox(borderHide, this);
@@ -153,24 +153,24 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 
 		titleSection.createTextField(title, this);
 
-		titleSection.createEnumComboBox(titleSide, "titleSide", TitleSide.TOP);
+		titleSection.createEnumComboBox(titleSide, this, TitleSide.TOP).setLabel("Title side");
 
-		titleSection.createColorChooser(titleFontColor, "color", "black");
-		titleSection.createFont(titleFontFamily, "Font");
+		titleSection.createColorChooser(titleFontColor, this, "black").setLabel("Color");
+		titleSection.createFont(titleFontFamily, this).setLabel("Font");
 		final int defaultFontSize = 12;
 		titleSection.createIntegerVariableField(titleFontSize, this, defaultFontSize);
 
 		Section tickFontSection = page.createSection("tickfont");
 		tickFontSection.setLabel("Tick font");
 
-		tickFontSection.createColorChooser(tickFontColor, "color", "black");
-		tickFontSection.createFont(tickFontFamily, "Font");
+		tickFontSection.createColorChooser(tickFontColor, this, "black").setLabel("Color");
+		tickFontSection.createFont(tickFontFamily, this).setLabel("Font");
 		tickFontSection.createIntegerVariableField(tickFontSize, this, defaultFontSize);
 
 		Section tickSection = page.createSection("ticks");
 
-		tickSection.createEnumComboBox(tickPosition, "position", TickPosition.NONE);
-		tickSection.createColorChooser(tickColor, "color", "black");
+		tickSection.createEnumComboBox(tickPosition, this, TickPosition.NONE).setLabel("Position");
+		tickSection.createColorChooser(tickColor, this, "black").setLabel("Color");
 		tickSection.createIntegerVariableField(tickWidth, this, 1);
 		final int defaultTickLength = 5;
 		tickSection.createIntegerVariableField(tickLength, this, defaultTickLength);
@@ -179,7 +179,11 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
+	public Selection plotWithD3(
+			D3 d3,
+			Selection contourSelection,
+			Selection rectSelection,
+			AbstractGraphicsAtom parent) {
 		//not used here
 		return contourSelection;
 	}
@@ -270,7 +274,8 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 		AbstractGraphicsAtom.bindStringStyle(backgroundSelection, "stroke", borderColor);
 		AbstractGraphicsAtom.bindDoubleStyle(backgroundSelection, "stroke-width", borderWidth);
 		AbstractGraphicsAtom.bindLineTransparency(backgroundSelection, borderTransparency);
-		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(backgroundSelection, borderHide, borderTransparency);
+		AbstractGraphicsAtom.bindLineTransparencyToBooleanAttribute(backgroundSelection, borderHide,
+				borderTransparency);
 
 	}
 

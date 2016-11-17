@@ -252,6 +252,18 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 
 	//#end region
 
+	//#region TEXT AREA
+
+	public TextArea createTextArea(Attribute<String> wrap, Object attributeParent) {
+		String attributeName = getFieldName(wrap, attributeParent);
+		TextArea textArea = new TextArea(attributeName);
+		addChild(textArea);
+		textArea.wrap(wrap);
+		return textArea;
+	}
+
+	//#end region
+
 	//#region CHECK BOX
 
 	void addCheckBox(TreeViewerRefreshable treeViewer) {

@@ -21,6 +21,7 @@ import org.treez.core.atom.attribute.FilePath;
 import org.treez.core.atom.attribute.InfoText;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextArea;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -152,7 +153,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			String executableHelpContextId) {
 		Section input = dataPage.createSection("input", executableHelpContextId);
 
-		TextField argumentTextField = input.createTextField(inputArguments, this, "");
+		TextArea argumentTextField = input.createTextArea(inputArguments, this);
 		argumentTextField.setLabel("Input arguments");
 		argumentTextField.addModifyListener("updateStatus", updateStatusListener);
 		argumentTextField.setHelpId("org.eclipse.ui.ide.executable");

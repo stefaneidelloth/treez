@@ -7,7 +7,6 @@ import org.treez.results.atom.data.Data;
 import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.page.Page;
 import org.treez.results.atom.results.Results;
-import org.treez.results.atom.xyseries.XySeries;
 import org.treez.views.tree.rootAtom.Root;
 
 public class XySeriesExample extends ModelProvider {
@@ -34,8 +33,8 @@ public class XySeriesExample extends ModelProvider {
 
 		Page page0 = results0.createPage("page0");
 		Graph graph0 = page0.createGraph("graph0");
-		XySeries xySeries0 = graph0.createXySeries("xySeries0");
-		xySeries0.sourceTable.set("root.results0.data0.table0");
+		//XySeries xySeries0 = graph0.createXySeries("xySeries0");
+		//xySeries0.sourceTable.set("root.results0.data0.table0");
 
 		//#end region
 

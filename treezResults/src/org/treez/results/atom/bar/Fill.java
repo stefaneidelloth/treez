@@ -49,13 +49,13 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 		Section fill = symbolPage.createSection("fill");
 
-		fill.createColorChooser(color, "color", "black");
+		fill.createColorChooser(color, this, "black").setLabel("Color");
 
 		//fill.createFillStyle(fillStyle, "style", "Style");
 
-		fill.createDoubleVariableField(transparency, this, 0.0);
+		fill.createDoubleVariableField(transparency, this, 0.0).setLabel("Transparency");
 
-		fill.createCheckBox(hide, this);
+		fill.createCheckBox(hide, this).setLabel("Hide");
 
 		//#end region
 	}

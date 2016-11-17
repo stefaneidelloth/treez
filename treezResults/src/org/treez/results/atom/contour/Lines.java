@@ -39,11 +39,11 @@ public class Lines implements GraphicsPropertiesPageFactory {
 
 		Section line = linePage.createSection("line", "Line");
 
-		line.createColorChooser(color, "color", "black");
+		line.createColorChooser(color, this, "black").setLabel("Color");
 
 		line.createDoubleVariableField(width, this, 1.0);
 
-		line.createLineStyle(style, "style", "solid");
+		line.createLineStyle(style, this, "solid").setLabel("Style");
 
 		line.createDoubleVariableField(smoothing, this, 0.0);
 
@@ -53,7 +53,11 @@ public class Lines implements GraphicsPropertiesPageFactory {
 	}
 
 	@Override
-	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
+	public Selection plotWithD3(
+			D3 d3,
+			Selection contourSelection,
+			Selection rectSelection,
+			AbstractGraphicsAtom parent) {
 
 		return contourSelection;
 	}

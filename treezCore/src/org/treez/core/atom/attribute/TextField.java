@@ -97,7 +97,7 @@ public class TextField extends AbstractStringAttributeAtom<TextField> {
 
 	@Override
 	public Image provideImage() {
-		return Activator.getImage("TextField.png");
+		return Activator.getImage("textField.png");
 	}
 
 	@Override

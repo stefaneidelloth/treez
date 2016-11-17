@@ -80,7 +80,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		//symbol.createTextField(thinMarkers, "thinMarkers", "Thin markers", "1");
 
-		symbol.createCheckBox(hide, this);
+		symbol.createCheckBox(hide, this).setLabel("Hide");
 
 		//symbol.createErrorBarStyle(errorStyle, "errorStyle", "Error style");
 
@@ -90,7 +90,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		Section fill = symbolPage.createSection("fill", true);
 
-		fill.createColorChooser(fillColor, "color", "black");
+		fill.createColorChooser(fillColor, this, "black").setLabel("Color");
 
 		//fill.createFillStyle(fillStyle, "style", "Style");
 
@@ -116,7 +116,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		markerBorder.createDoubleVariableField(lineTransparency, this, 0.0).setLabel("Transparency");
 
-		markerBorder.createCheckBox(hideLine, "hide");
+		markerBorder.createCheckBox(hideLine, this).setLabel("Hide");
 
 		//#end region
 	}

@@ -1,6 +1,7 @@
 package org.treez.results.atom.xy;
 
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.ColorChooser;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.base.AbstractAtom;
@@ -74,7 +75,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 		Section fillAbove = fillPage.createSection("fillAbove", false);
 		fillAbove.setLabel("Fill above");
 
-		fillAbove.createColorChooser(aboveColor, "color", "black");
+		fillAbove.createColorChooser(aboveColor, this, "black").setLabel("Color");
 
 		//fillAbove.createFillStyle(aboveFillStyle, "style", "Style");
 
@@ -88,11 +89,11 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 		Section fillBelow = fillPage.createSection("fillBelow", "Fill below");
 
-		fillBelow.createColorChooser(belowColor, "color", "black");
+		ColorChooser belowColorChooser = fillBelow.createColorChooser(belowColor, this, "black").setLabel("Color");
 
 		//fillBelow.createFillStyle(belowFillStyle, "style", "Style");
 
-		fillBelow.createTextField(belowTransparency, this, "0").setLabel("transparency");
+		fillBelow.createTextField(belowTransparency, this, "0").setLabel("Transparency");
 
 		fillBelow.createCheckBox(belowHide, this, true).setLabel("Hide");
 
