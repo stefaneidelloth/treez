@@ -3,6 +3,7 @@ package org.treez.model.atom.executable;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
+import org.treez.model.atom.inputFileGenerator.InputFileGenerator;
 
 /**
  * Tests the ExternalInputFile

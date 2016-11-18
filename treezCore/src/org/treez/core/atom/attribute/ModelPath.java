@@ -709,7 +709,7 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 	@Override
 	public String get() {
 		String path = super.get();
-		if (path.equals("")) {
+		if (path == null || path.equals("")) {
 			return null;
 		} else {
 			return path;
