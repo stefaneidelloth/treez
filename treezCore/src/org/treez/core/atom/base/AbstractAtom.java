@@ -206,6 +206,12 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 
 				Class<?> superSuperClass = atomClass.getSuperclass();
 				foundAnIsParameterAnnotation = initAttributesWithAnnotationsForClass(superSuperClass);
+
+				if (!foundAnIsParameterAnnotation) {
+
+					Class<?> superSuperSuperClass = superSuperClass.getSuperclass();
+					foundAnIsParameterAnnotation = initAttributesWithAnnotationsForClass(superSuperSuperClass);
+				}
 			}
 		}
 
@@ -354,7 +360,7 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	/**
 	 * Moves the atom up in the children of the parent atom
 	 */
-	private void moveUp() {
+	public AbstractAtom<A> moveUp() {
 		boolean canBeMovedUp = canBeMovedUp();
 		if (canBeMovedUp) {
 			AbstractAtom<?> parent = this.getParentAtom();
@@ -363,6 +369,22 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 			Collections.swap(currentChildren, currentIndex, currentIndex - 1);
 			tryToRefreshAtom(parent);
 		}
+		return this;
+	}
+
+	/**
+	 * Moves the atom in the children of the parent atom to a specific index (Position)
+	 */
+	public AbstractAtom<A> moveAtom(int position) {
+		boolean canBeMovedUp = canBeMovedUp();
+		if (canBeMovedUp) {
+			AbstractAtom<?> parent = this.getParentAtom();
+			List<AbstractAtom<?>> currentChildren = parent.getChildAtoms();
+			int currentIndex = currentChildren.indexOf(this);
+			Collections.rotate(currentChildren.subList(position, currentIndex + 1), 1);
+			tryToRefreshAtom(parent);
+		}
+		return this;
 	}
 
 	/**
@@ -388,7 +410,7 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	/**
 	 * Moves the atom down in the children of the parent atom
 	 */
-	private void moveDown() {
+	public AbstractAtom<A> moveDown() {
 		boolean canBeMovedDown = canBeMovedDown();
 		if (canBeMovedDown) {
 			AbstractAtom<?> parent = this.getParentAtom();
@@ -397,6 +419,7 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 			Collections.swap(currentChildren, currentIndex + 1, currentIndex);
 			tryToRefreshAtom(parent);
 		}
+		return this;
 	}
 
 	/**
