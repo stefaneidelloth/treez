@@ -18,6 +18,9 @@ C:/Program Files/Java/jdk1.8.0_51/bin/javaw.exe
 https://github.com/stefaneidelloth/treez/raw/master/treezUpdate/
 * After selecting the update site, you have to **disable the option "Group items by category"** to actually see the single treez feature.
 
+
+* TODO Add installation instructions for MAC 
+
 If you have trouble getting Treez up and running, please create an issue ticket. 
 
 ##Getting started#
