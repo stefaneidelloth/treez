@@ -10,7 +10,8 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.jface,
  org.treez.core,
  org.treez.data,
- org.eclipse.help
+ org.eclipse.help,
+ org.treez.javafxd3
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
@@ -18,8 +19,9 @@ Export-Package: org.treez.model,
  org.treez.model.atom,
  org.treez.model.atom.executable,
  org.treez.model.atom.genericInput,
+ org.treez.model.atom.inputFileGenerator,
+ org.treez.model.atom.tableImport,
  org.treez.model.input,
  org.treez.model.interfaces,
- org.treez.model.output,
- org.treez.model.tableImport
+ org.treez.model.output
 Bundle-Vendor: Stefan Eidelloth

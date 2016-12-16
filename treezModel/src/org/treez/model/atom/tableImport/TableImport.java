@@ -1,4 +1,4 @@
-package org.treez.model.atom.executable;
+package org.treez.model.atom.tableImport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.variablefield.IntegerVariableField;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.data.column.ColumnType;
@@ -31,13 +32,9 @@ import org.treez.data.column.Columns;
 import org.treez.data.table.Table;
 import org.treez.model.Activator;
 import org.treez.model.atom.AbstractModel;
+import org.treez.model.atom.executable.Executable;
+import org.treez.model.atom.executable.FilePathProvider;
 import org.treez.model.output.ModelOutput;
-import org.treez.model.tableImport.AccessDataTableImporter;
-import org.treez.model.tableImport.ExcelDataTableImporter;
-import org.treez.model.tableImport.MySqlDataTableImporter;
-import org.treez.model.tableImport.SqLiteDataTableImporter;
-import org.treez.model.tableImport.TableData;
-import org.treez.model.tableImport.TextDataTableImporter;
 
 /**
  * Imports data from the file system (e.g. from a text file) to a result table.
@@ -53,7 +50,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 
 	public final Attribute<Boolean> linkSource = new Wrap<>();
 
-	public final Attribute<String> rowLimit = new Wrap<>();
+	public final Attribute<Integer> rowLimit = new Wrap<>();
 
 	public final Attribute<Boolean> inheritSourceFilePath = new Wrap<>();
 
@@ -72,6 +69,8 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	public final Attribute<String> schema = new Wrap<>();
 
 	public final Attribute<String> table = new Wrap<>();
+
+	public final Attribute<Boolean> filterForJob = new Wrap<>();
 
 	public final Attribute<String> resultTableModelPath = new Wrap<>();
 
@@ -177,8 +176,11 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		//link might not give meaningful data.
 		CheckBox linkSourceCheck = sourceTypeSection.createCheckBox(linkSource, this, false);
 		linkSourceCheck.setLabel("Link source");
-		TextField rowLimitField = sourceTypeSection.createTextField(rowLimit, this, "1000");
+
+		IntegerVariableField rowLimitField = sourceTypeSection.createIntegerVariableField(rowLimit, this, 1000);
 		rowLimitField.setLabel("Row limit");
+
+		sourceTypeSection.createCheckBox(filterForJob, this, false).setLabel("Filter rows with JobId");
 	}
 
 	@Override
@@ -354,6 +356,15 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		String schemaString = schema.get();
 		String tableNameString = table.get();
 
+		Boolean filterRows = this.filterForJob.get();
+
+		String jobId = null;
+		if (filterRows) {
+			AbstractAtom<?> parent = this.getParentAtom();
+			Executable executable = (Executable) parent;
+			jobId = executable.getJobId();
+		}
+
 		//determine file extension (=>data type)
 		TableData dataTable;
 		switch (tableSourceType) {
@@ -361,17 +372,19 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 			dataTable = TextDataTableImporter.importData(sourcePath, columnSeparatorString, maxRows);
 			return dataTable;
 		case EXCEL:
-			dataTable = ExcelDataTableImporter.importData(sourcePath, tableNameString, maxRows);
+			dataTable = ExcelDataTableImporter.importData(sourcePath, tableNameString, filterRows, jobId, maxRows);
 			return dataTable;
 		case SQLITE:
-			dataTable = SqLiteDataTableImporter.importData(sourcePath, passwordString, tableNameString, maxRows);
+			dataTable = SqLiteDataTableImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
+					jobId, maxRows);
 			return dataTable;
 		case MYSQL:
 			dataTable = MySqlDataTableImporter.importData(hostString, portString, userString, passwordString,
-					schemaString, tableNameString, maxRows);
+					schemaString, tableNameString, filterRows, jobId, maxRows);
 			return dataTable;
 		case ACCESS:
-			dataTable = AccessDataTableImporter.importData(sourcePath, passwordString, tableNameString, maxRows);
+			dataTable = AccessDataTableImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
+					jobId, maxRows);
 			return dataTable;
 
 		default:
@@ -519,8 +532,8 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	@Override
 	public TableSourceType getSourceType() {
 		Wrap<String> sourceTypeWrap = (Wrap<String>) sourceType;
-		ComboBox combo = (ComboBox) sourceTypeWrap.getAttribute();
-		TableSourceType type = combo.getValueAsEnum(TableSourceType.class);
+		EnumComboBox<TableSourceType> combo = (EnumComboBox<TableSourceType>) sourceTypeWrap.getAttribute();
+		TableSourceType type = combo.getValueAsEnum();
 		return type;
 	}
 
@@ -531,19 +544,11 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	}
 
 	public int getRowLimit() {
-		String rowLimitString = rowLimit.get();
-		int rowLimitInt;
-		try {
-			rowLimitInt = Integer.parseInt(rowLimitString);
-		} catch (NumberFormatException exception) {
-			String message = "Could not parse row limit '" + rowLimitString + "' to an integer.";
-			throw new IllegalArgumentException(message, exception);
-		}
-		return rowLimitInt;
+		return rowLimit.get();
 	}
 
 	public void setRowLimit(int maxRows) {
-		rowLimit.set("" + maxRows);
+		rowLimit.set(maxRows);
 	}
 
 	@Override

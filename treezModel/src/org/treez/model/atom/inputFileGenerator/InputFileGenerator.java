@@ -1,4 +1,4 @@
-package org.treez.model.atom.executable;
+package org.treez.model.atom.inputFileGenerator;
 
 import java.io.File;
 import java.io.IOException;

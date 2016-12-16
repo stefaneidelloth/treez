@@ -31,6 +31,8 @@ import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.utils.Utils;
 import org.treez.model.Activator;
 import org.treez.model.atom.AbstractModel;
+import org.treez.model.atom.inputFileGenerator.InputFileGenerator;
+import org.treez.model.atom.tableImport.TableImport;
 import org.treez.model.output.ModelOutput;
 
 /**

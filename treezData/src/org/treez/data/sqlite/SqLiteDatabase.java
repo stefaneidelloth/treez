@@ -2,6 +2,7 @@ package org.treez.data.sqlite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -53,6 +54,21 @@ public class SqLiteDatabase {
 			statement.executeUpdate(query);
 		} catch (SQLException exception) {
 			String message = "Could execute query " + query;
+			throw new IllegalStateException(message, exception);
+		}
+	}
+
+	/**
+	 * Executes a query and processes its ResultSet
+	 */
+	public void executeAndProcess(String query, ResultSetProcessor processor) {
+		try (
+				Connection connection = DriverManager.getConnection("jdbc:sqlite:" + filePath);
+				Statement statement = connection.createStatement();) {
+			ResultSet resultSet = statement.executeQuery(query);
+			processor.process(resultSet);
+		} catch (SQLException exception) {
+			String message = "Could not execute and process query " + query;
 			throw new IllegalStateException(message, exception);
 		}
 	}

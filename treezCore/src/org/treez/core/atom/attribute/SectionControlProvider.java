@@ -203,21 +203,21 @@ public class SectionControlProvider {
 			sectionContentComposite.setLayoutData(fillLayout);
 		}
 
-		//create child composites
+		//create child composites from attribute atoms and attribute container atoms
 		List<TreeNodeAdaption> childNodes = section.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
 
 			try {
 
-				AbstractAttributeAtom<?, ?> propertyAtom = (AbstractAttributeAtom<?, ?>) childNode.getAdaptable();
-				propertyAtom.createAttributeAtomControl(sectionContentComposite, treeViewerRefreshable);
+				AbstractAttributeAtom<?, ?> attributeAtom = (AbstractAttributeAtom<?, ?>) childNode.getAdaptable();
+				attributeAtom.createAttributeAtomControl(sectionContentComposite, treeViewerRefreshable);
 
-			} catch (Exception exception) {
+			} catch (ClassCastException exception) {
 				try {
-
-					AbstractAttributeContainerAtom<?> propertyAtom = (AbstractAttributeContainerAtom<?>) childNode
+					//create controls for container atoms
+					AbstractAttributeContainerAtom<?> attributeContainerAtom = (AbstractAttributeContainerAtom<?>) childNode
 							.getAdaptable();
-					propertyAtom.createAtomControl(sectionContentComposite, treeViewerRefreshable);
+					attributeContainerAtom.createAtomControl(sectionContentComposite, treeViewerRefreshable);
 
 				} catch (Exception secondException) {
 					LOG.error("Could not create attribute atom.", secondException);

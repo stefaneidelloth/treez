@@ -1,4 +1,4 @@
-package org.treez.model.tableImport;
+package org.treez.model.atom.tableImport;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

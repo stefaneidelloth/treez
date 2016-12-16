@@ -1,4 +1,4 @@
-package org.treez.model.tableImport;
+package org.treez.model.atom.tableImport;
 
 public final class AccessDataTableImporter {
 
@@ -18,7 +18,13 @@ public final class AccessDataTableImporter {
 	 * @param tableName
 	 * @return
 	 */
-	public static TableData importData(String filePath, String password, String tableName, int rowLimit) {
+	public static TableData importData(
+			String filePath,
+			String password,
+			String tableName,
+			boolean filterRowsByJobId,
+			String jobId,
+			int rowLimit) {
 		return null;
 	}
 
