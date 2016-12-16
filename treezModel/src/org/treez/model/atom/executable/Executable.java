@@ -39,7 +39,7 @@ import org.treez.model.output.ModelOutput;
 @SuppressWarnings({ "checkstyle:visibilitymodifier", "checkstyle:classfanoutcomplexity" })
 public class Executable extends AbstractModel implements FilePathProvider {
 
-	private static final Logger LOG = Logger.getLogger(Executable.class);
+	static final Logger LOG = Logger.getLogger(Executable.class);
 
 	//#region ATTRIBUTES
 
