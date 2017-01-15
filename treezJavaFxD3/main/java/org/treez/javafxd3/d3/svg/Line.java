@@ -1,7 +1,6 @@
 package org.treez.javafxd3.d3.svg;
 
-import org.treez.javafxd3.d3.arrays.ArrayUtils;
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -115,12 +114,12 @@ public class Line extends PathDataGenerator {
 	 * 
 	 * @return
 	 */
-	public Line x(final DatumFunction<Double> callback) {
-		JSObject result = applyDatumFunction("x", callback);
+	public Line x(final DataFunction<?> callback) {
+		JSObject result = applyDataFunction("x", callback);
 		return new Line(webEngine, result);
 	}
 
-	// should create a JSO impl of DatumFunction calling himself
+	// should create a JSO impl of DataFunction calling himself
 	// return this.x();
 	// }
 
@@ -136,7 +135,7 @@ public class Line extends PathDataGenerator {
 	}
 
 	/**
-	 * See {@link #x(DatumFunction)}.
+	 * See {@link #x(DataFunction)}.
 	 * <p>
 	 * Note that, like most other graphics libraries, SVG uses the top-left
 	 * corner as the origin and thus higher values of y are lower on the screen.
@@ -147,12 +146,12 @@ public class Line extends PathDataGenerator {
 	 * @param callback
 	 * @return
 	 */
-	public Line y(final DatumFunction<Double> callback) {
-		JSObject result = applyDatumFunction("y", callback);
+	public Line y(final DataFunction<?> callback) {
+		JSObject result = applyDataFunction("y", callback);
 		return new Line(webEngine, result);
 	}
 
-	private JSObject applyDatumFunction(String methodName, final DatumFunction<Double> callback) {
+	private JSObject applyDataFunction(String methodName, final DataFunction<?> callback) {
 
 		assertObjectIsNotAnonymous(callback);
 
@@ -167,6 +166,9 @@ public class Line extends PathDataGenerator {
 		JSObject result = evalForJsObject(command);
 		
 		
+		if(result==null){
+			return null;
+		}
 				
 		return result;
 	}
@@ -185,7 +187,7 @@ public class Line extends PathDataGenerator {
 	 *            point is defined
 	 * @return the current line
 	 */
-	public Line defined(final DatumFunction<Boolean> callback) {
+	public Line defined(final DataFunction<Boolean> callback) {
 
 		JSObject d3JsObject = getD3();
 		String callbackName = createNewTemporaryInstanceName();
@@ -200,6 +202,10 @@ public class Line extends PathDataGenerator {
 				+ "  }"//
 				+ "});";
 		JSObject result = evalForJsObject(command);
+		
+		if(result==null){
+			return null;
+		}
 		return new Line(webEngine, result);
 	}
 	

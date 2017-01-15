@@ -1,5 +1,13 @@
 package org.treez.javafxd3.d3.arrays;
 
+import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.arrays.foreach.ForEachCallback;
+import org.treez.javafxd3.d3.core.Value;
+import org.treez.javafxd3.d3.functions.data.wrapper.PlainDataFunction;
+import org.treez.javafxd3.d3.wrapper.Sort;
+
+import javafx.scene.web.WebEngine;
+
 /**
  * Convenient methods to deal with arrays.
  * <p>
@@ -45,11 +53,10 @@ public class Arrays {
 	 *            the array to be evaluated
 	 * @return the maximum as a {@link Value} object
 	 */
-	// public static Value max(JavaScriptObject array) {
-	// return {
-	// datum : $wnd.d3.max(array)
-	// };
-	// };
+	public static Value max(Array<?> array, WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.max(array);
+	};
 
 	/**
 	 * Transform the values in the given array using the specified
@@ -76,19 +83,10 @@ public class Arrays {
 	 *            array to a transformed value
 	 * @return the maximum of the transformed values as a {@link Value} object
 	 */
-	// public static final native Value max(JavaScriptObject array,
-	// ForEachCallback<?> accessor) {
-	// var rs = $wnd.d3
-	// .max(
-	// array,
-	// function(d, i, a) {
-	// return
-	// accessor.@com.github.gwtd3.api.arrays.ForEachCallback::forEach(Ljava/lang/Object;Lcom/github/gwtd3/api/core/Value;ILcom/github/gwtd3/api/arrays/Array;)(this,{datum:d},i,a);
-	// });
-	// return {
-	// datum : rs
-	// };
-	// };
+	public static Value max(Array<?> array, ForEachCallback<?> accessor, WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.max(array, accessor);
+	};
 
 	/**
 	 * Transform the values in the given array using the specified
@@ -145,11 +143,10 @@ public class Arrays {
 	 *            the array to be evaluated
 	 * @return the minimum as a {@link Value} object
 	 */
-	// public static final native Value min(JavaScriptObject array) {
-	// return {
-	// datum : $wnd.d3.min(array)
-	// };
-	// };
+	public static Value min(Array<?> array, WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.min(array);
+	};
 
 	/**
 	 * Transform the values in the given array using the specified
@@ -237,9 +234,10 @@ public class Arrays {
 	 * @return the minimum and maximum value in the given array using natural
 	 *         order.
 	 */
-	// public static final native JsArrayMixed extent(JavaScriptObject array) {
-	// return $wnd.d3.extent(array);
-	// };
+	public static <T> Array<T> extent(Array<T> array, WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.extent(array);
+	};
 
 	/**
 	 * Find the minimum and maximum value in an array. This is equivalent to
@@ -247,20 +245,13 @@ public class Arrays {
 	 *
 	 * @param array
 	 *            the given array.
-	 * @return the minimum and maximum value in the given array using natural
-	 *         order.
+	 * @return the minimum and maximum value in the given array using the accessor
+	 * method
 	 */
-	// public static final native <D, R> JsArrayMixed extent(
-	// JavaScriptObject array, ObjectAccessor<D, R> accessor) {
-	// return $wnd.d3
-	// .extent(
-	// array,
-	// function(d, i) {
-	// return
-	// accessor.@com.github.gwtd3.api.core.ObjectAccessor::apply(Ljava/lang/Object;I)(d,
-	// i);
-	// });
-	// };
+	 public static <A, R> Array<R> extent(Array<A> array, Class<A> argumentClass, PlainDataFunction<R, A> accessor, WebEngine webEngine) {
+		 D3 d3 = new D3(webEngine);
+		return d3.extent(array, argumentClass, accessor);	
+	 };
 
 	/**
 	 * Find the minimum and maximum value in an array. This is equivalent to
@@ -302,9 +293,10 @@ public class Arrays {
 	 *
 	 * @return
 	 */
-	// public static Sort ascending() {
-	// return $wnd.d3.ascending;
-	// };
+	public static Sort ascending(WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.ascending();
+	};
 
 	/**
 	 * Compare two values for sorting.
@@ -313,9 +305,10 @@ public class Arrays {
 	 *
 	 * @return
 	 */
-	// public static Sort descending() {
-	// return $wnd.d3.descending;
-	// };
+	public static Sort descending(WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.descending();
+	}
 
 	/**
 	 * Generate a range of <code>stop-1</code> numeric values, stored in an
@@ -326,9 +319,10 @@ public class Arrays {
 	 *            the maximum value (excluded)
 	 * @return the array
 	 */
-	// public static Array<Integer> range(double stop) {
-	// return $wnd.d3.range(stop);
-	// };
+	public static Array<Double> range(double stop, WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.range(stop);
+	};
 
 	/**
 	 * Generate a range of numeric values, stored in an array, going from 0 to
@@ -344,9 +338,10 @@ public class Arrays {
 	 *            the step between each value
 	 * @return the array
 	 */
-	// public static Array<?> range(double stop, double step) {
-	// return $wnd.d3.range(stop, step);
-	// };
+	public static Array<Double> range(double stop, double step, WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.range(stop, step);
+	};
 
 	/**
 	 * Generate a range of numeric values.
@@ -373,9 +368,9 @@ public class Arrays {
 	 *            the step between each value
 	 * @return
 	 */
-	// public static final native JavaScriptObject range(double start,
-	// double stop, double step) {
-	// return $wnd.d3.range(start, stop, step);
-	// };
+	public static Array<Double> range(double start, double stop, double step, WebEngine webEngine) {
+		D3 d3 = new D3(webEngine);
+		return d3.range(start, stop, step);
+	};
 
 }

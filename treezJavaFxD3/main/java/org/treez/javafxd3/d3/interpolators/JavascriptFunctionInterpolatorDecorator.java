@@ -18,10 +18,7 @@ public class JavascriptFunctionInterpolatorDecorator<T> implements Interpolator<
     
     //#region CONSTRUCTORS
 
-    /**
-     * Constructor
-     * @param delegate
-     */
+
     public JavascriptFunctionInterpolatorDecorator(final JavascriptFunctionInterpolator delegate) {      
         this.delegate = delegate;
     }
@@ -36,7 +33,7 @@ public class JavascriptFunctionInterpolatorDecorator<T> implements Interpolator<
     }
 
     @Override
-    public T interpolate(final double t) {
+    public T interpolate(Object t) {
         return cast(delegate.interpolate(t));
     }
 

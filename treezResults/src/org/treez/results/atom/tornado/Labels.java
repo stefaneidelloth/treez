@@ -12,10 +12,10 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AttributeStringDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleInversedValueDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleKeyDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleValueDatumFunction;
+import org.treez.javafxd3.d3.functions.data.attribute.AttributeStringDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleInversedValueDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleKeyDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleValueDataFunction;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.atom.graph.Graph;
 
@@ -112,19 +112,19 @@ public class Labels implements GraphicsPropertiesPageFactory {
 					.data(leftDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleValueDatumFunction(outputScale))
-					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("x", new AxisScaleValueDataFunction(outputScale))
+					.attr("y", new AxisScaleKeyDataFunction(inputScale))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction("input"));
 
 			rightSelection.selectAll("text") //
 					.data(rightDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleValueDatumFunction(outputScale))
-					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("x", new AxisScaleValueDataFunction(outputScale))
+					.attr("y", new AxisScaleKeyDataFunction(inputScale))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction("input"));
 
 		} else {
 
@@ -132,19 +132,19 @@ public class Labels implements GraphicsPropertiesPageFactory {
 					.data(leftDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleKeyDatumFunction(inputScale))
-					.attr("y", new AxisScaleInversedValueDatumFunction(outputScale, graphHeight))
+					.attr("x", new AxisScaleKeyDataFunction(inputScale))
+					.attr("y", new AxisScaleInversedValueDataFunction(outputScale, graphHeight))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction("input"));
 
 			rightSelection.selectAll("text") //
 					.data(rightDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleKeyDatumFunction(inputScale))
-					.attr("y", new AxisScaleInversedValueDatumFunction(outputScale, graphHeight))
+					.attr("x", new AxisScaleKeyDataFunction(inputScale))
+					.attr("y", new AxisScaleInversedValueDataFunction(outputScale, graphHeight))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction("input"));
 		}
 
 		Selection textSelection = tornadoSelection.selectAll("g").selectAll("text");

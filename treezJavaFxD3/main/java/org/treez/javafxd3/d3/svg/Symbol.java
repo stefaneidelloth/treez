@@ -1,8 +1,7 @@
 package org.treez.javafxd3.d3.svg;
 
 import org.treez.javafxd3.d3.behaviour.Drag.DragEventType;
-import org.treez.javafxd3.d3.functions.DatumFunction;
-import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
+import org.treez.javafxd3.d3.functions.DataFunction;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -89,7 +88,7 @@ public class Symbol extends PathDataGenerator {
 	 *            the function that return the {@link DragEventType} of symbol.
 	 * @return this instance for chaining
 	 */
-	public Symbol type(DatumFunction<SymbolType> typeAccessorFunction) {
+	public Symbol type(DataFunction<SymbolType> typeAccessorFunction) {
 
 		assertObjectIsNotAnonymous(typeAccessorFunction);
 
@@ -103,6 +102,9 @@ public class Symbol extends PathDataGenerator {
 				+ " return t.getValue();" //
 				+ " });";
 		JSObject result = evalForJsObject(command);
+		if(result==null){
+			return null;
+		}
 		return new Symbol(webEngine, result);
 
 	}
@@ -130,7 +132,7 @@ public class Symbol extends PathDataGenerator {
 	 *            the function that return the {@link DragEventType} of symbol.
 	 * @return this instance for chaining
 	 */
-	public Symbol size(DatumFunction<Integer> sizeAccessorFunction) {
+	public Symbol size(DataFunction<Integer> sizeAccessorFunction) {
 
 		assertObjectIsNotAnonymous(sizeAccessorFunction);
 
@@ -143,6 +145,12 @@ public class Symbol extends PathDataGenerator {
 				+ "return d3." + accessorName + ".apply(this,{datum:d},i);" //
 				+ " });";
 		JSObject result = evalForJsObject(command);
+		
+		d3JsObject.removeMember(accessorName);
+		if(result==null){
+			return null;
+		}
+		
 		return new Symbol(webEngine, result);
 
 	}

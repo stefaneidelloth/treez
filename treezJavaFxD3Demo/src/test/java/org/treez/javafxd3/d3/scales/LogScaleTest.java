@@ -1,18 +1,13 @@
 package org.treez.javafxd3.d3.scales;
 
-import org.treez.javafxd3.d3.D3;
-import org.treez.javafxd3.d3.core.Value;
-import org.treez.javafxd3.d3.scales.LogScale;
-
 import org.treez.javafxd3.d3.AbstractTestCase;
+import org.treez.javafxd3.d3.core.Value;
 
 @SuppressWarnings("javadoc")
 public class LogScaleTest extends AbstractTestCase {
 
 	@Override
-	public void doTest() {
-		
-		D3 d3 = new D3(webEngine);
+	public void doTest() {		
 		
 		LogScale scale = d3.scale().log();
 		// get default domain
@@ -96,7 +91,7 @@ public class LogScaleTest extends AbstractTestCase {
 		assertEquals("1e+1", scale.tickFormat(2).format(10));
 		assertEquals("1e+2", scale.tickFormat(2).format(100));
 		assertEquals("$50.00", scale.tickFormat(20, "$,.2f").format(50));
-		String format = scale.tickFormat(20, new LogScaleTestDatumFunction(webEngine)).format(50);
+		String format = scale.tickFormat(20, new LogScaleTestDataFunction(webEngine)).format(50);
 		System.out.println("FORMATTER " + format);
 
 		// nice

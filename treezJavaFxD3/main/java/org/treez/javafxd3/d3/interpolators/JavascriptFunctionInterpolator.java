@@ -18,12 +18,8 @@ import netscape.javascript.JSObject;
  */
 public class JavascriptFunctionInterpolator extends JavaScriptObject implements Interpolator<Value> {
 
-	//#region CONSTRUCTORS
+	//#region CONSTRUCTORS	
 	
-	/**
-	 * Constructor
-	 * @param webEngine
-	 */
 	public JavascriptFunctionInterpolator(WebEngine webEngine, JSObject wrappedJsObject) {
 		super(webEngine);
 		setJsObject(wrappedJsObject);
@@ -34,10 +30,9 @@ public class JavascriptFunctionInterpolator extends JavaScriptObject implements 
 	//#region METHODS
 
 	@Override
-	public  Value interpolate(final double t){
-		String command = "{datum : this("+t+")};";
-		JSObject result = evalForJsObject(command);
-		return new Value(webEngine, result);
+	public  Value interpolate(Object t){			
+		Object interpolationResult = callThis(t);		
+		return Value.create(webEngine, interpolationResult);
 	}
 
 	@Override

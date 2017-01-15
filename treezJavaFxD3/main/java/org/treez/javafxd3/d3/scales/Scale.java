@@ -1,12 +1,11 @@
 package org.treez.javafxd3.d3.scales;
 
+import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.arrays.ArrayUtils;
+import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.interpolators.Interpolator;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
-
-import org.treez.javafxd3.d3.D3;
-import org.treez.javafxd3.d3.core.Value;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -79,7 +78,7 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     	JSObject result = evalForJsObject(command);    	
     	S scaleResult = createScale(webEngine, result);   
     	return scaleResult;    	
-    }
+    }  
    
 	/**
      * Sets the scale's input domain to the specified array of strings.
@@ -105,11 +104,44 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      * @return the current scale
      */
     public  S domain(JavaScriptObject object){
-    	JSObject jsObject = object.getJsObject();
+    	
+    	boolean isArray = object instanceof Array;
+    	if(isArray){
+    		Array<?> array = (Array<?>) object;
+    		return domainWithArray(array);
+    	}
+    	
+    	JSObject jsObject = object.getJsObject();    	
     	JSObject result = call("domain", jsObject);
     	S scaleResult = createScale(webEngine, result);   
     	return scaleResult;
     }
+
+	private S domainWithArray(Array<?> array) {
+		
+		Object min = array.get(0, Object.class);
+		
+		Object max = array.get(1,  Object.class);
+		
+		String minName = createNewTemporaryInstanceName();
+		String maxName = createNewTemporaryInstanceName();
+
+		JSObject d3jsObj = getD3();
+		d3jsObj.setMember(minName, min);
+		d3jsObj.setMember(maxName, max);
+		    		
+		JSObject result = evalForJsObject("this.domain([d3."+ minName + ", d3." + maxName + "])");
+		
+		d3jsObj.removeMember(minName);
+		d3jsObj.removeMember(maxName);
+		
+		if(result==null){
+			return null;
+		}
+		
+		S scaleResult = createScale(webEngine, result);   
+		return scaleResult;
+	}
 
     /**
      * Returns the current scale's input domain.
@@ -117,12 +149,12 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      *
      * @return the current domain
      */
-    public  <T> Array<Value> domain(){
+    public  <T> Array<T> domain(){
     	JSObject result = call("domain");
     	if(result==null){
     		return null;
     	}
-    	return new Array<Value>(webEngine, result);
+    	return new Array<>(webEngine, result);
     }
 
     // ==================== range ====================
@@ -221,9 +253,22 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      *            the input value
      * @return the output value
      */
-    public  Value apply(JSObject d){
-    	JSObject result = call("this", d);
-    	return new Value(webEngine, result);		
+    public  Value apply(JSObject d){    	
+    	Object result = callThis(d);
+    	if(result==null){
+    		return null;
+    	}    	
+    	boolean isJsObject = result instanceof JSObject;
+    	if(isJsObject){
+    		JSObject jsResult = (JSObject) result;
+    		return new Value(webEngine, jsResult);	
+    	} else {
+    		return Value.create(webEngine, result);
+    	}       		
+    }
+    
+    public  Value apply(JavaScriptObject d){
+    	return apply(d.getJsObject());    			
     }
 
     /**
@@ -243,7 +288,7 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      *            the input value
      * @return the output value
      */
-    public  Value apply(double d){
+    public  Value apply(double d){    	
     	String command = "this(" + d + ")";
     	Object result = eval(command);
     	
@@ -278,8 +323,12 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     	Object result = eval(command);
     	
     	Value value = Value.create(webEngine,  result);
-    	return value;
-    	
+    	return value;    	
+    }
+    
+    public  Value apply(Enum<?> enumValue){
+    	String stringValue = enumValue.toString();
+    	return apply(stringValue);    			
     }
     
     public  Double applyForDouble(String d){

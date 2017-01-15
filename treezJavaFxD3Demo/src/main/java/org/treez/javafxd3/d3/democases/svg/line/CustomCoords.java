@@ -1,8 +1,7 @@
 package org.treez.javafxd3.d3.democases.svg.line;
 
 import org.treez.javafxd3.d3.coords.Coords;
-import org.treez.javafxd3.d3.functions.DatumFunction;
-import org.treez.javafxd3.d3.wrapper.Inspector;
+import org.treez.javafxd3.d3.functions.DataFunction;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -17,15 +16,6 @@ public  class CustomCoords extends Coords {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param webEngine
-	 * 
-	 * @param x
-	 * @param y
-	 * @param defined
-	 */
 	public CustomCoords(WebEngine webEngine, double x, double y, boolean defined) {
 		super(webEngine, x, y);
 		this.defined = defined;
@@ -38,46 +28,25 @@ public  class CustomCoords extends Coords {
 		Object resultObj = d3.eval(varName);
 		JSObject result = (JSObject) resultObj;
 		
-		d3.eval(varName + " = null;");
-		
-		//Inspector.inspect(result);
+		d3.eval(varName + " = undefined;");		
 		
 		setJsObject(result);
 		
 	}
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param webEngine
-	 * @param wrappedJsObject
-	 * 
-	 */
 	public CustomCoords(WebEngine webEngine, JSObject wrappedJsObject) {
 		super(webEngine, wrappedJsObject);		
-		this.defined = getMemberForBoolean("defined");
-		
+		this.defined = getMemberForBoolean("defined");		
 	}
 
 	//#end region
 
-	//#region METHODS
+	//#region METHODS	
 
-	public static DatumFunction<Double> xAccessor(WebEngine webEngine) {
-		return new XAccessorDatumFunction(webEngine);
-	}
-
-	public static DatumFunction<Double> yAccessor(WebEngine webEngine) {
-		return new YAccessorDatumFunction(webEngine);
-	}
-
-	public static DatumFunction<Boolean> definedAccessor(WebEngine webEngine) {
-		return new DefinedDatumFunction(webEngine);
+	public static DataFunction<Boolean> definedAccessor(WebEngine webEngine) {
+		return new DefinedDataFunction(webEngine);
 	}
 	
-	/**
-	 * @return the y coordinates
-	 */
 	public Boolean defined() {
 		return defined;
 	}

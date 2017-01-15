@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.arrays.foreach.ForEachCallback;
+import org.treez.javafxd3.d3.arrays.foreach.ForEachCallbackWrapper;
+import org.treez.javafxd3.d3.arrays.foreach.ForEachObjectDelegate;
+import org.treez.javafxd3.d3.arrays.foreach.ForEachObjectDelegateWrapper;
+import org.treez.javafxd3.d3.core.ConversionUtil;
+import org.treez.javafxd3.d3.functions.data.wrapper.PlainDataFunction;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
 import javafx.scene.web.WebEngine;
@@ -23,7 +29,7 @@ public class Array<T> extends JavaScriptObject {
 	public Array(WebEngine webEngine, JSObject wrappedJsObject) {
 		super(webEngine);
 		setJsObject(wrappedJsObject);
-	}	
+	}
 
 	//#end region
 
@@ -61,15 +67,46 @@ public class Array<T> extends JavaScriptObject {
 			if (isJavaScriptObject) {
 				JavaScriptObject javaScriptObject = (JavaScriptObject) value;
 				JSObject wrappedJsObject = javaScriptObject.getJsObject();
-				
-				//Inspector.inspect(wrappedJsObject);
-				
+
 				tempArray.setSlot(index, wrappedJsObject);
 			} else {
 				tempArray.setSlot(index, value);
 			}
 		}
-		
+
+		//remove temp var
+		d3Obj.removeMember(varName);
+
+		// return result as array
+		return new Array<L>(webEngine, tempArray);
+	}
+
+	/**
+	 * Creates a one-dimensional Array from the given list of objects.
+	 * 
+	 * @param <L>
+	 * @param webEngine
+	 * @param data
+	 * @return
+	 */
+	public static <L> Array<L> fromListDirectly(WebEngine webEngine, List<L> data) {
+
+		// store data as temporary array
+		JSObject d3Obj = (JSObject) webEngine.executeScript("d3");
+		String varName = createNewTemporaryInstanceName();
+
+		//initialize temporary array
+		int length = data.size();
+		String command = "d3." + varName + " = new Array(" + length + ");";
+		d3Obj.eval(command);
+		JSObject tempArray = (JSObject) d3Obj.getMember(varName);
+
+		//fill temporary array
+		for (int index = 0; index < length; index++) {
+			Object value = data.get(index);
+			tempArray.setSlot(index, value);
+		}
+
 		//remove temp var
 		d3Obj.removeMember(varName);
 
@@ -93,12 +130,12 @@ public class Array<T> extends JavaScriptObject {
 
 		// execute command and return result as Array
 		JSObject result = (JSObject) webEngine.executeScript(varName);
-		
-		webEngine.executeScript(varName +" = null;");
-		
+
+		webEngine.executeScript(varName + " = undefined;");
+
 		return new Array<Double>(webEngine, result);
 	}
-	
+
 	public static Array<Double> fromDoubles(WebEngine webEngine, Double[][] data) {
 		String varName = createNewTemporaryInstanceName();
 		String arrayString = ArrayUtils.createArrayString(data);
@@ -107,13 +144,12 @@ public class Array<T> extends JavaScriptObject {
 
 		// execute command and return result as Array
 		JSObject result = (JSObject) webEngine.executeScript(varName);
-		
-		webEngine.executeScript(varName +" = null;");
-		
+
+		webEngine.executeScript(varName + " = undefined;");
+
 		return new Array<Double>(webEngine, result);
 	}
-	
-	
+
 	public static Array<String> fromStrings(WebEngine webEngine, String[] data) {
 
 		String varName = createNewTemporaryInstanceName();
@@ -123,9 +159,9 @@ public class Array<T> extends JavaScriptObject {
 
 		// execute command and return result as Array
 		JSObject result = (JSObject) webEngine.executeScript(varName);
-		
-		webEngine.executeScript(varName +" = null;");
-		
+
+		webEngine.executeScript(varName + " = undefined;");
+
 		return new Array<String>(webEngine, result);
 	}
 
@@ -166,7 +202,7 @@ public class Array<T> extends JavaScriptObject {
 	 * @return
 	 */
 	public int length() {
-		int result = getMemberForInteger("length");
+		Integer result = getMemberForInteger("length");
 		return result;
 	}
 
@@ -209,6 +245,22 @@ public class Array<T> extends JavaScriptObject {
 				return matrixSizes;
 			}
 		}
+	}
+
+	public int dimension() {
+		List<Integer> sizes = sizes();
+		int rows = sizes.get(0);
+		int columns = sizes.get(1);
+		if (rows == 0 && columns == 0) {
+			return 0;
+		}
+		if (rows == 1) {
+			return 1;
+		}
+		if (columns == 1) {
+			return 1;
+		}
+		return 2;
 	}
 
 	private void checkSizeOfRemainingSubItems(int numberOfRows, Integer numberOfColumns) {
@@ -258,39 +310,137 @@ public class Array<T> extends JavaScriptObject {
 		return zeroSizes;
 	}
 
-	public int dimension() {
-		List<Integer> sizes = sizes();
-		int rows = sizes.get(0);
-		int columns = sizes.get(1);
-		if (rows == 0 && columns == 0) {
-			return 0;
+	//#end region
+
+	//#region LOOPS
+
+	public void forEach(ForEachObjectDelegate forEachDelegate) {
+
+		ForEachObjectDelegateWrapper delegateWrapper = new ForEachObjectDelegateWrapper(forEachDelegate);
+
+		D3 d3 = new D3(webEngine);
+		JSObject d3Obj = d3.getJsObject();
+		String delegateName = createNewTemporaryInstanceName();
+		d3Obj.setMember(delegateName, delegateWrapper);
+
+		String command = "this.forEach(" + //
+				"  function(element){" + //			
+				"    d3." + delegateName + ".process(element);" + //
+				"  }" + //
+				")";
+		eval(command);
+
+		d3Obj.removeMember(delegateName);
+
+	}
+
+	/**
+	 * Maps this array to a new Array of type R with the help a mapping function
+	 */
+	public <R> Array<R> map(PlainDataFunction<R, T> mappingFunction) {
+
+		int length = length();
+		if (length == 0) {
+			return Array.fromList(webEngine, new ArrayList<R>());
 		}
-		if (rows == 1) {
-			return 1;
+
+		Object firstElement = getAsObject(0);
+		@SuppressWarnings("unchecked")
+		Class<T> argumentClass = (Class<T>) firstElement.getClass();
+
+		ForEachCallback<R> callbackWrapper = new ForEachCallbackWrapper<R, T>(argumentClass, webEngine,
+				mappingFunction);
+
+		D3 d3 = new D3(webEngine);
+		JSObject d3Obj = d3.getJsObject();
+		String callbackName = createNewTemporaryInstanceName();
+		d3Obj.setMember(callbackName, callbackWrapper);
+
+		String command = "this.map(" + //
+				"  function(d, i, a){" + //			
+				"    var elementResult = d3." + callbackName + ".forEach(this, {datum: d}, i, a);" + //				
+				"    return elementResult; " + //
+				"  }" + //
+				")";
+
+		JSObject jsResult = evalForJsObject(command);
+
+		d3Obj.removeMember(callbackName);
+
+		if (jsResult == null) {
+			return null;
 		}
-		if (columns == 1) {
-			return 1;
+
+		return new Array<>(webEngine, jsResult);
+
+	}
+
+	public Array<T> filter(PlainDataFunction<Boolean, T> callback) {
+
+		int length = length();
+		if (length == 0) {
+			return Array.fromList(webEngine, new ArrayList<T>());
 		}
-		return 2;
+
+		Object firstElement = getAsObject(0);
+		@SuppressWarnings("unchecked")
+		Class<T> elementClass = (Class<T>) firstElement.getClass();
+
+		ForEachCallback<Boolean> callbackWrapper = new ForEachCallbackWrapper<>(elementClass, webEngine, callback);
+
+		D3 d3 = new D3(webEngine);
+		JSObject d3Obj = d3.getJsObject();
+		String callbackName = createNewTemporaryInstanceName();
+		d3Obj.setMember(callbackName, callbackWrapper);
+
+		String command = "this.filter(" + //
+				"  function(d, i, a){" + //			
+				"    var includeElement = d3." + callbackName + ".forEach(this, {datum: d}, i, a);" + //				
+				"    return includeElement; " + //
+				"  }" + //
+				")";
+
+		JSObject jsResult = evalForJsObject(command);
+
+		d3Obj.removeMember(callbackName);
+
+		if (jsResult == null) {
+			return null;
+		}
+
+		return new Array<>(webEngine, jsResult);
+
 	}
 
 	//#end region
 
 	//#region RETRIVE ITEMS	
 
+	@SuppressWarnings("unchecked")
+	public T get(int index) {
+		Object resultObj = getAsObject(index);
+		return (T) resultObj;
+	}
+
 	public <D> D get(int index, Class<D> classObj) {
 		Object resultObj = getAsObject(index);
-		D result = convertObjectTo(resultObj, classObj);
+		D result = ConversionUtil.convertObjectTo(resultObj, classObj, webEngine);
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public T get(int rowIndex, int columnIndex) {
+		Object result = getAsObject(rowIndex, columnIndex);
+		return (T) result;
 	}
 
 	public <D> D get(int rowIndex, int columnIndex, Class<D> classObj) {
 		Object resultObj = getAsObject(rowIndex, columnIndex);
-		D result = convertObjectTo(resultObj, classObj);
+		D result = ConversionUtil.convertObjectTo(resultObj, classObj, webEngine);
 		return result;
 	}
 
-	private Object getAsObject(int index) {
+	public Object getAsObject(int index) {
 		JSObject jsObject = getJsObject();
 		Object resultObj = jsObject.getSlot(index);
 		return resultObj;
@@ -302,35 +452,71 @@ public class Array<T> extends JavaScriptObject {
 		return resultObj;
 	}
 
-	public <D> List<? extends D> asList(Class<D> classObj) {
+	public <D> List<D> asList(Class<D> clazz) {
 		int size = length();
+		if (size == 0) {
+			return new ArrayList<D>();
+		}
+
 		List<D> list = new ArrayList<>();
 		for (int index = 0; index < size; index++) {
-			D element = (D) this.get(index, classObj);
+			D element = this.get(index, clazz);
+			if (element != null) {
+				list.add(element);
+			} else {
+				String message = "Empty element in list";
+				System.out.println(message);
+			}
+
+		}
+		return list;
+	}
+
+	public List<Object> asRawList() {
+		int size = length();
+		if (size == 0) {
+			return new ArrayList<Object>();
+		}
+
+		List<Object> list = new ArrayList<>();
+		for (int index = 0; index < size; index++) {
+			Object element = this.getAsObject(index);
 			list.add(element);
 		}
 		return list;
 	}
 
+	public T[] asArray(Class<T> clazz) {
+		List<T> list = asList(clazz);
+		@SuppressWarnings("unchecked")
+		T[] emptyArray = (T[]) java.lang.reflect.Array.newInstance(clazz, list.size());
+		return list.toArray(emptyArray);
+	}
+
 	//#end region
-	
+
+	//#region REVERSE
+
+	public Array<T> reverse() {
+		call("reverse");
+		return this;
+	}
+
+	//#end region
+
 	//#region TO STRING
-	
-	public String toString(){
-				
+
+	public String toString() {
 		int size = length();
 		List<String> stringList = new ArrayList<>();
 		for (int index = 0; index < size; index++) {
 			Object element = this.get(index, Object.class);
-			stringList.add(element.toString());			
+			stringList.add(element.toString());
 		}
 		String displayString = "[" + String.join(",", stringList) + "]";
 		return displayString;
-		
 	}
 
-	
-	
 	//#end region
 
 	//#end region

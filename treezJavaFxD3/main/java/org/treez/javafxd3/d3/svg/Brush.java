@@ -2,10 +2,11 @@ package org.treez.javafxd3.d3.svg;
 
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.arrays.ArrayUtils;
+import org.treez.javafxd3.d3.core.ConversionUtil;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.core.Transition;
 import org.treez.javafxd3.d3.event.D3Event;
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.functions.JsFunction;
 import org.treez.javafxd3.d3.scales.ContinuousQuantitativeScale;
 import org.treez.javafxd3.d3.scales.OrdinalScale;
@@ -70,11 +71,14 @@ public class Brush extends JavaScriptObject implements JsFunction {
 	 *
 	 * @return the brushs x-scale.
 	 */
-	public <T extends Scale<T>> T x() {
-		throw new IllegalStateException("not yet implemented");
-		/*
-		 * return this.x();
-		 */
+	public <T extends Scale<T>> T x(Class<T> clazz) {
+		
+		JSObject jsResult = call("x");
+		if(jsResult==null){
+			return null;
+		}
+		T result = ConversionUtil.convertObjectTo(jsResult, clazz, webEngine);
+		return result;				
 	}
 
 	/**
@@ -108,11 +112,13 @@ public class Brush extends JavaScriptObject implements JsFunction {
 	 *
 	 * @return the brushs y-scale.
 	 */
-	public <T extends Scale<T>> T y() {
-		throw new IllegalStateException("not yet implemented");
-		/*
-		 * return this.y();
-		 */
+	public <T extends Scale<T>> T y(Class<T> clazz) {
+		JSObject jsResult = call("y");
+		if(jsResult==null){
+			return null;
+		}
+		T result = ConversionUtil.convertObjectTo(jsResult, clazz, webEngine);
+		return result;	
 	}
 
 	/**
@@ -128,7 +134,7 @@ public class Brush extends JavaScriptObject implements JsFunction {
 	 * @return the current brush
 	 */
 	public Brush apply(Selection selection) {
-		JSObject result = call("this", selection.getJsObject());
+		JSObject result = callThisForJsObject(selection.getJsObject());
 		return new Brush(webEngine, result);
 	}
 
@@ -148,7 +154,7 @@ public class Brush extends JavaScriptObject implements JsFunction {
 	 * @return the current brush
 	 */
 	public Brush apply(Transition transition) {
-		JSObject result = call("this", transition.getJsObject());
+		JSObject result = callThisForJsObject(transition.getJsObject());
 		return new Brush(webEngine, result);
 	}
 
@@ -209,7 +215,7 @@ public class Brush extends JavaScriptObject implements JsFunction {
 	 * Note that this does not automatically redraw the brush or dispatch any
 	 * events to listeners. To redraw the brush, call {@link #apply(Selection)}
 	 * or {@link #apply(Transition)}; to dispatch events, use
-	 * {@link #on(BrushEvent, DatumFunction)}.
+	 * {@link #on(BrushEvent, DataFunction)}.
 	 * <p>
 	 * 
 	 * @param array
@@ -313,19 +319,27 @@ public class Brush extends JavaScriptObject implements JsFunction {
 	 *            the event listener.
 	 * @return the current brush.
 	 */
-	public Brush on(BrushEvent event, DatumFunction<Void> listener) {
+	public Brush on(BrushEvent event, DataFunction<Void> listener) {
 
 		String eventString = event.getValue();
 
 		String memberName = createNewTemporaryInstanceName();
+		String varName = createNewTemporaryInstanceName();
 		JSObject d3JsObject = getD3();
 		d3JsObject.setMember(memberName, listener);
-
-		String command = "this.on('" + eventString + "', function(d, i) {" //
+		
+		String command = "var "+varName+" = d3." + memberName + " == null ? null : " + "function(d, i) {" //		      
 				+ "d3." + memberName + ".apply(this,{datum:d},i);" //
-				+ "});";
+				+ " }; ";
 
-		JSObject result = evalForJsObject(command);
+		eval(command);
+		String onCommand = "this.on('" + eventString + "', "+varName+");";
+
+		JSObject result = evalForJsObject(onCommand);
+		
+		if(result==null){
+			return null;
+		}
 		return new Brush(webEngine, result);
 		
 	}
@@ -459,7 +473,7 @@ public class Brush extends JavaScriptObject implements JsFunction {
 	 * @return true if the brush extent is empty.
 	 */
 	public boolean empty() {
-		return !!this.empty();
+		return callForBoolean("empty");
 	}
 
 	//#end region

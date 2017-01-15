@@ -2,10 +2,9 @@ package org.treez.javafxd3.d3.geom;
 
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.arrays.ArrayUtils;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.layout.Link;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
-
-import org.treez.javafxd3.d3.functions.DatumFunction;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -125,16 +124,24 @@ public class Voronoi extends JavaScriptObject {
      *            the x accessor
      * @return the current layout
      */
-    public  Voronoi x(DatumFunction<Double> xAccessor){
+    public  Voronoi x(DataFunction<Double> xAccessor){
     	
-    	throw new IllegalStateException("not yet implemented");
-    	/*
-		return this
-				.x(function(d, i) {
-					return xAccessor.@com.github.gwtd3.api.functions.DatumFunction::apply(Lcom/google/gwt/dom/client/Element;Lcom/github/gwtd3/api/core/Value;I)(this,{datum:d},i);
-				});
-				
-		*/
+    	assertObjectIsNotAnonymous(xAccessor);
+
+		String funcName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, xAccessor);
+
+		String command = "this.x(function(d, i) { return d3." + funcName + ".apply(this,{datum:d},i); });";
+		JSObject result = evalForJsObject(command);
+
+		d3JsObject.removeMember(funcName);
+
+		if(result==null){
+			return null;
+		}
+		return new Voronoi(webEngine, result);   	
+    	
     }
 
     /**
@@ -148,16 +155,23 @@ public class Voronoi extends JavaScriptObject {
      * @return the current layout
      */
 
-    public  Voronoi y(DatumFunction<Double> yAccessor){
+    public  Voronoi y(DataFunction<Double> yAccessor){
     	
-    	throw new IllegalStateException("not yet implemented");
-    	/*
-		return this
-				.y(function(d, i) {
-					return yAccessor.@com.github.gwtd3.api.functions.DatumFunction::apply(Lcom/google/gwt/dom/client/Element;Lcom/github/gwtd3/api/core/Value;I)(this,{datum:d},i);
-				});
-				
-		*/
+    	assertObjectIsNotAnonymous(yAccessor);
+
+		String funcName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, yAccessor);
+
+		String command = "this.y(function(d, i) { return d3." + funcName + ".apply(this,{datum:d},i); });";
+		JSObject result = evalForJsObject(command);
+
+		d3JsObject.removeMember(funcName);
+
+		if(result==null){
+			return null;
+		}
+		return new Voronoi(webEngine, result); 
     }
 
     /**
@@ -168,9 +182,14 @@ public class Voronoi extends JavaScriptObject {
      * @return
      * @experimental
      */
-    public  Link[] links(Object[] nodes){
-    	throw new IllegalStateException("not yet implemented");
-    	//return this.links();
+    public  Array<Link> links(Object[] nodes){
+    	
+    	JSObject result = call("links");
+    	if(result==null){
+    		return null;
+    	}
+    	return new Array<>(webEngine, result);
+    	
     }
 
     /**
@@ -181,9 +200,12 @@ public class Voronoi extends JavaScriptObject {
      * @return
      * @experimental
      */
-    public  Link[] triangles(Object[] nodes){
-    	throw new IllegalStateException("not yet implemented");
-    	// 	return this.links();
+    public  Array<Link> triangles(Object[] nodes){
+    	JSObject result = call("triangles");
+    	if(result==null){
+    		return null;
+    	}
+    	return new Array<>(webEngine, result);
     }
 
 }
