@@ -164,6 +164,16 @@ public class TreezTableViewer extends GridTableViewer {
 		return headerRenderer;
 	}
 
+	//TODO--------
+	private static HeaderRenderer createFooterRenderers(final Grid grid) {
+		grid.setEmptyRowHeaderRenderer(new EmptyRowHeaderRenderer());
+		grid.setRowHeaderRenderer(new RowHeaderRenderer());
+		grid.setEmptyColumnHeaderRenderer(new EmptyHeaderRenderer());
+		grid.setTopLeftRenderer(new EmptyHeaderRenderer());
+		HeaderRenderer headerRenderer = new HeaderRenderer();
+		return headerRenderer;
+	}
+
 	/**
 	 * Handles the copy action triggered by Ctrl+C
 	 */
