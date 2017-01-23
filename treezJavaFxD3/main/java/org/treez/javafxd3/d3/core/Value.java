@@ -1,7 +1,5 @@
 package org.treez.javafxd3.d3.core;
 
-import java.lang.reflect.Constructor;
-
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.time.JsDate;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
@@ -72,7 +70,7 @@ public class Value extends JavaScriptObject {
 		JSObject result = (JSObject) d3.eval(dummyTempVariableName);
 
 		d3.removeMember(dummyTempAttributeName);
-		d3.eval(dummyTempVariableName + "= null;");
+		d3.eval(dummyTempVariableName + "= undefined;");
 
 		return new Value(webEngine, result);
 
@@ -189,9 +187,10 @@ public class Value extends JavaScriptObject {
 	}
 
 	public JsDate asJsDate() {
-
-		// return this.datum instanceof JsDate ? this.datum : new JsDate(this.datum);		
 		JSObject result = getMember("datum");
+		if (result == null) {
+			return null;
+		}
 		return new JsDate(webEngine, result);
 	}
 
@@ -201,24 +200,10 @@ public class Value extends JavaScriptObject {
 	 *
 	 * @return the value
 	 */
-	public double asDouble() {
+	public Double asDouble() {
 		String command = "this.datum-0;";
 		Object resultObj = eval(command);
-
-		boolean isDouble = resultObj instanceof Float;
-		if (isDouble) {
-			Double result = (Double) resultObj;
-			return result;
-		}
-
-		boolean isNumber = resultObj instanceof Number;
-		if (isNumber) {
-			Double result = Double.parseDouble("" + resultObj);
-			return result;
-		}
-
-		String message = "Could not convert result of type " + resultObj.getClass().getName() + " to double.";
-		throw new IllegalStateException(message);
+		return ConversionUtil.convertObjectTo(resultObj, Double.class, webEngine);
 	}
 
 	/**
@@ -230,20 +215,7 @@ public class Value extends JavaScriptObject {
 	public float asFloat() {
 		String command = "this.datum-0;";
 		Object resultObj = eval(command);
-		boolean isFloat = resultObj instanceof Float;
-		if (isFloat) {
-			Float result = (Float) resultObj;
-			return result;
-		}
-
-		boolean isNumber = resultObj instanceof Number;
-		if (isNumber) {
-			Float result = Float.parseFloat("" + resultObj);
-			return result;
-		}
-
-		String message = "Could not convert result of type " + resultObj.getClass().getName() + " to float.";
-		throw new IllegalStateException(message);
+		return ConversionUtil.convertObjectTo(resultObj, Float.class, webEngine);
 	}
 
 	/**
@@ -255,47 +227,7 @@ public class Value extends JavaScriptObject {
 	public Integer asInt() {
 		String command = "this.datum;";
 		Object resultObj = eval(command);
-
-		if (resultObj == null) {
-			return null;
-		}
-
-		String resultString = resultObj.toString();
-		boolean isNaN = resultString.equals("NaN");
-		if (isNaN) {
-			return null;
-		}
-
-		boolean isUndefined = resultString.equals("undefined");
-		if (isUndefined) {
-			return null;
-		}
-
-		boolean isFalse = resultString.equals("false");
-		if (isFalse) {
-			return 0;
-		}
-
-		boolean isTrue = resultString.equals("true");
-		if (isTrue) {
-			return 1;
-		}
-
-		try {
-			int integerResult = Integer.parseInt(resultString);
-			return integerResult;
-		} catch (Exception exception) {
-			double doubleResult = Double.parseDouble(resultString);
-
-			if (doubleResult > Integer.MAX_VALUE) {
-				String message = "The value " + doubleResult + " exceeds the maximum integer value " + Integer.MAX_VALUE
-						+ " and can not be returned as integer.";
-				throw new IllegalStateException(message);
-			}
-
-			int intResult = (int) doubleResult;
-			return intResult;
-		}
+		return ConversionUtil.convertObjectTo(resultObj, Integer.class, webEngine);
 	}
 
 	/**
@@ -305,7 +237,7 @@ public class Value extends JavaScriptObject {
 	 * @return the value
 	 */
 	public final long asLong() {
-		long result = (long) asDouble();
+		long result = (long) (double) asDouble();
 		return result;
 	}
 
@@ -318,41 +250,7 @@ public class Value extends JavaScriptObject {
 	public Short asShort() {
 		String command = "this.datum";
 		Object resultObj = eval(command);
-
-		if (resultObj == null) {
-			return null;
-		}
-
-		String resultString = resultObj.toString();
-		boolean isNaN = resultString.equals("NaN");
-		if (isNaN) {
-			return null;
-		}
-
-		boolean isUndefined = resultString.equals("undefined");
-		if (isUndefined) {
-			return null;
-		}
-
-		boolean isFalse = resultString.equals("false");
-		if (isFalse) {
-			return 0;
-		}
-
-		boolean isTrue = resultString.equals("true");
-		if (isTrue) {
-			return 1;
-		}
-
-		try {
-			short result = Short.parseShort("" + resultObj);
-			return result;
-		} catch (Exception excepiton) {
-			double doubleResult = Double.parseDouble("" + resultObj);
-			short result = (short) doubleResult;
-			return result;
-		}
-
+		return ConversionUtil.convertObjectTo(resultObj, Short.class, webEngine);
 	}
 
 	/**
@@ -374,24 +272,31 @@ public class Value extends JavaScriptObject {
 	 */
 	public Coords asCoords() {
 		String command = "this.datum";
-		JSObject result = evalForJsObject(command);
-		return new Coords(webEngine, result);
+		Object resultObj = eval(command);
+		return ConversionUtil.convertObjectTo(resultObj, Coords.class, webEngine);
 	}
 
 	/**
-	 * Cast and return the wrapped value, if possible.
-	 * <p>
+	 * Cast and return the wrapped value, if possible. (Does not work for
+	 * "conversion" of JSObject to JavaScriptObject)
 	 *
 	 * @throws ClassCastException
 	 *             if the value cannot be converted in T
 	 *
 	 * @return the value
 	 */
-	@SuppressWarnings("unchecked")
+
 	public <T> T as() {
 		String command = "this.datum";
 		Object result = eval(command);
-		return (T) result;
+		try {
+			@SuppressWarnings("unchecked")
+			T castedResult = (T) result;
+			return castedResult;
+		} catch (ClassCastException exception) {
+			String message = "Could not directly cast the value. Please try to use method as(Class<?> class) instead of as(). ";
+			throw new IllegalStateException(message, exception);
+		}
 	}
 
 	/**
@@ -404,48 +309,7 @@ public class Value extends JavaScriptObject {
 	public final <T> T as(final Class<T> clazz) {
 		String command = "this.datum";
 		Object resultObj = eval(command);
-		
-		if (resultObj==null){
-			return null;
-		}
-		
-		boolean isUndefined = resultObj.equals("undefined");
-		if (isUndefined){
-			return null;
-		}
-
-		boolean targetIsJavaScriptObject = JavaScriptObject.class.isAssignableFrom(clazz);
-
-		if (targetIsJavaScriptObject) {
-			Constructor<T> constructor;
-			try {
-				constructor = clazz.getConstructor(new Class<?>[] { WebEngine.class, JSObject.class });
-			} catch (NoSuchMethodException | SecurityException exception) {
-				String message = "Could not find constructor";
-				throw new IllegalStateException(message, exception);
-			}
-
-			boolean resultIsJsObject = resultObj instanceof JSObject;
-			if (resultIsJsObject) {
-				JSObject jsObject = (JSObject) resultObj;
-				T instance;
-				try {
-					instance = constructor.newInstance(webEngine, jsObject);
-				} catch (Exception exception) {
-					String message = "Could not create new instance constructor";
-					throw new IllegalStateException(message, exception);
-				}
-
-				return instance;
-			} else {
-				return null;
-								
-			}
-
-		}
-
-		T result = clazz.cast(resultObj);
-		return result;
+		return ConversionUtil.convertObjectTo(resultObj, clazz, webEngine);
 	}
 
 	/**
@@ -463,9 +327,10 @@ public class Value extends JavaScriptObject {
 	 * @return true if the value is undefined in the Javascript sense
 	 */
 	public boolean isUndefined() {
-		String command = "this.datum == 'undefined';";
-		Boolean result = evalForBoolean(command);
-		return result;
+		String command = "this.datum";
+		Object resultObj = eval(command);
+		boolean isUndefined = resultObj.equals("undefined");
+		return isUndefined;
 	}
 
 	/**
@@ -528,7 +393,6 @@ public class Value extends JavaScriptObject {
 			Value value = create(webEngine, datum);
 			return value;
 		}
-
 	}
 
 	/**

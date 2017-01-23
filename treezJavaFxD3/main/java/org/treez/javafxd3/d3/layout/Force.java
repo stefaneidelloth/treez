@@ -1,8 +1,10 @@
 package org.treez.javafxd3.d3.layout;
 
+import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.d3.arrays.ArrayUtils;
 import org.treez.javafxd3.d3.behaviour.Drag;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
 import javafx.scene.web.WebEngine;
@@ -42,12 +44,6 @@ public class Force extends JavaScriptObject {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param webEngine
-	 * @param wrappedJsObject
-	 */
 	public Force(WebEngine webEngine, JSObject wrappedJsObject) {
 		super(webEngine);
 		setJsObject(wrappedJsObject);
@@ -60,10 +56,13 @@ public class Force extends JavaScriptObject {
 	/**
 	 * @return the current size, which defaults to 1×1.
 	 */
-	public Short[] size() {
+	public Array<Short> size() {
 
-		throw new IllegalStateException("not yet implemented");
-		// return this.size();
+		JSObject result = call("size");
+		if (result == null) {
+			return null;
+		}
+		return new Array<>(webEngine, result);
 	}
 
 	/**
@@ -82,8 +81,13 @@ public class Force extends JavaScriptObject {
 	 * @return the force layout object.
 	 */
 	public Force size(Short[] size) {
-		throw new IllegalStateException("not yet implemented");
-		// return this.size(size);
+		String arrayString = ArrayUtils.createArrayString(size);
+		String command = "this.size(" + arrayString + ");";
+		JSObject result = evalForJsObject(command);
+		if (result == null) {
+			return null;
+		}
+		return new Force(webEngine, result);
 	}
 
 	/**
@@ -92,6 +96,7 @@ public class Force extends JavaScriptObject {
 	 */
 	public double linkDistance() {
 		Double result = callForDouble("linkDistance");
+
 		return result;
 	}
 
@@ -105,6 +110,9 @@ public class Force extends JavaScriptObject {
 	 */
 	public Force linkDistance(double distance) {
 		JSObject result = call("linkDistance", distance);
+		if (result == null) {
+			return null;
+		}
 		return new Force(webEngine, result);
 	}
 
@@ -120,18 +128,25 @@ public class Force extends JavaScriptObject {
 	 *            document
 	 * @return the force layout object.
 	 */
-	public Force linkDistance(DatumFunction<?> callback) {
-		
+	public Force linkDistance(DataFunction<?> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
-		throw new IllegalStateException("not yet implemented");
-		/*
-		 * try { return this .linkDistance(function(d, i) { try { var r =
-		 * callback.@com.github.gwtd3.api.functions.DatumFunction::apply(Lcom/
-		 * google/gwt/dom/client/Element;Lcom/github/gwtd3/api/core/Value;I)(
-		 * this,{datum:d},i); return r; } catch (e) { alert(e); return null; }
-		 * }); } catch (e) { alert(e); return null; }
-		 */
+		String funcName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, callback);
+
+		String command = "this.linkDistance(function(d, i) { return d3." + funcName + ".apply(this,{datum:d},i); });";
+		JSObject result = evalForJsObject(command);
+
+		d3JsObject.removeMember(funcName);
+
+		if (result == null) {
+			return null;
+		}
+
+		return new Force(webEngine, result);
+
 	}
 
 	/**
@@ -167,18 +182,24 @@ public class Force extends JavaScriptObject {
 	 * 
 	 * @return the force layout object.
 	 */
-	public Force linkStrength(DatumFunction<?> callback) {
-		
+	public Force linkStrength(DataFunction<?> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
-		throw new IllegalStateException("not yet implemented");
-		/*
-		 * try { return this .linkStrength(function(d, i) { try { var r =
-		 * callback.@com.github.gwtd3.api.functions.DatumFunction::apply(Lcom/
-		 * google/gwt/dom/client/Element;Lcom/github/gwtd3/api/core/Value;I)(
-		 * this,{datum:d},i); return r; } catch (e) { alert(e); return null; }
-		 * }); } catch (e) { alert(e); return null; }
-		 */
+		String funcName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, callback);
+
+		String command = "this.linkStrenght(function(d, i) { return d3." + funcName + ".apply(this,{datum:d},i); });";
+		JSObject result = evalForJsObject(command);
+
+		d3JsObject.removeMember(funcName);
+
+		if (result == null) {
+			return null;
+		}
+
+		return new Force(webEngine, result);
 	}
 
 	/**
@@ -241,7 +262,7 @@ public class Force extends JavaScriptObject {
 	}
 
 	/**
-	 * Sets sets the charge strength per node. If charge is a function, then the
+	 * Sets the charge strength per node. If charge is a function, then the
 	 * function is evaluated for each node (in order), being passed the node and
 	 * its index, with the this context as the force layout; the function's
 	 * return value is then used to set each node's charge. The function is
@@ -261,21 +282,24 @@ public class Force extends JavaScriptObject {
 	 * 
 	 * @return the force layout object.
 	 */
-	public Force charge(DatumFunction<?> callback) {
-		
+	public Force charge(DataFunction<?> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
-		throw new IllegalStateException("not yet implemented");
-		/*
-		 * try { return this .charge(function(d, i) { try {
-		 * 
-		 * var r =
-		 * callback.@com.github.gwtd3.api.functions.DatumFunction::apply(Lcom/
-		 * google/gwt/dom/client/Element;Lcom/github/gwtd3/api/core/Value;I)(
-		 * this,{datum:d},i); return r; } catch (e) { alert(e); return null; }
-		 * }); } catch (e) { alert(e); return null; }
-		 * 
-		 */
+		String funcName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, callback);
+
+		String command = "this.charge(function(d, i) { return d3." + funcName + ".apply(this,{datum:d},i); });";
+		JSObject result = evalForJsObject(command);
+
+		d3JsObject.removeMember(funcName);
+
+		if (result == null) {
+			return null;
+		}
+
+		return new Force(webEngine, result);
 	}
 
 	/**
@@ -380,9 +404,13 @@ public class Force extends JavaScriptObject {
 	 * 
 	 * @return the current nods array, which defaults to the empty array.
 	 */
-	public Node[] nodes() {
-		throw new IllegalStateException("not yet implemented");
-		// return this.nodes();
+	public Array<Node> nodes() {
+
+		JSObject result = call("nodes");
+		if (result == null) {
+			return null;
+		}
+		return new Array<>(webEngine, result);
 	}
 
 	/**
@@ -410,18 +438,24 @@ public class Force extends JavaScriptObject {
 	 * 
 	 * @return the force layout object.
 	 */
-	public Force nodes(Node[] nodes) {
-		throw new IllegalStateException("not yet implemented");
-		// return this.nodes(nodes);
+	public Force nodes(Array<Node> nodes) {
+		JSObject result = call("nodes", nodes.getJsObject());
+		if (result == null) {
+			return null;
+		}
+		return new Force(webEngine, result);
 	}
 
 	/**
 	 * 
 	 * @return the links current array, which defaults to the empty array.
 	 */
-	public Link[] links() {
-		throw new IllegalStateException("not yet implemented");
-		// return this.links();
+	public Array<Link> links() {
+		JSObject result = call("links");
+		if (result == null) {
+			return null;
+		}
+		return new Array<>(webEngine, result);
 	}
 
 	/**
@@ -443,9 +477,12 @@ public class Force extends JavaScriptObject {
 	 * 
 	 * @return the force layout object.
 	 */
-	public Force links(Link[] links) {
-		throw new IllegalStateException("not yet implemented");
-		// return this.links(links);
+	public Force links(Array<Link> links) {
+		JSObject result = call("links", links.getJsObject());
+		if (result == null) {
+			return null;
+		}
+		return new Force(webEngine, result);
 	}
 
 	/**
@@ -642,21 +679,29 @@ public class Force extends JavaScriptObject {
 	 * @param callback
 	 * @return
 	 */
-	public Selection on(String name, DatumFunction<?> callback) {
-		
+	public Selection on(String name, DataFunction<?> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
-		throw new IllegalStateException("not yet implemented");
-		/*
-		 * try { return this .on( name, function(d, i) { try {
-		 * 
-		 * var r =
-		 * callback.@com.github.gwtd3.api.functions.DatumFunction::apply(Lcom/
-		 * google/gwt/dom/client/Element;Lcom/github/gwtd3/api/core/Value;I)(
-		 * this,{datum:d},i); //r.@java.lang.Object::toString()(); return r; }
-		 * catch (e) { alert(e); return null; } }); } catch (e) { alert(e);
-		 * return null; }
-		 */
+		String funcName = createNewTemporaryInstanceName();
+		String varName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, callback);
+
+		String command = "var "+varName+" = d3." + funcName + " == null ? null : " + "function(d, i) {" //		      
+				+ "d3." + funcName + ".apply(this,{datum:d},i);" //
+				+ " }; ";
+
+		eval(command);
+		String onCommand = "this.on("+varName+");";
+
+		JSObject result = evalForJsObject(onCommand);
+
+		if (result == null) {
+			return null;
+		}
+
+		return new Selection(webEngine, result);
 	}
 
 	/**
@@ -711,7 +756,7 @@ public class Force extends JavaScriptObject {
 	 * A node in d3j's force layout, see <a href="https:Layout#nodes">d3 docs on
 	 * node</a>. The node class is used in {@link Force}, The class provides
 	 * accessors for the nodes key attributes, its position, previous position,
-	 * fixed (immovable) and weight (number of links). 
+	 * fixed (immovable) and weight (number of links).
 	 */
 	public static class Node extends org.treez.javafxd3.d3.layout.Node {
 

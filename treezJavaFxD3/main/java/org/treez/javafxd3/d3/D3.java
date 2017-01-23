@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.d3.arrays.foreach.ForEachCallback;
+import org.treez.javafxd3.d3.arrays.foreach.ForEachCallbackWrapper;
 import org.treez.javafxd3.d3.behaviour.Behavior;
 import org.treez.javafxd3.d3.behaviour.Drag;
-import org.treez.javafxd3.d3.behaviour.Zoom;
 import org.treez.javafxd3.d3.behaviour.Drag.DragEvent;
+import org.treez.javafxd3.d3.behaviour.Zoom;
 import org.treez.javafxd3.d3.behaviour.Zoom.ZoomEvent;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Formatter;
@@ -18,12 +21,14 @@ import org.treez.javafxd3.d3.core.Prefix;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.core.Transform;
 import org.treez.javafxd3.d3.core.Transition;
+import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.dsv.Dsv;
 import org.treez.javafxd3.d3.dsv.DsvCallback;
 import org.treez.javafxd3.d3.dsv.DsvObjectAccessor;
 import org.treez.javafxd3.d3.event.D3Event;
 import org.treez.javafxd3.d3.event.Event;
 import org.treez.javafxd3.d3.functions.TimerFunction;
+import org.treez.javafxd3.d3.functions.data.wrapper.PlainDataFunction;
 import org.treez.javafxd3.d3.geo.Geography;
 import org.treez.javafxd3.d3.geom.Geometry;
 import org.treez.javafxd3.d3.interpolators.Interpolators;
@@ -32,13 +37,12 @@ import org.treez.javafxd3.d3.scales.Scales;
 import org.treez.javafxd3.d3.svg.SVG;
 import org.treez.javafxd3.d3.time.Time;
 import org.treez.javafxd3.d3.wrapper.Element;
-import org.treez.javafxd3.d3.wrapper.Inspector;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 import org.treez.javafxd3.d3.wrapper.JsArrayMixed;
 import org.treez.javafxd3.d3.wrapper.Node;
 import org.treez.javafxd3.d3.wrapper.NodeList;
+import org.treez.javafxd3.d3.wrapper.Sort;
 import org.treez.javafxd3.d3.wrapper.Widget;
-import org.treez.javafxd3.d3.wrapper.WidgetCollection;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -65,14 +69,11 @@ public class D3 extends JavaScriptObject {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param webEngine
-	 */
 	public D3(WebEngine webEngine) {
 		super(webEngine);
-		JSObject d3 = (JSObject) webEngine.executeScript("d3");
+		Objects.requireNonNull(webEngine);
+		Object d3Obj = webEngine.executeScript("d3");
+		JSObject d3 = (JSObject) d3Obj;
 		setJsObject(d3);
 	}
 
@@ -84,7 +85,7 @@ public class D3 extends JavaScriptObject {
 	 * @return the version of the d3 API
 	 */
 	public String version() {
-		String result = callForString("version");
+		String result = getMemberForString("version");
 		return result;
 	};
 
@@ -130,7 +131,10 @@ public class D3 extends JavaScriptObject {
 	 * @return the {@link Selection}
 	 */
 	public Selection select(Element element) {
-		JSObject jsElement = element.getJsObject();
+		JSObject jsElement=null;
+		if(element!=null){
+			jsElement = element.getJsObject();
+		}		
 		JSObject result = call("select", jsElement);
 		return new Selection(webEngine, result);
 	};
@@ -160,7 +164,7 @@ public class D3 extends JavaScriptObject {
 	 * @return
 	 */
 	public Selection selectAll(String selector) {
-		JSObject result = call("selectAll", selector);
+		JSObject result = evalForJsObject("this.selectAll('" + selector + "')");
 		return new Selection(webEngine, result);
 	};
 
@@ -184,22 +188,31 @@ public class D3 extends JavaScriptObject {
 	 * @return the selection
 	 */
 	public Selection selectAll(Element... nodes) {
-		throw new IllegalStateException("not yet implemented");
-		//JSObject result = call("selectAll", (Object[]) nodes);
-		//return new Selection(webEngine, result);
-	};
 
-	/**
-	 * Selects the specified elementMatrices.
-	 *
-	 * @param elementMatrices
-	 *            the elements
-	 * @return the selection
-	 */
-	public Selection selectAll(Element[][]... elementMatrices) {
-		throw new IllegalStateException("not yet implemented");
-		//JSObject result = call("selectAll", (Object[]) nodes);
-		//return new Selection(webEngine, result);
+		JSObject d3JsObject = getD3();
+
+		List<String> fullVarNames = new ArrayList<>();
+		List<String> varNames = new ArrayList<>();
+		for (Element element : nodes) {
+			String varName = createNewTemporaryInstanceName();
+			d3JsObject.setMember(varName, element.getJsObject());
+			fullVarNames.add("d3." + varName);
+			varNames.add(varName);
+		}
+
+		String command = "this.selectAll([" + String.join(",", fullVarNames) + "])";
+		JSObject result = evalForJsObject(command);
+
+		for (String varName : varNames) {
+			d3JsObject.removeMember(varName);
+		}
+
+		if (result == null) {
+			return null;
+		}
+
+		return new Selection(webEngine, result);
+
 	};
 
 	/**
@@ -231,21 +244,6 @@ public class D3 extends JavaScriptObject {
 	}
 
 	/**
-	 * Selects the specified collection of elements.
-	 *
-	 * @param widgets
-	 *            the elements
-	 * @return the selection
-	 */
-	public final Selection selectAll(final WidgetCollection widgets) {
-		List<Element> elements = new ArrayList<Element>();
-		for (Widget widget : widgets) {
-			elements.add(widget.getElement());
-		}
-		return selectAll(elements);
-	}
-
-	/**
 	 * Create an animated transition.
 	 * <p>
 	 * This is equivalent to {@link Selection#transition()
@@ -260,25 +258,11 @@ public class D3 extends JavaScriptObject {
 		JSObject result = call("transition");
 		return new Transition(webEngine, result);
 	};
-	
-	
-	public Transform transform(String transformString){
-		JSObject result = call("transform", transformString);					
+
+	public Transform transform(String transformString) {
+		JSObject result = call("transform", transformString);
 		return new Transform(webEngine, result);
 	}
-
-	// /**
-	// * Create an animated transition. In the context of
-	// * {@link Transition#each(com.github.gwtd3.api.functions.DatumFunction)},
-	// * this method will create a new transition for the specified selection
-	// that
-	// * inherits the delay, duration and other properties of the parent
-	// * transition. This is useful for implementing reusable components that
-	// can
-	// * be called either on selections or on transitions, in the latter case
-	// * supporting deriving concurrent transitions. An example of this is	
-	// return $wnd.d3.transition(selection);
-	// };
 
 	// =========== Math ==============
 
@@ -343,6 +327,9 @@ public class D3 extends JavaScriptObject {
 	 */
 	public SVG svg() {
 		JSObject result = getMember("svg");
+		if (result == null) {
+			return null;
+		}
 		return new SVG(webEngine, result);
 	};
 
@@ -351,7 +338,10 @@ public class D3 extends JavaScriptObject {
 	 * @return the layout module
 	 */
 	public Layout layout() {
-		JSObject result = call("layout");
+		JSObject result = getMember("layout");
+		if (result == null) {
+			return null;
+		}
 		return new Layout(webEngine, result);
 	};
 
@@ -360,6 +350,9 @@ public class D3 extends JavaScriptObject {
 	 */
 	public Geometry geom() {
 		JSObject result = getMember("geom");
+		if (result == null) {
+			return null;
+		}
 		return new Geometry(webEngine, result);
 	};
 
@@ -368,6 +361,9 @@ public class D3 extends JavaScriptObject {
 	 */
 	public Geography geo() {
 		JSObject result = getMember("geo");
+		if (result == null) {
+			return null;
+		}
 		return new Geography(webEngine, result);
 	};
 
@@ -416,16 +412,16 @@ public class D3 extends JavaScriptObject {
 	 *            the delay to expires before the command should start being
 	 *            invoked (may be negative if markMillis is in the future)
 	 */
-	public void timer(TimerFunction command, int delayMillis) {
+	public void timer(TimerFunction timerFunction, int delayMillis) {
 
-		throw new IllegalStateException("not yet implemented");
+		assertObjectIsNotAnonymous(timerFunction);
 
-		/*
-		 * JSObject result = call($wnd.d3 .timer( function() { return
-		 * command.@com.github.gwtd3.api.functions.TimerFunction::execute()();
-		 * }, delayMillis);
-		 * 
-		 */
+		String funcName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, timerFunction);
+
+		String command = "this.timer(function(d, i) { return d3." + funcName + ".execute();}, " + delayMillis + ");";
+		eval(command);
 	};
 
 	/**
@@ -465,16 +461,18 @@ public class D3 extends JavaScriptObject {
 	 * @param markMillis
 	 *            the timestamp from which the delay starts
 	 */
-	public void timer(TimerFunction command, int delayMillis, int markMillis) {
+	public void timer(TimerFunction timerFunction, int delayMillis, int markMillis) {
 
-		throw new IllegalStateException("not yet implemented");
+		assertObjectIsNotAnonymous(timerFunction);
 
-		/*
-		 * JSObject result = call($wnd.d3 .timer( function() { return
-		 * command.@com.github.gwtd3.api.functions.TimerFunction::execute()();
-		 * }, delayMillis, markMillis);
-		 * 
-		 */
+		String funcName = createNewTemporaryInstanceName();
+		JSObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, timerFunction);
+
+		String command = "this.timer(function(d, i) { return d3." + funcName + ".execute();}, " + delayMillis + ", "
+				+ markMillis + ");";
+		eval(command);
+
 	};
 
 	/**
@@ -543,7 +541,7 @@ public class D3 extends JavaScriptObject {
 	 *
 	 * @return the instance of {@link Event}
 	 */
-	public Event event() {		
+	public Event event() {
 		JSObject result = getMember("event");
 		return new Event(webEngine, result);
 	};
@@ -556,13 +554,13 @@ public class D3 extends JavaScriptObject {
 	 * @return the current event as a Coords object
 	 */
 	public Coords eventAsCoords() {
-								
-		Object xObj =  eval("d3.event.x");
-		Object yObj =  eval("d3.event.y");
+
+		Object xObj = eval("d3.event.x");
+		Object yObj = eval("d3.event.y");
 		Double x = Double.parseDouble(xObj.toString());
 		Double y = Double.parseDouble(yObj.toString());
-		
-		return new Coords(webEngine, x,y);
+
+		return new Coords(webEngine, x, y);
 	};
 
 	/**
@@ -574,12 +572,12 @@ public class D3 extends JavaScriptObject {
 	 * @return the current event as a Coords object
 	 */
 	public Coords eventAsDCoords() {
-		Object dxObj =  eval("d3.event.dx");
-		Object dyObj =  eval("d3.event.dy");
+		Object dxObj = eval("d3.event.dx");
+		Object dyObj = eval("d3.event.dy");
 		Double dx = Double.parseDouble(dxObj.toString());
 		Double dy = Double.parseDouble(dyObj.toString());
-		
-		return new Coords(webEngine, dx,dy);
+
+		return new Coords(webEngine, dx, dy);
 	};
 
 	/**
@@ -626,10 +624,7 @@ public class D3 extends JavaScriptObject {
 	public double mouseX(Node container) {
 		JSObject containerObject = container.getJsObject();
 		JSObject coordObj = call("mouse", containerObject);
-		//Inspector.inspect(coordObj);
-
 		Object result = coordObj.getMember("0");
-
 		Double x = Double.parseDouble("" + result);
 		return x;
 	};
@@ -679,7 +674,7 @@ public class D3 extends JavaScriptObject {
 	 * @return the CSV module
 	 */
 	public <T> Dsv<T> csv() {
-		JSObject result = getMember("csv");
+		JSObject result = getMember("csv"); //call("dsvFormat", ",");
 		return new Dsv<T>(webEngine, result);
 	};
 
@@ -702,15 +697,15 @@ public class D3 extends JavaScriptObject {
 
 		assertObjectIsNotAnonymous(callback);
 
-		throw new IllegalStateException("not yet implemented");
+		String callbackName = createNewTemporaryInstanceName();
+		JSObject jsObj = getJsObject();
+		jsObj.setMember(callbackName, callback);
 
-		/*
-		 * JSObject result = call($wnd.d3 .csv( url, function(error, rows) {
-		 * callback.@com.github.gwtd3.api.dsv.DsvCallback::get(Lcom/google/gwt/
-		 * core/client/JavaScriptObject;Lcom/github/gwtd3/api/dsv/DsvRows;)(
-		 * error, rows); });
-		 * 
-		 */
+		String command = "this.csv('" + url + "', function(error, rows) { " //
+				+ "  this." + callbackName + ".get(error, rows); " //
+				+ "});";
+		JSObject result = evalForJsObject(command);
+		return new Dsv<T>(webEngine, result);
 	};
 
 	/**
@@ -733,6 +728,7 @@ public class D3 extends JavaScriptObject {
 	 */
 	public <T> Dsv<T> csv(String url, DsvObjectAccessor<T> accessor, DsvCallback<T> callback) {
 
+		assertObjectIsNotAnonymous(accessor);
 		assertObjectIsNotAnonymous(callback);
 
 		String accessorMemberName = createNewTemporaryInstanceName();
@@ -742,9 +738,9 @@ public class D3 extends JavaScriptObject {
 		jsObj.setMember(accessorMemberName, accessor);
 		jsObj.setMember(callbackName, callback);
 
-		String command = "this.csv('" + url + "', function(row, index) { " //
+		String command = "this.csv('" + url + "', function(row, index) { " //			
 				+ "  return this." + accessorMemberName + ".apply(row, index);" //
-				+ " }, " + "function(error, rows) { " //
+				+ " }, " + "function(error, rows) { " //			
 				+ "  this." + callbackName + ".get(error, rows); " //
 				+ "});";
 		JSObject result = evalForJsObject(command);
@@ -773,15 +769,16 @@ public class D3 extends JavaScriptObject {
 
 		assertObjectIsNotAnonymous(accessor);
 
-		throw new IllegalStateException("not yet implemented");
+		String accessorMemberName = createNewTemporaryInstanceName();
 
-		/*
-		 * JSObject result = call($wnd.d3 .csv( url, function(row, index) {
-		 * return
-		 * accessor.@com.github.gwtd3.api.core.ObjectAccessor::apply(Ljava/lang/
-		 * Object;I)(row, index); });
-		 * 
-		 */
+		JSObject jsObj = getJsObject();
+		jsObj.setMember(accessorMemberName, accessor);
+
+		String command = "this.csv('" + url + "', function(row, index) { " //				
+				+ "  return this." + accessorMemberName + ".apply(row, index);" //
+				+ " });";
+		JSObject result = evalForJsObject(command);
+		return new Dsv<T>(webEngine, result);
 	};
 
 	/**
@@ -806,7 +803,10 @@ public class D3 extends JavaScriptObject {
 	 * @return the TSV module
 	 */
 	public <T> Dsv<T> tsv() {
-		JSObject result = getMember("tsv");
+		JSObject result = getMember("tsv"); //call("dsvFormat", "\t");
+		if (result == null) {
+			throw new IllegalStateException("Could not get tsv");
+		}
 		return new Dsv<T>(webEngine, result);
 	};
 
@@ -829,20 +829,21 @@ public class D3 extends JavaScriptObject {
 
 		assertObjectIsNotAnonymous(callback);
 
-		throw new IllegalStateException("not yet implemented");
+		String callbackName = createNewTemporaryInstanceName();
+		JSObject jsObj = getJsObject();
+		jsObj.setMember(callbackName, callback);
 
-		/*
-		 * JSObject result = call($wnd.d3 .tsv( url, function(error, rows) {
-		 * callback.@com.github.gwtd3.api.dsv.DsvCallback::get(Lcom/google/gwt/
-		 * core/client/JavaScriptObject;Lcom/github/gwtd3/api/dsv/DsvRows;)(
-		 * error, rows); });
-		 * 
-		 */
+		String command = "this.tsv('" + url + "', function(error, rows) { " //
+				+ "  this." + callbackName + ".get(error, rows); " //
+				+ "});";
+		JSObject result = evalForJsObject(command);
+		return new Dsv<T>(webEngine, result);
+
 	};
 
 	/**
-	 * Issues an HTTP GET request for the comma-separated values (TSV) file at
-	 * the specified url.
+	 * Issues an HTTP GET request for the tab-separated values (TSV) file at the
+	 * specified url.
 	 * <p>
 	 * The file contents are assumed to be RFC4180-compliant. The mime type of
 	 * the request will be "text/tsv". The request is processed asynchronously,
@@ -860,20 +861,25 @@ public class D3 extends JavaScriptObject {
 	 */
 	public <T> Dsv<T> tsv(String url, DsvObjectAccessor<T> accessor, DsvCallback<T> callback) {
 
+		assertObjectIsNotAnonymous(accessor);
 		assertObjectIsNotAnonymous(callback);
 
-		throw new IllegalStateException("not yet implemented");
+		String accessorMemberName = createNewTemporaryInstanceName();
+		String callbackName = createNewTemporaryInstanceName();
 
-		/*
-		 * JSObject result = call($wnd.d3 .tsv( url, function(row, index) {
-		 * return
-		 * accessor.@com.github.gwtd3.api.core.ObjectAccessor::apply(Ljava/lang/
-		 * Object;I)(row, index); }, function(error, rows) {
-		 * callback.@com.github.gwtd3.api.dsv.DsvCallback::get(Lcom/google/gwt/
-		 * core/client/JavaScriptObject;Lcom/github/gwtd3/api/dsv/DsvRows;)(
-		 * error, rows); });
-		 * 
-		 */
+		JSObject jsObj = getJsObject();
+		jsObj.setMember(accessorMemberName, accessor);
+		jsObj.setMember(callbackName, callback);
+
+		String command = "this.tsv('" + url + "', function(row, index) { " //		
+				+ "alert('inside tsv callback'); " //
+				+ "  return this." + accessorMemberName + ".apply(row, index);" //
+				+ " }, " + "function(error, rows) { " //			
+				+ "  this." + callbackName + ".get(error, rows); " //
+				+ "});";
+		JSObject result = evalForJsObject(command);
+		return new Dsv<T>(webEngine, result);
+
 	};
 
 	/**
@@ -897,15 +903,17 @@ public class D3 extends JavaScriptObject {
 
 		assertObjectIsNotAnonymous(accessor);
 
-		throw new IllegalStateException("not yet implemented");
+		String accessorMemberName = createNewTemporaryInstanceName();
 
-		/*
-		 * JSObject result = call($wnd.d3 .tsv( url, function(row, index) {
-		 * return
-		 * accessor.@com.github.gwtd3.api.core.ObjectAccessor::apply(Ljava/lang/
-		 * Object;I)(row, index); });
-		 * 
-		 */
+		JSObject jsObj = getJsObject();
+		jsObj.setMember(accessorMemberName, accessor);
+
+		String command = "this.tsv('" + url + "', function(row, index) { " //				
+				+ "  return this." + accessorMemberName + ".apply(row, index);" //
+				+ " });";
+		JSObject result = evalForJsObject(command);
+		return new Dsv<T>(webEngine, result);
+
 	};
 
 	/**
@@ -937,10 +945,9 @@ public class D3 extends JavaScriptObject {
 	 *            the object to convert to an array
 	 * @return an array containing the property names.
 	 */
-	public <T> String[] keys(JavaScriptObject object) {
-		//JSObject result = call("keys", object);
-		throw new IllegalStateException("not yet implemented");
-		//return new Array<String>(webEngine, result);
+	public <T> Array<String> keys(JavaScriptObject object) {
+		JSObject result = call("keys", object.getJsObject());
+		return new Array<String>(webEngine, result);
 	};
 
 	// =================== format methods ====================
@@ -1010,20 +1017,19 @@ public class D3 extends JavaScriptObject {
 
 	// =========== range ===================
 
-
 	public Array<Double> range(double stop) {
 		JSObject result = call("range", stop);
 		return new Array<Double>(webEngine, result);
 	}
-	
-	public Array<Double> range(double start, double stop) {		
+
+	public Array<Double> range(double start, double stop) {
 		JSObject result = call("range", start, stop);
-		return new Array<Double>(webEngine, result);		
+		return new Array<Double>(webEngine, result);
 	}
-	
-	public Array<Double> range(double start, double stop, double step) {		
+
+	public Array<Double> range(double start, double stop, double step) {
 		JSObject result = call("range", start, stop, step);
-		return new Array<Double>(webEngine, result);		
+		return new Array<Double>(webEngine, result);
 	}
 
 	// =========== behaviours ==============
@@ -1043,15 +1049,15 @@ public class D3 extends JavaScriptObject {
 	 */
 
 	public final ZoomEvent zoomEvent() {
-		
+
 		Event event = event();
-		if (event==null){
+		if (event == null) {
 			return null;
-		}		
-		
+		}
+
 		JSObject jsEvent = event.getJsObject();
 
-		return new ZoomEvent(webEngine, jsEvent);		
+		return new ZoomEvent(webEngine, jsEvent);
 	}
 
 	/**
@@ -1064,10 +1070,10 @@ public class D3 extends JavaScriptObject {
 	public final DragEvent dragEvent() {
 
 		Event event = event();
-		if (event==null){
+		if (event == null) {
 			return null;
-		}		
-		
+		}
+
 		JSObject jsEvent = event.getJsObject();
 
 		return new DragEvent(webEngine, jsEvent);
@@ -1086,7 +1092,7 @@ public class D3 extends JavaScriptObject {
 
 		String command = "var identity = function(d) { return d; }";
 		eval(command);
-		JSObject result = evalForJsObject("identity");		
+		JSObject result = evalForJsObject("identity");
 		return result;
 	}
 
@@ -1126,6 +1132,189 @@ public class D3 extends JavaScriptObject {
 		//boolean isOk = val.equals(value);
 	}
 
+	public Sort ascending() {
+		JSObject result = getMember("ascending");
+		return new Sort(webEngine, result);
+	}
+
+	public Sort descending() {
+		JSObject result = getMember("descending");
+		return new Sort(webEngine, result);
+	}
+
+	public <T> Array<T> extent(Array<T> array) {
+
+		if (array.length() > 0) {
+			Object firstElement = array.get(0, Object.class);
+			boolean isJavaScriptObject = firstElement instanceof JavaScriptObject;
+			if (isJavaScriptObject) {
+				List<JSObject> elementList = extractJsObjectElements(array);
+				return extent(elementList);
+			}
+		}
+
+		JSObject result = call("extent", array.getJsObject());
+
+		if (result == null) {
+			return null;
+		}
+		return new Array<>(webEngine, result);
+	}
+
+	private <T> Array<T> extent(Collection<JSObject> elements) {
+
+		JSObject d3JsObject = getD3();
+
+		List<String> fullVarNames = new ArrayList<>();
+		List<String> varNames = new ArrayList<>();
+		for (JSObject jsObject : elements) {
+			String varName = createNewTemporaryInstanceName();
+			d3JsObject.setMember(varName, jsObject);
+			fullVarNames.add("d3." + varName);
+			varNames.add(varName);
+		}
+
+		String command = "this.extent([" + String.join(",", fullVarNames) + "])";
+		JSObject result = evalForJsObject(command);
+
+		for (String varName : varNames) {
+			d3JsObject.removeMember(varName);
+		}
+
+		if (result == null) {
+			return null;
+		}
+
+		return new Array<>(webEngine, result);
+	}
+
+	public <R, A> Array<R> extent(Array<A> array, Class<A> argumentClass, PlainDataFunction<R, A> accessor) {
+
+		ForEachCallback<R> accessorWrapper = new ForEachCallbackWrapper<>(argumentClass, webEngine, accessor);
+		return extent(array, accessorWrapper);
+	}
+
+	public <R, A> Array<R> extent(Array<A> array, ForEachCallback<R> accessor) {
+
+		assertObjectIsNotAnonymous(accessor);
+
+		String arrayMemberName = createNewTemporaryInstanceName();
+		String accessorMemberName = createNewTemporaryInstanceName();
+
+		JSObject jsObj = getJsObject();
+		jsObj.setMember(arrayMemberName, array.getJsObject());
+		jsObj.setMember(accessorMemberName, accessor);
+
+		String command = "d3.extent(d3." + arrayMemberName + ", function(d, index, array) { " + //
+				"   return d3." + accessorMemberName + ".forEach(this, {datum:d}, index, array);" + //
+				"}); ";
+
+		JSObject result = evalForJsObject(command);
+
+		jsObj.removeMember(arrayMemberName);
+		jsObj.removeMember(accessorMemberName);
+
+		if (result == null) {
+			return null;
+		}
+		return new Array<>(webEngine, result);
+
+	}
+
+	private <T> List<JSObject> extractJsObjectElements(Array<T> array) {
+		List<JSObject> elementList = new ArrayList<>();
+		array.forEach((object) -> {
+			JavaScriptObject wrapper = (JavaScriptObject) object;
+			JSObject rawElement = wrapper.getJsObject();
+			elementList.add(rawElement);
+		});
+		return elementList;
+	}
+
+	public Value max(Array<?> array) {
+		JSObject result = call("max", array.getJsObject());
+		if (result == null) {
+			return null;
+		}
+		return new Value(webEngine, result);
+	}
+
+	public Value max(Array<?> array, ForEachCallback<?> accessor) {
+
+		assertObjectIsNotAnonymous(accessor);
+
+		String arrayMemberName = createNewTemporaryInstanceName();
+		String accessorMemberName = createNewTemporaryInstanceName();
+
+		JSObject jsObj = getJsObject();
+		jsObj.setMember(arrayMemberName, array.getJsObject());
+		jsObj.setMember(accessorMemberName, accessor);
+
+		String command = "d3.max(d3." + arrayMemberName + ", function(d, index, array) { " + //
+				"   return d3." + accessorMemberName + ".forEach(this, {datum:d}, index, array);" + //
+				"}); ";
+
+		Object valueResult = eval(command);
+
+		jsObj.removeMember(arrayMemberName);
+		jsObj.removeMember(accessorMemberName);
+
+		if (valueResult == null) {
+			return null;
+		}
+		return Value.create(webEngine, valueResult);
+
+	}
+
+	public Value min(Array<?> array) {
+		JSObject result = call("min", array.getJsObject());
+		if (result == null) {
+			return null;
+		}
+		return new Value(webEngine, result);
+	}
+	
+	public int logNumberOfTempVars() {
+		return logNumberOfTempVars("");
+	}
+
+	public int logNumberOfTempVars(String identifier) {
+
+		String command = "var attributeNames = Object.getOwnPropertyNames(this);" + //
+				"var temp_count = 0;" + //
+				"var prefix = 'temp__instance__';" + //
+				"var prefixLength = prefix.length;" + //
+				"for(var index=0; index<attributeNames.length; index++){" + //
+				" var attributeName = attributeNames[index];  " + //	
+				"   if (attributeName.length > prefixLength){" + //
+				"     if(attributeName.substring(0, prefixLength) == prefix){" + //
+				"       temp_count++;" + //
+				"     }" + //
+				"   }" + //
+				"}";
+		eval(command);
+		int count = evalForInteger("temp_count");
+		eval("temp_count=undefined; attributeNames=undefined;");
+
+		System.out.println("D3 =>Number of temporary D3 variables("+identifier+"): " + count);
+		return count;
+
+	}
+
+	public void clearTempVars() {
+
+		String command = "var attributeNames = Object.getOwnPropertyNames(this);" + //		
+				"for(var index=0; index<attributeNames.length; index++){" + //
+				" var attributeName = attributeNames[index];  " + //
+				"   if(attributeName.includes('temp__instance__')){" + //
+				"     this[attributeName]=undefined;" + //
+				"   }" + //
+				"}" + //
+				"attributeNames=undefined;";
+		eval(command);
+
+	}
+
 	//#end region
 
 	//#region ACCESSORS
@@ -1136,8 +1325,6 @@ public class D3 extends JavaScriptObject {
 	public WebEngine getWebEngine() {
 		return webEngine;
 	}
-
-	
 
 	//#end region
 

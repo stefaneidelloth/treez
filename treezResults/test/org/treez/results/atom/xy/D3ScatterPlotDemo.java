@@ -3,9 +3,9 @@ package org.treez.results.atom.xy;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisTransformPointDataFunction;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.Area;
@@ -144,8 +144,7 @@ public class D3ScatterPlotDemo extends Application {
 					.clamp(true);
 		}
 
-		xScale
-				.range(0, Length.toPx(graphWidth)) //
+		xScale.range(0, Length.toPx(graphWidth)) //
 				.domain(xmin, xmax);
 
 		org.treez.javafxd3.d3.svg.Axis xAxis = d3 //
@@ -188,8 +187,7 @@ public class D3ScatterPlotDemo extends Application {
 					.attr("y2", "+" + 20);
 
 			minorTickLines //
-					.style("stroke", "red")
-					.attr("y2", "+" + 10);
+					.style("stroke", "red").attr("y2", "+" + 10);
 
 		}
 
@@ -230,8 +228,8 @@ public class D3ScatterPlotDemo extends Application {
 		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
 				.svg()//
 				.line()
-				.x(new AxisScaleFirstDatumFunction(xScale))
-				.y(new AxisScaleSecondDatumFunction(yScale));
+				.x(new AxisScaleFirstDataFunction(xScale))
+				.y(new AxisScaleSecondDataFunction(yScale));
 		//.interpolate(org.treez.javafxd3.d3.svg.InterpolationMode.STEP);
 
 		@SuppressWarnings("unused")
@@ -247,9 +245,9 @@ public class D3ScatterPlotDemo extends Application {
 		Area areaPathGenerator = d3 //
 				.svg() //
 				.area() //
-				.x(new AxisScaleFirstDatumFunction(xScale))
+				.x(new AxisScaleFirstDataFunction(xScale))
 				.y0(yMin)
-				.y1(new AxisScaleSecondDatumFunction(yScale));
+				.y1(new AxisScaleSecondDataFunction(yScale));
 		String areaPath = areaPathGenerator.generate(dataArray);
 
 		@SuppressWarnings("unused")
@@ -276,12 +274,11 @@ public class D3ScatterPlotDemo extends Application {
 				.attr("class", "symbols");
 
 		@SuppressWarnings("unused")
-		Selection symbols = symbolSelection
-				.selectAll("path") //
+		Selection symbols = symbolSelection.selectAll("path") //
 				.data(dataArray) //
 				.enter() //
 				.append("path") //
-				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
+				.attr("transform", new AxisTransformPointDataFunction(xScale, yScale)) //
 				//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
 				.attr("d", symbolDString) //
 				.attr("style", symbolStyle);

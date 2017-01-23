@@ -14,7 +14,7 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisTransformPointDataFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.results.atom.graph.Graph;
@@ -221,7 +221,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 				.data(xyDataString) //
 				.enter() //
 				.append("path") //
-				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
+				.attr("transform", new AxisTransformPointDataFunction(xScale, yScale)) //
 				.attr("d", symbolDString);
 
 		//bind attributes

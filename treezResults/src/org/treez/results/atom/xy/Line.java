@@ -10,8 +10,8 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -91,8 +91,8 @@ public class Line implements GraphicsPropertiesPageFactory {
 		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
 				.svg()//
 				.line()
-				.x(new AxisScaleFirstDatumFunction(xScale))
-				.y(new AxisScaleSecondDatumFunction(yScale))//
+				.x(new AxisScaleFirstDataFunction(xScale))
+				.y(new AxisScaleSecondDataFunction(yScale))//
 				.interpolate(mode);
 
 		//plot new lines

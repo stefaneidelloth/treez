@@ -1,12 +1,10 @@
 package org.treez.javafxd3.d3.svg;
 
-import org.treez.javafxd3.d3.D3;
-import org.treez.javafxd3.d3.svg.Chord;
-import org.treez.javafxd3.d3.svg.datumfunction.ChordRadiusDatumFunction;
-import org.treez.javafxd3.d3.svg.datumfunction.ChordSourceDatumFunction;
-import org.treez.javafxd3.d3.svg.datumfunction.ChordStartAngleDatumFunction;
-import org.treez.javafxd3.d3.svg.datumfunction.ChordTargetDatumFunction;
 import org.treez.javafxd3.d3.AbstractTestCase;
+import org.treez.javafxd3.d3.svg.datafunction.ChordRadiusDataFunction;
+import org.treez.javafxd3.d3.svg.datafunction.ChordSourceDataFunction;
+import org.treez.javafxd3.d3.svg.datafunction.ChordStartAngleDataFunction;
+import org.treez.javafxd3.d3.svg.datafunction.ChordTargetDataFunction;
 
 
 @SuppressWarnings("javadoc")
@@ -15,7 +13,7 @@ public class ChordTest extends AbstractTestCase {
 	@Override	
 	public void doTest() {
 		
-		D3 d3 = new D3(webEngine);
+		
 		
 		Chord chord = d3.svg().chord();
 
@@ -24,13 +22,13 @@ public class ChordTest extends AbstractTestCase {
 		chord.endAngle(5);
 		chord.radius(6);
 
-		chord.source(new ChordSourceDatumFunction());
-		chord.target(new ChordTargetDatumFunction());
+		chord.source(new ChordSourceDataFunction());
+		chord.target(new ChordTargetDataFunction());
 		
 		// chord
-		chord.startAngle(new ChordStartAngleDatumFunction(webEngine)) //
-		.endAngle(new ChordStartAngleDatumFunction(webEngine)) //
-		.radius(new ChordRadiusDatumFunction(webEngine));
+		chord.startAngle(new ChordStartAngleDataFunction(webEngine)) //
+		.endAngle(new ChordStartAngleDataFunction(webEngine)) //
+		.radius(new ChordRadiusDataFunction(webEngine));
 
 		chord.generate(new Double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
 	}

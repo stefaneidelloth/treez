@@ -4,13 +4,12 @@ import java.util.Arrays;
 
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.ConstantDatumFunction;
 import org.treez.javafxd3.d3.functions.KeyFunction;
-import org.treez.javafxd3.d3.wrapper.Inspector;
-
-import org.treez.javafxd3.d3.selection.datumfunction.IntegerArrayDatumFunction;
-import org.treez.javafxd3.d3.selection.datumfunction.ObjectArrayDatumFunction;
-import org.treez.javafxd3.d3.selection.datumfunction.StringDatumFunction;
+import org.treez.javafxd3.d3.functions.data.ConstantDataFunction;
+import org.treez.javafxd3.d3.functions.key.KeyFunctionWrapper;
+import org.treez.javafxd3.d3.selection.datafunction.IntegerArrayDataFunction;
+import org.treez.javafxd3.d3.selection.datafunction.ObjectArrayDataFunction;
+import org.treez.javafxd3.d3.selection.datafunction.StringDataFunction;
 import org.treez.javafxd3.d3.selection.keyfunction.IntegerKeyFunction;
 
 import netscape.javascript.JSObject;
@@ -21,8 +20,7 @@ public class SelectionDataTest extends AbstractSelectionTest {
 	@Override
 	public void doTest() {
 		
-		//TODO: testSelectionDataGetter();
-		
+		testSelectionDataGetter();		
 		
 		testSelectionDataSetterArray();
 		testSelectionDataSetterFunctionReturningJSO();
@@ -36,7 +34,7 @@ public class SelectionDataTest extends AbstractSelectionTest {
 
 	protected Selection givenASimpleSelection() {
 		clearSvg();
-		return d3.select("root").append("table").selectAll("tr").data(MATRIX[0]).enter().append("tr");
+		return d3.select("#root").append("table").selectAll("tr").data(MATRIX[0]).enter().append("tr");
 	}
 
 	/**
@@ -49,16 +47,18 @@ public class SelectionDataTest extends AbstractSelectionTest {
 	 */
 	protected Selection givenANestedSelection() {
 		clearSvg();
-		Selection tr = d3.select("root").append("table").selectAll("tr").data(MATRIX).enter().append("tr");
+		Selection tr = d3.select("#root") //
+				.append("table") //
+				.selectAll("tr") //
+				.data(MATRIX) //
+				.enter() //
+				.append("tr");		
 		
-		//Inspector.inspect(tr);
-		Selection tds = tr.selectAll("td");
+		Selection tds = tr.selectAll("td");		
 		
-		//Inspector.inspect(tds);
-		
-		Selection withInteger = tds.data(new IntegerArrayDatumFunction(webEngine));
+		Selection withInteger = tds.data(new IntegerArrayDataFunction(webEngine));
 						
-		Selection td = withInteger.enter().append("td").text(new StringDatumFunction(webEngine));
+		Selection td = withInteger.enter().append("td").text(new StringDataFunction(webEngine));
 		return td;
 	}
 
@@ -68,7 +68,7 @@ public class SelectionDataTest extends AbstractSelectionTest {
 	private void testSelectionDataSetterFunctionReturningJSO() {
 		Selection selection = givenTrElementsInATable(3);
 
-		selection.data(new ConstantDatumFunction<String[]>(new String[] { "0", "1", "2" }));
+		selection.data(new ConstantDataFunction<String[]>(new String[] { "0", "1", "2" }));
 
 		assertDataPropertyEqualsTo("0", selection, 0);
 		assertDataPropertyEqualsTo("1", selection, 1);
@@ -201,15 +201,20 @@ public class SelectionDataTest extends AbstractSelectionTest {
 		assertDataPropertyEqualsTo(100, selection, 2);
 
 		// Object
-		selection.data(new Object[] { "67", "12", "107" });
-		selection.data(new Object[] { "67", "12", "107" }, func);
-		assertDataPropertyEqualsTo("67", selection, 0);
-		assertDataPropertyEqualsTo("12", selection, 1);
-		assertDataPropertyEqualsTo("107", selection, 2);
+		selection.data(new Object[] { 67, 12, 107 });
+		selection.data(new Object[] { 67, 12, 107 }, func);
+		assertDataPropertyEqualsTo(67, selection, 0);
+		assertDataPropertyEqualsTo(12, selection, 1);
+		assertDataPropertyEqualsTo(107, selection, 2);
 
 		// JSO
+		
+		KeyFunction<Integer> charFunction = new KeyFunctionWrapper<Integer, Character>(Character.class, webEngine, (character)->{
+			return Character.getNumericValue(character);
+		});
+		
 		selection.data(new char[] { 'b', 'z', 'g' });
-		selection.data(new char[] { 'b', 'z', 'g' }, func);
+		selection.data(new char[] { 'b', 'z', 'g' }, charFunction);
 		assertDataPropertyEqualsTo("b", selection, 0);
 		assertDataPropertyEqualsTo("z", selection, 1);
 		assertDataPropertyEqualsTo("g", selection, 2);
@@ -224,15 +229,10 @@ public class SelectionDataTest extends AbstractSelectionTest {
 
 	protected void assertDataPropertyEqualsTo(final Object expectedData, final Selection selection,
 			final int elementIndex) {
-
-		//Inspector.inspect(selection);
 		
-		Selection selectionArray = selection.get(0);
-		//Inspector.inspect(selectionArray);
+		Selection selectionArray = selection.get(0);		
 		Selection childSelection = selectionArray.get(elementIndex);
-		
-		//Inspector.inspect(childSelection);
-		
+				
 		JSObject jsObject = childSelection.getJsObject();
 		String command = "this." + Selection.DATA_PROPERTY;
 		Object result = jsObject.eval(command);			
@@ -243,8 +243,7 @@ public class SelectionDataTest extends AbstractSelectionTest {
 	protected void assertDataPropertyEqualsTo(final String expectedData, final Selection selection,
 			final int elementIndex) {
 		
-		Selection selectionArray = selection.get(0);
-		//Inspector.inspect(selectionArray);
+		Selection selectionArray = selection.get(0);		
 		Selection childSelection = selectionArray.get(elementIndex);
 		
 		JSObject jsObject = childSelection.getJsObject();
@@ -254,10 +253,7 @@ public class SelectionDataTest extends AbstractSelectionTest {
 		assertEquals(expectedData, propertyValue);		
 		
 	}
-
-	/**
-	 * 
-	 */
+	
 	private void testSelectionDataGetter() {
 		// given a 2-dim selection
 		Selection selection = givenANestedSelection();
@@ -280,9 +276,9 @@ public class SelectionDataTest extends AbstractSelectionTest {
 		System.out.println("creating second level divs");
 		
 		tr.selectAll("td") //
-				.data(new ObjectArrayDatumFunction(webEngine)) //
+				.data(new ObjectArrayDataFunction(webEngine)) //
 				.enter() //
 				.append("td") //
-				.text(new StringDatumFunction(webEngine));
+				.text(new StringDataFunction(webEngine));
 	}
 }

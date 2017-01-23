@@ -12,9 +12,9 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleInversedSecondDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleInversedFirstDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.graph.Graph;
@@ -158,11 +158,11 @@ public class Fill implements GraphicsPropertiesPageFactory {
 					.data(dataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleFirstDatumFunction(xScale))
-					.attr("y", new AxisScaleSecondDatumFunction(yScale))
+					.attr("x", new AxisScaleFirstDataFunction(xScale))
+					.attr("y", new AxisScaleSecondDataFunction(yScale))
 					.attr("width", barWidth)
 					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleInversedSecondDatumFunction(yScale, graphHeight));
+					.attr("height", new AxisScaleInversedFirstDataFunction(yScale, graphHeight));
 		} else {
 			double barHeight = determineBarHeight(bar, graphHeight, yScale, positionSize, barFillRatio);
 
@@ -171,10 +171,10 @@ public class Fill implements GraphicsPropertiesPageFactory {
 					.enter() //
 					.append("rect")
 					.attr("x", 0)
-					.attr("y", new AxisScaleFirstDatumFunction(yScale))
+					.attr("y", new AxisScaleFirstDataFunction(yScale))
 					.attr("height", barHeight)
 					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleSecondDatumFunction(xScale));
+					.attr("width", new AxisScaleSecondDataFunction(xScale));
 		}
 
 		//bind attributes

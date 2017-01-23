@@ -3,7 +3,7 @@ package org.treez.javafxd3.d3.geom;
 import java.util.List;
 
 import org.treez.javafxd3.d3.arrays.Array;
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
 import javafx.scene.web.WebEngine;
@@ -19,11 +19,7 @@ import netscape.javascript.JSObject;
 public class Hull extends JavaScriptObject {
 
 	//#region CONSTRUCTORS
-
-	/**
-	 * @param webEngine
-	 * @param wrappedJsObject
-	 */
+	
 	public Hull(WebEngine webEngine, JSObject wrappedJsObject) {
 		super(webEngine);
 		setJsObject(wrappedJsObject);
@@ -43,7 +39,7 @@ public class Hull extends JavaScriptObject {
 	 *            the x accessor
 	 * @return the current hull
 	 */
-	public Hull x(DatumFunction<Double> xAccessor) {
+	public Hull x(DataFunction<Double> xAccessor) {
 
 		assertObjectIsNotAnonymous(xAccessor);
 
@@ -55,6 +51,11 @@ public class Hull extends JavaScriptObject {
 		String command = "this.x(function(d, i) { return d3." + accessorName + ".apply(this,{datum:d},i); });";
 
 		JSObject result = evalForJsObject(command);
+		
+	
+		if (result == null) {
+			return null;
+		}
 		return new Hull(webEngine, result);
 	}
 
@@ -69,7 +70,7 @@ public class Hull extends JavaScriptObject {
 	 * @return the current hull
 	 */
 
-	public Hull y(DatumFunction<Double> yAccessor) {
+	public Hull y(DataFunction<Double> yAccessor) {
 
 		assertObjectIsNotAnonymous(yAccessor);
 
@@ -81,6 +82,11 @@ public class Hull extends JavaScriptObject {
 		String command = "this.y(function(d, i) { return d3." + accessorName + ".apply(this,{datum:d},i); });";
 
 		JSObject result = evalForJsObject(command);
+		
+		
+		if (result == null) {
+			return null;
+		}
 		return new Hull(webEngine, result);
 	}
 
@@ -107,6 +113,12 @@ public class Hull extends JavaScriptObject {
 
 		String command = "this(d3." + tempVarName + ")";
 		JSObject result = evalForJsObject(command);
+		
+		d3JsObject.removeMember(tempVarName);
+
+		if (result == null) {
+			return null;
+		}
 
 		return new Array<T>(webEngine, result);
 	}
