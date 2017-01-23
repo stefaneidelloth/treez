@@ -1,21 +1,24 @@
 package org.treez.javafxd3.d3.functions.data.attribute;
 
 import org.treez.javafxd3.d3.functions.DataFunction;
-
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 public class AttributeStringDataFunction implements DataFunction<String> {
 		
 	
 	//#region ATTRIBTES
 	
-	String attributeName;
+	private JsEngine engine;
+	
+	private String attributeName;
 	
 	//#end region
 	
 	//#region CONSTRUCTORS	
 	
-	public AttributeStringDataFunction(String attributeName){	
+	public AttributeStringDataFunction(JsEngine engine,String attributeName){	
+		this.engine = engine;
 		this.attributeName=attributeName;		
 	}
 	
@@ -26,8 +29,8 @@ public class AttributeStringDataFunction implements DataFunction<String> {
 	@Override
 	public String apply(Object context, Object datum, int index) {
 		
-		JSObject jsObject = (JSObject) datum;	
-		Object key = jsObject.eval("this.datum." + attributeName);			
+		JsObject jsObject = (JsObject) engine.toJsObjectIfNotSimpleType(datum);	
+		Object key = jsObject.eval("this." + attributeName);			
 		return key.toString();
 	}
 	

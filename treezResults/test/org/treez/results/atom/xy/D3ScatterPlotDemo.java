@@ -2,6 +2,7 @@ package org.treez.results.atom.xy;
 
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
@@ -224,12 +225,14 @@ public class D3ScatterPlotDemo extends Application {
 				.attr("id", "xy") //
 				.attr("class", "xy");
 
+		JsEngine engine = xySelection.getJsEngine();
+
 		//plot line
 		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
 				.svg()//
 				.line()
-				.x(new AxisScaleFirstDataFunction(xScale))
-				.y(new AxisScaleSecondDataFunction(yScale));
+				.x(new AxisScaleFirstDataFunction(engine, xScale))
+				.y(new AxisScaleSecondDataFunction(engine, yScale));
 		//.interpolate(org.treez.javafxd3.d3.svg.InterpolationMode.STEP);
 
 		@SuppressWarnings("unused")
@@ -245,9 +248,9 @@ public class D3ScatterPlotDemo extends Application {
 		Area areaPathGenerator = d3 //
 				.svg() //
 				.area() //
-				.x(new AxisScaleFirstDataFunction(xScale))
+				.x(new AxisScaleFirstDataFunction(engine, xScale))
 				.y0(yMin)
-				.y1(new AxisScaleSecondDataFunction(yScale));
+				.y1(new AxisScaleSecondDataFunction(engine, yScale));
 		String areaPath = areaPathGenerator.generate(dataArray);
 
 		@SuppressWarnings("unused")
@@ -278,7 +281,7 @@ public class D3ScatterPlotDemo extends Application {
 				.data(dataArray) //
 				.enter() //
 				.append("path") //
-				.attr("transform", new AxisTransformPointDataFunction(xScale, yScale)) //
+				.attr("transform", new AxisTransformPointDataFunction(engine, xScale, yScale)) //
 				//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
 				.attr("d", symbolDString) //
 				.attr("style", symbolStyle);

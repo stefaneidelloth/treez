@@ -3,6 +3,8 @@ package org.treez.javafxd3.d3.democases.barchart;
 import java.util.List;
 
 import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.d3.core.ConversionUtil;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.dsv.DsvCallback;
@@ -13,26 +15,25 @@ import org.treez.javafxd3.d3.scales.OrdinalScale;
 import org.treez.javafxd3.d3.svg.Axis;
 
 import javafx.application.Platform;
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
 
 public class BarChartCallback implements DsvCallback<BarChartData> {
 
-	private WebEngine webEngine;
+	private JsEngine engine;
 	private BarChart barChart;
 
-	public BarChartCallback(WebEngine webEngine, BarChart barChart) {
-		this.webEngine = webEngine;
+	public BarChartCallback(JsEngine engine, BarChart barChart) {
+		this.engine = engine;
 		this.barChart = barChart;
 	}
 
 	@Override
-	public void get(final Object error, final Object dataArray) {
+	public void get(Object error, Object dataArray) {
 
 		Platform.runLater(() -> {
 
-			JSObject jsDsvDataArray = (JSObject) dataArray;
-			Array<BarChartData> values = new Array<BarChartData>(webEngine, jsDsvDataArray);
+		
+			@SuppressWarnings("unchecked")
+			Array<BarChartData> values = (Array<BarChartData>) ConversionUtil.convertObjectTo(dataArray,  Array.class, engine);
 			List<? extends BarChartData> valueList = values.asList(BarChartData.class);			
 			
 			
@@ -81,19 +82,19 @@ public class BarChartCallback implements DsvCallback<BarChartData> {
 
 			List<Object> objectCollection = values.asList(Object.class);
 			
-			DataFunction<Double> xDataFunction = new DataFunctionWrapper<>(BarChartData.class, webEngine, (data)->{
+			DataFunction<Double> xDataFunction = new DataFunctionWrapper<>(BarChartData.class, engine, (data)->{
 				String letter = data.getLetter();					
 				OrdinalScale xScale = barChart.getXScale();
 				return xScale.apply(letter).asDouble();
 			});
 			
-			DataFunction<Double> yDataFunction = new DataFunctionWrapper<>(BarChartData.class, webEngine, (data)->{
+			DataFunction<Double> yDataFunction = new DataFunctionWrapper<>(BarChartData.class, engine, (data)->{
 				String letter = data.getLetter();					
 				LinearScale yScale = barChart.getYScale();
 				return yScale.apply(letter).asDouble();
 			});
 			
-			DataFunction<Double> heightDataFunction = new DataFunctionWrapper<>(BarChartData.class, webEngine, (data)->{
+			DataFunction<Double> heightDataFunction = new DataFunctionWrapper<>(BarChartData.class, engine, (data)->{
 				Double frequency = data.getFrequency();		
 				
 				LinearScale yScale = barChart.getYScale();			

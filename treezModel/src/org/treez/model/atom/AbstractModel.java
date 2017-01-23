@@ -80,11 +80,11 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 		if (modelInput != null) {
 
 			//set study data
-			String studyId = modelInput.getStudyId();
-			this.setStudyId(studyId);
+			String currentStudyId = modelInput.getStudyId();
+			this.setStudyId(currentStudyId);
 
-			String studyDescription = modelInput.getStudyDescription();
-			this.setStudyDescription(studyDescription);
+			String currentStudyDescription = modelInput.getStudyDescription();
+			this.setStudyDescription(currentStudyDescription);
 
 			//set job index
 			String jobIndex = modelInput.getJobId();

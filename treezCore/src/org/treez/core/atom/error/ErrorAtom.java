@@ -23,6 +23,8 @@ public class ErrorAtom extends AbstractAtom<ErrorAtom> {
 
 	private Exception exception;
 
+	private String fullMessage;
+
 	//#end region
 
 	//#region CONSTRUCTORS
@@ -30,7 +32,10 @@ public class ErrorAtom extends AbstractAtom<ErrorAtom> {
 	public ErrorAtom(String name, String message, Exception exception) {
 		super(name);
 		this.message = message;
+
 		this.exception = exception;
+
+		fullMessage = message + "\n" + ExceptionUtils.getStackTrace(exception);
 	}
 
 	/**
@@ -40,6 +45,7 @@ public class ErrorAtom extends AbstractAtom<ErrorAtom> {
 		super(rootToCopy);
 		this.message = rootToCopy.message;
 		this.exception = rootToCopy.exception;
+		this.fullMessage = rootToCopy.fullMessage;
 	}
 
 	//#end region
@@ -64,8 +70,8 @@ public class ErrorAtom extends AbstractAtom<ErrorAtom> {
 	public AbstractControlAdaption createControlAdaption(
 			Composite parent,
 			FocusChangingRefreshable treeViewRefreshable) {
-		String displayString = message + "\n" + ExceptionUtils.getStackTrace(exception);
-		return new EmptyControlAdaption(parent, this, displayString);
+
+		return new EmptyControlAdaption(parent, this, fullMessage);
 	}
 
 	@Override

@@ -200,12 +200,12 @@ public class JavaScripting extends AbstractScripting {
 					+ "------------------\n" //
 					+ compileLogger.getDataAsString() //
 					+ "------------------\n"
-					+ "This issue might be due to missing import statements. If so, please add "
-					+ "the missing imports to the Treez java file. Please do so even if the imports"
-					+ " are not direcly used in your code and you get an Eclipse warning "
-					+ "'The import xy is never used'). The imports are actually needed by Treez to"
-					+ " indentify Eclipse plugin dependencies. A line 'import org.treez.model.atom.Models;' "
-					+ "tells Treez for example that the Eclipse plugin 'org.treez.model' needs to"
+					+ "This issue might be due to missing import statements. If so, please add\n "
+					+ "the missing imports to the Treez java file. Please do so even if the imports\n"
+					+ " are not direcly used in your code and you get an Eclipse warning\n"
+					+ "'The import xy is never used'). The imports are actually needed by Treez to\n"
+					+ " indentify Eclipse plugin dependencies. A line 'import org.treez.model.atom.Models;'\n"
+					+ "tells Treez for example that the Eclipse plugin 'org.treez.model' needs to\n"
 					+ " be included in the class path.";
 			LOG.error(message);
 			throw new IllegalArgumentException(message);
@@ -237,15 +237,15 @@ public class JavaScripting extends AbstractScripting {
 	 * @param modelProvider
 	 * @return
 	 */
-	@SuppressWarnings("checkstyle:illegalcatch")
 	private static AbstractAtom<?> retrieveModelFromModelProvider(ModelProvider modelProvider) {
 		AbstractAtom<?> root = null;
 		if (modelProvider != null) {
 			try {
 				root = modelProvider.createModel();
-			} catch (Exception exception) {
+			} catch (IllegalStateException exception) {
 				String message = "Could not retrive model from scripted java class. Please check the method 'createModel'.";
 				LOG.error(message, exception);
+				throw exception;
 			}
 		}
 		return root;

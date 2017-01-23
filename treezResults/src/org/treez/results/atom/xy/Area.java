@@ -10,6 +10,7 @@ import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
@@ -142,11 +143,13 @@ public class Area implements GraphicsPropertiesPageFactory {
 				.attr("id", id) //
 				.attr("class", "area-above");
 
+		JsEngine engine = xySelection.getJsEngine();
+
 		org.treez.javafxd3.d3.svg.Area areaAbovePathGenerator = d3 //
 				.svg()//
 				.area() //
-				.x(new AxisScaleFirstDataFunction(xScale)) //
-				.y1(new AxisScaleSecondDataFunction(yScale))//
+				.x(new AxisScaleFirstDataFunction(engine, xScale)) //
+				.y1(new AxisScaleSecondDataFunction(engine, yScale))//
 				.interpolate(mode);
 
 		Selection aboveArea = areaAboveSelection //
@@ -181,12 +184,14 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 		double yMin = yScale.apply(0.0).asDouble();
 
+		JsEngine engine = xySelection.getJsEngine();
+
 		org.treez.javafxd3.d3.svg.Area areaBelowPathGenerator = d3 //
 				.svg()//
 				.area() //
-				.x(new AxisScaleFirstDataFunction(xScale)) //
+				.x(new AxisScaleFirstDataFunction(engine, xScale)) //
 				.y0(yMin) //
-				.y1(new AxisScaleSecondDataFunction(yScale))//
+				.y1(new AxisScaleSecondDataFunction(engine, yScale))//
 				.interpolate(mode);
 
 		Selection belowArea = areaBelowSelection //

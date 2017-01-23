@@ -11,6 +11,7 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleInversedFirstDataFunction;
@@ -151,6 +152,8 @@ public class Fill implements GraphicsPropertiesPageFactory {
 			barFillRatio = 1.0;
 		}
 
+		JsEngine engine = rectsSelection.getJsEngine();
+
 		if (isVertical) {
 			double barWidth = determineBarWidth(bar, graphWidth, xScale, positionSize, barFillRatio);
 
@@ -158,11 +161,11 @@ public class Fill implements GraphicsPropertiesPageFactory {
 					.data(dataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleFirstDataFunction(xScale))
-					.attr("y", new AxisScaleSecondDataFunction(yScale))
+					.attr("x", new AxisScaleFirstDataFunction(engine, xScale))
+					.attr("y", new AxisScaleSecondDataFunction(engine, yScale))
 					.attr("width", barWidth)
 					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleInversedFirstDataFunction(yScale, graphHeight));
+					.attr("height", new AxisScaleInversedFirstDataFunction(engine, yScale, graphHeight));
 		} else {
 			double barHeight = determineBarHeight(bar, graphHeight, yScale, positionSize, barFillRatio);
 
@@ -171,10 +174,10 @@ public class Fill implements GraphicsPropertiesPageFactory {
 					.enter() //
 					.append("rect")
 					.attr("x", 0)
-					.attr("y", new AxisScaleFirstDataFunction(yScale))
+					.attr("y", new AxisScaleFirstDataFunction(engine, yScale))
 					.attr("height", barHeight)
 					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleSecondDataFunction(xScale));
+					.attr("width", new AxisScaleSecondDataFunction(engine, xScale));
 		}
 
 		//bind attributes

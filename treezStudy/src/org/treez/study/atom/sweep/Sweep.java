@@ -228,6 +228,7 @@ public class Sweep extends AbstractParameterVariation {
 
 				//create subtask and sub monitor for progress monitor
 				monitor.setTaskName("=>Simulation #" + counter);
+
 				SubProgressMonitor subMonitor = new SubProgressMonitor(
 						monitor,
 						1,
@@ -515,86 +516,50 @@ public class Sweep extends AbstractParameterVariation {
 
 	//#region CREATE CHILD ATOMS
 
-	/**
-	 * Creates a DoubleVariableRange child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public DoubleVariableRange createDoubleVariableRange(String name) {
 		DoubleVariableRange child = new DoubleVariableRange(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a QuantityVariableRange child
-	 *
-	 * @param name
-	 * @return
-	 */
-	public QuantityVariableRange createQuantityVariableRange(String name) {
-		QuantityVariableRange child = new QuantityVariableRange(name);
+	public IntegerVariableRange createIntegerVariableRange(String name) {
+		IntegerVariableRange child = new IntegerVariableRange(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a BooleanVariableRange child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public BooleanVariableRange createBooleanVariableRange(String name) {
 		BooleanVariableRange child = new BooleanVariableRange(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a StringVariableRange child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public StringVariableRange createStringVariableRange(String name) {
 		StringVariableRange child = new StringVariableRange(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a StringItemVariableRange child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public StringItemVariableRange createStringItemVariableRange(String name) {
 		StringItemVariableRange child = new StringItemVariableRange(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a FilePathVariableRange child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public FilePathVariableRange createFilePathVariableRange(String name) {
 		FilePathVariableRange child = new FilePathVariableRange(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates a DirectoryPathVariableRange child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public DirectoryPathVariableRange createDirectoryPathVariableRange(String name) {
 		DirectoryPathVariableRange child = new DirectoryPathVariableRange(name);
+		addChild(child);
+		return child;
+	}
+
+	public QuantityVariableRange createQuantityVariableRange(String name) {
+		QuantityVariableRange child = new QuantityVariableRange(name);
 		addChild(child);
 		return child;
 	}

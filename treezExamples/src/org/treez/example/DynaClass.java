@@ -1,17 +1,18 @@
 package org.treez.example;
 
-import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.scripting.ModelProvider;
 import org.treez.data.variable.VariableDefinition;
+import org.treez.views.tree.rootAtom.Root;
 
 public class DynaClass extends ModelProvider {
 
 	@Override
-	public org.treez.core.atom.attribute.AttributeRoot createModel() {
-		AttributeRoot root = new AttributeRoot("root");
+	public Root createModel() {
 
-		//AbstractAdjustableAtom adjustableAtom = new AbstractAdjustableAtom("adjustableAtom");
-		//root.addChild(adjustableAtom);
+		Root root = new Root("root");
+
+		//!! This example requires Octave to be installed
+		//!! since Octave is applied  for symbolic calculations and unit conversion.
 
 		VariableDefinition defItem = new VariableDefinition("defItem");
 		root.addChild(defItem);

@@ -3,6 +3,7 @@ package org.treez.example;
 import org.treez.core.atom.variablefield.QuantityVariableField;
 import org.treez.core.scripting.ModelProvider;
 import org.treez.data.table.Table;
+import org.treez.javafxd3.d3.functions.MouseClickFunction;
 import org.treez.model.atom.Models;
 import org.treez.model.atom.executable.Executable;
 import org.treez.model.atom.genericInput.GenericInputModel;
@@ -78,12 +79,12 @@ public class ModelDemo extends ModelProvider {
 		QuantityVariableRange xRange = new QuantityVariableRange("x");
 		sweep.addChild(xRange);
 		xRange.setRelativeSourceVariableModelPath("x");
-		xRange.setRangeValueString("[1,2]");
+		xRange.setRangeValueString("{1,2}");
 
 		QuantityVariableRange yRange = new QuantityVariableRange("y");
 		sweep.addChild(yRange);
 		yRange.setRelativeSourceVariableModelPath("y");
-		yRange.setRangeValueString("[1,2,3]");
+		yRange.setRangeValueString("{1,2,3}");
 
 		//sensitivity
 		Sensitivity sensitivity = new Sensitivity("sensitivity");
@@ -117,17 +118,26 @@ public class ModelDemo extends ModelProvider {
 		Page page = new Page("page");
 		results.addChild(page);
 
-		Graph graph = new Graph("graph");
-		page.addChild(graph);
+		Graph graph = page.createGraph("graph");
 
-		Axis xAxis = new Axis("x");
-		graph.addChild(xAxis);
+		MouseClickFunction fun = new MouseClickFunction() {
+
+			@Override
+			public void handleMouseClick(Object context) {
+				// TODO Auto-generated method stub
+
+			}
+
+		};
+
+		//Axis xAxis = new Axis("x");
+		//graph.addChild(xAxis);
 
 		Axis yAxis = new Axis("y", Direction.VERTICAL);
-		graph.addChild(yAxis);
+		//graph.addChild(yAxis);
 
 		Xy xy = new Xy("xy plot");
-		graph.addChild(xy);
+		//graph.addChild(xy);
 
 		return root;
 

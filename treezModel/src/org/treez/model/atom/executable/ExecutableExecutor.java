@@ -1,7 +1,6 @@
 package org.treez.model.atom.executable;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -78,6 +77,7 @@ public class ExecutableExecutor {
 		//define handling of output and error stream of the process
 
 		PumpStreamHandler executionStreamHandler = new PumpStreamHandler(outputStream, errorStream, System.in);
+
 		executor.setStreamHandler(executionStreamHandler);
 
 		//define post processing for finished process
@@ -100,10 +100,11 @@ public class ExecutableExecutor {
 
 		//execute command in extra thread
 
-		executeCommandInExtraThread(command, cmdLine, executor, watchdog, executionResultHandler);
+		executeCommandInExtraThreadAndWaitUntilFinished(command, cmdLine, executor, watchdog, executionResultHandler);
 
 		//close streams
 		closeStreams(outputStream, errorStream);
+		executor = null;
 
 		//return true if there are no issues and otherwise false
 		boolean noIssues = issueMessage.isEmpty();
@@ -112,7 +113,7 @@ public class ExecutableExecutor {
 	}
 
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private void executeCommandInExtraThread(
+	private void executeCommandInExtraThreadAndWaitUntilFinished(
 			String command,
 			CommandLine cmdLine,
 			DefaultExecutor executor,
@@ -208,7 +209,7 @@ public class ExecutableExecutor {
 		executable.runUiJobNonBlocking(() -> executable.executionStatusInfo.set(statusMessage));
 	}
 
-	private static void closeStreams(OutputStream out, OutputStream err) {
+	private static void closeStreams(LoggingOutputStream out, LoggingOutputStream err) {
 		try {
 			out.flush();
 			out.close();

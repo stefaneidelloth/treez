@@ -1,30 +1,21 @@
 package org.treez.javafxd3.d3.selection.datafunction;
 
-import org.treez.javafxd3.d3.core.Value;
+import org.treez.javafxd3.d3.core.ConversionUtil;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.functions.DataFunction;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
-
-/**
- * A datum function that returns the datum as string
- * 
- */
 public class StringDataFunction implements DataFunction<String> {
 	
 	//#region ATTRIBUTES
 	
-	private WebEngine webEngine;
+	private JsEngine engine;
 	
 	//#end region
 	
 	//#region CONSTRUCTORS
 	
-	/**
-	 * @param webEngine
-	 */
-	public StringDataFunction(WebEngine webEngine){
-		this.webEngine=webEngine;
+	public StringDataFunction(JsEngine engine){
+		this.engine=engine;
 	}
 	
 	//#end region
@@ -33,9 +24,7 @@ public class StringDataFunction implements DataFunction<String> {
 
 	@Override
 	public String apply(Object context, Object datum, int index) {
-		JSObject jsDatum = (JSObject) datum;		
-		Value value = new Value(webEngine,  jsDatum);
-		String stringValue = value.asString();
+		String stringValue = ConversionUtil.convertObjectTo(datum, String.class, engine);		
 		return stringValue;
 	}
 	

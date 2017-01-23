@@ -2,11 +2,9 @@ package org.treez.javafxd3.d3.selection.datafunction;
 
 import static org.junit.Assert.assertEquals;
 
-import org.treez.javafxd3.d3.core.Value;
+import org.treez.javafxd3.d3.core.ConversionUtil;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.functions.DataFunction;
-
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
 
 
 
@@ -19,7 +17,7 @@ public class AssertStringDataFunction implements DataFunction<Void> {
 	
 	//#region ATTRIBUTES
 	
-	private WebEngine webEngine;	
+	private JsEngine engine;	
 	
 	private String expectedValue;
 	
@@ -29,10 +27,10 @@ public class AssertStringDataFunction implements DataFunction<Void> {
 	//#region CONSTRUCTORS
 	
 	/**
-	 * @param webEngine
+	 * @param engine
 	 */
-	public AssertStringDataFunction(WebEngine webEngine, String expectedValue){
-		this.webEngine=webEngine;
+	public AssertStringDataFunction(JsEngine engine, String expectedValue){
+		this.engine=engine;
 		this.expectedValue=expectedValue;
 	}
 	
@@ -42,10 +40,8 @@ public class AssertStringDataFunction implements DataFunction<Void> {
 
 	@Override
 	public Void apply(Object context, Object datum, int index) {
-		JSObject jsObject = (JSObject) datum;
-		Value value = new Value(webEngine, jsObject);
-		String stringValue = value.asString();
-		assertEquals(expectedValue, stringValue);
+		String value = ConversionUtil.convertObjectTo(datum,  String.class, engine);
+		assertEquals(expectedValue, value);
 		return null;
 	}
 	

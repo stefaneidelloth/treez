@@ -211,7 +211,7 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 		//trigger modification listeners
 		Wrap<String> wrap = (Wrap<String>) sourceVariableModelPath;
 		Attribute<String> attribute = wrap.getAttribute();
-		AbstractStringAttributeAtom attributeAtom = (AbstractStringAttributeAtom) attribute;
+		AbstractStringAttributeAtom<?> attributeAtom = (AbstractStringAttributeAtom<?>) attribute;
 		attributeAtom.triggerListeners();
 	}
 

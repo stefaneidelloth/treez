@@ -2,8 +2,8 @@ package org.treez.javafxd3.d3.svg;
 
 import org.treez.javafxd3.d3.functions.DataFunction;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * Constructs a new chord generator with the default accessor functions (that
@@ -33,11 +33,11 @@ public class Chord extends PathDataGenerator {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public Chord(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine, wrappedJsObject);
+	public Chord(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine, wrappedJsObject);
 
 	}
 
@@ -71,19 +71,19 @@ public class Chord extends PathDataGenerator {
 
 		assertObjectIsNotAnonymous(accessor);
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		String accessorName = createNewTemporaryInstanceName();
 		d3JsObject.setMember(accessorName, accessor);
 
 		String command = "this.source(function(d, i) { " //
-				+ "return d3." + accessorName + ".apply(this,{datum:d},i);"//
+				+ "return d3." + accessorName + ".apply(this,d,i);"//
 				+ " });";
 		
-		JSObject result = evalForJsObject(command);
+		JsObject result = evalForJsObject(command);
 		if(result==null){
 			return null;
 		}
-		return new Chord(webEngine, result);
+		return new Chord(engine, result);
 
 	}
 
@@ -113,19 +113,19 @@ public class Chord extends PathDataGenerator {
 
 		assertObjectIsNotAnonymous(accessor);
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		String accessorName = createNewTemporaryInstanceName();
 		d3JsObject.setMember(accessorName, accessor);
 
 		String command = "this.target(function(d, i) { " //
-				+ "return d3." + accessorName + ".apply(this,{datum:d},i);"//
+				+ "return d3." + accessorName + ".apply(this,d,i);"//
 				+ " });";
 		
-		JSObject result = evalForJsObject(command);
+		JsObject result = evalForJsObject(command);
 		if(result==null){
 			return null;
 		}
-		return new Chord(webEngine, result);
+		return new Chord(engine, result);
 	}
 
 	/**
@@ -144,19 +144,19 @@ public class Chord extends PathDataGenerator {
 
 		assertObjectIsNotAnonymous(accessor);
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		String accessorName = createNewTemporaryInstanceName();
 		d3JsObject.setMember(accessorName, accessor);
 
 		String command = "this.radius(function(d, i) { " //
-				+ "return d3." + accessorName + ".apply(this,{datum:d},i);"//
+				+ "return d3." + accessorName + ".apply(this,d,i);"//
 				+ " });";
 		
-		JSObject result = evalForJsObject(command);
+		JsObject result = evalForJsObject(command);
 		if(result==null){
 			return null;
 		}
-		return new Chord(webEngine, result);
+		return new Chord(engine, result);
 	}
 
 	/**
@@ -168,8 +168,8 @@ public class Chord extends PathDataGenerator {
 	 * @return the current chord generator
 	 */
 	public Chord radius(final double radius) {
-		JSObject result = call("radius", radius);
-		return new Chord(webEngine, result);
+		JsObject result = call("radius", radius);
+		return new Chord(engine, result);
 	}
 
 	/**
@@ -191,19 +191,19 @@ public class Chord extends PathDataGenerator {
 
 		assertObjectIsNotAnonymous(accessor);
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		String accessorName = createNewTemporaryInstanceName();
 		d3JsObject.setMember(accessorName, accessor);
 
 		String command = "this.startAngle(function(d, i) { " //
-				+ "return d3." + accessorName + ".apply(this,{datum:d},i);"//
+				+ "return d3." + accessorName + ".apply(this,d,i);"//
 				+ " });";
 		
-		JSObject result = evalForJsObject(command);
+		JsObject result = evalForJsObject(command);
 		if(result==null){
 			return null;
 		}
-		return new Chord(webEngine, result);
+		return new Chord(engine, result);
 		
 	}
 
@@ -218,8 +218,8 @@ public class Chord extends PathDataGenerator {
 	 * @return the current chord generator
 	 */
 	public Chord startAngle(final double startAngle) {
-		JSObject result = call("startAngle", startAngle);
-		return new Chord(webEngine, result);
+		JsObject result = call("startAngle", startAngle);
+		return new Chord(engine, result);
 	}
 
 	/**
@@ -241,19 +241,19 @@ public class Chord extends PathDataGenerator {
 
 		assertObjectIsNotAnonymous(accessor);
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		String accessorName = createNewTemporaryInstanceName();
 		d3JsObject.setMember(accessorName, accessor);
 
 		String command = "this.endAngle(function(d, i) { " //
-				+ "return d3." + accessorName + ".apply(this,{datum:d},i);"//
+				+ "return d3." + accessorName + ".apply(this,d,i);"//
 				+ " });";
 		
-		JSObject result = evalForJsObject(command);
+		JsObject result = evalForJsObject(command);
 		if(result==null){
 			return null;
 		}
-		return new Chord(webEngine, result);
+		return new Chord(engine, result);
 	}
 
 	/**
@@ -267,8 +267,8 @@ public class Chord extends PathDataGenerator {
 	 * @return the current chord generator
 	 */
 	public Chord endAngle(final double endAngle) {
-		JSObject result = call("endAngle", endAngle);
-		return new Chord(webEngine, result);
+		JsObject result = call("endAngle", endAngle);
+		return new Chord(engine, result);
 	}
 
 	//#end region

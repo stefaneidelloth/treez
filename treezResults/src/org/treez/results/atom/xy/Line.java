@@ -9,6 +9,7 @@ import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
@@ -88,11 +89,13 @@ public class Line implements GraphicsPropertiesPageFactory {
 		QuantitativeScale<?> xScale = xy.getXScale();
 		QuantitativeScale<?> yScale = xy.getYScale();
 
+		JsEngine engine = xySelection.getJsEngine();
+
 		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
 				.svg()//
 				.line()
-				.x(new AxisScaleFirstDataFunction(xScale))
-				.y(new AxisScaleSecondDataFunction(yScale))//
+				.x(new AxisScaleFirstDataFunction(engine, xScale))
+				.y(new AxisScaleSecondDataFunction(engine, yScale))//
 				.interpolate(mode);
 
 		//plot new lines

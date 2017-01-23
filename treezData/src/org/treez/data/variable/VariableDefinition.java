@@ -80,9 +80,6 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom<VariableDefi
 		return new VariableDefinition(this);
 	}
 
-	/**
-	 * Initializes this VariableDefinition
-	 */
 	private void initialize() {
 		updateTable();
 		evaluator = new VariableDefinitionEvaluator();
@@ -95,17 +92,11 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom<VariableDefi
 		this.table = new VariableDefinitionTable(this, definitionRows);
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("Definition.png");
 	}
 
-	/**
-	 * Provides a control adaption for this atom
-	 */
 	@Override
 	public AbstractControlAdaption createControlAdaption(
 			Composite propertyMainForm,
@@ -114,17 +105,11 @@ public class VariableDefinition extends AbstractUiSynchronizingAtom<VariableDefi
 		return new VariableDefinitionControlAdaption(propertyMainForm, this);
 	}
 
-	/**
-	 * Provides a code adaption for this atom
-	 */
 	@Override
 	public CodeAdaption createCodeAdaption(ScriptType scriptType) {
 		return new AdjustableAtomCodeAdaption(this);
 	}
 
-	/**
-	 * Creates the context menu actions
-	 */
 	@Override
 	protected ArrayList<Object> createContextMenuActions(final TreeViewerRefreshable treeViewer) {
 

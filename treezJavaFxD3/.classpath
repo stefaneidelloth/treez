@@ -393,6 +393,11 @@
  <accessrule kind="accessible" pattern="com/sun/javafx/**"/>
 </accessrules>
 		<accessrules>
+ <accessrule kind="accessible" pattern="netscape/**"/>
+ <accessrule kind="accessible" pattern="javafx/**"/>
+ <accessrule kind="accessible" pattern="com/sun/javafx/**"/>
+</accessrules>
+		<accessrules>
 			<accessrule kind="accessible" pattern="javafx/**"/>
 			<accessrule kind="accessible" pattern="com/sun/javafx/**"/>
 		</accessrules>
@@ -402,5 +407,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

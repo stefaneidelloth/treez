@@ -533,25 +533,25 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		String studyDescriptionKey = "{$studyDescription$}";
 		String jobIdKey = "{$jobId$}";
 
-		String inputArguments = input.get();
-		if (inputArguments.contains(studyIdKey)) {
+		String currentInputArguments = input.get();
+		if (currentInputArguments.contains(studyIdKey)) {
 			String studyName = getStudyId();
 			if (studyName == null) {
-				inputArguments = inputArguments.replace(studyIdKey, "");
+				currentInputArguments = currentInputArguments.replace(studyIdKey, "");
 			} else {
-				inputArguments = inputArguments.replace(studyIdKey, studyName);
+				currentInputArguments = currentInputArguments.replace(studyIdKey, studyName);
 			}
 
 		}
 
-		if (inputArguments.contains(studyDescriptionKey)) {
-			inputArguments = inputArguments.replace(studyDescriptionKey, getStudyDescription());
+		if (currentInputArguments.contains(studyDescriptionKey)) {
+			currentInputArguments = currentInputArguments.replace(studyDescriptionKey, getStudyDescription());
 		}
 
-		if (inputArguments.contains(jobIdKey)) {
-			inputArguments = inputArguments.replace(jobIdKey, getJobId());
+		if (currentInputArguments.contains(jobIdKey)) {
+			currentInputArguments = currentInputArguments.replace(jobIdKey, getJobId());
 		}
-		return inputArguments;
+		return currentInputArguments;
 	}
 
 	/**
