@@ -14,6 +14,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.model.Activator;
 import org.treez.model.atom.executable.Executable;
+import org.treez.model.atom.executable.JarExecutable;
 import org.treez.model.atom.genericInput.GenericInputModel;
 
 /**
@@ -86,6 +87,14 @@ public class Models extends AbstractModel {
 				treeViewer);
 		actions.add(addExecutable);
 
+		Action addJarExecutable = new AddChildAtomTreeViewerAction(
+				JarExecutable.class,
+				"jarExecutable",
+				Activator.getImage("java.png"),
+				this,
+				treeViewer);
+		actions.add(addJarExecutable);
+
 		return actions;
 	}
 
@@ -96,26 +105,20 @@ public class Models extends AbstractModel {
 
 	//#region CREATE CHILD ATOMS
 
-	/**
-	 * Creates a GenericInputModel child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public GenericInputModel createGenericInputModel(String name) {
 		GenericInputModel child = new GenericInputModel(name);
 		addChild(child);
 		return child;
 	}
 
-	/**
-	 * Creates an Executable child
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Executable createExecutable(String name) {
 		Executable child = new Executable(name);
+		addChild(child);
+		return child;
+	}
+
+	public JarExecutable createJarExecutable(String name) {
+		JarExecutable child = new JarExecutable(name);
 		addChild(child);
 		return child;
 	}

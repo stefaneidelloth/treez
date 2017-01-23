@@ -23,5 +23,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.forms,
  org.eclipse.jface,
- org.treez.core
+ org.treez.core,
+ org.eclipse.nebula.widgets.nattable.core,
+ org.eclipse.nebula.widgets.pagination;bundle-version="1.0.0"
 Bundle-Vendor: Stefan Eidelloth

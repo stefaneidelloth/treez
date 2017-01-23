@@ -2,7 +2,16 @@ package org.treez.data.table;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.nebula.widgets.pagination.PageableController;
+import org.eclipse.nebula.widgets.pagination.collections.PageResultContentProvider;
+import org.eclipse.nebula.widgets.pagination.collections.PageResultLoaderList;
+import org.eclipse.nebula.widgets.pagination.renderers.navigation.ResultAndNavigationPageLinksRendererFactory;
+import org.eclipse.nebula.widgets.pagination.table.PageableTable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -25,7 +34,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 	//#region ATTRIBUTES
 
-	private TreezTableViewer tableViewer;
+	private NebulaTableViewer tableViewer;
 
 	//#end region
 
@@ -53,7 +62,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 		}
 
 		//set parent layout
-		GridLayout layout = new GridLayout();
+		GridLayout layout = new GridLayout(1, false);
 		layout.verticalSpacing = 0;
 
 		parent.setLayout(layout); //new GridLayout(1, true));
@@ -67,8 +76,43 @@ public class TableControlAdaption extends AbstractControlAdaption {
 			table.addEmptyRow();
 		}
 
+		final PageableTable pageableTable = new PageableTable(
+				parent,
+				SWT.BORDER,
+				SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL,
+				2,
+				PageResultContentProvider.getInstance(),
+				null,
+				ResultAndNavigationPageLinksRendererFactory.getFactory());
+		pageableTable.setLayoutData(new GridData(GridData.FILL_BOTH));
+		pageableTable.setPageLoader(new PageResultLoaderList(rows));
+
+		// 2) Initialize the table viewer + SWT Table
+		TableViewer tableViewer1 = pageableTable.getViewer();
+		tableViewer1.setContentProvider(ArrayContentProvider.getInstance());
+		tableViewer1.setLabelProvider(new LabelProvider());
+
+		org.eclipse.swt.widgets.Table table1 = tableViewer1.getTable();
+		table1.setHeaderVisible(true);
+		table1.setLinesVisible(true);
+
+		PageableController controller = pageableTable.getController();
+		//		createColumns(tableViewer, controller);
+
+		// 3) Set current page to 0 to refresh the table
+
+		controller.setCurrentPage(0);
+
+		parent.setSize(50, 50);
+		//        parent.open();
+		//        while (!parent.isDisposed()) {
+		//            if (!display.readAndDispatch())
+		//                display.sleep();
+		//        }
+		//        display.dispose();
+
 		//create table viewer
-		tableViewer = new TreezTableViewer(parent, table);
+		tableViewer = new NebulaTableViewer(parent, table);
 
 		//set input
 		setInput(table.getRows());
