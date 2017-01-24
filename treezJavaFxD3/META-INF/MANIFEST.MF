@@ -136,5 +136,9 @@ Export-Package: org.treez.javafxd3.d3;
  org.treez.javafxd3.plotly.data.line;uses:="org.treez.javafxd3.d3.wrapper,org.treez.javafxd3.d3.core",
  org.treez.javafxd3.plotly.layout;uses:="org.treez.javafxd3.d3.wrapper,org.treez.javafxd3.d3.core,org.treez.javafxd3.plotly.layout.margin",
  org.treez.javafxd3.plotly.layout.margin;uses:="org.treez.javafxd3.d3.wrapper,org.treez.javafxd3.d3.core"
-Require-Bundle: org.eclipse.swt;bundle-version="3.105.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.ui.intro,
+ org.eclipse.ui.intro.universal,
+ org.eclipse.ui
+Bundle-ClassPath: main/resources/,
+ .

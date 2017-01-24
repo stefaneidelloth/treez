@@ -300,6 +300,11 @@ public class Sweep extends AbstractParameterVariation {
 
 		String filePath = exportStudyInfoPath.get();
 
+		if (filePath.isEmpty()) {
+			LOG.warn("Export of study info is enabled but no file (e.g. c:/studyInfo.txt) is specified. ");
+			return;
+		}
+
 		boolean isTextFile = filePath.endsWith(".txt");
 		if (isTextFile) {
 			exportStudyInfoToTextFile(variableRanges, numberOfSimulations, filePath);
@@ -312,7 +317,7 @@ public class Sweep extends AbstractParameterVariation {
 			return;
 		}
 
-		String message = "Could not export study info due to unknown file format of " + filePath;
+		String message = "Could not export study info due to unknown file format of file path '" + filePath + "'";
 		throw new IllegalStateException(message);
 
 	}

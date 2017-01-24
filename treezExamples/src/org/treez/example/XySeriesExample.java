@@ -17,6 +17,8 @@ public class XySeriesExample extends ModelProvider {
 
 		Root root = new Root("root");
 
+		//this example does not work yet since the xy series is not finished
+
 		//#region RESULTS0
 
 		Results results0 = root.createResults("results0");

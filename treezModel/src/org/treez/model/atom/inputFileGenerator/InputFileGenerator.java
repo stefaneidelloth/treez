@@ -236,9 +236,7 @@ public class InputFileGenerator extends AdjustableAtom {
 	}
 
 	private static String deleteRowsWithUnassignedPlaceHolders(String nameExpression, String resultString) {
-		String generalPlaceHolderExpression = nameExpression.replace(NAME_TAG, ".*?");
-		generalPlaceHolderExpression = generalPlaceHolderExpression.replace(LABEL_TAG, ".*?");
-		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("{", "\\{");
+		String generalPlaceHolderExpression = nameExpression.replace("{", "\\{");
 		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("}", "\\}");
 		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("$", "\\$");
 

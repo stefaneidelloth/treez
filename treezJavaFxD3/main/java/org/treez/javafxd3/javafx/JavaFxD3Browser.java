@@ -28,6 +28,7 @@ import javafx.scene.web.WebView;
  * A JavaFx Node that shows d3 content on a JavaFx WebView.
  *
  */
+@SuppressWarnings("checkstyle:magicnumber")
 public class JavaFxD3Browser extends Region {
 
 	//#region ATTRIBUTES
@@ -57,6 +58,7 @@ public class JavaFxD3Browser extends Region {
 	private Runnable loadingFinishedHook;
 
 	private Boolean enableDebugMode = false;
+
 	
 	private double browserWidth = 900;
 	private double browserHeight = 1000;
@@ -84,7 +86,7 @@ public class JavaFxD3Browser extends Region {
 	 * Constructor with possibility to enable debug mode (= show fire bug)
 	 * 
 	 * @param loadingFinishedHook
-	 * @param enableDebugMode 
+	 * @param enableDebugMode
 	 */
 	public JavaFxD3Browser(Runnable loadingFinishedHook, Boolean enableDebugMode) {
 		this.loadingFinishedHook = loadingFinishedHook;
@@ -99,11 +101,11 @@ public class JavaFxD3Browser extends Region {
 	private void initialize() {
 
 		this.setPrefSize(browserWidth, browserHeight);
-		
+
 		//create web view
-		webView = new WebView();		
+		webView = new WebView();
 		webView.setPrefSize(browserWidth, browserHeight);
-		
+
 		//add the web view as child to this JavaFx region
 		getChildren().add(webView);
 
@@ -129,7 +131,7 @@ public class JavaFxD3Browser extends Region {
 
 		//loadContent(initialBrowserContent);
 		engine.loadContent(initialBrowserContent);
-		
+
 		//delete cookies
 		java.net.CookieHandler.setDefault(new java.net.CookieManager());
 
@@ -165,7 +167,7 @@ public class JavaFxD3Browser extends Region {
 
 		injectD3();
 		injectFunctionPlotter();
-		injectNvd3();	
+		injectNvd3();
 		injectPlotly();
 		injectJQuery();
 
@@ -191,14 +193,14 @@ public class JavaFxD3Browser extends Region {
 		// https://github.com/novus/nvd3/blob/master/build/nv.d3.min.js
 		String nvd3Content = getJavaScriptLibraryFromFile("nv.d3.min.js");
 		engine.executeScript(nvd3Content);
-	}	
-	
+	}
+
 	private void injectPlotly() {
 		// https://code.jquery.com/jquery-2.2.4.js
 		String jQueryContent = getJavaScriptLibraryFromFile("jquery-2.2.4.min.js");
 		engine.executeScript(jQueryContent);
-	}	
-	
+	}
+
 	private void injectJQuery() {
 		// https://github.com/plotly/plotly.js/
 		String plotlyContent = getJavaScriptLibraryFromFile("plotly.min.js");
@@ -257,21 +259,17 @@ public class JavaFxD3Browser extends Region {
 	private String createInitialBrowserContent() {
 		String htmlContent = "<!DOCTYPE html>\n" //
 				+ "<meta charset=\"utf-8\">\n" //	
-				+ "<body style = \"margin:0;padding:0;\">"	
-				+ "<div id = \"dummyDiv\"></div>\n"
+				+ "<body style = \"margin:0;padding:0;\">" + "<div id = \"dummyDiv\"></div>\n"
 				+ "<div id=\"invisibleDummyDiv\" style=\"display: none;\"></div>\n"
 				+ "<div id = \"root\" ondblclick=\"saveSvg()\" style = \"margin:0;padding:0;font-family:Consolas;font-size:small;\">\n" //
 				+ "<svg id=\"svg\" class=\"svg\"></svg>\n"//
-				+ "</div>\n"				
-				+ "</body>"
-				+ "<script>\n" //
+				+ "</div>\n" + "</body>" + "<script>\n" //
 				+ "function saveSvg(e){\n" //				
 				+ "	  var svg = document.getElementById('svg');\n" //		
 				+ "	  var svgXml = (new XMLSerializer).serializeToString(svg);\n" //	
-				+ "   d3.saveHelper.saveSvg(svgXml);\n"				
-				+ "}\n" //
-				+ "</script>\n";				
-				
+				+ "   d3.saveHelper.saveSvg(svgXml);\n" + "}\n" //
+				+ "</script>\n";
+
 		return htmlContent;
 	}
 
@@ -316,7 +314,6 @@ public class JavaFxD3Browser extends Region {
 
 	//#region ACCESSORS
 
-	
 	public D3 getD3() {
 		if (d3 == null) {
 			String message = "The d3 reference is null. Do not call this method directly but use "
@@ -326,7 +323,6 @@ public class JavaFxD3Browser extends Region {
 		return d3;
 	}
 
-	
 	public FunctionPlot getFunctionPlot() {
 		if (d3 == null) {
 			String message = "The d3 reference is null. Do not call this method directly but use "
@@ -337,7 +333,7 @@ public class JavaFxD3Browser extends Region {
 		FunctionPlot functionPlot = new FunctionPlot(getJsEngine());
 		return functionPlot;
 	}
-	
+
 	public Plotly getPlotly() {
 		if (d3 == null) {
 			String message = "The d3 reference is null. Do not call this method directly but use "
@@ -347,32 +343,28 @@ public class JavaFxD3Browser extends Region {
 
 		Plotly plotly = new Plotly(getJsEngine());
 		return plotly;
-	}	
+	}
 
-	
 	public JsEngine getJsEngine() {
 		return new JavaFxJsEngine(engine);
 	}
 
-	
 	public void setBrowserWidth(double width) {
-		browserWidth = width+4;		
-		
-		this.setPrefSize(browserWidth, browserHeight);		
+		browserWidth = width + 4;
+
+		this.setPrefSize(browserWidth, browserHeight);
 		webView.setPrefSize(browserWidth, browserHeight);
 		//this.resize(browserWidth, browserHeight);
 		//this.layout();
 		//this.getParent().layout();
-		
-		
-		
+
 	}
-	
+
 	/**
 	 * @param height
 	 */
 	public void setBrowserHeight(double height) {
-		browserHeight = height+4;
+		browserHeight = height + 4;
 		this.setHeight(height);
 		this.setPrefSize(browserWidth, browserHeight);
 		webView.setPrefSize(browserWidth, browserHeight);
@@ -380,7 +372,7 @@ public class JavaFxD3Browser extends Region {
 		//this.layout();
 		//this.getParent().layout();
 		//this.layoutChildren();
-		
+
 	}
 
 	//#end region
