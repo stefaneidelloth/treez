@@ -26,6 +26,7 @@ public class QuantityVariableListFieldCodeAdaption extends AttributeAtomCodeAdap
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
 			AbstractAtom<?> parentAtom,
+			AbstractAtom<?> intermediateAtom,
 			CodeContainer parentContainer) {
 
 		CodeContainer extendedContainer = parentContainer;

@@ -17,11 +17,6 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param atom
-	 */
 	public AdjustableAtomCodeAdaption(AbstractUiSynchronizingAtom<?> atom) {
 		super(atom);
 	}
@@ -66,34 +61,39 @@ public class AdjustableAtomCodeAdaption extends AtomCodeAdaption {
 	 */
 	protected CodeContainer createCodeForAttributesFromModel(AdjustableAtom parentAtom) {
 
+		List<TreeNodeAdaption> pageNodes = getPageNodes(parentAtom);
+
 		CodeContainer attributeContainer = new CodeContainer(scriptType);
-
-		AbstractAtom<?> model = parentAtom.getModel();
-		List<TreeNodeAdaption> pageNodes = model.createTreeNodeAdaption().getChildren();
-
 		for (TreeNodeAdaption pageNode : pageNodes) {
 
-			//test the type
-			String type = pageNode.getAdaptable().getClass().getSimpleName();
-			String pageType = Page.class.getSimpleName();
-			boolean isPage = type.equals(pageType);
-			if (!isPage) {
-				String message = "The type of the first children of an AdjustableAtom has to be " + pageType
-						+ " and not '" + type + "'.";
-				throw new IllegalArgumentException(message);
-			}
-
-			//get page from pageNode
+			assertPageNodeIsPage(pageNode);
 			Page page = (Page) pageNode.getAdaptable();
 
 			//extend code with attribute code for page
-
 			AttributeParentCodeAdaption codeAdaption = page.createCodeAdaption(scriptType);
-
-			attributeContainer = codeAdaption.extendAttributeCodeContainerForModelParent(null, attributeContainer);
+			AbstractAtom<?> intermediateAtom = null;
+			attributeContainer = codeAdaption.extendAttributeCodeContainerForModelParent(parentAtom, intermediateAtom,
+					attributeContainer);
 		}
 
 		return attributeContainer;
+	}
+
+	protected static List<TreeNodeAdaption> getPageNodes(AdjustableAtom parentAtom) {
+		AbstractAtom<?> model = parentAtom.getModel();
+		List<TreeNodeAdaption> pageNodes = model.createTreeNodeAdaption().getChildren();
+		return pageNodes;
+	}
+
+	protected static void assertPageNodeIsPage(TreeNodeAdaption pageNode) {
+		String type = pageNode.getAdaptable().getClass().getSimpleName();
+		String pageType = Page.class.getSimpleName();
+		boolean isPage = type.equals(pageType);
+		if (!isPage) {
+			String message = "The type of the first children of an AdjustableAtom has to be " + pageType + " and not '"
+					+ type + "'.";
+			throw new IllegalArgumentException(message);
+		}
 	}
 
 	//#end region

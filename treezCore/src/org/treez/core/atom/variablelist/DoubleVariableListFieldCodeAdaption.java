@@ -22,14 +22,10 @@ public class DoubleVariableListFieldCodeAdaption extends AttributeAtomCodeAdapti
 
 	//#region METHODS
 
-	/**
-	 * @param parentAtom
-	 * @param parentContainer
-	 * @return
-	 */
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
 			AbstractAtom<?> parentAtom,
+			AbstractAtom<?> intermediateAtom,
 			CodeContainer parentContainer) {
 
 		CodeContainer extendedContainer = parentContainer;

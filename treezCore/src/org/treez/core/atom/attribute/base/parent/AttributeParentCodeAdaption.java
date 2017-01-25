@@ -32,6 +32,7 @@ public class AttributeParentCodeAdaption extends AtomCodeAdaption {
 	 * @return
 	 */
 	public CodeContainer extendAttributeCodeContainerForModelParent(
+			AbstractAtom<?> parentAtom,
 			AbstractAtom<?> intermediateAtom,
 			CodeContainer parentContainer) {
 
@@ -46,8 +47,9 @@ public class AttributeParentCodeAdaption extends AtomCodeAdaption {
 			if (isAttributeAtom) {
 				AbstractAttributeAtom<?, ?> attributeAtom = (AbstractAttributeAtom<?, ?>) child;
 				AttributeAtomCodeAdaption<?> codeAdaption = attributeAtom.createCodeAdaption(scriptType);
-				extendedContainer = codeAdaption.extendAttributeCodeContainerForModelParent(intermediateAtom,
-						parentContainer);
+
+				extendedContainer = codeAdaption.extendAttributeCodeContainerForModelParent(parentAtom,
+						intermediateAtom, parentContainer);
 
 			} else {
 
@@ -56,8 +58,8 @@ public class AttributeParentCodeAdaption extends AtomCodeAdaption {
 				if (isAttributeParentAtom) {
 					AbstractAttributeParentAtom<?> attributeParentAtom = (AbstractAttributeParentAtom<?>) child;
 					AttributeParentCodeAdaption codeAdaption = attributeParentAtom.createCodeAdaption(scriptType);
-					extendedContainer = codeAdaption.extendAttributeCodeContainerForModelParent(intermediateAtom,
-							parentContainer);
+					extendedContainer = codeAdaption.extendAttributeCodeContainerForModelParent(parentAtom,
+							intermediateAtom, parentContainer);
 				} else {
 					String message = "The child atom " + child.getName()
 							+ " has to inherit from AttributeAtom or AttributeParentAtom but it is "
