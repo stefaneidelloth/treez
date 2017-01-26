@@ -26,8 +26,6 @@ public class JarExecutable extends Executable {
 
 	public final Attribute<String> jarPath = new Wrap<>();
 
-	public final Attribute<String> classPathOption = new Wrap<>();
-
 	public final Attribute<String> fullClassName = new Wrap<>();
 	//#end region
 
@@ -98,10 +96,6 @@ public class JarExecutable extends Executable {
 		Section section = dataPage.createSection("classPath", executableHelpContextId).setLabel("Class Path");
 		section.moveAtom(2);
 
-		TextField classPathOptions = section.createTextField(classPathOption, this, " -cp ");
-		classPathOptions.setLabel("Jar file");
-		classPathOptions.addModifyListener("updateStatus", updateStatusListener);
-
 		FileOrDirectoryPath classPathChooser = section.createFileOrDirectoryPath(jarPath, this, "", "");
 		classPathChooser.addModifyListener("updateStatus", updateStatusListener);
 
@@ -120,7 +114,38 @@ public class JarExecutable extends Executable {
 		String command = "\"" + executablePath.get() + "\"";
 
 		// Check the Executable arguments before the ones from this class
-		command = buildCommand();
+		
+		boolean inputArgsIsEmpty = inputArguments.get().isEmpty();
+		if (!inputArgsIsEmpty) {
+			String modifiedInputArguments = injectStudyAndJobInfo(inputArguments);
+			command += " " + modifiedInputArguments;
+		}
+
+		boolean inputPathIsEmpty = inputPath.get().isEmpty();
+		if (!inputPathIsEmpty) {
+			command += " " + inputPath;
+		}
+
+		boolean outputArgsIsEmpty = outputArguments.get().isEmpty();
+		if (!outputArgsIsEmpty) {
+			command += " " + outputArguments;
+		}
+ 
+		boolean outputPathIsEmpty = outputPath.get().isEmpty();
+		if (!outputPathIsEmpty) {
+			modifiedOutputPath = provideFilePath();
+			command += " " + modifiedOutputPath;
+		}
+
+		boolean logArgsIsEmpty = logArguments.get().isEmpty();
+		if (!logArgsIsEmpty) {
+			command += " " + logArguments;
+		}
+
+		boolean logFilePathIsEmpty = logFilePath.get().isEmpty();
+		if (!logFilePathIsEmpty) {
+			command += " " + logFilePath;
+		}
 
 		boolean jvmArgumentsIsEmpty = jvmArgument.get().isEmpty();
 		if (!jvmArgumentsIsEmpty) {
