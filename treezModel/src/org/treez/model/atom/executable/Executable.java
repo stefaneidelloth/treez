@@ -541,11 +541,14 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	 * @param input
 	 * @return
 	 */
+
+	protected String injectStudyAndJobInfo(Attribute<String> input) {
 		String studyIdKey = "{$studyId$}";
 		String studyDescriptionKey = "{$studyDescription$}";
 		String jobIdKey = "{$jobId$}";
 
 		String currentInputArguments = input.get();
+
 		if (currentInputArguments.contains(studyIdKey)) {
 			String studyName = getStudyId();
 			if (studyName == null) {

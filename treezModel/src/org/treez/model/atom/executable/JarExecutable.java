@@ -114,7 +114,6 @@ public class JarExecutable extends Executable {
 		String command = "\"" + executablePath.get() + "\"";
 
 		// Check the Executable arguments before the ones from this class
-		
 		boolean inputArgsIsEmpty = inputArguments.get().isEmpty();
 		if (!inputArgsIsEmpty) {
 			String modifiedInputArguments = injectStudyAndJobInfo(inputArguments);
@@ -130,7 +129,7 @@ public class JarExecutable extends Executable {
 		if (!outputArgsIsEmpty) {
 			command += " " + outputArguments;
 		}
- 
+
 		boolean outputPathIsEmpty = outputPath.get().isEmpty();
 		if (!outputPathIsEmpty) {
 			modifiedOutputPath = provideFilePath();
@@ -146,15 +145,9 @@ public class JarExecutable extends Executable {
 		if (!logFilePathIsEmpty) {
 			command += " " + logFilePath;
 		}
-
 		boolean jvmArgumentsIsEmpty = jvmArgument.get().isEmpty();
 		if (!jvmArgumentsIsEmpty) {
 			command += " " + jvmArgument.get();
-		}
-
-		boolean classPathOptionArgsIsEmpty = classPathOption.get().isEmpty();
-		if (!classPathOptionArgsIsEmpty) {
-			command += " " + classPathOption.get();
 		}
 
 		boolean classPathArgsIsEmplty = jarPath.get().isEmpty();
@@ -174,7 +167,7 @@ public class JarExecutable extends Executable {
 	public void refreshStatus() {
 		this.runUiJobNonBlocking(() -> {
 			String infoTextMessage = buildCommand();
-			//LOG.debug("Updating info text: " + infoTextMessage);
+			// LOG.debug("Updating info text: " + infoTextMessage);
 			commandInfo.set(infoTextMessage);
 
 			Wrap<String> infoTextWrap = (Wrap<String>) executionStatusInfo;
