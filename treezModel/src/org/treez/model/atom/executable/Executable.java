@@ -100,12 +100,6 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		//create sections
 
-		//JarExecutable section creation
-		//		String jarExecutableRelativeHelpContextId = "jarExecutable";
-		//		String jarExecutableHelpContextId = Activator
-		//				.getAbsoluteHelpContextIdStatic(jarExecutableRelativeHelpContextId);
-		//		createExtraSections(dataPage, updateStatusListener, jarExecutableHelpContextId);
-
 		String executableRelativeHelpContextId = "executable";
 		String executableHelpContextId = Activator.getAbsoluteHelpContextIdStatic(executableRelativeHelpContextId);
 		createExecutableSection(dataPage, updateStatusListener, executableHelpContextId);
