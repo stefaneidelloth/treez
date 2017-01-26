@@ -41,7 +41,7 @@ import org.treez.model.output.ModelOutput;
 @SuppressWarnings({ "checkstyle:visibilitymodifier", "checkstyle:classfanoutcomplexity" })
 public class Executable extends AbstractModel implements FilePathProvider {
 
-	private static final Logger LOG = Logger.getLogger(Executable.class);
+	static final Logger LOG = Logger.getLogger(Executable.class);
 
 	//#region ATTRIBUTES
 
@@ -55,7 +55,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	public final Attribute<String> outputPath = new Wrap<>();
 
-	private String modifiedOutputPath;
+	public String modifiedOutputPath;
 
 	public final Attribute<Boolean> copyInputFile = new Wrap<>();
 
@@ -88,7 +88,10 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	public Executable(String name) {
 		super(name);
 		setRunnable();
+		createModel();
+	}
 
+	protected void createModel() {
 		AttributeRoot root = new AttributeRoot("root");
 		Page dataPage = root.createPage("data", "   Data   ");
 
@@ -96,6 +99,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		ModifyListener updateStatusListener = (ModifyEvent e) -> refreshStatus();
 
 		//create sections
+
 		String executableRelativeHelpContextId = "executable";
 		String executableHelpContextId = Activator.getAbsoluteHelpContextIdStatic(executableRelativeHelpContextId);
 		createExecutableSection(dataPage, updateStatusListener, executableHelpContextId);
@@ -123,7 +127,16 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		//set model
 		setModel(root);
+	}
 
+	/**
+	 * Dummy method that can be overridden by inheriting classes
+	 */
+	protected void createExtraSections(
+			@SuppressWarnings("unused") Page dataPage,
+			@SuppressWarnings("unused") ModifyListener updateStatusListener,
+			@SuppressWarnings("unused") String executableHelpContextId) {
+		//this default implementation does nothing
 	}
 
 	//#end region
@@ -135,7 +148,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		return this;
 	}
 
-	private void createExecutableSection(
+	protected void createExecutableSection(
 			Page dataPage,
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
@@ -237,7 +250,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		logFilePathChooser.addModifyListener("updateStatus", updateStatusListener);
 	}
 
-	private void createStatusSection(Page dataPage, String executableHelpContextId) {
+	protected void createStatusSection(Page dataPage, String executableHelpContextId) {
 		Section status = dataPage.createSection("status", executableHelpContextId);
 		status.setExpanded(false);
 
@@ -260,7 +273,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	/**
 	 * Updates the status text labels with data from other attribute atoms
 	 */
-	private void refreshStatus() {
+	protected void refreshStatus() {
 		this.runUiJobNonBlocking(() -> {
 			String infoTextMessage = buildCommand();
 			//LOG.debug("Updating info text: " + infoTextMessage);
@@ -484,7 +497,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	 *
 	 * @return
 	 */
-	private String buildCommand() {
+	protected String buildCommand() {
 		String command = "\"" + executablePath.get() + "\"";
 		boolean inputArgsIsEmpty = inputArguments.get().isEmpty();
 		if (!inputArgsIsEmpty) {
@@ -528,12 +541,14 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	 * @param input
 	 * @return
 	 */
-	private String injectStudyAndJobInfo(Attribute<String> input) {
+
+	protected String injectStudyAndJobInfo(Attribute<String> input) {
 		String studyIdKey = "{$studyId$}";
 		String studyDescriptionKey = "{$studyDescription$}";
 		String jobIdKey = "{$jobId$}";
 
 		String currentInputArguments = input.get();
+
 		if (currentInputArguments.contains(studyIdKey)) {
 			String studyName = getStudyId();
 			if (studyName == null) {
