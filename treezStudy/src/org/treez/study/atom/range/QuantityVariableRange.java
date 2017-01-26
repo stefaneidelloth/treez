@@ -1,5 +1,6 @@
 package org.treez.study.atom.range;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
@@ -113,6 +114,7 @@ public class QuantityVariableRange extends AbstractVariableRange<Quantity> {
 	 *
 	 * @param valueString
 	 */
+	@Override
 	public void setRangeValueString(String valueString) {
 		range.setValueString(valueString);
 	}
@@ -124,6 +126,11 @@ public class QuantityVariableRange extends AbstractVariableRange<Quantity> {
 	 */
 	public void setRangeUnitString(String unitString) {
 		range.setUnitString(unitString);
+	}
+
+	@Override
+	public void setRange(Quantity... rangeValues) {
+		range.set(Arrays.asList(rangeValues));
 	}
 
 	//#end region

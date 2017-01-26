@@ -464,7 +464,7 @@ public class Array<T> extends JavaScriptObject {
 			if (element != null) {
 				list.add(element);
 			} else {
-				String message = "Empty element in list";
+				String message = "Array: Empty element in list";
 				System.out.println(message);
 			}
 

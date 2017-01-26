@@ -244,7 +244,7 @@ public class IntegerVariableField extends AbstractVariableField<IntegerVariableF
 	@Override
 	public Integer get() {
 		String valueString = getValueString();
-		if (valueString.isEmpty()) {
+		if (valueString == null || valueString.isEmpty()) {
 			return getDefaultValue();
 		}
 		try {

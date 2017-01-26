@@ -58,18 +58,11 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 			CodeContainer attributeContainer,
 			AbstractAttributeAtom<?, T> attributeAtom) {
 		T value = attributeAtom.get();
-		String valueClassName = value.getClass().getSimpleName();
 
-		//code for setting a simple value string
-		String valueString = getValueString();
-		if (valueString != null) {
-			String code = "\t\t" + VARIABLE_NAME + ".set(" + valueString + ");";
-			attributeContainer.extendBulk(code);
-			return attributeContainer;
-		}
+		Class<?> valueClass = value.getClass();
 
-		//code for setting a Quantity
-		boolean isQuantity = value.getClass().equals(Quantity.class);
+		//code for the special case of setting a Quantity
+		boolean isQuantity = valueClass.equals(Quantity.class);
 		if (isQuantity) {
 
 			//add import for quantity
@@ -84,6 +77,7 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 			Quantity defaultQuantity = (Quantity) attributeAtom.getDefaultValue();
 
 			//get values
+			String valueString = getValueCommandString(value);
 			valueString = quantity.getValue();
 			String defaultValueString = defaultQuantity.getValue();
 			boolean hasDefaultValueString = (valueString == defaultValueString);
@@ -104,80 +98,17 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 			return attributeContainer;
 		}
 
+		//code for setting other value
+		String valueString = getValueCommandString(value);
+		if (valueString != null) {
+			String code = "\t\t" + VARIABLE_NAME + ".set(" + valueString + ");";
+			attributeContainer.extendBulk(code);
+			return attributeContainer;
+		}
+
+		String valueClassName = valueClass.getSimpleName();
 		String message = "The type " + valueClassName + " is not yet implemented";
 		throw new IllegalStateException(message);
-	}
-
-	/**
-	 * Returns a String that represents the current attribute value. If the attribute value can not be returned as a
-	 * String, null is returned.
-	 *
-	 * @return
-	 */
-	private String getValueString() {
-
-		@SuppressWarnings("unchecked")
-		AbstractAttributeAtom<?, T> attributeAtom = (AbstractAttributeAtom<?, T>) this.getAdaptable();
-		T value = attributeAtom.get();
-		String valueClassName = value.getClass().getSimpleName();
-
-		boolean isString = valueClassName.equals("String");
-		if (isString) {
-			String valueString = createValueStringForString(value);
-			return valueString;
-		}
-
-		boolean isEnum = value.getClass().isEnum();
-		if (isEnum) {
-			String valueString = createValueStringForEnum(value);
-			return valueString;
-		}
-
-		boolean isPrimitive = value.getClass().isPrimitive();
-		if (isPrimitive) {
-			String valueString = String.valueOf(value);
-			return valueString;
-		}
-
-		boolean isBoolean = value.getClass().equals(Boolean.class);
-		if (isBoolean) {
-			String valueString = String.valueOf(value);
-			return valueString;
-		}
-
-		boolean isFloat = value.getClass().equals(Float.class);
-		if (isFloat) {
-			String valueString = String.valueOf(value);
-			return valueString;
-		}
-
-		boolean isDouble = value.getClass().equals(Double.class);
-		if (isDouble) {
-			String valueString = String.valueOf(value);
-			return valueString;
-		}
-
-		return null;
-	}
-
-	private String createValueStringForEnum(T value) {
-		Enum<?> enumValue = (Enum<?>) value;
-		String valueString = getEnumValueString(enumValue);
-		return valueString;
-	}
-
-	private String createValueStringForString(T value) {
-		String valueString = (String) value;
-		valueString = valueString.replace("\"", "\\\"");
-		valueString = "\"" + valueString + "\"";
-		return valueString;
-	}
-
-	private static String getEnumValueString(Enum<?> enumValue) {
-		String enumClassName = enumValue.getClass().getSimpleName();
-		String enumValueName = enumValue.name();
-		String valueString = enumClassName + "." + enumValueName;
-		return valueString;
 	}
 
 	/**
@@ -215,11 +146,18 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 
 		T value = attributeAtom.get();
 		Class<?> valueClass = value.getClass();
-		String valueClassName = valueClass.getSimpleName();
 
-		//code for setting a simple value string
-		String valueString = getValueString();
-		if (valueString != null) {
+		//code for special case of setting a quantity value
+		boolean isQuantity = valueClass.equals(Quantity.class);
+		if (isQuantity) {
+			CodeContainer exdentedWithQuantityContainer = extendContainerForQuantityValue(extendedContainer,
+					intermediateAtom, attributeAtom, value);
+			return exdentedWithQuantityContainer;
+		}
+
+		//code for setting other values
+		String valueCommandString = getValueCommandString(value);
+		if (valueCommandString != null) {
 
 			String newBulkLine = "\t\t" + VARIABLE_NAME + ".";
 
@@ -228,21 +166,15 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 				newBulkLine += parentName + ".";
 			}
 
-			newBulkLine += attributeName + ".set(" + valueString + ");";
+			newBulkLine += attributeName + ".set(" + valueCommandString + ");";
 
 			extendedContainer.extendBulk(newBulkLine);
 			return extendedContainer;
 		}
 
-		//code for setting a quantity value
-		boolean isQuantity = value.getClass().equals(Quantity.class);
-		if (isQuantity) {
-			CodeContainer exdentedWithQuantityContainer = extendContainerForQuantityValue(extendedContainer,
-					intermediateAtom, attributeAtom, value);
-			return exdentedWithQuantityContainer;
-		}
-
-		String message = "The type " + valueClassName + " is not yet implemented";
+		String valueClassName = valueClass.getSimpleName();
+		String message = "The type " + valueClassName
+				+ " is not yet implemented. The method getValueCommandString needs to be extended.";
 		throw new IllegalStateException(message);
 	}
 

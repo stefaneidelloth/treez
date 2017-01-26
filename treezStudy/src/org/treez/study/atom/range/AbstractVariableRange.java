@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.swt.graphics.Image;
+import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.ModelPath;
@@ -14,6 +15,7 @@ import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.AttributeWrapper;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.core.utils.Utils;
@@ -22,6 +24,9 @@ import org.treez.study.atom.Study;
 
 /**
  * Parent class for variable ranges
+ */
+/**
+ * @param <T>
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public abstract class AbstractVariableRange<T> extends AdjustableAtom implements VariableRange<T> {
@@ -113,6 +118,24 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	}
 
 	/**
+	 * Returns the code adaption
+	 */
+	@Override
+	public CodeAdaption createCodeAdaption(ScriptType scriptType) {
+
+		CodeAdaption codeAdaption;
+		switch (scriptType) {
+		case JAVA:
+			codeAdaption = new VariableRangeCodeAdaption(this);
+			break;
+		default:
+			String message = "The ScriptType " + scriptType + " is not known.";
+			throw new IllegalStateException(message);
+		}
+		return codeAdaption;
+	}
+
+	/**
 	 * Checks if the parent is a study, gets the source model from it and updates the source model for this
 	 * VariableRange
 	 *
@@ -186,18 +209,35 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 
 	//#region ACCESSORS
 
-	//#region SOURCE VARIABLE
+	//#region RANGE VALUES
 
 	/**
-	 * @param sourceVariableModelPath
+	 * Returns the range values as a list
+	 *
+	 * @return
 	 */
+	@Override
+	public abstract List<T> getRange();
+
+	/**
+	 * Sets the range with a list of individual values
+	 */
+	@SuppressWarnings("unchecked")
+	protected abstract void setRange(T... rangeValues);
+
+	/**
+	 * Sets the range with a comma separated string
+	 */
+	protected abstract void setRangeValueString(String rangeString);
+
+	//#end region
+
+	//#region SOURCE VARIABLE
+
 	public void setSourceVariableModelPath(String sourceVariableModelPath) {
 		this.sourceVariableModelPath.set(sourceVariableModelPath);
 	}
 
-	/**
-	 * @param relativePath
-	 */
 	public void setRelativeSourceVariableModelPath(String relativePath) {
 		if (sourceModelModelPath == null) {
 			String message = "The source model path must not be null when calling this method. "
@@ -215,10 +255,23 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 		attributeAtom.triggerListeners();
 	}
 
+	public String getRelativeSourceVariableModelPath() {
+		if (sourceModelModelPath == null) {
+			String message = "The source model path must not be null when calling this method. "
+					+ "Please ensure that this VariableRange has a valid parent atom that "
+					+ "provides the source model path before calling this method.";
+			throw new IllegalStateException(message);
+		}
+
+		int prefixLength = sourceModelModelPath.length();
+
+		String relativePath = sourceVariableModelPath.get().substring(prefixLength + 1);
+
+		return relativePath;
+	}
+
 	/**
 	 * Returns the model path for the variable that is controlled with this range
-	 *
-	 * @return
 	 */
 	public String getSourceVariableModelPath() {
 		return sourceVariableModelPath.get();
@@ -244,14 +297,6 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	}
 
 	//#end region
-
-	/**
-	 * Returns the range values as a list
-	 *
-	 * @return
-	 */
-	@Override
-	public abstract List<T> getRange();
 
 	//#end region
 

@@ -1,5 +1,6 @@
 package org.treez.study.atom.range;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -94,9 +95,15 @@ public class StringVariableRange extends AbstractVariableRange<String> {
 	 *
 	 * @param valueString
 	 */
+	@Override
 	public void setRangeValueString(String valueString) {
 		Objects.requireNonNull(valueString, "ValueString must not be null");
 		range.setValue(valueString);
+	}
+
+	@Override
+	public void setRange(String... rangeValues) {
+		range.set(Arrays.asList(rangeValues));
 	}
 
 	//#end region

@@ -105,6 +105,13 @@ public class TextArea extends AbstractStringAttributeAtom<TextArea> {
 		toolkit.createLabel(contentContainer, currentLabel);
 
 		//text area
+		createTextAreaComposite(toolkit);
+
+		return this;
+	}
+
+	@SuppressWarnings("checkstyle:magicnumber")
+	private void createTextAreaComposite(FormToolkit toolkit) {
 		Composite textContainer = toolkit.createComposite(contentContainer);
 		textContainer.setLayout(new GridLayout());
 
@@ -156,8 +163,6 @@ public class TextArea extends AbstractStringAttributeAtom<TextArea> {
 		};
 
 		textArea.addModifyListener(modifyListener);
-
-		return this;
 	}
 
 	private void initializeValue() {

@@ -60,6 +60,7 @@ public class RootCodeContainer extends CodeContainer {
 		extendOpeningWithEmptyLine();
 		extendOpening("public class " + className + " extends ModelProvider {");
 		extendOpeningWithEmptyLine();
+		extendOpening("\t@Override");
 		extendOpening("\tpublic Root createModel() {");
 		extendOpeningWithEmptyLine();
 	}

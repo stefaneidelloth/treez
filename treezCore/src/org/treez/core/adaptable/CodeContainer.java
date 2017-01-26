@@ -11,9 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.treez.core.scripting.ScriptType;
 
 /**
- * Represents a container for several parts of code. The container might be
- * altered in an iterative process while it is passed around. After finishing
- * that process the different parts of the code can be put together.
+ * Represents a container for several parts of code. The container might be altered in an iterative process while it is
+ * passed around. After finishing that process the different parts of the code can be put together.
  */
 public class CodeContainer {
 
@@ -62,8 +61,7 @@ public class CodeContainer {
 		String bulkCode = joinLines(bulkLines);
 		String closingCode = joinLines(closingLines);
 
-		String code = headerCode + importCode + openingCode + bulkCode
-				+ closingCode;
+		String code = headerCode + "\n" + importCode + "\n" + openingCode + bulkCode + closingCode;
 		return code;
 	}
 
@@ -88,13 +86,12 @@ public class CodeContainer {
 	 * @param codeContainer
 	 */
 	public void extend(CodeContainer codeContainer) {
-		Objects.requireNonNull(codeContainer,
-				"Code container must not be null.");
+		Objects.requireNonNull(codeContainer, "Code container must not be null.");
 
 		boolean hasEqualType = scriptType.equals(codeContainer.scriptType);
 		if (!hasEqualType) {
-			String message = "The given code container does not have the expected script type '"
-					+ scriptType + "' but '" + codeContainer.scriptType + "'.";
+			String message = "The given code container does not have the expected script type '" + scriptType
+					+ "' but '" + codeContainer.scriptType + "'.";
 			throw new IllegalArgumentException(message);
 		}
 
@@ -122,8 +119,7 @@ public class CodeContainer {
 	 */
 	public void extendHeader(String header) {
 		if (StringUtils.isBlank(header)) {
-			throw new IllegalArgumentException(
-					"Extended code must not be empty.");
+			throw new IllegalArgumentException("Extended code must not be empty.");
 		}
 		headerLines.add(header);
 
@@ -143,8 +139,7 @@ public class CodeContainer {
 	 */
 	public void extendImports(String importString) {
 		if (StringUtils.isBlank(importString)) {
-			throw new IllegalArgumentException(
-					"Extended code must not be empty.");
+			throw new IllegalArgumentException("Extended code must not be empty.");
 		}
 		this.importLines.add(importString);
 	}
@@ -156,6 +151,13 @@ public class CodeContainer {
 	 */
 	public void extendImports(Set<String> imports) {
 		this.importLines.addAll(imports);
+	}
+
+	/**
+	 * Extends the imports with an empty line
+	 */
+	public void extendImportWithEmptyLine() {
+		importLines.add("");
 	}
 
 	/**
@@ -221,8 +223,7 @@ public class CodeContainer {
 	//#region REPLACE
 
 	/**
-	 * Replaces all occurrences of the first given string with the second given
-	 * string
+	 * Replaces all occurrences of the first given string with the second given string
 	 *
 	 * @param valueToReplace
 	 * @param newValue
@@ -230,8 +231,7 @@ public class CodeContainer {
 	public void replaceInBulk(String valueToReplace, String newValue) {
 		for (int index = 0; index < bulkLines.size(); index++) {
 			String currentLine = bulkLines.get(index);
-			boolean containsValueToReplace = currentLine
-					.contains(valueToReplace);
+			boolean containsValueToReplace = currentLine.contains(valueToReplace);
 			if (containsValueToReplace) {
 				String newLine = currentLine.replace(valueToReplace, newValue);
 				bulkLines.set(index, newLine);
@@ -244,8 +244,8 @@ public class CodeContainer {
 	//#region TRIM
 
 	/**
-	 * Makes sure that the bulk ends with a single empty line (removes empty
-	 * lines and/or adds an empty line as required)
+	 * Makes sure that the bulk ends with a single empty line (removes empty lines and/or adds an empty line as
+	 * required)
 	 */
 	public void makeBulkEndWithSingleEmptyLine() {
 
@@ -273,8 +273,7 @@ public class CodeContainer {
 	//#region HEADER
 
 	/**
-	 * Returns the first lines of the code, for example a package declaration.
-	 * (Part I)
+	 * Returns the first lines of the code, for example a package declaration. (Part I)
 	 *
 	 * @return
 	 */
@@ -314,8 +313,7 @@ public class CodeContainer {
 	//#region OPENING
 
 	/**
-	 * Returns the opening code, e.g. the declaration of a class and its
-	 * constructor
+	 * Returns the opening code, e.g. the declaration of a class and its constructor
 	 *
 	 * @return
 	 */
@@ -374,8 +372,7 @@ public class CodeContainer {
 	//#region CLOSING
 
 	/**
-	 * Returns the end of the code, e.g. the closing brackets for a class
-	 * definition
+	 * Returns the end of the code, e.g. the closing brackets for a class definition
 	 *
 	 * @return
 	 */
@@ -400,10 +397,8 @@ public class CodeContainer {
 	 * @return
 	 */
 	public boolean isEmpty() {
-		boolean startIsEmpty = headerLines.isEmpty() && importLines.isEmpty()
-				&& openingLines.isEmpty();
-		boolean isEmpty = startIsEmpty && bulkLines.isEmpty()
-				&& closingLines.isEmpty();
+		boolean startIsEmpty = headerLines.isEmpty() && importLines.isEmpty() && openingLines.isEmpty();
+		boolean isEmpty = startIsEmpty && bulkLines.isEmpty() && closingLines.isEmpty();
 		return isEmpty;
 	}
 

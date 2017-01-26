@@ -154,7 +154,7 @@ public class DoubleVariableField extends AbstractVariableField<DoubleVariableFie
 	@Override
 	public Double get() {
 		String valueString = getValueString();
-		if (valueString.isEmpty()) {
+		if (valueString == null || valueString.isEmpty()) {
 			return getDefaultValue();
 		}
 		try {

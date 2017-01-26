@@ -119,6 +119,7 @@ public class BooleanVariableRange extends AbstractVariableRange<Boolean> {
 	 *
 	 * @param valueString
 	 */
+	@Override
 	public void setRangeValueString(String valueString) {
 		Objects.requireNonNull(valueString, "ValueString must not be null");
 
@@ -128,6 +129,17 @@ public class BooleanVariableRange extends AbstractVariableRange<Boolean> {
 			throw new IllegalArgumentException(message);
 		}
 		range.set(valueString);
+	}
+
+	@Override
+	public void setRange(Boolean... rangeValues) {
+		List<String> stringValues = new ArrayList<>();
+		for (Boolean value : rangeValues) {
+			stringValues.add("" + value);
+		}
+		String rangeString = String.join(",", stringValues);
+
+		range.set(rangeString);
 	}
 
 	//#end region

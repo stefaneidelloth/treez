@@ -1,6 +1,8 @@
 package org.treez.core.atom.base;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.treez.core.adaptable.CodeContainer;
@@ -22,11 +24,6 @@ public class AtomCodeAdaption extends AbstractAtomCodeAdaption {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param atom
-	 */
 	public AtomCodeAdaption(AbstractAtom<?> atom) {
 		super(atom, ScriptType.JAVA);
 	}
@@ -163,6 +160,89 @@ public class AtomCodeAdaption extends AbstractAtomCodeAdaption {
 		//return new code
 		attributeContainer.extendBulk(additionalLine);
 		return attributeContainer;
+	}
+
+	//#end region
+
+	//#region UTILS
+
+	/**
+	 * Returns a String that represents the given value as code. If the attribute value can not be returned as a code
+	 * String, null is returned.
+	 *
+	 * @return
+	 */
+	public static String getValueCommandString(Object value) {
+
+		Class<?> valueClass = value.getClass();
+
+		boolean isString = valueClass.equals(String.class);
+		if (isString) {
+			String valueString = createValueStringForString((String) value);
+			return valueString;
+		}
+
+		boolean isEnum = valueClass.isEnum();
+		if (isEnum) {
+			String valueString = createValueStringForEnum((Enum<?>) value);
+			return valueString;
+		}
+
+		boolean isPrimitive = valueClass.isPrimitive();
+		if (isPrimitive) {
+			String valueString = String.valueOf(value);
+			return valueString;
+		}
+
+		boolean isBoolean = valueClass.equals(Boolean.class);
+		if (isBoolean) {
+			String valueString = String.valueOf(value);
+			return valueString;
+		}
+
+		boolean isNumber = value instanceof Number;
+		if (isNumber) {
+			String valueString = String.valueOf(value);
+			return valueString;
+		}
+
+		boolean isList = value instanceof List;
+		if (isList) {
+			return createListCommandString(value);
+		}
+
+		return null;
+	}
+
+	private static String createListCommandString(Object value) {
+		List<?> listValues = (List<?>) value;
+
+		List<String> valueCommandStrings = new ArrayList<>();
+		for (Object listValue : listValues) {
+			String valueCommandString = getValueCommandString(listValue);
+			valueCommandStrings.add(valueCommandString);
+		}
+		String listCommandString = String.join(",", valueCommandStrings);
+		return listCommandString;
+	}
+
+	protected static String createValueStringForEnum(Enum<?> enumValue) {
+		String valueString = getEnumValueString(enumValue);
+		return valueString;
+	}
+
+	protected static String createValueStringForString(String value) {
+		String valueString = value;
+		valueString = valueString.replace("\"", "\\\"");
+		valueString = "\"" + valueString + "\"";
+		return valueString;
+	}
+
+	protected static String getEnumValueString(Enum<?> enumValue) {
+		String enumClassName = enumValue.getClass().getSimpleName();
+		String enumValueName = enumValue.name();
+		String valueString = enumClassName + "." + enumValueName;
+		return valueString;
 	}
 
 	//#end region

@@ -1,5 +1,6 @@
 package org.treez.study.atom.range;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
@@ -99,8 +100,14 @@ public class IntegerVariableRange extends AbstractVariableRange<Integer> {
 	 *
 	 * @param valueString
 	 */
+	@Override
 	public void setRangeValueString(String valueString) {
 		range.setValueString(valueString);
+	}
+
+	@Override
+	public void setRange(Integer... rangeValues) {
+		range.set(Arrays.asList(rangeValues));
 	}
 
 	//#end region
