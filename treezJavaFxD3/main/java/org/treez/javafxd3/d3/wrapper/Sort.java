@@ -1,6 +1,7 @@
 package org.treez.javafxd3.d3.wrapper;
 
-import javafx.scene.web.WebEngine;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  */
@@ -8,12 +9,9 @@ public class Sort extends JavaScriptObject {
 	
 	//#region CONSTRUCTORS
 	
-	/**
-	 * Constructor
-	 * @param webEngine
-	 */
-	public Sort(WebEngine webEngine) {
-		super(webEngine);
+	
+	public Sort(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine, wrappedJsObject);
 	}
 	
 	//#end region

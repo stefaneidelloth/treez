@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * Helper class that provides methods to create object arrays which can be
@@ -105,6 +105,15 @@ public class ArrayUtils {
 	 * @return
 	 */
 	public static String createArrayString(short[] numbers) {
+		List<String> list = new java.util.ArrayList<>();
+    	for (Object number: numbers){
+    		list.add(""+number);
+    	}
+    	String arrayString = "[" + String.join(",", list) + "]";
+		return arrayString;
+	}
+	
+	public static String createArrayString(Short[] numbers) {
 		List<String> list = new java.util.ArrayList<>();
     	for (Object number: numbers){
     		list.add(""+number);
@@ -222,18 +231,18 @@ public class ArrayUtils {
 	}
 	
 	/**
-	 * Extracts the JSObjects from the given JavaScriptObjects and returns them
+	 * Extracts the JsObjects from the given JavaScriptObjects and returns them
 	 * as new array
 	 * @param data
 	 * @return
 	 */
-	public static JSObject[] JavaScriptObjectToJSObject(JavaScriptObject[] data) {
+	public static JsObject[] JavaScriptObjectToJsObject(JavaScriptObject[] data) {
 			    		
-		List<JSObject> jsObjectList = new ArrayList<>();
+		List<JsObject> jsObjectList = new ArrayList<>();
 		for(JavaScriptObject javaScriptObject: data){
 			jsObjectList.add(javaScriptObject.getJsObject());
 		}
-		JSObject[] jsObjects = jsObjectList.toArray(new JSObject[jsObjectList.size()]);
+		JsObject[] jsObjects = jsObjectList.toArray(new JsObject[jsObjectList.size()]);
 		
 		return jsObjects;
 	}

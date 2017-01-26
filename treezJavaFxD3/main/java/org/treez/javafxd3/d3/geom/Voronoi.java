@@ -2,13 +2,12 @@ package org.treez.javafxd3.d3.geom;
 
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.arrays.ArrayUtils;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.layout.Link;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import org.treez.javafxd3.d3.functions.DatumFunction;
-
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * Voronoi layouts are particularly useful for invisible interactive regions, as
@@ -23,11 +22,11 @@ public class Voronoi extends JavaScriptObject {
 //#region CONSTRUCTORS
 	
     /**
-     * @param webEngine
+     * @param engine
      * @param wrappedJsObject
      */
-    public Voronoi(WebEngine webEngine, JSObject wrappedJsObject) {
-    	super(webEngine);
+    public Voronoi(JsEngine engine, JsObject wrappedJsObject) {
+    	super(engine);
     	setJsObject(wrappedJsObject);
     }
     
@@ -61,8 +60,8 @@ public class Voronoi extends JavaScriptObject {
      */
     public  Voronoi clipExtent(int x0, int y0, int x1, int y1){
     	String command = "this.clipExtent([ [ "+x0+", "+y0+" ], [ "+x1+", "+y1+" ] ]);";
-    	JSObject result = evalForJsObject(command);
-    	return new Voronoi(webEngine, result);
+    	JsObject result = evalForJsObject(command);
+    	return new Voronoi(engine, result);
     }
 
     /**
@@ -73,8 +72,8 @@ public class Voronoi extends JavaScriptObject {
      */
     public  Voronoi clearClipExtent(){
     	Object arg = null;
-    	JSObject result = call("clipExtent", arg);
-    	return new Voronoi(webEngine, result);		
+    	JsObject result = call("clipExtent", arg);
+    	return new Voronoi(engine, result);		
     }
 
     /**
@@ -84,8 +83,8 @@ public class Voronoi extends JavaScriptObject {
      * @return the current clip extent which defaults to null.
      */
     public  Array<Array<Double>> clipExtent(){
-    	JSObject result = call("clipExtendt");
-    	return new Array<Array<Double>>(webEngine, result);    	
+    	JsObject result = call("clipExtendt");
+    	return new Array<Array<Double>>(engine, result);    	
     }
 
     /**
@@ -103,16 +102,16 @@ public class Voronoi extends JavaScriptObject {
      * @return the array of polygons
      */
     public  <T> Array<T> apply(Array<T> vertices){
-    	JSObject arrayObj = vertices.getJsObject();
-    	JSObject result = callThisForJsObject(arrayObj);
-    	return new Array<T>(webEngine, result);    	
+    	JsObject arrayObj = vertices.getJsObject();
+    	JsObject result = callThisForJsObject(arrayObj);
+    	return new Array<T>(engine, result);    	
     }
     
     public  Array<Double> apply(Double[][] vertices){
     	String arrayString = ArrayUtils.createArrayString(vertices);
     	String command = "this(" + arrayString + ")";
-    	JSObject result = evalForJsObject(command);
-    	return new Array<Double>(webEngine, result);    	
+    	JsObject result = evalForJsObject(command);
+    	return new Array<Double>(engine, result);    	
     }
 
     /**
@@ -125,16 +124,24 @@ public class Voronoi extends JavaScriptObject {
      *            the x accessor
      * @return the current layout
      */
-    public  Voronoi x(DatumFunction<Double> xAccessor){
+    public  Voronoi x(DataFunction<Double> xAccessor){
     	
-    	throw new IllegalStateException("not yet implemented");
-    	/*
-		return this
-				.x(function(d, i) {
-					return xAccessor.@com.github.gwtd3.api.functions.DatumFunction::apply(Lcom/google/gwt/dom/client/Element;Lcom/github/gwtd3/api/core/Value;I)(this,{datum:d},i);
-				});
-				
-		*/
+    	assertObjectIsNotAnonymous(xAccessor);
+
+		String funcName = createNewTemporaryInstanceName();
+		JsObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, xAccessor);
+
+		String command = "this.x(function(d, i) { return d3." + funcName + ".apply(this,d,i); });";
+		JsObject result = evalForJsObject(command);
+
+		d3JsObject.removeMember(funcName);
+
+		if(result==null){
+			return null;
+		}
+		return new Voronoi(engine, result);   	
+    	
     }
 
     /**
@@ -148,16 +155,23 @@ public class Voronoi extends JavaScriptObject {
      * @return the current layout
      */
 
-    public  Voronoi y(DatumFunction<Double> yAccessor){
+    public  Voronoi y(DataFunction<Double> yAccessor){
     	
-    	throw new IllegalStateException("not yet implemented");
-    	/*
-		return this
-				.y(function(d, i) {
-					return yAccessor.@com.github.gwtd3.api.functions.DatumFunction::apply(Lcom/google/gwt/dom/client/Element;Lcom/github/gwtd3/api/core/Value;I)(this,{datum:d},i);
-				});
-				
-		*/
+    	assertObjectIsNotAnonymous(yAccessor);
+
+		String funcName = createNewTemporaryInstanceName();
+		JsObject d3JsObject = getD3();
+		d3JsObject.setMember(funcName, yAccessor);
+
+		String command = "this.y(function(d, i) { return d3." + funcName + ".apply(this,d,i); });";
+		JsObject result = evalForJsObject(command);
+
+		d3JsObject.removeMember(funcName);
+
+		if(result==null){
+			return null;
+		}
+		return new Voronoi(engine, result); 
     }
 
     /**
@@ -168,9 +182,14 @@ public class Voronoi extends JavaScriptObject {
      * @return
      * @experimental
      */
-    public  Link[] links(Object[] nodes){
-    	throw new IllegalStateException("not yet implemented");
-    	//return this.links();
+    public  Array<Link> links(Object[] nodes){
+    	
+    	JsObject result = call("links");
+    	if(result==null){
+    		return null;
+    	}
+    	return new Array<>(engine, result);
+    	
     }
 
     /**
@@ -181,9 +200,12 @@ public class Voronoi extends JavaScriptObject {
      * @return
      * @experimental
      */
-    public  Link[] triangles(Object[] nodes){
-    	throw new IllegalStateException("not yet implemented");
-    	// 	return this.links();
+    public  Array<Link> triangles(Object[] nodes){
+    	JsObject result = call("triangles");
+    	if(result==null){
+    		return null;
+    	}
+    	return new Array<>(engine, result);
     }
 
 }

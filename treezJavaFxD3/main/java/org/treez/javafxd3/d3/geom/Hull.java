@@ -3,11 +3,11 @@ package org.treez.javafxd3.d3.geom;
 import java.util.List;
 
 import org.treez.javafxd3.d3.arrays.Array;
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * A <a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a>.
@@ -19,13 +19,9 @@ import netscape.javascript.JSObject;
 public class Hull extends JavaScriptObject {
 
 	//#region CONSTRUCTORS
-
-	/**
-	 * @param webEngine
-	 * @param wrappedJsObject
-	 */
-	public Hull(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	
+	public Hull(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 
@@ -43,19 +39,24 @@ public class Hull extends JavaScriptObject {
 	 *            the x accessor
 	 * @return the current hull
 	 */
-	public Hull x(DatumFunction<Double> xAccessor) {
+	public Hull x(DataFunction<Double> xAccessor) {
 
 		assertObjectIsNotAnonymous(xAccessor);
 
 		String accessorName = createNewTemporaryInstanceName();
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(accessorName, xAccessor);
 
-		String command = "this.x(function(d, i) { return d3." + accessorName + ".apply(this,{datum:d},i); });";
+		String command = "this.x(function(d, i) { return d3." + accessorName + ".apply(this,d,i); });";
 
-		JSObject result = evalForJsObject(command);
-		return new Hull(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		
+	
+		if (result == null) {
+			return null;
+		}
+		return new Hull(engine, result);
 	}
 
 	/**
@@ -69,19 +70,24 @@ public class Hull extends JavaScriptObject {
 	 * @return the current hull
 	 */
 
-	public Hull y(DatumFunction<Double> yAccessor) {
+	public Hull y(DataFunction<Double> yAccessor) {
 
 		assertObjectIsNotAnonymous(yAccessor);
 
 		String accessorName = createNewTemporaryInstanceName();
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(accessorName, yAccessor);
 
-		String command = "this.y(function(d, i) { return d3." + accessorName + ".apply(this,{datum:d},i); });";
+		String command = "this.y(function(d, i) { return d3." + accessorName + ".apply(this,d,i); });";
 
-		JSObject result = evalForJsObject(command);
-		return new Hull(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		
+		
+		if (result == null) {
+			return null;
+		}
+		return new Hull(engine, result);
 	}
 
 	/**
@@ -98,17 +104,23 @@ public class Hull extends JavaScriptObject {
 	 * @return the convex hull as an array of vertices
 	 */
 	public <T> Array<T> apply(Array<T> vertices) {
-		JSObject arrayObj = vertices.getJsObject();
+		JsObject arrayObj = vertices.getJsObject();
 
 		String tempVarName = createNewTemporaryInstanceName();
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(tempVarName, arrayObj);
 
 		String command = "this(d3." + tempVarName + ")";
-		JSObject result = evalForJsObject(command);
+		JsObject result = evalForJsObject(command);
+		
+		d3JsObject.removeMember(tempVarName);
 
-		return new Array<T>(webEngine, result);
+		if (result == null) {
+			return null;
+		}
+
+		return new Array<T>(engine, result);
 	}
 
 	/**
@@ -125,7 +137,7 @@ public class Hull extends JavaScriptObject {
 	 * @return the convex hull as an array of vertices
 	 */
 	public final <T> Array<T> apply(List<T> vertices) {
-		return this.apply(Array.fromList(webEngine, vertices));
+		return this.apply(Array.fromList(engine, vertices));
 	}
 
 }

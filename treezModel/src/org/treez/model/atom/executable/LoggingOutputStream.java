@@ -9,7 +9,9 @@ import org.apache.log4j.Logger;
 
 /**
  * An output stream that redirects its output to a Logger. http://stackoverflow.com/questions/6995946/
- * log4j-how-do-i-redirect-an-outputstream-or-writer-to-loggers-writers/28579006#28579006
+ * log4j-how-do-i-redirect-an-outputstream-or-writer-to-loggers-writers/28579006#28579006 The logged data accumulates in
+ * this logger. If you want to log a huge anount of data you might need to reset this logger from time to time to free
+ * the memory.
  */
 public class LoggingOutputStream extends OutputStream {
 
@@ -105,6 +107,12 @@ public class LoggingOutputStream extends OutputStream {
 	 */
 	public void reset() {
 		allLoggedData = "";
+	}
+
+	@Override
+	public void close() throws IOException {
+		super.close();
+		reset();
 	}
 
 	//#end region

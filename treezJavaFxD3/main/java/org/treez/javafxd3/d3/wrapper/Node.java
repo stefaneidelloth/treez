@@ -1,46 +1,39 @@
 package org.treez.javafxd3.d3.wrapper;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.d3.core.ConversionUtil;
 
-/**
- * 
- */
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
+
 public class Node extends JavaScriptObject {
 	
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param webEngine
-	 * @param wrappedJsObject
-	 */
-	public Node(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	public Node(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 	
 	//#end region
 	
 	//#region METHODS
-
-	/**
-	 * @param cloneNode
-	 */
-	public void appendChild(Node cloneNode) {
-		throw new IllegalStateException("not yet implemented");
-		
+	
+	public void appendChild(Node child) {		
+		call("appendChild", child.getJsObject());	
 	}
 
-	public <T> T cast() {
-		throw new IllegalStateException("not yet implemented");
-		//return null;
+	public <T> T cast(Class<T> targetClass) {
+		return ConversionUtil.convertObjectTo(getJsObject(), targetClass, engine);	
 	}
 
-	public Object children() {
-		throw new IllegalStateException("not yet implemented");
-		//return null;
+	public Array<Node> children() {
+		String command = "this.children";
+		JsObject result = evalForJsObject(command);
+		if(result==null){
+			return null;
+		}
+		return new Array<>(engine, result);		
 	}
 	
 	//#end region

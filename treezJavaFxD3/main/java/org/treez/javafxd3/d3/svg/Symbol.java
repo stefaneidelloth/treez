@@ -1,11 +1,10 @@
 package org.treez.javafxd3.d3.svg;
 
 import org.treez.javafxd3.d3.behaviour.Drag.DragEventType;
-import org.treez.javafxd3.d3.functions.DatumFunction;
-import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
+import org.treez.javafxd3.d3.functions.DataFunction;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * A {@link PathDataGenerator} generating symbols shapes.
@@ -47,12 +46,12 @@ public class Symbol extends PathDataGenerator {
 	 * size-accessor functions (that make no assumptions about input data, and
 	 * produce a circle sized 64 square pixels).
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 *
 	 */
-	public Symbol(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine, wrappedJsObject);
+	public Symbol(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine, wrappedJsObject);
 	}
 
 	//#end region
@@ -76,8 +75,8 @@ public class Symbol extends PathDataGenerator {
 
 		String value = type.getValue();
 		String command = "this.type('" + value + "');";
-		JSObject result = evalForJsObject(command);
-		return new Symbol(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		return new Symbol(engine, result);
 	}
 
 	/**
@@ -89,21 +88,24 @@ public class Symbol extends PathDataGenerator {
 	 *            the function that return the {@link DragEventType} of symbol.
 	 * @return this instance for chaining
 	 */
-	public Symbol type(DatumFunction<SymbolType> typeAccessorFunction) {
+	public Symbol type(DataFunction<SymbolType> typeAccessorFunction) {
 
 		assertObjectIsNotAnonymous(typeAccessorFunction);
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		String accessorName = createNewTemporaryInstanceName();
 
 		d3JsObject.setMember(accessorName, typeAccessorFunction);
 
 		String command = "this.type(function(d, i) { " //
-				+ "var t = d3." + accessorName + ".apply(this,{datum:d},i);" //
+				+ "var t = d3." + accessorName + ".apply(this,d,i);" //
 				+ " return t.getValue();" //
 				+ " });";
-		JSObject result = evalForJsObject(command);
-		return new Symbol(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		if(result==null){
+			return null;
+		}
+		return new Symbol(engine, result);
 
 	}
 
@@ -117,8 +119,8 @@ public class Symbol extends PathDataGenerator {
 	 * @return this instance for chaining
 	 */
 	public Symbol size(int sizeInSquarePixels) {
-		JSObject result = call("size", sizeInSquarePixels);
-		return new Symbol(webEngine, result);
+		JsObject result = call("size", sizeInSquarePixels);
+		return new Symbol(engine, result);
 	}
 
 	/**
@@ -130,20 +132,26 @@ public class Symbol extends PathDataGenerator {
 	 *            the function that return the {@link DragEventType} of symbol.
 	 * @return this instance for chaining
 	 */
-	public Symbol size(DatumFunction<Integer> sizeAccessorFunction) {
+	public Symbol size(DataFunction<Integer> sizeAccessorFunction) {
 
 		assertObjectIsNotAnonymous(sizeAccessorFunction);
 
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		String accessorName = createNewTemporaryInstanceName();
 
 		d3JsObject.setMember(accessorName, sizeAccessorFunction);
 
 		String command = "this.size(function(d, i) {" //
-				+ "return d3." + accessorName + ".apply(this,{datum:d},i);" //
+				+ "return d3." + accessorName + ".apply(this,d,i);" //
 				+ " });";
-		JSObject result = evalForJsObject(command);
-		return new Symbol(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		
+		d3JsObject.removeMember(accessorName);
+		if(result==null){
+			return null;
+		}
+		
+		return new Symbol(engine, result);
 
 	}
 	

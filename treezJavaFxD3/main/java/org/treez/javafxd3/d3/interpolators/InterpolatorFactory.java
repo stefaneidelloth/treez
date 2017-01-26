@@ -1,6 +1,6 @@
 package org.treez.javafxd3.d3.interpolators;
 
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * Represents an object that can create an {@link Interpolator}.
@@ -25,7 +25,7 @@ public interface InterpolatorFactory<O> {
 	 * 
 	 * @return an appropriate interpolator or null if the factory does not support the input values.
 	 */
-	<I> Interpolator<O> create(I a, I b);
+	<I> Interpolator<O> create(Object a, Object b);
 
 	/**
 	 * Return a one-arg JS function wrapping the interpolation.
@@ -35,5 +35,5 @@ public interface InterpolatorFactory<O> {
 	 * 
 	 * @return the JS function
 	 */
-	public JSObject asJSOFunction();
+	public JsObject asJSOFunction();
 }

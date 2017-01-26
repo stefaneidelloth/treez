@@ -1,15 +1,14 @@
 package org.treez.javafxd3.d3.scales;
 
+import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.arrays.ArrayUtils;
+import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.interpolators.Interpolator;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import org.treez.javafxd3.d3.D3;
-import org.treez.javafxd3.d3.core.Value;
-
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * <p>
@@ -34,20 +33,20 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 */
-	public Scale(WebEngine webEngine) {
-		super(webEngine);
+	public Scale(JsEngine engine) {
+		super(engine);
 	}
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject 
 	 */
-	public Scale(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	public Scale(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 
@@ -57,11 +56,11 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
 	
 	 /**
 	  * Abstract factory method
-	 * @param webEngine
+	 * @param engine
 	 * @param result
 	 * @return
 	 */
-	public abstract S createScale(WebEngine webEngine, JSObject result);
+	public abstract S createScale(JsEngine engine, JsObject result);
 
     // ==================== domain ====================
 
@@ -76,10 +75,10 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     public final S domain(final double... numbers) {    	    	
     	String arrayString = ArrayUtils.createArrayString(numbers);    	
     	String command = "this.domain("+ arrayString +")";    	
-    	JSObject result = evalForJsObject(command);    	
-    	S scaleResult = createScale(webEngine, result);   
+    	JsObject result = evalForJsObject(command);    	
+    	S scaleResult = createScale(engine, result);   
     	return scaleResult;    	
-    }
+    }  
    
 	/**
      * Sets the scale's input domain to the specified array of strings.
@@ -92,8 +91,8 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     public final S domain(final String... strings) {
     	String arrayString = ArrayUtils.createArrayString(strings);    	
     	String command = "this.domain("+ arrayString +")";    	
-    	JSObject result = evalForJsObject(command);    	
-    	S scaleResult = createScale(webEngine, result);   
+    	JsObject result = evalForJsObject(command);    	
+    	S scaleResult = createScale(engine, result);   
     	return scaleResult;
     }
 
@@ -105,11 +104,44 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      * @return the current scale
      */
     public  S domain(JavaScriptObject object){
-    	JSObject jsObject = object.getJsObject();
-    	JSObject result = call("domain", jsObject);
-    	S scaleResult = createScale(webEngine, result);   
+    	
+    	boolean isArray = object instanceof Array;
+    	if(isArray){
+    		Array<?> array = (Array<?>) object;
+    		return domainWithArray(array);
+    	}
+    	
+    	JsObject jsObject = object.getJsObject();    	
+    	JsObject result = call("domain", jsObject);
+    	S scaleResult = createScale(engine, result);   
     	return scaleResult;
     }
+
+	private S domainWithArray(Array<?> array) {
+		
+		Object min = array.get(0, Object.class);
+		
+		Object max = array.get(1,  Object.class);
+		
+		String minName = createNewTemporaryInstanceName();
+		String maxName = createNewTemporaryInstanceName();
+
+		JsObject d3jsObj = getD3();
+		d3jsObj.setMember(minName, min);
+		d3jsObj.setMember(maxName, max);
+		    		
+		JsObject result = evalForJsObject("this.domain([d3."+ minName + ", d3." + maxName + "])");
+		
+		d3jsObj.removeMember(minName);
+		d3jsObj.removeMember(maxName);
+		
+		if(result==null){
+			return null;
+		}
+		
+		S scaleResult = createScale(engine, result);   
+		return scaleResult;
+	}
 
     /**
      * Returns the current scale's input domain.
@@ -117,12 +149,12 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      *
      * @return the current domain
      */
-    public  <T> Array<Value> domain(){
-    	JSObject result = call("domain");
+    public  <T> Array<T> domain(){
+    	JsObject result = call("domain");
     	if(result==null){
     		return null;
     	}
-    	return new Array<Value>(webEngine, result);
+    	return new Array<>(engine, result);
     }
 
     // ==================== range ====================
@@ -139,8 +171,8 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     public final S range(final double... numbers) {
     	String arrayString = ArrayUtils.createArrayString(numbers);
     	String command = "this.range(" + arrayString +")";
-    	JSObject result = evalForJsObject(command);
-    	S scaleResult = createScale(webEngine, result);   
+    	JsObject result = evalForJsObject(command);
+    	S scaleResult = createScale(engine, result);   
     	return scaleResult;
     }
     
@@ -157,8 +189,8 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     public final S range(final String... strings) {
     	String arrayString = ArrayUtils.createArrayString(strings);
     	String command = "this.range(" + arrayString +")";
-    	JSObject result = evalForJsObject(command);
-    	S scaleResult = createScale(webEngine, result);   
+    	JsObject result = evalForJsObject(command);
+    	S scaleResult = createScale(engine, result);   
     	return scaleResult;
     }
 
@@ -170,9 +202,9 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      *
      * @return the current scale for chaining
      */
-    public  S range(JSObject jsObject){
-    	JSObject result = call("range", jsObject);
-    	S scaleResult = createScale(webEngine, result);   
+    public  S range(JsObject jsObject){
+    	JsObject result = call("range", jsObject);
+    	S scaleResult = createScale(engine, result);   
     	return scaleResult;
     }
 
@@ -183,8 +215,8 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      * @return the current output range
      */
     public  <T> Array<T> range(){
-    	JSObject result = call("range");
-    	return new Array<T>(webEngine, result);    	
+    	JsObject result = call("range");
+    	return new Array<T>(engine, result);    	
     }
 
     // ==================== copy ====================
@@ -197,9 +229,9 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      * @return the copy
      */
     public  final S copy(){
-    	JSObject jsObject = getJsObject();
-    	JSObject result = call("copy", jsObject);
-    	S scaleResult = createScale(webEngine, result);   
+    	JsObject jsObject = getJsObject();
+    	JsObject result = call("copy", jsObject);
+    	S scaleResult = createScale(engine, result);   
     	return scaleResult;
     }
 
@@ -221,9 +253,22 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      *            the input value
      * @return the output value
      */
-    public  Value apply(JSObject d){
-    	JSObject result = call("this", d);
-    	return new Value(webEngine, result);		
+    public  Value apply(JsObject d){    	
+    	Object result = callThis(d);
+    	if(result==null){
+    		return null;
+    	}    	
+    	boolean isJsObject = result instanceof JsObject;
+    	if(isJsObject){
+    		JsObject jsResult = (JsObject) result;
+    		return new Value(engine, jsResult);	
+    	} else {
+    		return Value.create(engine, result);
+    	}       		
+    }
+    
+    public  Value apply(JavaScriptObject d){
+    	return apply(d.getJsObject());    			
     }
 
     /**
@@ -243,7 +288,7 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
      *            the input value
      * @return the output value
      */
-    public  Value apply(double d){
+    public  Value apply(double d){    	
     	String command = "this(" + d + ")";
     	Object result = eval(command);
     	
@@ -251,7 +296,7 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     		return null;
     	}
     	
-    	Value value = Value.create(webEngine, result);
+    	Value value = Value.create(engine, result);
     	
     	return value;
     }
@@ -277,9 +322,13 @@ public abstract class Scale<S extends Scale<?>> extends JavaScriptObject {
     	String command = "this('" + d + "')";
     	Object result = eval(command);
     	
-    	Value value = Value.create(webEngine,  result);
-    	return value;
-    	
+    	Value value = Value.create(engine,  result);
+    	return value;    	
+    }
+    
+    public  Value apply(Enum<?> enumValue){
+    	String stringValue = enumValue.toString();
+    	return apply(stringValue);    			
     }
     
     public  Double applyForDouble(String d){

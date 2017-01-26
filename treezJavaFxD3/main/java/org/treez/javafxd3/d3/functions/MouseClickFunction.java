@@ -9,5 +9,5 @@ package org.treez.javafxd3.d3.functions;
  */
 public interface MouseClickFunction {
 	
-	public void handleMouseClick(Object context);
+	void handleMouseClick(Object context);
 }

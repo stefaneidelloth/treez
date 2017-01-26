@@ -6,7 +6,7 @@ import org.treez.javafxd3.d3.core.Formatter;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.core.Transition;
 import org.treez.javafxd3.d3.core.Value;
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.functions.JsFunction;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.LogScale;
@@ -15,11 +15,10 @@ import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.time.Interval;
 import org.treez.javafxd3.d3.time.TimeScale;
-import org.treez.javafxd3.d3.wrapper.Inspector;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * D3 axis component displays reference lines for {@link Scale}s automatically.
@@ -44,11 +43,11 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public Axis(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	public Axis(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 
@@ -61,13 +60,14 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * 
 	 * @return the scale.
 	 */
+	@SuppressWarnings("unchecked")
 	public <S extends Scale<S>> S scale() {
-		JSObject result = call("scale");
-		if (associatedScale != null) {
-			S scale = (S) associatedScale.createScale(webEngine, result);
+		JsObject result = call("scale");
+		if (associatedScale != null) {			
+			S scale = (S) associatedScale.createScale(engine, result);
 			return scale;
 		} else {
-			LinearScale linearScale = new LinearScale(webEngine, result);
+			LinearScale linearScale = new LinearScale(engine, result);
 			return (S) linearScale;
 		}
 	}
@@ -81,9 +81,9 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	public <S extends Scale<?>> Axis scale(S scale) {
 		
 		this.associatedScale = scale;
-		JSObject jsScale = scale.getJsObject();			
-		JSObject result = call("scale", jsScale);
-		return new Axis(webEngine, result);
+		JsObject jsScale = scale.getJsObject();			
+		JsObject result = call("scale", jsScale);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -124,8 +124,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 */
 	public Axis orient(Orientation o) {
 		String orientation = o.toString().toLowerCase();
-		JSObject result = call("orient", orientation);
-		return new Axis(webEngine, result);
+		JsObject result = call("orient", orientation);
+		return new Axis(engine, result);
 	}
 
 	// ========== ticks methods =========
@@ -136,8 +136,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the arguments
 	 */
 	public Array<Value> ticks() {
-		JSObject result = call("ticks");
-		return new Array<Value>(webEngine, result);
+		JsObject result = call("ticks");
+		return new Array<Value>(engine, result);
 	}
 
 	/**
@@ -157,8 +157,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis
 	 */
 	public Axis ticks(int count) {
-		JSObject result = call("ticks", count);
-		return new Axis(webEngine, result);
+		JsObject result = call("ticks", count);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -173,8 +173,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis
 	 */
 	public Axis ticks(int count, String formatSpecifier) {
-		JSObject result = call("ticks", count, formatSpecifier);
-		return new Axis(webEngine, result);
+		JsObject result = call("ticks", count, formatSpecifier);
+		return new Axis(engine, result);
 	}
 	
 	/**
@@ -190,13 +190,13 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 */
 	public Axis ticksExpression(int count, String formatFunctionExpression) {		
 		String command = "this.ticks(" + count + ", " + formatFunctionExpression + ");";
-		JSObject result = evalForJsObject(command);
-		return new Axis(webEngine, result);		
+		JsObject result = evalForJsObject(command);
+		return new Axis(engine, result);		
 	}
 
 	/**
 	 * Same as {@link #ticks(int)} but suitable for
-	 * {@link LogScale#tickFormat(int, DatumFunction)}.
+	 * {@link LogScale#tickFormat(int, DataFunction)}.
 	 * 
 	 * 
 	 * @param count
@@ -205,17 +205,20 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 *            the format argument to be passed to the underlying scale.
 	 * @return the current axis
 	 */
-	public Axis ticks(int count, DatumFunction<String> formatSpecifier) {
+	public Axis ticks(int count, DataFunction<String> formatSpecifier) {
 
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(memberName, formatSpecifier);
 
 		String command = "this.ticks(" + count + ", d3." + memberName + ");";
 
-		JSObject result = evalForJsObject(command);
+		JsObject result = evalForJsObject(command);
+		if(result==null){
+			return null;
+		}
 
-		return new Axis(webEngine, result);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -230,8 +233,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis
 	 */
 	public Axis ticks(Interval interval, int steps) {
-		JSObject result = call("ticks", interval, steps);
-		return new Axis(webEngine, result);
+		JsObject result = call("ticks", interval, steps);
+		return new Axis(engine, result);
 	}
 
 	// ========== tick size =========
@@ -252,8 +255,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis
 	 */
 	public Axis tickSize(double outerInnerTickSizeInPixels) {
-		JSObject result = call("tickSize", outerInnerTickSizeInPixels);
-		return new Axis(webEngine, result);
+		JsObject result = call("tickSize", outerInnerTickSizeInPixels);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -262,8 +265,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return
 	 */
 	public Axis tickSize(double first, double second) {
-		JSObject result = call("tickSize", first, second);
-		return new Axis(webEngine, result);
+		JsObject result = call("tickSize", first, second);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -273,8 +276,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return
 	 */
 	public Axis tickSize(double first, double second, double third) {
-		JSObject result = call("tickSize", first, second, third);
-		return new Axis(webEngine, result);
+		JsObject result = call("tickSize", first, second, third);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -289,8 +292,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis
 	 */
 	public Axis innerTickSize(double innerTickSizeInPixels) {
-		JSObject result = call("innerTickSize", innerTickSizeInPixels);
-		return new Axis(webEngine, result);
+		JsObject result = call("innerTickSize", innerTickSizeInPixels);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -320,8 +323,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis
 	 */
 	public Axis outerTickSize(double outerTickSizeInPixels) {
-		JSObject result = call("outerTickSize", outerTickSizeInPixels);
-		return new Axis(webEngine, result);
+		JsObject result = call("outerTickSize", outerTickSizeInPixels);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -355,8 +358,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis
 	 */
 	public Axis tickPadding(double padding) {
-		JSObject result = call("tickPadding", padding);
-		return new Axis(webEngine, result);
+		JsObject result = call("tickPadding", padding);
+		return new Axis(engine, result);
 	}
 
 	// ========== apply =========
@@ -371,10 +374,7 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 *            the selection to apply the axis to
 	 * @return the current axis.
 	 */
-	public Axis apply(Selection selection) {
-		
-		//Inspector.inspect(this);
-		
+	public Axis apply(Selection selection) {				
 		selection.call(this);
 		return this;		
 	}
@@ -390,8 +390,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis.
 	 */
 	public Axis apply(Transition transition) {
-		JSObject result = call("this", transition.getJsObject());
-		return new Axis(webEngine, result);
+		JsObject result = callThisForJsObject(transition.getJsObject());
+		return new Axis(engine, result);
 	}
 
 	// ========== tickFormat =========
@@ -404,8 +404,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis.
 	 */
 	public Axis tickFormat(Formatter format) {
-		JSObject result = call("tickFormat", format.getJsObject());
-		return new Axis(webEngine, result);
+		JsObject result = call("tickFormat", format.getJsObject());
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -422,27 +422,31 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 *            the function converting each tick value to a String.
 	 * @return the current {@link Axis}
 	 */
-	public Axis tickFormat(DatumFunction<String> formatFunction) {
+	public Axis tickFormat(DataFunction<String> formatFunction) {
 
 		assertObjectIsNotAnonymous(formatFunction);
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3JsObj = getD3();
+		JsObject d3JsObj = getD3();
 		d3JsObj.setMember(memberName, formatFunction);
 
 		String command = "this.tickFormat(function(d,i) {"//
-				+ "return d3." + memberName + ".apply(null,{datum:d},i);"//
+				+ "return d3." + memberName + ".apply(null,d,i);"//
 				+ "});";
 
-		JSObject result = evalForJsObject(command);
+		JsObject result = evalForJsObject(command);
+		
+		if(result==null){
+			return null;
+		}
 
-		return new Axis(webEngine, result);
+		return new Axis(engine, result);
 
 	}
 	
 	public Axis tickFormatExpression(String formatFunctionExpression) {		
 		String command = "this.tickFormat("+formatFunctionExpression+");";
-		JSObject result = evalForJsObject(command);
-		return new Axis(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -455,11 +459,11 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis.
 	 */
 	public Formatter tickFormat() {
-		JSObject result = call("tickFormat");
+		JsObject result = call("tickFormat");
 		if (result == null) {
 			return null;
 		}
-		return new Formatter(webEngine, result);
+		return new Formatter(engine, result);
 	}
 
 	// ========== tickValues =========
@@ -471,11 +475,11 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the currently-set tick values
 	 */
 	public Array<Value> tickValues() {
-		JSObject result = call("tickValues");
+		JsObject result = call("tickValues");
 		if (result == null) {
 			return null;
 		}
-		return new Array<Value>(webEngine, result);
+		return new Array<Value>(engine, result);
 	}
 
 	/**
@@ -496,8 +500,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 * @return the current axis
 	 */
 	public Axis tickValues(JavaScriptObject values) {
-		JSObject result = call("tickValues", values);
-		return new Axis(webEngine, result);
+		JsObject result = call("tickValues", values);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -510,8 +514,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	public final Axis tickValues(double... values) {
 		String arrayString = ArrayUtils.createArrayString(values);
 		String command = "this.tickValues(" + arrayString + ");";
-		JSObject result = evalForJsObject(command);
-		return new Axis(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -524,8 +528,8 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	public final Axis tickValues(String... values) {
 		String arrayString = ArrayUtils.createArrayString(values);
 		String command = "this.tickValues(" + arrayString + ");";
-		JSObject result = evalForJsObject(command);
-		return new Axis(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		return new Axis(engine, result);
 	}
 
 	/**
@@ -535,14 +539,14 @@ public class Axis extends JavaScriptObject implements JsFunction {
 	 *            the values
 	 * @return the current axis
 	 */
-	public final Axis tickValues(Object[] values) {
-		throw new IllegalStateException("not yet implemented");
-
-		/*
-		 * String arrayString = ArrayUtils.createArrayString(values); String
-		 * command = "this.tickValues(" + arrayString + ");"; JSObject result =
-		 * evalForJsObject(command); return new Axis(webEngine, result);
-		 */
+	public final Axis tickValues(Array<Object> values) {
+		
+		JsObject result = call("tickValues", values.getJsObject());
+		if(result==null){
+			return null;
+		}
+		return new Axis(engine, result);		
+		
 	}
 
 	//#end region

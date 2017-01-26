@@ -1,9 +1,9 @@
 package org.treez.javafxd3.d3.svg;
 
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * Generates path data for a closed piecewise linear curve, or polygon, as in an
@@ -40,11 +40,11 @@ public class Area extends PathDataGenerator {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public Area(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine, wrappedJsObject);
+	public Area(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine, wrappedJsObject);
 	}
 
 	//#end region
@@ -58,6 +58,9 @@ public class Area extends PathDataGenerator {
 	 */
 	public InterpolationMode interpolate() {
 		String mode = callForString("interpolate");
+		if (mode == null) {
+			return null;
+		}
 		InterpolationMode result = InterpolationMode.fromValue(mode);
 		return result;
 	}
@@ -70,10 +73,12 @@ public class Area extends PathDataGenerator {
 	 * @return the current area
 	 */
 	public Area interpolate(final InterpolationMode mode) {
-
 		String modeString = mode.getValue();
-		JSObject result = call("interpolate", modeString);
-		return new Area(webEngine, result);
+		JsObject result = call("interpolate", modeString);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
@@ -87,17 +92,22 @@ public class Area extends PathDataGenerator {
 	 * @param datumFunction
 	 * @return
 	 */
-	public Area x(final DatumFunction<Double> callback) {
-		
+	public Area x(final DataFunction<?> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3jsObj = getD3();
+		JsObject d3jsObj = getD3();
 		d3jsObj.setMember(memberName, callback);
 
-		String command = "this.x(function(d, i) { return d3." + memberName + ".apply(this,{datum:d},i); });";
-		JSObject result = evalForJsObject(command);
-		return new Area(webEngine, result);
+		String command = "this.x(function(d, i) { " + //
+				"   return d3." + memberName + ".apply(this,d,i); " + //
+				"});";
+		JsObject result = evalForJsObject(command);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
@@ -107,8 +117,11 @@ public class Area extends PathDataGenerator {
 	 * @return
 	 */
 	public Area x(double d) {
-		JSObject result = call("x", d);
-		return new Area(webEngine, result);
+		JsObject result = call("x", d);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
@@ -118,28 +131,31 @@ public class Area extends PathDataGenerator {
 	 * @return
 	 */
 	public Area x0(double d) {
-		JSObject result = call("x0", d);
-		return new Area(webEngine, result);
+		JsObject result = call("x0", d);
+		return new Area(engine, result);
 	}
 
 	/**
-	 * @see #x(DatumFunction).
+	 * @see #x(DataFunction).
 	 * @param callback
 	 * @return
 	 */
-	public Area x0(final DatumFunction<Double> callback) {
-		
+	public Area x0(final DataFunction<Double> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3jsObj = getD3();
+		JsObject d3jsObj = getD3();
 		d3jsObj.setMember(memberName, callback);
 
-		String command = "this.x0(function(d, i) { "//
-				+ "return d3." + memberName + ".apply(this,{datum:d},i); "//
-				+ "});";
-		JSObject result = evalForJsObject(command);
-		return new Area(webEngine, result);
+		String command = "this.x0(function(d, i) { " + //
+				"  return d3." + memberName + ".apply(this,d,i); " + //
+				"});";
+		JsObject result = evalForJsObject(command);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 
 	}
 
@@ -150,29 +166,35 @@ public class Area extends PathDataGenerator {
 	 * @return
 	 */
 	public Area x1(double d) {
-		JSObject result = call("x1", d);
-		return new Area(webEngine, result);
+		JsObject result = call("x1", d);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 
 	}
 
 	/**
-	 * @see #x(DatumFunction).
+	 * @see #x(DataFunction).
 	 * @param callback
 	 * @return
 	 */
-	public Area x1(final DatumFunction<Double> callback) {
-		
+	public Area x1(final DataFunction<Double> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3jsObj = getD3();
+		JsObject d3jsObj = getD3();
 		d3jsObj.setMember(memberName, callback);
 
-		String command = "this.x1(function(d, i) { "//
-				+ "return d3." + memberName + ".apply(this,{datum:d},i); "//
-				+ "});";
-		JSObject result = evalForJsObject(command);
-		return new Area(webEngine, result);
+		String command = "this.x1(function(d, i) { " + //
+				"  return d3." + memberName + ".apply(this,d,i); " + //
+				"});";
+		JsObject result = evalForJsObject(command);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
@@ -182,8 +204,11 @@ public class Area extends PathDataGenerator {
 	 * @return
 	 */
 	public Area y(double d) {
-		JSObject result = call("y", d);
-		return new Area(webEngine, result);
+		JsObject result = call("y", d);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
@@ -193,8 +218,11 @@ public class Area extends PathDataGenerator {
 	 * @return
 	 */
 	public Area y0(double d) {
-		JSObject result = call("y0", d);
-		return new Area(webEngine, result);
+		JsObject result = call("y0", d);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
@@ -204,12 +232,15 @@ public class Area extends PathDataGenerator {
 	 * @return
 	 */
 	public Area y1(double d) {
-		JSObject result = call("y1", d);
-		return new Area(webEngine, result);
+		JsObject result = call("y1", d);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
-	 * See {@link #x(DatumFunction)}.
+	 * See {@link #x(DataFunction)}.
 	 * <p>
 	 * Note that, like most other graphics libraries, SVG uses the top-left
 	 * corner as the origin and thus higher values of y are lower on the screen.
@@ -220,23 +251,26 @@ public class Area extends PathDataGenerator {
 	 * @param callback
 	 * @return the current area
 	 */
-	public Area y(final DatumFunction<Double> callback) {
-		
+	public Area y(final DataFunction<Double> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3jsObj = getD3();
+		JsObject d3jsObj = getD3();
 		d3jsObj.setMember(memberName, callback);
 
-		String command = "this.y(function(d, i) { "//
-				+ "return d3." + memberName + ".apply(this,{datum:d},i); "//
-				+ "});";
-		JSObject result = evalForJsObject(command);
-		return new Area(webEngine, result);
+		String command = "this.y(function(d, i) { " + //
+				"   return d3." + memberName + ".apply(this,d,i); " + //
+				"});";
+		JsObject result = evalForJsObject(command);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
-	 * See {@link #y(DatumFunction)}.
+	 * See {@link #y(DataFunction)}.
 	 * <p>
 	 * Note that, like most other graphics libraries, SVG uses the top-left
 	 * corner as the origin and thus higher values of y are lower on the screen.
@@ -247,21 +281,26 @@ public class Area extends PathDataGenerator {
 	 * @param callback
 	 * @return the current area
 	 */
-	public Area y0(final DatumFunction<Double> callback) {
-		
+	public Area y0(final DataFunction<Double> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3jsObj = getD3();
+		JsObject d3jsObj = getD3();
 		d3jsObj.setMember(memberName, callback);
 
-		String command = "this.y0(function(d, i) { return d3." + memberName + ".apply(this,{datum:d},i); });";
-		JSObject result = evalForJsObject(command);
-		return new Area(webEngine, result);
+		String command = "this.y0(function(d, i) { " + //
+				"   return d3." + memberName + ".apply(this,d,i); " + //
+				"});";
+		JsObject result = evalForJsObject(command);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
-	 * See {@link #y(DatumFunction)}.
+	 * See {@link #y(DataFunction)}.
 	 * <p>
 	 * Note that, like most other graphics libraries, SVG uses the top-left
 	 * corner as the origin and thus higher values of y are lower on the screen.
@@ -272,17 +311,22 @@ public class Area extends PathDataGenerator {
 	 * @param callback
 	 * @return the current area
 	 */
-	public Area y1(final DatumFunction<Double> callback) {
-		
+	public Area y1(final DataFunction<Double> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3jsObj = getD3();
+		JsObject d3jsObj = getD3();
 		d3jsObj.setMember(memberName, callback);
 
-		String command = "this.y1(function(d, i) { return d3." + memberName + ".apply(this,{datum:d},i); });";
-		JSObject result = evalForJsObject(command);
-		return new Area(webEngine, result);
+		String command = "this.y1(function(d, i) { " + //
+				"   return d3." + memberName + ".apply(this,d,i); " + //
+				" });";
+		JsObject result = evalForJsObject(command);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 
 	}
 
@@ -300,23 +344,24 @@ public class Area extends PathDataGenerator {
 	 * @param callback
 	 * @return
 	 */
-	public Line defined(final DatumFunction<Boolean> callback) {
-		
+	public Line defined(final DataFunction<Boolean> callback) {
+
 		assertObjectIsNotAnonymous(callback);
 
 		String memberName = createNewTemporaryInstanceName();
-		JSObject d3jsObj = getD3();
+		JsObject d3jsObj = getD3();
 		d3jsObj.setMember(memberName, callback);
 
-		String command = "this.defined(function(d) { " //
-				+ "alert('yo'); " //
-				+ "var result = d3." + memberName + ".apply(null,{datum:d}, 0); "//
-				+ "alert(result); "//
+		String command = "this.defined(function(d) { " //				
+				+ "var result = d3." + memberName + ".apply(null,d, 0); "//				
 				+ "return result; "//
 				+ "});";
 
-		JSObject result = evalForJsObject(command);
-		return new Line(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		if (result == null) {
+			return null;
+		}
+		return new Line(engine, result);
 
 	}
 
@@ -350,8 +395,11 @@ public class Area extends PathDataGenerator {
 	 * @return the current area generator
 	 */
 	public Area tension(double tension) {
-		JSObject result = call("tension", tension);
-		return new Area(webEngine, result);
+		JsObject result = call("tension", tension);
+		if (result == null) {
+			return null;
+		}
+		return new Area(engine, result);
 	}
 
 	/**
@@ -390,5 +438,5 @@ public class Area extends PathDataGenerator {
 	}
 
 	//#end region
-	
+
 }

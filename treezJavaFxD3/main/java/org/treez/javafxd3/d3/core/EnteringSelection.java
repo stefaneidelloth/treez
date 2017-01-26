@@ -4,13 +4,13 @@ import java.util.Objects;
 
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.arrays.Array;
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.functions.JsFunction;
 import org.treez.javafxd3.d3.wrapper.Element;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * A selection returned by a call to {@link UpdateSelection#enter()}.
@@ -46,22 +46,22 @@ public class EnteringSelection extends JavaScriptObject {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 */
-	public EnteringSelection(WebEngine webEngine) {
-		super(webEngine);
+	public EnteringSelection(JsEngine engine) {
+		super(engine);
 	}
 
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
-	 * @param wrappedJSObject
+	 * @param engine
+	 * @param wrappedJsObject
 	 */
-	public EnteringSelection(WebEngine webEngine, JSObject wrappedJSObject) {
-		super(webEngine);
-		Objects.requireNonNull(wrappedJSObject);
-		setJsObject(wrappedJSObject);
+	public EnteringSelection(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
+		Objects.requireNonNull(wrappedJsObject);
+		setJsObject(wrappedJsObject);
 	}
 
 	//#end region
@@ -91,22 +91,29 @@ public class EnteringSelection extends JavaScriptObject {
 	 * @return a new selection containing the appended elements
 	 */
 	public Selection append(String name) {
-		JSObject result = (JSObject) eval("this.append('" + name +"')");
-		return new Selection(webEngine, result);
+		JsObject result = call("append", name);
+		if (result == null) {
+			return null;
+		}
+		return new Selection(engine, result);
 	}
-	
-	public Selection append(DatumFunction<JSObject> function) {
-		
+
+	public Selection append(DataFunction<JsObject> function) {
+
 		String funcName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(funcName, function);
 
-		String command = "this.append(function(d, i) { return d3." + funcName + ".apply(this,{datum:d},i); });";
-		JSObject result = evalForJsObject(command);
+		String command = "this.append(function(d, i) { return d3." + funcName + ".apply(this,d,i); });";
+		JsObject result = evalForJsObject(command);
+
+		d3JsObject.removeMember(funcName);
 		
-		d3JsObject.removeMember(funcName);	
-		
-		return new Selection(webEngine, result);
+		if(result==null){
+			return null;
+		}
+
+		return new Selection(engine, result);
 	}
 
 	/**
@@ -145,8 +152,8 @@ public class EnteringSelection extends JavaScriptObject {
 	 * @return the returned selection, containing at most only one element
 	 */
 	public Selection select(String selector) {
-		JSObject result = call("select", selector);
-		return new Selection(webEngine, result);
+		JsObject result = call("select", selector);
+		return new Selection(engine, result);
 	}
 
 	/**
@@ -161,18 +168,27 @@ public class EnteringSelection extends JavaScriptObject {
 	 * @return
 	 * @throws Exception
 	 */
-	public Selection select(DatumFunction<Element> func) {
-		
+	public Selection select(DataFunction<Element> func) {
+
 		String funcName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(funcName, func);
 
-		String command = "this.select(function(d, i) { return d3." + funcName + ".apply(this,{datum:d},i); });";
-		JSObject result = evalForJsObject(command);
-		
+		String command = "this.select(function(d, i) { " + //
+				"     var element = d3." + funcName + ".apply(this,d,i);" + //
+				"     var jsElement = element.getJsObject().unwrap();" + //
+				"     return jsElement; " + //
+				"   }" + //
+				")";
+		JsObject result = evalForJsObject(command);
+
 		d3JsObject.removeMember(funcName);
 		
-		return new Selection(webEngine, result);		
+		if(result==null){
+			return null;
+		}
+
+		return new Selection(engine, result);
 	}
 
 	/**
@@ -204,8 +220,8 @@ public class EnteringSelection extends JavaScriptObject {
 	 * @return a new selection containing the inserted elements
 	 */
 	public Selection insert(String name, String beforeSelector) {
-		JSObject result = call("insert", name, beforeSelector);
-		return new Selection(webEngine, result);
+		JsObject result = call("insert", name, beforeSelector);
+		return new Selection(engine, result);
 	}
 
 	/**
@@ -228,17 +244,16 @@ public class EnteringSelection extends JavaScriptObject {
 	 */
 	public Selection call(JsFunction jsFunction) {
 		boolean isJavaScriptObject = jsFunction instanceof JavaScriptObject;
-		if(!isJavaScriptObject){
+		if (!isJavaScriptObject) {
 			String message = "The interface JsFunction must only by implemented "
 					+ "by JavaScriptObjects. However its type is" + jsFunction.getClass().getName();
 			throw new IllegalStateException(message);
 		}
 		JavaScriptObject javaScriptObject = (JavaScriptObject) jsFunction;
-		JSObject functionJsObject = javaScriptObject.getJsObject();		
-		
-		
-		JSObject result = call("call", functionJsObject);
-		return new Selection(webEngine, result);
+		JsObject functionJsObject = javaScriptObject.getJsObject();
+
+		JsObject result = call("call", functionJsObject);
+		return new Selection(engine, result);
 	}
 
 	/**
@@ -264,12 +279,13 @@ public class EnteringSelection extends JavaScriptObject {
 	 *            the index of the group
 	 * @return
 	 */
-	public Element parentNode(int i) {
-		JSObject result = call("[i].parentNode");
-		if(result==null){
+	public Element parentNode(int index) {
+		String command = "this[" + index + "].parentNode";
+		JsObject result = evalForJsObject(command);
+		if (result == null) {
 			return null;
 		}
-		return new Element(webEngine, result);
+		return new Element(engine, result);
 	}
 
 	/**
@@ -290,23 +306,30 @@ public class EnteringSelection extends JavaScriptObject {
 	 * @return the number of groups
 	 */
 	public final int groupCount() {
-		Array<JSObject> array = asElementArray();
-		int size = array.sizes().get(1);
-		return size;		
+		Array<Element> array = asElementArray();
+		if (array == null) {
+			return 0;
+		}
+		int size = array.length();
+		return size;
 	}
 
 	/**
-	 * Return the internal structure of the selection.
+	 * Return the internal structure of the selection
+	 * which is typically a 2d array of elements.
 	 * <p>
 	 * 
 	 * @return this selection as an array of array of elements
 	 */
-	public final Array<JSObject> asElementArray() { //equivalent to Array<Element> but not wrapped
-		JSObject result = call("cast");
-		return new Array<JSObject>(webEngine, result);
+	public final Array<Element> asElementArray() { //equivalent to Array<Element> but not wrapped
+		
+		JsObject result = getJsObject();
+		if(result==null){
+			return null;
+		}
+		
+		return new Array<>(engine, result);
 	}
-	
-	
 
 	//#end region
 }

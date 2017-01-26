@@ -185,12 +185,12 @@ public abstract class AbstractGraphicsAtom extends AdjustableAtom implements Mou
 	}
 
 	/**
-	 * public void bindStringAttribute(Selection selection, String selectionAttributeName, Attribute
-	 * <String> wrappingAttribute) { //set initial value selection.attr(selectionAttributeName,
-	 * trim(wrappingAttribute.get())); //create one way binding addModificationConsumer(wrappingAttribute, (newValue) ->
-	 * selection .attr(selectionAttributeName, trim(newValue))); } /** If the state of the Boolean attribute is true,
-	 * the dislpay of the selection will be set to 'none', meaning it is not visible. If the State is false, the display
-	 * will be set to 'inline', meaning it is visible.
+	 * public void bindStringAttribute(Selection selection, String selectionAttributeName, Attribute <String>
+	 * wrappingAttribute) { //set initial value selection.attr(selectionAttributeName, trim(wrappingAttribute.get()));
+	 * //create one way binding addModificationConsumer(wrappingAttribute, (newValue) -> selection
+	 * .attr(selectionAttributeName, trim(newValue))); } /** If the state of the Boolean attribute is true, the dislpay
+	 * of the selection will be set to 'none', meaning it is not visible. If the State is false, the display will be set
+	 * to 'inline', meaning it is visible.
 	 *
 	 * @param wrappingAttribute
 	 * @param selection

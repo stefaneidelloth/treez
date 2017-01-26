@@ -187,6 +187,7 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 	 */
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
+			AbstractAtom<?> parentAtom,
 			AbstractAtom<?> intermediateAtom,
 			CodeContainer parentContainer) {
 

@@ -31,6 +31,8 @@ import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.utils.Utils;
 import org.treez.model.Activator;
 import org.treez.model.atom.AbstractModel;
+import org.treez.model.atom.inputFileGenerator.InputFileGenerator;
+import org.treez.model.atom.tableImport.TableImport;
 import org.treez.model.output.ModelOutput;
 
 /**
@@ -545,30 +547,29 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	 * @param input
 	 * @return
 	 */
-	protected String injectStudyAndJobInfo(Attribute<String> input) {
 		String studyIdKey = "{$studyId$}";
 		String studyDescriptionKey = "{$studyDescription$}";
 		String jobIdKey = "{$jobId$}";
 
-		String inputArgumentsValue = input.get();
-		if (inputArgumentsValue.contains(studyIdKey)) {
+		String currentInputArguments = input.get();
+		if (currentInputArguments.contains(studyIdKey)) {
 			String studyName = getStudyId();
 			if (studyName == null) {
-				inputArgumentsValue = inputArgumentsValue.replace(studyIdKey, "");
+				currentInputArguments = currentInputArguments.replace(studyIdKey, "");
 			} else {
-				inputArgumentsValue = inputArgumentsValue.replace(studyIdKey, studyName);
+				currentInputArguments = currentInputArguments.replace(studyIdKey, studyName);
 			}
 
 		}
 
-		if (inputArgumentsValue.contains(studyDescriptionKey)) {
-			inputArgumentsValue = inputArgumentsValue.replace(studyDescriptionKey, getStudyDescription());
+		if (currentInputArguments.contains(studyDescriptionKey)) {
+			currentInputArguments = currentInputArguments.replace(studyDescriptionKey, getStudyDescription());
 		}
 
-		if (inputArgumentsValue.contains(jobIdKey)) {
-			inputArgumentsValue = inputArgumentsValue.replace(jobIdKey, getJobId());
+		if (currentInputArguments.contains(jobIdKey)) {
+			currentInputArguments = currentInputArguments.replace(jobIdKey, getJobId());
 		}
-		return inputArgumentsValue;
+		return currentInputArguments;
 	}
 
 	/**

@@ -22,6 +22,7 @@ public class IntegerVariableListFieldCodeAdaption extends AttributeAtomCodeAdapt
 	@Override
 	public CodeContainer extendAttributeCodeContainerForModelParent(
 			AbstractAtom<?> parentAtom,
+			AbstractAtom<?> intermediateAtom,
 			CodeContainer parentContainer) {
 
 		CodeContainer extendedContainer = parentContainer;

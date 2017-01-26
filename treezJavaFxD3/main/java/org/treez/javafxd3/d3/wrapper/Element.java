@@ -1,8 +1,15 @@
 package org.treez.javafxd3.d3.wrapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.d3.core.Selection;
+
 import javafx.geometry.BoundingBox;
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import netscape.javascript.JSException;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * 
@@ -15,184 +22,171 @@ public class Element extends Node {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public Element(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine, wrappedJsObject);
+	public Element(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine, wrappedJsObject);
 	}
 
 	//#end region
 
 	//#region METHODS
 
-	/**
-	 * @param b
-	 * @return
-	 */
-	public Node cloneNode(boolean b) {
-		throw new IllegalStateException("not yet implemented");
+	public Node cloneNode(boolean deep) {
+		JsObject result = call("cloneNode", deep);
+		if(result==null){
+			return null;
+		}
+		return new Node(engine, result);
 	}
 
-	/**
-	 * @return
-	 */
 	public String getTagName() {
 		String result = getMemberForString("tagName");
 		return result;
 	}
 
-	/**
-	 * @return
-	 */
-	public Node getParentNode() {
-		String command = "d3.select(this).parentNode";
-		JSObject result = evalForJsObject(command);
-		return new Node(webEngine, result);
+	public Node getParentNode() {		
+		String command = "d3.select(this).node().parentNode";
+		JsObject result = evalForJsObject(command);
+		return new Node(engine, result);
 	}
 
-	/**
-	 * @return
-	 */
 	public int getChildCount() {
-				
-		String countCommand = "this.childNodes.length";
-		int result = evalForInteger(countCommand);		
-		return result;
-	}
 
-	/**
-	 * @return
-	 */
-	public String getInnerText() {
-		
-		JSObject jsObj = this.getJsObject();
-		
-		Inspector.inspect(jsObj);
-		
-		String result = getMemberForString("textContent");
-		
-		String nodeValue = getMemberForString("nodeValue");
-		
-		if (result.equals("undefined")){
-			result = getMemberForString("text");
+		try {
+			String countCommand = "this.children.length";
+			int result = evalForInteger(countCommand);
+			return result;
+		} catch (JSException exception) {
+			String countCommand = "this.childNodes.length";
+			int result = evalForInteger(countCommand);
+			return result;
 		}
+	}
+
+	public String getText() {
+		String command = "d3.select(this).text()";
+		String result = evalForString(command);
+		return result;		
+	}	
+	
+	public String getInnerHtml() {
+		String command = "d3.select(this).html();";
+		String result =  evalForString(command);
 		return result;
 	}
-
-	/**
-	 * @param string
-	 */
-	public void setInnerHtml(String string) {
-		throw new IllegalStateException("not yet implemented");
-		// return null;
-
+	
+	public void setInnerHtml(String html) {
+		String command = "d3.select(this).html('" + html + "');";
+		eval(command);
 	}
 
-	/**
-	 * @param attr
-	 * @return
-	 */
 	public String getAttribute(String attr) {
-		String result = getMemberForString(attr);
+		String command = "this.getAttribute('" + attr + "')";
+		String result = evalForString(command);
 		return result;
 	}
 
-	/**
-	 * @param string
-	 * @param b
-	 */
-	public void setPropertyBoolean(String string, boolean b) {
-		throw new IllegalStateException("not yet implemented");
-
+	public Object getProperty(String property) {
+		String command = "this." + property;
+		return eval(command);
 	}
 
-	/**
-	 * @param dataProperty
-	 * @return
-	 */
+	public void setPropertyBoolean(String dataProperty, boolean bool) {
+		String command = "this." + dataProperty + "= " + bool + ";";
+		eval(command);
+	}
+
 	public Integer getPropertyInt(String dataProperty) {
-		throw new IllegalStateException("not yet implemented");
-		// return null;
+		String command = "this." + dataProperty;
+		Integer result = evalForInteger(command);
+		return result;
 	}
 
-	/**
-	 * @param dataProperty
-	 * @param i
-	 */
-	public void setPropertyInt(String dataProperty, int i) {
-		throw new IllegalStateException("not yet implemented");
-
+	public void setPropertyInt(String dataProperty, int value) {
+		String command = "this." + dataProperty + "= " + value + ";";
+		eval(command);
 	}
 
-	/**
-	 * @param dataProperty
-	 * @return
-	 */
 	public String getPropertyString(String dataProperty) {
-		throw new IllegalStateException("not yet implemented");
-		// return null;
+		String command = "this." + dataProperty;
+		String result = evalForString(command);
+		return result;
 	}
 
-	/**
-	 * @param i
-	 * @return
-	 */
-	public Element getChild(int i) {
-		throw new IllegalStateException("not yet implemented");
-		// return null;
+	public Element getChild(int index) {
+		String command = "this.childNodes[" + index + "];";
+		JsObject child = evalForJsObject(command);
+		return new Element(engine, child);
+	}	
+
+	public Element[] getElementsByTagName(String tagName) {
+		
+		String command = "d3.select(this).selectAll('"+ tagName+"')";
+		JsObject result = evalForJsObject(command);
+		Array<JsObject> resultArray = new Array<>(engine, result);
+		
+		List<Element> elementList = new ArrayList<>();
+		
+		resultArray.forEach((element)->{
+			JsObject jsElement = (JsObject) element;
+			elementList.add(new Element(engine, jsElement));
+		});
+		
+		return elementList.toArray(new Element[elementList.size()]);
 	}
 
-	/**
-	 * @return
-	 */
-	public String getChildNodes() {
-		throw new IllegalStateException("not yet implemented");
-	}
-
-	/**
-	 * @param string
-	 * @return
-	 */
-	public Element[] getElementsByTagName(String string) {
-		throw new IllegalStateException("not yet implemented");
-	}
-
-	/**
-	 * @param nodeFactory
-	 */
 	public void add(D3NodeFactory nodeFactory) {
-		throw new IllegalStateException("not yet implemented");
-
+		nodeFactory.createInParentSelection(select());
 	}
 
-	/**
-	 * @param nodeFactory
-	 */
 	public void remove(D3NodeFactory nodeFactory) {
-		throw new IllegalStateException("not yet implemented");
+		Selection elementSelection = select();
+		nodeFactory.remove(elementSelection);
+	}
 
+	public Selection select() {
+		JsObject d3Obj = this.getD3();
+		JsObject selectionObj = (JsObject) d3Obj.call("select", getJsObject());
+		Selection elementSelection = new Selection(engine, selectionObj);
+		return elementSelection;
 	}
 
 	public BoundingBox getBBox() {
 		String command = "this.getBBox();";
-		JSObject bBox = evalForJsObject(command);
-		
+		JsObject bBox = evalForJsObject(command);
+
 		Double x = Double.parseDouble("" + bBox.eval("this.x"));
 		Double y = Double.parseDouble("" + bBox.eval("this.y"));
 		Double width = Double.parseDouble("" + bBox.eval("this.width"));
 		Double height = Double.parseDouble("" + bBox.eval("this.height"));
-		BoundingBox boundinbBox = new BoundingBox(x,y,width,height);		
-		return boundinbBox;				
+		BoundingBox boundinbBox = new BoundingBox(x, y, width, height);
+		return boundinbBox;
 	}
 
 	public Element getParentElement() {
-		
 		String command = "this.parentNode";
-		JSObject result = evalForJsObject(command);
-		return new Element(webEngine, result);		
-		
+		JsObject result = evalForJsObject(command);
+		return new Element(engine, result);
 	}
+
+	public String getStyle(String identifier) {
+		String command = "this.style." + identifier;
+		String result = evalForString(command);
+		return result;
+	}
+	
+	public String toString(){
+		JsObject jsObject = getJsObject();
+		if(jsObject==null){
+			return "!!Element with missing JsObject!!";
+		} else {
+			return Inspector.getInspectionInfo(jsObject);
+		}
+	}
+
+	
 
 	//#end region
 

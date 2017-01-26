@@ -1,9 +1,9 @@
 package org.treez.javafxd3.d3.svg;
 
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * A line generator where each points may be expressed as radial coordinates.
@@ -19,11 +19,11 @@ public class RadialLine extends Line {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public RadialLine(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine, wrappedJsObject);
+	public RadialLine(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine, wrappedJsObject);
 	}
 
 	//#end region
@@ -38,8 +38,8 @@ public class RadialLine extends Line {
 	 * @return the current line
 	 */
 	public RadialLine radius(double d) {
-		JSObject result = call("radius", d);
-		return new RadialLine(webEngine, result);
+		JsObject result = call("radius", d);
+		return new RadialLine(engine, result);
 	}
 
 	/**
@@ -53,19 +53,19 @@ public class RadialLine extends Line {
 	 * @param datumFunction
 	 * @return the current line
 	 */
-	public RadialLine radius(final DatumFunction<Double> callback) {
+	public RadialLine radius(final DataFunction<Double> callback) {
 
 		assertObjectIsNotAnonymous(callback);
 
 		String callbackName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(callbackName, callback);
 
 		String command = "this.radius(function(d, i) { " //
-				+ "return d3." + callbackName + ".apply(this,{datum:d},i);" //
+				+ "return d3." + callbackName + ".apply(this,d,i);" //
 				+ " });";
-		JSObject result = evalForJsObject(command);
-		return new RadialLine(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		return new RadialLine(engine, result);
 
 	}
 
@@ -77,8 +77,8 @@ public class RadialLine extends Line {
 	 * @return the current line
 	 */
 	public RadialLine angle(double d) {
-		JSObject result = call("angle", d);
-		return new RadialLine(webEngine, result);
+		JsObject result = call("angle", d);
+		return new RadialLine(engine, result);
 	}
 
 	/**
@@ -92,19 +92,19 @@ public class RadialLine extends Line {
 	 * @param datumFunction
 	 * @return the current line
 	 */
-	public RadialLine angle(final DatumFunction<Double> callback) {
+	public RadialLine angle(final DataFunction<Double> callback) {
 
 		assertObjectIsNotAnonymous(callback);
 
 		String callbackName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(callbackName, callback);
 
 		String command = "this.angle(function(d, i) { " //
-				+ "return d3." + callbackName + ".apply(this,{datum:d},i);" //
+				+ "return d3." + callbackName + ".apply(this,d,i);" //
 				+ " });";
-		JSObject result = evalForJsObject(command);
-		return new RadialLine(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		return new RadialLine(engine, result);
 	}
 
 }

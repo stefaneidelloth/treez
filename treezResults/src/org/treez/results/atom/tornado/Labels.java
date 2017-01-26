@@ -11,11 +11,12 @@ import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AttributeStringDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleInversedValueDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleKeyDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleValueDatumFunction;
+import org.treez.javafxd3.d3.functions.data.attribute.AttributeStringDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleInversedValueDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleKeyDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleValueDataFunction;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.atom.graph.Graph;
 
@@ -106,25 +107,27 @@ public class Labels implements GraphicsPropertiesPageFactory {
 		String leftDataString = tornado.data.getLeftBarDataString();
 		String rightDataString = tornado.data.getRightBarDataString();
 
+		JsEngine engine = leftSelection.getJsEngine();
+
 		if (outputAxisIsHorizontal) {
 
 			leftSelection.selectAll("text") //
 					.data(leftDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleValueDatumFunction(outputScale))
-					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("x", new AxisScaleValueDataFunction(engine, outputScale))
+					.attr("y", new AxisScaleKeyDataFunction(engine, inputScale))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction(engine, "input"));
 
 			rightSelection.selectAll("text") //
 					.data(rightDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleValueDatumFunction(outputScale))
-					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("x", new AxisScaleValueDataFunction(engine, outputScale))
+					.attr("y", new AxisScaleKeyDataFunction(engine, inputScale))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction(engine, "input"));
 
 		} else {
 
@@ -132,19 +135,19 @@ public class Labels implements GraphicsPropertiesPageFactory {
 					.data(leftDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleKeyDatumFunction(inputScale))
-					.attr("y", new AxisScaleInversedValueDatumFunction(outputScale, graphHeight))
+					.attr("x", new AxisScaleKeyDataFunction(engine, inputScale))
+					.attr("y", new AxisScaleInversedValueDataFunction(engine, outputScale, graphHeight))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction(engine, "input"));
 
 			rightSelection.selectAll("text") //
 					.data(rightDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleKeyDatumFunction(inputScale))
-					.attr("y", new AxisScaleInversedValueDatumFunction(outputScale, graphHeight))
+					.attr("x", new AxisScaleKeyDataFunction(engine, inputScale))
+					.attr("y", new AxisScaleInversedValueDataFunction(engine, outputScale, graphHeight))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction(engine, "input"));
 		}
 
 		Selection textSelection = tornadoSelection.selectAll("g").selectAll("text");

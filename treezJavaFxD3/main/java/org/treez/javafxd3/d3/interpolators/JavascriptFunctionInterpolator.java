@@ -4,8 +4,8 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 
 /**
@@ -18,14 +18,10 @@ import netscape.javascript.JSObject;
  */
 public class JavascriptFunctionInterpolator extends JavaScriptObject implements Interpolator<Value> {
 
-	//#region CONSTRUCTORS
+	//#region CONSTRUCTORS	
 	
-	/**
-	 * Constructor
-	 * @param webEngine
-	 */
-	public JavascriptFunctionInterpolator(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	public JavascriptFunctionInterpolator(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 	
@@ -34,14 +30,13 @@ public class JavascriptFunctionInterpolator extends JavaScriptObject implements 
 	//#region METHODS
 
 	@Override
-	public  Value interpolate(final double t){
-		String command = "{datum : this("+t+")};";
-		JSObject result = evalForJsObject(command);
-		return new Value(webEngine, result);
+	public  Value interpolate(Object t){			
+		Object interpolationResult = callThis(t);		
+		return Value.create(engine, interpolationResult);
 	}
 
 	@Override
-	public final JSObject asJSOFunction() {
+	public final JsObject asJsFunction() {
 		return this.getJsObject();
 	}
 	

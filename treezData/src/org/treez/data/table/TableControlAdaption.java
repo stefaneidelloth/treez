@@ -75,6 +75,10 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 		//optimize column width
 		optimizeColumnWidths();
+
+		//create page control
+		//TODO #2347
+
 	}
 
 	/**

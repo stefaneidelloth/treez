@@ -1,14 +1,10 @@
 package org.treez.javafxd3.d3.wrapper;
 
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsObject;
 
 public class Inspector {
 
-	/**
-	 * Inspects a JavaScriptObject
-	 * 
-	 * @param javaScriptObject
-	 */
+
 	public static void inspect(JavaScriptObject javaScriptObject) {
 
 		if (javaScriptObject == null) {
@@ -18,59 +14,62 @@ public class Inspector {
 		} else {
 			String className = javaScriptObject.getClass().getName();
 			System.out.println("Inspecting object of type " + className);
-			JSObject jsObject = javaScriptObject.getJsObject();
+			JsObject jsObject = javaScriptObject.getJsObject();
 			inspect(jsObject);
 		}
 	}
 
-	/**
-	 * Inspects a JSObject
-	 * 
-	 * @param jsObject
-	 */
-	public static void inspect(JSObject jsObject) {
-		System.out.println("##############################");
+	public static void inspect(JsObject jsObject) {
+			System.out.print(getInspectionInfo(jsObject));
+	}
+
+	public static String getInspectionInfo(JsObject jsObject) {
+		String infoString = "";
+
+		infoString += "##############################\n";
 
 		if (jsObject == null) {
-			System.out.println("null");
+			infoString += "null\n";
 		} else {
 
 			// toString
 			String stringRepresentation = jsObject.toString();
-			System.out.println("String representation:" + stringRepresentation);
+			infoString += "String representation:" + stringRepresentation + "\n";
 
 			// type
 			String typeCommand = "typeof this";
 			String type = (String) jsObject.eval(typeCommand);
-			System.out.println("Type: " + type);
+			infoString += "Type: " + type + "\n";
 
 			// methods
 			String methodsCommand = "Object.getOwnPropertyNames(this).filter(function (p) {return typeof this[p] === 'function';})";
 			String methods = jsObject.eval(methodsCommand).toString();
-			System.out.println("Methods: " + methods);
+			infoString += "Methods: " + methods + "\n";
 
 			// attributes
 			String attributesCommand = "Object.getOwnPropertyNames(this).filter(function (p) {return typeof this[p] !== 'function';})";
 			String attributes = jsObject.eval(attributesCommand).toString();
-			System.out.println("Attributes: " + attributes);
+			infoString += "Attributes: " + attributes + "\n";
 
 			String[] attributeList = attributes.split(",");
-			System.out.println("Individual attributes: -----------");
+			infoString += "Individual attributes: -----------\n";
 			for (String attribute : attributeList) {
 				Object attributeValue = jsObject.getMember(attribute);
 				if (attributeValue == null) {
-					System.out.println(attribute + ": null");
+					infoString += (attribute + ": null\n");
 				} else {
 					String valueString = attributeValue.toString();
-					System.out.println(attribute + ": " + valueString);
+					infoString += (attribute + ": " + valueString + "\n");
 				}
 
 			}
-			System.out.println("----------------------------------");
+			infoString += "----------------------------------\n";
 
 		}
 
-		System.out.println("##############################");
+		infoString += "##############################\n";
+
+		return infoString;
 	}
 
 }

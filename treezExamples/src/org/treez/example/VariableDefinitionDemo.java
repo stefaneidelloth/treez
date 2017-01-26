@@ -10,6 +10,9 @@ public class VariableDefinitionDemo extends ModelProvider {
 	public AttributeRoot createModel() {
 		AttributeRoot root = new AttributeRoot("root");
 
+		//!! This special example requires Octave to be installed
+		//!! since Octave is applied  for symbolic calculations and unit conversion.
+
 		VariableDefinition defItem = new VariableDefinition("defItem");
 		root.addChild(defItem);
 

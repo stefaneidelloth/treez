@@ -2,13 +2,12 @@ package org.treez.javafxd3.d3.layout;
 
 
 import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.d3.functions.DataFunction;
+import org.treez.javafxd3.d3.functions.data.DelegatingDataFunction;
 import org.treez.javafxd3.d3.wrapper.Sort;
 
-import org.treez.javafxd3.d3.functions.DatumFunction;
-import org.treez.javafxd3.d3.functions.DelegatingDatumFunction;
-
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * Per the <a href="https:Layout">d3 API reference<link diagrams of trees using
@@ -30,11 +29,11 @@ public class Tree extends HierarchicalLayout {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public Tree(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine, wrappedJsObject);
+	public Tree(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine, wrappedJsObject);
 	}
 
 	//#end region
@@ -51,8 +50,8 @@ public class Tree extends HierarchicalLayout {
 	 */
 	public  Tree size(double width, double height) {
 		String command = "this.size([ "+width+", "+height+" ]);";
-		JSObject result = evalForJsObject(command);
-		return new Tree(webEngine, result);
+		JsObject result = evalForJsObject(command);
+		return new Tree(engine, result);
 	}
 
 	/**
@@ -65,8 +64,8 @@ public class Tree extends HierarchicalLayout {
 	 * @return a two-element array representing the current size of the tree
 	 */
 	public Array<Double> size() {
-		JSObject result = call("size");
-		return new Array<Double>(webEngine, result);		
+		JsObject result = call("size");
+		return new Array<Double>(engine, result);		
 	}
 
 	/**
@@ -80,8 +79,8 @@ public class Tree extends HierarchicalLayout {
 	 */
 	public  Tree nodeSize(double width, double height) {
 		String command = "this.nodeSize([ "+width+", "+height+" ]);";
-		JSObject result = evalForJsObject(command);
-		return new Tree(webEngine, result);	
+		JsObject result = evalForJsObject(command);
+		return new Tree(engine, result);	
 	}
 
 	/**
@@ -93,8 +92,8 @@ public class Tree extends HierarchicalLayout {
 	 *         tree
 	 */
 	public Array<Double> nodeSize() {
-		JSObject result = call("nodeSize");
-		return new Array<Double>(webEngine, result);
+		JsObject result = call("nodeSize");
+		return new Array<Double>(engine, result);
 	}
 
 	/**
@@ -109,8 +108,8 @@ public class Tree extends HierarchicalLayout {
 	 * @return this tree object
 	 */
 	public Tree sort(Sort sort) {
-		JSObject result = call("sort", sort.getJsObject());
-		return new Tree(webEngine, result);		
+		JsObject result = call("sort", sort.getJsObject());
+		return new Tree(engine, result);		
 	}
 
 	/**
@@ -127,8 +126,8 @@ public class Tree extends HierarchicalLayout {
 	 * @return this tree object
 	 */
 	public Tree separation(Sort sort) {
-		JSObject result = call("separation", sort.getJsObject());
-		return new Tree(webEngine, result);	
+		JsObject result = call("separation", sort.getJsObject());
+		return new Tree(engine, result);	
 	}
 
 	/**
@@ -143,14 +142,19 @@ public class Tree extends HierarchicalLayout {
 	 *            a datum function describing how to compute children
 	 * @return this tree object
 	 */
-	public  Tree children(DatumFunction<Array<Node>> function) {		
+	public  Tree children(DataFunction<Array<Node>> function) {		
 		String functionName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(functionName, function);
 		
-		String command = "this.children(function(d) { return d3."+functionName +".apply(this,{datum:d},0);})";
-		JSObject result = evalForJsObject(command);
-		return new Tree(webEngine, result);		
+		String command = "this.children(function(d) { return d3."+functionName +".apply(this,d,0);})";
+		JsObject result = evalForJsObject(command);
+		
+		if(result==null){
+			return null;
+		}
+		
+		return new Tree(engine, result);		
 	}
 
 	/**
@@ -164,17 +168,17 @@ public class Tree extends HierarchicalLayout {
 	 *            a datum function describing how to access node values
 	 * @return this tree object
 	 */
-	public  Tree value(DatumFunction<?> function) {
+	public  Tree value(DataFunction<?> function) {
 		
 		assertObjectIsNotAnonymous(function);
 		
 		String functionName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(functionName, function);
 		
-		String command = "this.value(function(d, i) { return d3."+functionName+".apply(this,{datum:d},i);})";
-		JSObject result = evalForJsObject(command);
-		return new Tree(webEngine, result);	     
+		String command = "this.value(function(d, i) { return d3."+functionName+".apply(this,d,i);})";
+		JsObject result = evalForJsObject(command);
+		return new Tree(engine, result);	     
 	}
 
 	/**
@@ -183,9 +187,9 @@ public class Tree extends HierarchicalLayout {
 	 * 
 	 * @return the current datum function registered for calculating node values
 	 */
-	public DatumFunction<?> value() {
-		JSObject result = call("value");
-		DatumFunction<?> datumFunction = new DelegatingDatumFunction(result);
+	public DataFunction<?> value() {
+		JsObject result = call("value");
+		DataFunction<?> datumFunction = new DelegatingDataFunction(result);
 		return datumFunction;		
 	}
 }

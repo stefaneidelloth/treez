@@ -14,13 +14,14 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.AttributeStringDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleInversedSizeDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleInversedValueDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleKeyDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleSizeDatumFunction;
-import org.treez.javafxd3.d3.functions.AxisScaleValueDatumFunction;
+import org.treez.javafxd3.d3.functions.data.attribute.AttributeStringDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleInversedSizeDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleInversedValueDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleKeyDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSizeDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleValueDataFunction;
 import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.atom.graph.Graph;
 
@@ -192,6 +193,8 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		outputAxis.includeDataForAutoScale(allOutputData);
 		outputAxis.update();
 
+		JsEngine engine = rectsLeftSelection.getJsEngine();
+
 		if (outputAxisIsHorizontal) {
 
 			double barHeight = determineBarHeight(graphHeight, inputScale, numberOfBars, barFillRatio,
@@ -201,30 +204,30 @@ public class Fill implements GraphicsPropertiesPageFactory {
 					.data(leftDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleValueDatumFunction(outputScale))
-					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("x", new AxisScaleValueDataFunction(engine, outputScale))
+					.attr("y", new AxisScaleKeyDataFunction(engine, inputScale))
 					.attr("height", barHeight)
 					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleSizeDatumFunction(outputScale));
+					.attr("width", new AxisScaleSizeDataFunction(engine, outputScale));
 
 			rectsLeftSelection.selectAll("text") //
 					.data(leftDataString) //
 					.enter() //
 					.append("text")
-					.attr("x", new AxisScaleValueDatumFunction(outputScale))
-					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("x", new AxisScaleValueDataFunction(engine, outputScale))
+					.attr("y", new AxisScaleKeyDataFunction(engine, inputScale))
 					.style("fill", "black")
-					.text(new AttributeStringDatumFunction("input"));
+					.text(new AttributeStringDataFunction(engine, "input"));
 
 			rectsRightSelection.selectAll("rect") //
 					.data(rightDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleValueDatumFunction(outputScale))
-					.attr("y", new AxisScaleKeyDatumFunction(inputScale))
+					.attr("x", new AxisScaleValueDataFunction(engine, outputScale))
+					.attr("y", new AxisScaleKeyDataFunction(engine, inputScale))
 					.attr("height", barHeight)
 					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleSizeDatumFunction(outputScale));
+					.attr("width", new AxisScaleSizeDataFunction(engine, outputScale));
 		} else {
 
 			double barWidth = determineBarWidth(graphWidth, inputScale, numberOfBars, barFillRatio, inputAxisIsOrdinal);
@@ -233,21 +236,21 @@ public class Fill implements GraphicsPropertiesPageFactory {
 					.data(leftDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleKeyDatumFunction(inputScale))
-					.attr("y", new AxisScaleInversedValueDatumFunction(outputScale, graphHeight))
+					.attr("x", new AxisScaleKeyDataFunction(engine, inputScale))
+					.attr("y", new AxisScaleInversedValueDataFunction(engine, outputScale, graphHeight))
 					.attr("width", barWidth)
 					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleInversedSizeDatumFunction(outputScale, graphHeight));
+					.attr("height", new AxisScaleInversedSizeDataFunction(engine, outputScale));
 
 			rectsRightSelection.selectAll("rect") //
 					.data(rightDataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleKeyDatumFunction(inputScale))
-					.attr("y", new AxisScaleInversedValueDatumFunction(outputScale, graphHeight))
+					.attr("x", new AxisScaleKeyDataFunction(engine, inputScale))
+					.attr("y", new AxisScaleInversedValueDataFunction(engine, outputScale, graphHeight))
 					.attr("width", barWidth)
 					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleInversedSizeDatumFunction(outputScale, graphHeight));
+					.attr("height", new AxisScaleInversedSizeDataFunction(engine, outputScale));
 
 		}
 

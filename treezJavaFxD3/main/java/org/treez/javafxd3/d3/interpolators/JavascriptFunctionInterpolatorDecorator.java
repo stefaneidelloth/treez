@@ -2,7 +2,7 @@ package org.treez.javafxd3.d3.interpolators;
 
 import org.treez.javafxd3.d3.core.Value;
 
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * 
@@ -18,10 +18,7 @@ public class JavascriptFunctionInterpolatorDecorator<T> implements Interpolator<
     
     //#region CONSTRUCTORS
 
-    /**
-     * Constructor
-     * @param delegate
-     */
+
     public JavascriptFunctionInterpolatorDecorator(final JavascriptFunctionInterpolator delegate) {      
         this.delegate = delegate;
     }
@@ -31,12 +28,12 @@ public class JavascriptFunctionInterpolatorDecorator<T> implements Interpolator<
     //#region METHODS
 
     @Override
-    public JSObject asJSOFunction() {
-        return delegate.asJSOFunction();
+    public JsObject asJsFunction() {
+        return delegate.asJsFunction();
     }
 
     @Override
-    public T interpolate(final double t) {
+    public T interpolate(Object t) {
         return cast(delegate.interpolate(t));
     }
 

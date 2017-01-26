@@ -2,39 +2,29 @@ package org.treez.javafxd3.d3.behaviour;
 
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
-import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.functions.DragFunction;
 import org.treez.javafxd3.d3.functions.JsFunction;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * This behavior automatically creates event listeners to handle drag gestures
  * on an element. Both mouse events and touch events are supported.
  * <p>
- * Usage:
- * 
- * <pre>
- * {
- * 	&#064;code
- * 	Drag drag = D3.behavior.drag().on(DragEventType.drag, new MyDragListener());
- * 	mySelection.call(drag);
- * }
- * </pre>
  */
 public class Drag extends JavaScriptObject implements JsFunction {
 
 	//#region CONSTRUCTORS
 
 	/**
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public Drag(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	public Drag(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 
@@ -76,61 +66,81 @@ public class Drag extends JavaScriptObject implements JsFunction {
 	 * @param listener
 	 * @return
 	 */
-	public Drag on(DragEventType type, DatumFunction<Void> listener) {
+	public Drag on(DragEventType type, DataFunction<Void> listener) {
 
+		String eventName = type.name().toLowerCase().replace("_", "-");
 		String listenerName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		String varName = createNewTemporaryInstanceName();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(listenerName, listener);
+		String command = "var "+varName+" = d3." + listenerName + " == null ? null : " + "function(d, index) {" //		      
+				+ "d3." + listenerName + ".apply(this,d,index);" //
+				+ " }; ";
+		eval(command);
+		String onCommand = "this.on('" + eventName + "', "+varName+");";
 
-		String eventName = type.name().toLowerCase();
-
-		String command = "this.on('" + eventName + "', " + "function(d, index) { d3." + listenerName
-				+ ".apply(this,{datum:d},index); });";
-		JSObject result = evalForJsObject(command);
-		return new Drag(webEngine, result);
+		JsObject result = evalForJsObject(onCommand);
+		
+		if(result==null){
+			return null;
+		}
+		
+		return new Drag(engine, result);
 	}
 	
 	
 	public Drag onDragStart(DragFunction listener) {
 		assertObjectIsNotAnonymous(listener);
 		String listenerName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		String varName = createNewTemporaryInstanceName();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(listenerName, listener);
-		String command = "var listenerObjDragStart = d3." + listenerName + " == null ? null : " + "function(d, index) {" //		      
-				+ "d3." + listenerName + ".handleDragStart(this,{datum:d},index);" //
+		String command = "var "+varName+" = d3." + listenerName + " == null ? null : " + "function(d, index) {" //		      
+				+ "d3." + listenerName + ".handleDragStart(this,d,index);" //
 				+ " }; ";
 		eval(command);
-		String onCommand = "this.on('dragstart', listenerObjDragStart);";
-		JSObject result = evalForJsObject(onCommand);
-		return new Drag(webEngine, result);
+		String onCommand = "this.on('dragstart', "+varName+");";
+		JsObject result = evalForJsObject(onCommand);
+		
+		if(result==null){
+			return null;
+		}
+		
+		return new Drag(engine, result);
 	}
 	
 	public Drag onDrag(DragFunction listener) {
 		assertObjectIsNotAnonymous(listener);
 		String listenerName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		String varName = createNewTemporaryInstanceName();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(listenerName, listener);
-		String command = "var listenerObjDrag = d3." + listenerName + " == null ? null : " + "function(d, index) {" //		      
-				+ "d3." + listenerName + ".handleDrag(this,{datum:d},index);" //
+		String command = "var "+varName+" = d3." + listenerName + " == null ? null : " + "function(d, index) {" //		      
+				+ "d3." + listenerName + ".handleDrag(this,d,index);" //
 				+ " }; ";
 		eval(command);
-		String onCommand = "this.on('drag', listenerObjDrag);";
-		JSObject result = evalForJsObject(onCommand);
-		return new Drag(webEngine, result);
+		String onCommand = "this.on('drag', "+varName+");";
+		JsObject result = evalForJsObject(onCommand);
+		
+		if(result==null){
+			return null;
+		}
+		return new Drag(engine, result);
 	}
 	
 	public Drag onDragEnd(DragFunction listener) {
 		assertObjectIsNotAnonymous(listener);
 		String listenerName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
+		String varName = createNewTemporaryInstanceName();
+		JsObject d3JsObject = getD3();
 		d3JsObject.setMember(listenerName, listener);
-		String command = "var listenerObjDragEnd = d3." + listenerName + " == null ? null : " + "function(d, index) {" //		      
-				+ "d3." + listenerName + ".handleDragEnd(this,{datum:d},index);" //
+		String command = "var "+varName+" = d3." + listenerName + " == null ? null : " + "function(d, index) {" //		      
+				+ "d3." + listenerName + ".handleDragEnd(this,d,index);" //
 				+ " }; ";
 		eval(command);
-		String onCommand = "this.on('dragend', listenerObjDragEnd);";
-		JSObject result = evalForJsObject(onCommand);
-		return new Drag(webEngine, result);
+		String onCommand = "this.on('dragend', "+varName+");";
+		JsObject result = evalForJsObject(onCommand);
+		return new Drag(engine, result);
 	}
 
 	/**
@@ -162,9 +172,9 @@ public class Drag extends JavaScriptObject implements JsFunction {
 	 *            attributes.
 	 * @return the object Drag.
 	 */
-	public Drag origin(JSObject o) {
-		JSObject result = call("origin", o);
-		return new Drag(webEngine, result);
+	public Drag origin(JsObject o) {
+		JsObject result = call("origin", o);
+		return new Drag(engine, result);
 	}
 
 	/**
@@ -196,23 +206,29 @@ public class Drag extends JavaScriptObject implements JsFunction {
 	 *            attributes.
 	 * @return the object Drag.
 	 */
-	public Drag origin(DatumFunction<Coords> originAccesor) {
+	public Drag origin(DataFunction<Coords> originAccesor) {
 
-		String originAccesorName = createNewTemporaryInstanceName();
-		JSObject d3JsObject = getD3();
-		d3JsObject.setMember(originAccesorName, originAccesor);
+		String originAccessorName = createNewTemporaryInstanceName();
+		JsObject d3JsObject = getD3();
+		d3JsObject.setMember(originAccessorName, originAccesor);
 
-		String command = "this.origin(function(d, i) { return d3." + originAccesorName
-				+ ".apply(this,{datum:d},i); });";
-		JSObject result = evalForJsObject(command);
-		return new Drag(webEngine, result);
+		String command = "this.origin(function(d, i) { return d3." + originAccessorName
+				+ ".apply(this,d,i); });";
+		JsObject result = evalForJsObject(command);
+		
+		d3JsObject.removeMember(originAccessorName);
+		
+		if(result==null){
+			return null;
+		}
+		return new Drag(engine, result);
 	}
 
 	/**
 	 * Provide access to the properties of a drag event.
 	 * <p>
 	 * Use {@link D3#dragEvent()} from within a
-	 * {@link Drag#on(DragEventType, DatumFunction)} listener.
+	 * {@link Drag#on(DragEventType, DataFunction)} listener.
 	 * <p>
 	 * 
 	 * 
@@ -225,11 +241,11 @@ public class Drag extends JavaScriptObject implements JsFunction {
 		/**
 		 * Constructor
 		 * 
-		 * @param webEngine
+		 * @param engine
 		 * @param wrappedJsObject
 		 */
-		public DragEvent(WebEngine webEngine, JSObject wrappedJsObject) {
-			super(webEngine);
+		public DragEvent(JsEngine engine, JsObject wrappedJsObject) {
+			super(engine);
 			setJsObject(wrappedJsObject);
 		}
 

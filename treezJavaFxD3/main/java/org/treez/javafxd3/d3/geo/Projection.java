@@ -2,8 +2,8 @@ package org.treez.javafxd3.d3.geo;
 
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 //TODO: conic projection subclass with parallels() accessors
 /**
@@ -14,11 +14,11 @@ public class Projection<P extends Projection<?>> extends JavaScriptObject {
 	//#region CONSTRUCTORS
 
 	/**
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public Projection(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	public Projection(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 
@@ -31,9 +31,10 @@ public class Projection<P extends Projection<?>> extends JavaScriptObject {
 	 * @param latitude
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public P rotate(double longitude, double latitude) {
-		JSObject result = call("rotate", longitude, latitude);
-		return (P) new Projection<P>(webEngine, result);
+		JsObject result = call("rotate", longitude, latitude);
+		return (P) new Projection<P>(engine, result);
 	}
 
 	/**
@@ -41,9 +42,10 @@ public class Projection<P extends Projection<?>> extends JavaScriptObject {
 	 * @param latitude
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public P center(double longitude, double latitude) {
-		JSObject result = call("center", longitude, latitude);
-		return (P) new Projection<P>(webEngine, result);
+		JsObject result = call("center", longitude, latitude);
+		return (P) new Projection<P>(engine, result);
 	}
 
 	/**
@@ -54,9 +56,10 @@ public class Projection<P extends Projection<?>> extends JavaScriptObject {
 	 *            the scale
 	 * @return the projection
 	 */
+	@SuppressWarnings("unchecked")
 	public P scale(double factor) {
-		JSObject result = call("scale", factor);
-		return (P) new Projection<P>(webEngine, result);
+		JsObject result = call("scale", factor);
+		return (P) new Projection<P>(engine, result);
 	}
 
 	//#end region

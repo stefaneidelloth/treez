@@ -1,13 +1,8 @@
 package org.treez.javafxd3.d3.core;
 
-import java.lang.reflect.Constructor;
-
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.time.JsDate;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
-
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
 
 /**
  * A {@link Value} is an object wrapping a primitive or a complex value.
@@ -24,20 +19,20 @@ public class Value extends JavaScriptObject {
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 */
-	protected Value(WebEngine webEngine) {
-		super(webEngine);
+	protected Value(JsEngine engine) {
+		super(engine);
 	}
 
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param wrappedJsObject
 	 */
-	public Value(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	public Value(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 
@@ -48,12 +43,12 @@ public class Value extends JavaScriptObject {
 	/**
 	 * Wraps the given JavaScriptObject into a {@link Value}.
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param object
 	 *            the object to be wrapped as a Value
 	 * @return the value
 	 */
-	public static Value create(WebEngine webEngine, JavaScriptObject javaScriptObject) {
+	public static Value create(JsEngine engine, JavaScriptObject javaScriptObject) {
 
 		Object wrappedObject = null;
 		if (javaScriptObject != null) {
@@ -63,67 +58,67 @@ public class Value extends JavaScriptObject {
 		String dummyTempAttributeName = createNewTemporaryInstanceName();
 		String dummyTempVariableName = createNewTemporaryInstanceName();
 
-		JSObject d3 = (JSObject) webEngine.executeScript("d3");
+		JsObject d3 = (JsObject) engine.executeScript("d3");
 
 		d3.setMember(dummyTempAttributeName, wrappedObject);
 
 		String command = "var " + dummyTempVariableName + " = { datum: d3." + dummyTempAttributeName + "};";
 		d3.eval(command);
-		JSObject result = (JSObject) d3.eval(dummyTempVariableName);
+		JsObject result = (JsObject) d3.eval(dummyTempVariableName);
 
 		d3.removeMember(dummyTempAttributeName);
-		d3.eval(dummyTempVariableName + "= null;");
+		d3.eval(dummyTempVariableName + "= undefined;");
 
-		return new Value(webEngine, result);
+		return new Value(engine, result);
 
 	}
 
 	/**
 	 * Wraps the given JavaScriptObject into a {@link Value}.
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param object
 	 *            the object to be wrapped as a Value
 	 * @return the value
 	 */
-	public static Value create(WebEngine webEngine, Object object) {
+	public static Value create(JsEngine engine, Object object) {
 
 		String dummyTempAttributeName = "dummy__object__attr";
 		String dummyTempVariableName = "dummy_temp_var";
 
-		JSObject d3 = (JSObject) webEngine.executeScript("d3");
+		JsObject d3 = (JsObject) engine.executeScript("d3");
 
 		d3.setMember(dummyTempAttributeName, object);
 
 		String command = "var " + dummyTempVariableName + " = { datum: d3." + dummyTempAttributeName + "};";
 		d3.eval(command);
-		JSObject result = (JSObject) d3.eval(dummyTempVariableName);
+		JsObject result = (JsObject) d3.eval(dummyTempVariableName);
 
 		d3.removeMember(dummyTempAttributeName);
 
-		return new Value(webEngine, result);
+		return new Value(engine, result);
 
 	}
 
 	/**
 	 * Creates a Value that wraps 'undefined'
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 * @param object
 	 *            the object to be wrapped as a Value
 	 * @return the value
 	 */
-	public static Value createUndefined(WebEngine webEngine) {
+	public static Value createUndefined(JsEngine engine) {
 
 		String dummyTempVariableName = "dummy_temp_var";
 
-		JSObject d3 = (JSObject) webEngine.executeScript("d3");
+		JsObject d3 = (JsObject) engine.executeScript("d3");
 
 		String command = "var " + dummyTempVariableName + " = { datum: undefined};";
 		d3.eval(command);
-		JSObject result = (JSObject) d3.eval(dummyTempVariableName);
+		JsObject result = (JsObject) d3.eval(dummyTempVariableName);
 
-		return new Value(webEngine, result);
+		return new Value(engine, result);
 
 	}
 
@@ -136,10 +131,10 @@ public class Value extends JavaScriptObject {
 	 * @return
 	 */
 	public static Value create(JavaScriptObject object, String propertyName) {
-		JSObject jsObject = object.getJsObject();
+		JsObject jsObject = object.getJsObject();
 		Object datum = jsObject.eval("this['" + propertyName + "']");
-		WebEngine webEngine = object.getWebEngine();
-		Value value = create(webEngine, datum);
+		JsEngine engine = object.getJsEngine();
+		Value value = create(engine, datum);
 		return value;
 	}
 
@@ -189,10 +184,11 @@ public class Value extends JavaScriptObject {
 	}
 
 	public JsDate asJsDate() {
-
-		// return this.datum instanceof JsDate ? this.datum : new JsDate(this.datum);		
-		JSObject result = getMember("datum");
-		return new JsDate(webEngine, result);
+		JsObject result = getMember("datum");
+		if (result == null) {
+			return null;
+		}
+		return new JsDate(engine, result);
 	}
 
 	/**
@@ -201,24 +197,10 @@ public class Value extends JavaScriptObject {
 	 *
 	 * @return the value
 	 */
-	public double asDouble() {
+	public Double asDouble() {
 		String command = "this.datum-0;";
 		Object resultObj = eval(command);
-
-		boolean isDouble = resultObj instanceof Float;
-		if (isDouble) {
-			Double result = (Double) resultObj;
-			return result;
-		}
-
-		boolean isNumber = resultObj instanceof Number;
-		if (isNumber) {
-			Double result = Double.parseDouble("" + resultObj);
-			return result;
-		}
-
-		String message = "Could not convert result of type " + resultObj.getClass().getName() + " to double.";
-		throw new IllegalStateException(message);
+		return ConversionUtil.convertObjectTo(resultObj, Double.class, engine);
 	}
 
 	/**
@@ -230,20 +212,7 @@ public class Value extends JavaScriptObject {
 	public float asFloat() {
 		String command = "this.datum-0;";
 		Object resultObj = eval(command);
-		boolean isFloat = resultObj instanceof Float;
-		if (isFloat) {
-			Float result = (Float) resultObj;
-			return result;
-		}
-
-		boolean isNumber = resultObj instanceof Number;
-		if (isNumber) {
-			Float result = Float.parseFloat("" + resultObj);
-			return result;
-		}
-
-		String message = "Could not convert result of type " + resultObj.getClass().getName() + " to float.";
-		throw new IllegalStateException(message);
+		return ConversionUtil.convertObjectTo(resultObj, Float.class, engine);
 	}
 
 	/**
@@ -255,47 +224,7 @@ public class Value extends JavaScriptObject {
 	public Integer asInt() {
 		String command = "this.datum;";
 		Object resultObj = eval(command);
-
-		if (resultObj == null) {
-			return null;
-		}
-
-		String resultString = resultObj.toString();
-		boolean isNaN = resultString.equals("NaN");
-		if (isNaN) {
-			return null;
-		}
-
-		boolean isUndefined = resultString.equals("undefined");
-		if (isUndefined) {
-			return null;
-		}
-
-		boolean isFalse = resultString.equals("false");
-		if (isFalse) {
-			return 0;
-		}
-
-		boolean isTrue = resultString.equals("true");
-		if (isTrue) {
-			return 1;
-		}
-
-		try {
-			int integerResult = Integer.parseInt(resultString);
-			return integerResult;
-		} catch (Exception exception) {
-			double doubleResult = Double.parseDouble(resultString);
-
-			if (doubleResult > Integer.MAX_VALUE) {
-				String message = "The value " + doubleResult + " exceeds the maximum integer value " + Integer.MAX_VALUE
-						+ " and can not be returned as integer.";
-				throw new IllegalStateException(message);
-			}
-
-			int intResult = (int) doubleResult;
-			return intResult;
-		}
+		return ConversionUtil.convertObjectTo(resultObj, Integer.class, engine);
 	}
 
 	/**
@@ -305,7 +234,7 @@ public class Value extends JavaScriptObject {
 	 * @return the value
 	 */
 	public final long asLong() {
-		long result = (long) asDouble();
+		long result = (long) (double) asDouble();
 		return result;
 	}
 
@@ -318,41 +247,7 @@ public class Value extends JavaScriptObject {
 	public Short asShort() {
 		String command = "this.datum";
 		Object resultObj = eval(command);
-
-		if (resultObj == null) {
-			return null;
-		}
-
-		String resultString = resultObj.toString();
-		boolean isNaN = resultString.equals("NaN");
-		if (isNaN) {
-			return null;
-		}
-
-		boolean isUndefined = resultString.equals("undefined");
-		if (isUndefined) {
-			return null;
-		}
-
-		boolean isFalse = resultString.equals("false");
-		if (isFalse) {
-			return 0;
-		}
-
-		boolean isTrue = resultString.equals("true");
-		if (isTrue) {
-			return 1;
-		}
-
-		try {
-			short result = Short.parseShort("" + resultObj);
-			return result;
-		} catch (Exception excepiton) {
-			double doubleResult = Double.parseDouble("" + resultObj);
-			short result = (short) doubleResult;
-			return result;
-		}
-
+		return ConversionUtil.convertObjectTo(resultObj, Short.class, engine);
 	}
 
 	/**
@@ -374,79 +269,33 @@ public class Value extends JavaScriptObject {
 	 */
 	public Coords asCoords() {
 		String command = "this.datum";
-		JSObject result = evalForJsObject(command);
-		return new Coords(webEngine, result);
+		Object resultObj = eval(command);
+		return ConversionUtil.convertObjectTo(resultObj, Coords.class, engine);
 	}
 
 	/**
-	 * Cast and return the wrapped value, if possible.
-	 * <p>
+	 * Cast and return the wrapped value, if possible. (Does not work for
+	 * "conversion" of JsObject to JavaScriptObject)
 	 *
 	 * @throws ClassCastException
 	 *             if the value cannot be converted in T
 	 *
 	 * @return the value
 	 */
-	@SuppressWarnings("unchecked")
+
 	public <T> T as() {
 		String command = "this.datum";
 		Object result = eval(command);
-		return (T) result;
+		try {
+			@SuppressWarnings("unchecked")
+			T castedResult = (T) result;
+			return castedResult;
+		} catch (ClassCastException exception) {
+			String message = "Could not directly cast the value. Please try to use method as(Class<?> class) instead of as(). ";
+			throw new IllegalStateException(message, exception);
+		}
 	}
 
-	/**
-	 * Cast and return the wrapped value.
-	 *
-	 * @param clazz
-	 *            the clazz to cast to
-	 * @return the casted instance
-	 */
-	public final <T> T as(final Class<T> clazz) {
-		String command = "this.datum";
-		Object resultObj = eval(command);
-		
-		if (resultObj==null){
-			return null;
-		}
-		
-		boolean isUndefined = resultObj.equals("undefined");
-		if (isUndefined){
-			return null;
-		}
-
-		boolean targetIsJavaScriptObject = JavaScriptObject.class.isAssignableFrom(clazz);
-
-		if (targetIsJavaScriptObject) {
-			Constructor<T> constructor;
-			try {
-				constructor = clazz.getConstructor(new Class<?>[] { WebEngine.class, JSObject.class });
-			} catch (NoSuchMethodException | SecurityException exception) {
-				String message = "Could not find constructor";
-				throw new IllegalStateException(message, exception);
-			}
-
-			boolean resultIsJsObject = resultObj instanceof JSObject;
-			if (resultIsJsObject) {
-				JSObject jsObject = (JSObject) resultObj;
-				T instance;
-				try {
-					instance = constructor.newInstance(webEngine, jsObject);
-				} catch (Exception exception) {
-					String message = "Could not create new instance constructor";
-					throw new IllegalStateException(message, exception);
-				}
-
-				return instance;
-			} else {
-				return null;
-								
-			}
-
-		}
-
-		T result = clazz.cast(resultObj);
-		return result;
-	}
 
 	/**
 	 *
@@ -463,9 +312,10 @@ public class Value extends JavaScriptObject {
 	 * @return true if the value is undefined in the Javascript sense
 	 */
 	public boolean isUndefined() {
-		String command = "this.datum == 'undefined';";
-		Boolean result = evalForBoolean(command);
-		return result;
+		String command = "this.datum";
+		Object resultObj = eval(command);
+		boolean isUndefined = resultObj.equals("undefined");
+		return isUndefined;
 	}
 
 	/**
@@ -522,13 +372,12 @@ public class Value extends JavaScriptObject {
 		Object datum = eval(command);
 		boolean isUndefined = datum.equals("undefined");
 		if (isUndefined) {
-			Value value = createUndefined(webEngine);
+			Value value = createUndefined(engine);
 			return value;
 		} else {
-			Value value = create(webEngine, datum);
+			Value value = create(engine, datum);
 			return value;
 		}
-
 	}
 
 	/**

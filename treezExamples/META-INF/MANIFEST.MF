@@ -9,6 +9,7 @@ Require-Bundle: org.treez.core,
  org.treez.model,
  org.treez.results,
  org.treez.study,
- org.treez.views
+ org.treez.views,
+ org.treez.javafxd3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Stefan Eidelloth

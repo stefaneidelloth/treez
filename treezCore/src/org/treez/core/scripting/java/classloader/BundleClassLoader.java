@@ -6,18 +6,16 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 /**
- * A class loader that is able to load classes from other Eclipse plugins. If
- * this class loader is not able to find a class, its child class loader will
- * try to do so. We use the BundleClassLoader as parent of a MemoryClassLoader.
- * The class loaders are created by the InMemoryClassFileManager.
+ * A class loader that is able to load classes from other Eclipse plugins. If this class loader is not able to find a
+ * class, its child class loader will try to do so. We use the BundleClassLoader as parent of a MemoryClassLoader. The
+ * class loaders are created by the InMemoryClassFileManager.
  */
 public class BundleClassLoader extends ClassLoader {
 
 	//#region ATTRIBUTES
 
 	/**
-	 * The bundleIds of the eclipse plugins this class loader is table to load
-	 * classes from.
+	 * The bundleIds of the eclipse plugins this class loader is able to load classes from.
 	 */
 	private Set<String> bundleIds;
 
@@ -55,8 +53,7 @@ public class BundleClassLoader extends ClassLoader {
 		}
 
 		if (clazz == null) {
-			String message = "Could not find class '" + name
-					+ "' with BundleClassLoader.";
+			String message = "Could not find class '" + name + "' with BundleClassLoader.";
 			//LOG.debug(message);
 			throw new ClassNotFoundException(message); //after throwing this, the child class loaders will continue the search.
 		}

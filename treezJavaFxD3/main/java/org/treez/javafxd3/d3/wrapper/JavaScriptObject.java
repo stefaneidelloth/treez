@@ -1,18 +1,16 @@
 package org.treez.javafxd3.d3.wrapper;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.treez.javafxd3.d3.core.Value;
+import org.treez.javafxd3.d3.core.ConversionUtil;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * Base class for all JavaScript wrappers
- *
  */
 public class JavaScriptObject {
 
@@ -21,33 +19,30 @@ public class JavaScriptObject {
 	/**
 	 * The JavaFx web engine
 	 */
-	protected WebEngine webEngine;
+	protected JsEngine engine;
 
 	/**
 	 * The wrapped JavaScript object
 	 */
-	private JSObject jsObject;
+	private JsObject jsObject;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param webEngine
-	 */
-	public JavaScriptObject(WebEngine webEngine) {
-		this.webEngine = webEngine;
+
+	public JavaScriptObject(JsEngine engine) {
+		this.engine = engine;
 	}
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param webEngine
+	 * @param engine
 	 */
-	public JavaScriptObject(WebEngine webEngine, JSObject wrappedJsObject) {
-		this.webEngine = webEngine;
+	public JavaScriptObject(JsEngine engine, JsObject wrappedJsObject) {
+		this.engine = engine;
+		
 		this.jsObject = wrappedJsObject;
 	}
 
@@ -59,10 +54,11 @@ public class JavaScriptObject {
 		setJsObject(createEmptyArray());		
 	}
 
-	protected JSObject createEmptyArray() {
+	protected JsObject createEmptyArray() {
 		String dummyName = createNewTemporaryInstanceName();
-		webEngine.executeScript("var " +dummyName +"=[];");
-		JSObject emptyObject = (JSObject) webEngine.executeScript(dummyName);
+		engine.executeScript("var " +dummyName +"=[];");
+		JsObject emptyObject = (JsObject) engine.executeScript(dummyName);
+		engine.executeScript("var " +dummyName +"=undefined;");
 		return emptyObject;
 	}
 	
@@ -70,10 +66,11 @@ public class JavaScriptObject {
 		setJsObject(createEmptyObject());		
 	}
 
-	protected JSObject createEmptyObject() {
+	protected JsObject createEmptyObject() {
 		String dummyName = createNewTemporaryInstanceName();
-		webEngine.executeScript("var " +dummyName +"={};");
-		JSObject emptyObject = (JSObject) webEngine.executeScript(dummyName);
+		engine.executeScript("var " +dummyName +"={};");
+		JsObject emptyObject = (JsObject) engine.executeScript(dummyName);
+		engine.executeScript("var " +dummyName +"=undefined;");
 		return emptyObject;
 	}
 
@@ -145,7 +142,7 @@ public class JavaScriptObject {
 	 * @param args
 	 * @return
 	 */
-	protected String callForString(String methodName, JSObject... args) {
+	protected String callForString(String methodName, JsObject... args) {
 
 		Object[] objectArray = (Object[]) args;
 		Object resultObj = jsObject.call(methodName, objectArray);
@@ -194,22 +191,26 @@ public class JavaScriptObject {
 
 	/**
 	 * Invokes the method with the given name and arguments and returns the
-	 * result as JSObject
+	 * result as JsObject
 	 * 
 	 * @param methodName
 	 * @param args
 	 * @return
 	 */
-	protected JSObject call(String methodName, Object... args) {
+	public JsObject call(String methodName, Object... args) {
+		Objects.requireNonNull(jsObject);
+		
+		checkIfMethodExists(methodName);
+		
 		Object resultObj = jsObject.call(methodName, args);
 		
 		if (resultObj==null){
 			return null;
 		}
 		
-		boolean isJsObject = resultObj instanceof JSObject;
+		boolean isJsObject = resultObj instanceof JsObject;
 		if (isJsObject) {
-			JSObject result = (JSObject) resultObj;
+			JsObject result = (JsObject) resultObj;
 			return result;
 		}
 
@@ -223,7 +224,7 @@ public class JavaScriptObject {
 				String message = "A result of type String with the value " + result + "' could not be processed.";
 				throw new IllegalStateException(message);
 			}
-		}
+		}		
 
 		String typeString = "null";
 		if (resultObj != null) {
@@ -233,9 +234,14 @@ public class JavaScriptObject {
 		throw new IllegalStateException(message);
 	}
 
+	private void checkIfMethodExists(String methodName) {
+		Object method = jsObject.getMember(methodName);
+		Objects.requireNonNull(method, "Method "+methodName+" does not exist");
+	}
+
 	protected Object callThis(Object... args) {
 
-		JSObject d3JsObj = getD3();
+		JsObject d3JsObj = getD3();
 		
 		// store args as member and create variable name list
 		List<String> varNames = new ArrayList<>();
@@ -279,15 +285,15 @@ public class JavaScriptObject {
 		return (Double) result;
 	}
 
-	protected JSObject callThisForJsObject(Object... args) {
+	protected JsObject callThisForJsObject(Object... args) {
 		Object result = callThis(args);
 		if (result==null){
 			return null;
 		}
 		
-		boolean isJsObject = result instanceof JSObject;
+		boolean isJsObject = result instanceof JsObject;
 		if(isJsObject){
-			return (JSObject) result;			
+			return (JsObject) result;			
 		} else{
 			boolean isUndefined = result.equals("undefined");
 			if(isUndefined){
@@ -310,7 +316,7 @@ public class JavaScriptObject {
 	 * @param name
 	 * @return
 	 */
-	public JSObject getMember(String name) {
+	public JsObject getMember(String name) {
 		Object resultObj = jsObject.getMember(name);
 		if (resultObj == null) {
 			return null;
@@ -318,7 +324,7 @@ public class JavaScriptObject {
 		if (resultObj.equals("undefined")) {
 			return null;
 		}
-		JSObject result = (JSObject) resultObj;
+		JsObject result = (JsObject) resultObj;
 		return result;
 	}
 
@@ -329,8 +335,12 @@ public class JavaScriptObject {
 	 * @return
 	 */
 	protected Integer getMemberForInteger(String name) {
-		Integer result = (Integer) jsObject.getMember(name);
-		return result;
+		Object result = jsObject.getMember(name);
+		if(result==null){
+			return null;
+		}
+		Integer intResult = ConversionUtil.convertObjectTo(result, Integer.class, engine); 
+		return intResult;
 	}
 
 	/**
@@ -420,7 +430,7 @@ public class JavaScriptObject {
 	 */
 	public Object eval(String command) {
 		try{
-			Object result = jsObject.eval(command);
+			Object result = jsObject.eval(command);			
 			return result;
 		} catch (Exception exception){
 			String message = "Could not eval command " + command;
@@ -436,8 +446,17 @@ public class JavaScriptObject {
 	 * @return
 	 */
 	public Boolean evalForBoolean(String command) {
-		Boolean result = (Boolean) jsObject.eval(command);
-		return result;
+		Object result = jsObject.eval(command);
+		if(result==null){
+			return null;
+		}		
+		
+		boolean isBoolean = result instanceof Boolean;
+		if(isBoolean){
+			return (Boolean) result;
+		}
+		
+		throw new IllegalStateException("Could not convert result to Boolean");
 	};
 
 	/**
@@ -447,8 +466,22 @@ public class JavaScriptObject {
 	 * @return
 	 */
 	public Integer evalForInteger(String command) {
-		Integer result = (Integer) jsObject.eval(command);
-		return result;
+		Object result = jsObject.eval(command);
+		if (result==null){
+			return null;
+		}
+		
+		boolean isInteger = result instanceof Integer;
+		if(isInteger){
+			return (Integer) result;
+		}
+		
+		boolean isString = result instanceof String;
+		if(isString){
+			return Integer.parseInt((String) result);
+		}		
+		
+		throw new IllegalStateException("Could not convert result to Integer");
 	};
 
 	/**
@@ -458,8 +491,27 @@ public class JavaScriptObject {
 	 * @return
 	 */
 	public Double evalForDouble(String command) {
-		Double result = (Double) jsObject.eval(command);
-		return result;
+		Object result = jsObject.eval(command);
+		if (result==null){
+			return null;
+		}
+		
+		boolean isDouble = result instanceof Double;
+		if(isDouble){
+			return (Double) result;
+		}
+		
+		boolean isInteger = result instanceof Integer;
+		if(isInteger){
+			return new Double((Integer) result);
+		}
+		
+		boolean isString = result instanceof String;
+		if(isString){
+			return Double.parseDouble((String) result);
+		}		
+		
+		throw new IllegalStateException("Could not convert result to Double");
 	};
 
 	/**
@@ -469,152 +521,33 @@ public class JavaScriptObject {
 	 * @return
 	 */
 	public String evalForString(String command) {
-		Object resultObj = jsObject.eval(command);
-		String result = (String) resultObj;
-		return result;
+		Object result = jsObject.eval(command);
+		if(result==null){
+			return null;
+		}
+		
+		boolean isString = result instanceof String;
+		if(isString){
+		return (String) result;
+		}
+		
+		return result.toString();
 	};
 
 	/**
 	 * Evaluates the given java script command and returns the result as
-	 * JSObject
+	 * JsObject
 	 * 
 	 * @param command
 	 * @return
 	 */
-	public JSObject evalForJsObject(String command) {
+	public JsObject evalForJsObject(String command) {
 		Object resultObj = jsObject.eval(command);
-		JSObject result = (JSObject) resultObj;
+		JsObject result = (JsObject) resultObj;
 		return result;
 	};
 
-	//#end region
-
-	//#region CONVERSION
-
-	@SuppressWarnings("unchecked")
-	protected <T> T convertObjectTo(Object resultObj, Class<T> classObj) {
-		if (resultObj == null) {
-			return null;
-		}
-		
-		boolean targetIsString = classObj.equals(String.class);
-		if (targetIsString) {	
-			T result = (T) convertToString(resultObj);
-			return result;
-		}
-
-		boolean targetIsValue = classObj.equals(Value.class);
-		if (targetIsValue) {
-			T result = (T) convertToValue(resultObj);
-			return result;
-		}
-
-		boolean targetIsJavaScriptObject = JavaScriptObject.class.isAssignableFrom(classObj);
-		if (targetIsJavaScriptObject) {
-			T result = convertToJavaScriptObject(resultObj, classObj);
-			return result;
-		}
-
-		try {
-			T result = classObj.cast(resultObj);
-			return result;
-		} catch (Exception exception) {
-			boolean isNumber = resultObj instanceof Number;
-			if (isNumber) {
-				T result = tryToCastFromDoubleValue(resultObj, classObj, exception);
-				return result;
-			}
-
-			String message = "Could not cast item of type '" + resultObj.getClass().getName() + "' to required type '"
-					+ classObj.getName() + "'";
-			throw new IllegalStateException(message, exception);
-		}
-	}
-
-	private String convertToString(Object source) {
-		try {
-			String stringResult = source.toString();
-			String result = String.class.cast(stringResult);
-			return result;
-		} catch (Exception exception) {
-			String message = "Could not convert item of type " + source.getClass().getName() + " to String.";
-			throw new IllegalStateException(message, exception);
-		}
-	}	
-
-	private Value convertToValue(Object resultObj) {
-		boolean resultObjIsValue = resultObj instanceof Value;
-		if (resultObjIsValue) {
-			Value result = Value.class.cast(resultObj);
-			return result;
-		} else {
-			Value value = Value.create(webEngine, resultObj);			
-			return value;
-		}
-	}	
-	
-	public <T> T convertToJavaScriptObject(Object resultObj, Class<T> classObj) {		
-		Constructor<T> constructor = createConstructorForJavaScriptObject(resultObj, classObj);
-		T newJavaScriptObject = tryToCreateNewInstance(resultObj, classObj, constructor);		
-		return newJavaScriptObject;
-	}
-
-	private <T> T tryToCreateNewInstance(Object resultObj, Class<T> classObj, Constructor<T> constructor) {
-		T newJavaScriptObject;
-		try {
-			newJavaScriptObject = constructor.newInstance(webEngine, resultObj);
-		} catch (Exception exception) {
-			String message = "Could not construct new instance of type '" + classObj.getName() + "' with "
-					+ "object of type " + resultObj.getClass().getName();
-			throw new IllegalStateException(message, exception);
-		}
-		return newJavaScriptObject;
-	}
-
-	private <T> Constructor<T> createConstructorForJavaScriptObject(Object resultObj, Class<T> classObj) {
-		
-		Class<?> resultObjClass = resultObj.getClass();
-		
-		Constructor<T> constructor;
-
-		boolean resultIsJsObject = resultObj instanceof JSObject;
-		if (resultIsJsObject) {
-			try {
-				constructor = classObj.getConstructor(new Class<?>[] { WebEngine.class, JSObject.class });
-			} catch (Exception exception) {
-				String message = "Could not get constructor for JavaScriptObject of " + "type '"
-						+ classObj.getName() + "' with parameters of type WebEngine and '"
-						+ resultObjClass.getName() + "'.";
-				throw new IllegalStateException(message, exception);
-			}
-
-		} else {
-			try {
-				constructor = classObj.getConstructor(new Class<?>[] { WebEngine.class, resultObjClass });
-			} catch (Exception exception) {
-				String message = "Could not get constructor for JavaScriptObject of " + "type '"
-						+ classObj.getName() + "' with parameters of type WebEngine and '"
-						+ resultObjClass.getName() + "'.";
-				throw new IllegalStateException(message, exception);
-			}
-		}
-		return constructor;
-	}
-			
-	private <T> T tryToCastFromDoubleValue(Object resultObj, Class<T> classObj, Exception exception) {
-		Number number = (Number) resultObj;
-		Object doubleValue = number.doubleValue();
-		try {
-			T result = classObj.cast(doubleValue);
-			return result;
-		} catch (Exception numberCastException) {
-			String message = "Could not cast item of type " + resultObj.getClass().getName()
-					+ " to required type " + classObj.getName();
-			throw new IllegalStateException(message, exception);
-		}
-	}
-
-	//#end region
+	//#end region	
 	
 	//#region EQUALS
 	
@@ -623,7 +556,7 @@ public class JavaScriptObject {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((jsObject == null) ? 0 : jsObject.hashCode());
-		result = prime * result + ((webEngine == null) ? 0 : webEngine.hashCode());
+		result = prime * result + ((engine == null) ? 0 : engine.hashCode());
 		return result;
 	}
 
@@ -641,10 +574,10 @@ public class JavaScriptObject {
 				return false;
 		} else if (!jsObject.equals(other.jsObject))
 			return false;
-		if (webEngine == null) {
-			if (other.webEngine != null)
+		if (engine == null) {
+			if (other.engine != null)
 				return false;
-		} else if (!webEngine.equals(other.webEngine))
+		} else if (!engine.equals(other.engine))
 			return false;
 		return true;
 	}
@@ -654,19 +587,19 @@ public class JavaScriptObject {
 	//#region UTILS
 	
 	/**
-	 * Creates a unique callback name (includes the current time in ms and a random number)
+	 * Creates a unique callback name (includes the current time in ns and a random number)
 	 * @return
 	 */
 	protected static String createNewTemporaryInstanceName() {
 		double random = Math.random(); 
 		String randomString = ("" + random).substring(2,5);
-		String name =  "temp__instance__" + System.currentTimeMillis() + "_" + randomString;
+		String name =  "temp__instance__" + System.nanoTime() + "_" + randomString;
 		return name;
 	}
 	
 	
-	protected JSObject getD3() {
-		JSObject d3jsObj = (JSObject) webEngine.executeScript("d3");
+	protected JsObject getD3() {
+		JsObject d3jsObj = (JsObject) engine.executeScript("d3");
 		return d3jsObj;
 	}
 	
@@ -682,34 +615,46 @@ public class JavaScriptObject {
 	}
 	
 	//#end region
+	
+	@Override
+	public String toString(){
+		String className =  this.getClass().getSimpleName() ;
+		JsObject jsObject = getJsObject();
+		
+		if(jsObject==null){
+			return "!!" +className + " with missing JsObject!!";
+		} else {
+			return Inspector.getInspectionInfo(jsObject);
+		}
+	}
 
 	//#end region
 
 	//#region ACCESSORS
 
 	/**
-	 * Returns the wrapped JSObject
+	 * Returns the wrapped JsObject
 	 * 
 	 * @return
 	 */
-	public JSObject getJsObject() {
+	public JsObject getJsObject() {
 		return jsObject;
 	}
 
 	/**
-	 * Sets the wrapped JSObject
+	 * Sets the wrapped JsObject
 	 * 
 	 * @param wrappedJsObject
 	 */
-	public void setJsObject(JSObject wrappedJsObject) {
+	public void setJsObject(JsObject wrappedJsObject) {
 		this.jsObject = wrappedJsObject;
 	}
 
 	/**
 	 * @return
 	 */
-	public WebEngine getWebEngine() {
-		return webEngine;
+	public JsEngine getJsEngine() {
+		return engine;
 	}
 
 	//#end region

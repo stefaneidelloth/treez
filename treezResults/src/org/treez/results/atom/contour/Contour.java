@@ -10,6 +10,7 @@ import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.plotly.Plotly;
@@ -25,8 +26,6 @@ import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
-
-import javafx.scene.web.WebEngine;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Contour extends GraphicsPropertiesPage {
@@ -108,8 +107,8 @@ public class Contour extends GraphicsPropertiesPage {
 		this.graphSelection = graphSelection;
 		graph = (Graph) getParentAtom();
 
-		WebEngine webEngine = d3.getWebEngine();
-		plotly = new Plotly(webEngine);
+		JsEngine engine = d3.getJsEngine();
+		plotly = new Plotly(engine);
 
 		updateConsumer = () -> updatePlotWithD3(d3);
 

@@ -361,6 +361,9 @@ public class Table extends AbstractUiSynchronizingAtom<Table> implements TreezTa
 
 	@Override
 	public List<Row> getRows() {
+		if (rows == null) {
+			return new ArrayList<>();
+		}
 		return rows;
 	}
 

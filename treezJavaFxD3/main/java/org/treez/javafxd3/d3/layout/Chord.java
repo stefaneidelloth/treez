@@ -1,11 +1,16 @@
 package org.treez.javafxd3.d3.layout;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.d3.arrays.ArrayUtils;
 import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 import org.treez.javafxd3.d3.wrapper.Sort;
 
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * 
@@ -15,14 +20,8 @@ public class Chord extends JavaScriptObject {
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 * 
-	 * @param webEngine
-	 * @param wrappedJsObject
-	 */
-	public Chord(WebEngine webEngine, JSObject wrappedJsObject) {
-		super(webEngine);
+	public Chord(JsEngine engine, JsObject wrappedJsObject) {
+		super(engine);
 		setJsObject(wrappedJsObject);
 	}
 
@@ -30,83 +29,84 @@ public class Chord extends JavaScriptObject {
 
 	//#region METHODS
 
-	/**
-	 * @param padding
-	 * @return
-	 */
 	public Chord padding(double padding) {
-		JSObject result = call("padding", padding);
-		return new Chord(webEngine, result);
+		JsObject result = call("padding", padding);
+		return new Chord(engine, result);
 	}
 
-	/**
-	 * @param sort
-	 * @return
-	 */
 	public Chord sortSubgroups(Sort sort) {
-		JSObject sortObj = sort.getJsObject();
-		JSObject result = call("sortSubgroups", sortObj);
-		return new Chord(webEngine, result);
+		JsObject sortObj = sort.getJsObject();
+		JsObject result = call("sortSubgroups", sortObj);
+		return new Chord(engine, result);
 	}
 
-	/**
-	 * @return
-	 */
-	public JSObject chords() {
-		JSObject result = getMember("chords");
-		return result;
+	public Chord matrix(Double[][] matrix) {
+		String arrayString = ArrayUtils.createArrayString(matrix);
+		JsObject result = evalForJsObject("this.matrix(" +  arrayString + ")");
+		if (result == null) {
+			return null;
+		}
+		return new Chord(engine, result);
 	}
 
-	/**
-	 * 
-	 *
-	 */
+	public List<Group> groups() {
+		JsObject result = call("groups");
+		if(result==null){
+			return null;
+		}
+		Array<JsObject> array= new Array<>(engine, result);
+		
+		List<Group> groups = new ArrayList<>();
+		array.forEach((object)->{
+			JsObject jsGroup = (JsObject) object;			
+			Group group = new Group(engine, jsGroup);
+			groups.add(group);
+		});
+		return groups;
+		
+		
+	}
+
+	public Array<JsObject> chords() {
+		JsObject result = call("chords");
+		if(result==null){
+			return null;
+		}
+		return new Array<>(engine, result);
+	}
+
+	//#end region
+
+	//#region CLASSES
+
 	public static class Group extends JavaScriptObject {
 
 		//#region CONSTRUCTORS
 
-		/**
-		 * Constructor
-		 * 
-		 * @param webEngine
-		 * @param wrappedJsObject
-		 */
-		public Group(WebEngine webEngine, JSObject wrappedJsObject) {
-			super(webEngine);
-			setJsObject(wrappedJsObject);
+		public Group(JsEngine engine, JsObject wrappedJsObject) {
+			super(engine);
+			setJsObject(wrappedJsObject);			
 		}
 
 		//#end region
 
 		//#region METHODS
 
-		/**
-		 * @return
-		 */
 		public int index() {
 			Integer result = getMemberForInteger("index");
-			return result;			
+			return result;
 		}
 
-		/**
-		 * @return
-		 */
 		public double startAngle() {
 			Double result = getMemberForDouble("startAngle");
-			return result;			
+			return result;
 		}
 
-		/**
-		 * @return
-		 */
 		public double endAngle() {
 			Double result = getMemberForDouble("endAngle");
 			return result;
 		}
 
-		/**
-		 * @return
-		 */
 		public double value() {
 			Double result = getMemberForDouble("value");
 			return result;
@@ -115,42 +115,36 @@ public class Chord extends JavaScriptObject {
 		//#end region
 	}
 
-	/**
-	 * 
-	 *
-	 */
 	public static class ChordItem extends Value {
-		
+
 		//#region CONSTRUCTORS
 
-		/**
-		 * Constructor
-		 * 
-		 * @param webEngine
-		 * @param wrappedJsObject
-		 */
-		public ChordItem(WebEngine webEngine, JSObject wrappedJsObject) {
-			super(webEngine, wrappedJsObject);
+		public ChordItem(JsEngine engine, JsObject wrappedJsObject) {
+			super(engine, wrappedJsObject);			
 		}
 
 		//#end region
 
 		//#region METHODS
 
-		/**
-		 * @return
-		 */
 		public Group source() {
-			JSObject result = getMember("source");
-			return new Group(webEngine, result);			
+			JsObject result = getMember("source");
+			
+			if(result==null){
+				return null;
+			}
+			
+			return new Group(engine, result);
 		}
 
-		/**
-		 * @return
-		 */
 		public Group target() {
-			JSObject result = getMember("target");
-			return new Group(webEngine, result);	
+			JsObject result = getMember("target");
+			
+			if(result==null){
+				return null;
+			}
+			
+			return new Group(engine, result);
 		}
 
 		//#end region

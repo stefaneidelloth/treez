@@ -254,26 +254,45 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 			AbstractAtom<?> invisibleRoot = new Root("invisibleRoot");
 
 			// retrieve the (visible) root element from the scripting support
-			AbstractAtom<?> root = scripting.getRoot();
+			AbstractAtom<?> root = null;
+			try {
+				root = scripting.getRoot();
 
-			// attach the (visible) root to the invisible root of the tree view
-			if (root != null) {
-				invisibleRoot.addChild(root);
-				treeViewProvider.updateTreeContent(invisibleRoot);
-
-				// update the error state to remove the eventually existing
-				// error visualization
-				treeViewProvider.visualizeErrorState(TreeErrorState.OK, null);
-			} else {
-				// the root element could not be created from the script:
-				// show an error by setting the background color of the tree
-				// view to orange
-				String message = "The root item 'root' could not be found.";
-				LOG.debug(message);
-				treeViewProvider.visualizeErrorState(TreeErrorState.ERROR, new IllegalStateException(message));
+			} catch (IllegalStateException exception) {
+				String message = "The root item 'root' could not be created.";
+				showImportError(message, exception);
+				attachRootAndClearErrorState(invisibleRoot, root);
+				return;
 			}
+
+			if (root == null) {
+				String message = "The root item 'root' is null.";
+				showImportError(message, null);
+			}
+
+			attachRootAndClearErrorState(invisibleRoot, root);
+
 		}
 
+	}
+
+	private void attachRootAndClearErrorState(AbstractAtom<?> invisibleRoot, AbstractAtom<?> root) {
+		// attach the (visible) root to the invisible root of the tree view
+		invisibleRoot.addChild(root);
+		treeViewProvider.updateTreeContent(invisibleRoot);
+
+		// update the error state to remove the eventually existing
+		// error visualization
+		treeViewProvider.visualizeErrorState(TreeErrorState.OK, null);
+	}
+
+	private void showImportError(String message, Exception exception) {
+		// the root element could not be created from the script:
+		// show an error by setting the background color of the tree
+		// view to orange
+
+		LOG.debug(message);
+		treeViewProvider.visualizeErrorState(TreeErrorState.ERROR, new IllegalStateException(message, exception));
 	}
 
 	//#end region
