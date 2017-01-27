@@ -98,8 +98,14 @@ public abstract class AbstractAbstractAtomTest {
 		//check obtained objects
 		checkOptainedObjects(name, atomImage, controlAdaption, graphicsAdaption, codeAdaption, treeNodeAdaption);
 
-		//previewWindow.showUntilManuallyClosed();
+		if (isOpeningWindowThatNeedsToBeClosed()) {
+			previewWindow.showUntilManuallyClosed();
+		}
 
+	}
+
+	protected Boolean isOpeningWindowThatNeedsToBeClosed() {
+		return false;
 	}
 
 	private void checkOptainedObjects(

@@ -18,7 +18,7 @@ import org.treez.model.Activator;
 /**
  * Represents an external executable that can be executed with additional command line arguments and file paths
  */
-@SuppressWarnings({ "checkstyle:visibilitymodifier", "checkstyle:classfanoutcomplexity" })
+@SuppressWarnings("checkstyle:visibilitymodifier")
 public class JarExecutable extends Executable {
 
 	//#region ATTRIBUTES
@@ -33,9 +33,7 @@ public class JarExecutable extends Executable {
 
 	public JarExecutable(String name) {
 		super(name);
-
 		modifyModel();
-
 	}
 
 	//#end region
@@ -55,7 +53,7 @@ public class JarExecutable extends Executable {
 		executable.createSectionAction("resetJobIndex", "Reset the job index to 1", () -> resetJobIndex(), resetImage);
 		executable.createSectionAction("action", "Run external executable", () -> execute(treeViewRefreshable));
 
-		FilePath filePath = executable.createFilePath(executablePath, this, "Java executable",
+		FilePath filePath = executable.createFilePath(executablePath, this, "Path to java.exe",
 				"D:/EclipseJava/App/jdk1.8/bin/java.exe");
 		filePath.addModifyListener("updateStatus", updateStatusListener);
 
@@ -68,23 +66,8 @@ public class JarExecutable extends Executable {
 
 		ModifyListener updateStatusListener = (ModifyEvent e) -> refreshStatus();
 
-		createJvmArgumentsSection(dataPage, updateStatusListener, null);
 		createClassPathSection(dataPage, updateStatusListener, null);
-
-	}
-
-	private void createJvmArgumentsSection(
-			Page dataPage,
-			ModifyListener updateStatusListener,
-			String executableHelpContextId) {
-
-		Section section = dataPage.createSection("jvmArguments", executableHelpContextId).setLabel("JVM Arguments");
-		section.moveAtom(1);
-
-		TextArea jvmField = section.createTextArea(jvmArgument, this);
-		jvmField.setLabel("JVM arguments");
-		jvmField.addModifyListener("updateStatus", updateStatusListener);
-		jvmField.setHelpId("org.eclipse.ui.ide.jvmArguments");
+		createJvmArgumentsSection(dataPage, updateStatusListener, null);
 
 	}
 
@@ -93,15 +76,36 @@ public class JarExecutable extends Executable {
 			ModifyListener updateStatusListener,
 			String executableHelpContextId) {
 
-		Section section = dataPage.createSection("classPath", executableHelpContextId).setLabel("Class Path");
-		section.moveAtom(2);
+		Section section = dataPage
+				.createSection("classPath", executableHelpContextId) //
+				.setLabel("Jar (class path)");
+		section.moveAtom(1);
 
-		FileOrDirectoryPath classPathChooser = section.createFileOrDirectoryPath(jarPath, this, "", "");
+		FileOrDirectoryPath classPathChooser = section.createFileOrDirectoryPath(jarPath, this,
+				"Path to jar file (that provides main class)", "");
 		classPathChooser.addModifyListener("updateStatus", updateStatusListener);
 
-		TextField classFullName = section.createTextField(fullClassName, this, "");
-		classFullName.setLabel("Class Full Name");
-		classFullName.addModifyListener("updateStatus", updateStatusListener);
+		TextField fullClassNameField = section.createTextField(fullClassName, this, "");
+		fullClassNameField.setLabel("Full name of main class");
+		fullClassNameField.addModifyListener("updateStatus", updateStatusListener);
+	}
+
+	private void createJvmArgumentsSection(
+			Page dataPage,
+			ModifyListener updateStatusListener,
+			String executableHelpContextId) {
+
+		Section section = dataPage
+				.createSection("jvmArguments", executableHelpContextId) //
+				.setLabel("JVM arguments");
+		section.moveAtom(2);
+
+		TextArea jvmField = section.createTextArea(jvmArgument, this);
+		jvmField.setLabel("Arguments for tweaking Java Virtual Maschine");
+
+		jvmField.addModifyListener("updateStatus", updateStatusListener);
+		jvmField.setHelpId("org.eclipse.ui.ide.jvmArguments");
+
 	}
 
 	@Override
@@ -113,38 +117,16 @@ public class JarExecutable extends Executable {
 	protected String buildCommand() {
 		String command = "\"" + executablePath.get() + "\"";
 
-		// Check the Executable arguments before the ones from this class
-		boolean inputArgsIsEmpty = inputArguments.get().isEmpty();
-		if (!inputArgsIsEmpty) {
-			String modifiedInputArguments = injectStudyAndJobInfo(inputArguments);
-			command += " " + modifiedInputArguments;
-		}
+		command = addJavaArguments(command);
+		command = addInputArguments(command);
+		command = addOutputArguments(command);
+		command = addLoggingArguments(command);
 
-		boolean inputPathIsEmpty = inputPath.get().isEmpty();
-		if (!inputPathIsEmpty) {
-			command += " " + inputPath;
-		}
+		return command;
+	}
 
-		boolean outputArgsIsEmpty = outputArguments.get().isEmpty();
-		if (!outputArgsIsEmpty) {
-			command += " " + outputArguments;
-		}
-
-		boolean outputPathIsEmpty = outputPath.get().isEmpty();
-		if (!outputPathIsEmpty) {
-			modifiedOutputPath = provideFilePath();
-			command += " " + modifiedOutputPath;
-		}
-
-		boolean logArgsIsEmpty = logArguments.get().isEmpty();
-		if (!logArgsIsEmpty) {
-			command += " " + logArguments;
-		}
-
-		boolean logFilePathIsEmpty = logFilePath.get().isEmpty();
-		if (!logFilePathIsEmpty) {
-			command += " " + logFilePath;
-		}
+	private String addJavaArguments(String commandToExtend) {
+		String command = commandToExtend;
 		boolean jvmArgumentsIsEmpty = jvmArgument.get().isEmpty();
 		if (!jvmArgumentsIsEmpty) {
 			command += " " + jvmArgument.get();
@@ -159,7 +141,6 @@ public class JarExecutable extends Executable {
 		if (!classFullNameArgsIsEmpty) {
 			command += " " + fullClassName.get();
 		}
-
 		return command;
 	}
 

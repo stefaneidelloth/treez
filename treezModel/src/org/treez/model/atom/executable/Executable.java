@@ -211,7 +211,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		dateInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
 		CheckBox dateInSubFolderCheck = outputModification.createCheckBox(includeDateInSubFolder, this, false);
-		dateInFolderCheck.setLabel("Extra folder");
+		dateInSubFolderCheck.setLabel("Extra folder");
 		dateInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
 
 		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInFile, this, false);
@@ -499,6 +499,14 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	 */
 	protected String buildCommand() {
 		String command = "\"" + executablePath.get() + "\"";
+		command = addInputArguments(command);
+		command = addOutputArguments(command);
+		command = addLoggingArguments(command);
+		return command;
+	}
+
+	protected String addInputArguments(String commandToExtend) {
+		String command = commandToExtend;
 		boolean inputArgsIsEmpty = inputArguments.get().isEmpty();
 		if (!inputArgsIsEmpty) {
 			String modifiedInputArguments = injectStudyAndJobInfo(inputArguments);
@@ -509,7 +517,11 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		if (!inputPathIsEmpty) {
 			command += " " + inputPath;
 		}
+		return command;
+	}
 
+	protected String addOutputArguments(String commandToExtend) {
+		String command = commandToExtend;
 		boolean outputArgsIsEmpty = outputArguments.get().isEmpty();
 		if (!outputArgsIsEmpty) {
 			command += " " + outputArguments;
@@ -520,7 +532,11 @@ public class Executable extends AbstractModel implements FilePathProvider {
 			modifiedOutputPath = provideFilePath();
 			command += " " + modifiedOutputPath;
 		}
+		return command;
+	}
 
+	protected String addLoggingArguments(String commandToExtend) {
+		String command = commandToExtend;
 		boolean logArgsIsEmpty = logArguments.get().isEmpty();
 		if (!logArgsIsEmpty) {
 			command += " " + logArguments;
@@ -530,7 +546,6 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		if (!logFilePathIsEmpty) {
 			command += " " + logFilePath;
 		}
-
 		return command;
 	}
 
