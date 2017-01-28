@@ -5,8 +5,13 @@ Bundle-SymbolicName: org.treez.data;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.treez.data.Activator
 Bundle-ClassPath: .,
- lib/org.eclipse.nebula.widgets.grid_1.0.0.201506151822.jar,
- lib/sqlite-jdbc-3.15.1.jar
+ lib/sqlite-jdbc-3.15.1.jar,
+ lib/org.eclipse.nebula.widgets.grid_1.0.0.201609231530.jar,
+ lib/org.eclipse.nebula.widgets.nattable.core_1.4.0.201606011907.jar,
+ lib/org.eclipse.nebula.widgets.pagination_1.0.0.201701041652.jar,
+ lib/org.eclipse.nebula.widgets.grid.source_1.0.0.201609231530.jar,
+ lib/org.eclipse.nebula.widgets.nattable.core.source_1.4.0.201606011907.jar,
+ lib/org.eclipse.nebula.widgets.pagination.source_1.0.0.201701041652.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.treez.data,
