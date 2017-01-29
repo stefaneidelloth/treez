@@ -1,6 +1,6 @@
 package org.treez.data.table.nebula;
 
-import org.eclipse.nebula.widgets.grid.Grid;
+import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.pagination.AbstractPaginationWidget;
 import org.eclipse.nebula.widgets.pagination.PageLoaderStrategyHelper;
 import org.eclipse.nebula.widgets.pagination.collections.PageResultContentProvider;
@@ -9,9 +9,9 @@ import org.eclipse.nebula.widgets.pagination.renderers.navigation.ResultAndNavig
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-public class PageableGridTable extends AbstractPaginationWidget<Grid> {
+public class PageableGridTable extends AbstractPaginationWidget<NatTable> {
 
-	protected TableViewer viewer;
+	protected NatTableViewer viewer;
 
 	private Table table;
 
@@ -30,12 +30,12 @@ public class PageableGridTable extends AbstractPaginationWidget<Grid> {
 	}
 
 	@Override
-	protected Grid createWidget(Composite parent) {
-		viewer = new TableViewer(parent, table);
-		return viewer.getGrid();
+	protected NatTable createWidget(Composite parent) {
+		viewer = new NatTableViewer(parent, table);
+		return viewer.getNatTable();
 	}
 
-	public TableViewer getViewer() {
+	public NatTableViewer getViewer() {
 		return viewer;
 	}
 

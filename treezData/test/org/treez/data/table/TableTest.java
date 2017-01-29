@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
-import org.junit.Test;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
@@ -48,7 +47,7 @@ public class TableTest extends AbstractAbstractAtomTest {
 	/**
 	 * Tests the construction of the atom
 	 */
-	@Test
+
 	public void testConstructionWithColumns() {
 
 		Table table = (Table) atom;

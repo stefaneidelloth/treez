@@ -3,7 +3,7 @@ package org.treez.example;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.scripting.ModelProvider;
 import org.treez.data.column.Columns;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.data.Data;
 import org.treez.results.atom.graph.Graph;
@@ -25,7 +25,8 @@ public class ResultDemo extends ModelProvider {
 
 		//create data table with two columns---------------------------------
 		Data data = results.createData("data");
-		Table table = data.createTable("table");
+		Table table = new Table("table");
+		data.addChild(table);
 		Columns columns = table.createColumns("columns");
 		columns.createColumn("x", ColumnType.DOUBLE);
 		columns.createColumn("y", ColumnType.DOUBLE);

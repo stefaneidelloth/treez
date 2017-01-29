@@ -22,11 +22,13 @@ Export-Package: org.treez.data,
  org.treez.data.row,
  org.treez.data.sqlite,
  org.treez.data.table,
+ org.treez.data.table.nebula,
  org.treez.data.variable
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.swt,
  org.eclipse.ui,
  org.eclipse.ui.forms,
  org.eclipse.jface,
+ org.apache.commons.logging,
  org.treez.core
 Bundle-Vendor: Stefan Eidelloth

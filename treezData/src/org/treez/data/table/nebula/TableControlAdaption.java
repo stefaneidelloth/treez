@@ -2,8 +2,6 @@ package org.treez.data.table.nebula;
 
 import java.util.List;
 
-import org.eclipse.nebula.widgets.pagination.PageableController;
-import org.eclipse.nebula.widgets.pagination.collections.PageResultLoaderList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -21,12 +19,11 @@ import org.treez.core.data.row.Row;
 /**
  * Shows a table viewer and additional buttons
  */
-@SuppressWarnings("restriction")
 public class TableControlAdaption extends AbstractControlAdaption {
 
 	//#region ATTRIBUTES
 
-	private TableViewer tableViewer;
+	private NatTableViewer tableViewer;
 
 	//#end region
 
@@ -56,8 +53,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 		//set parent layout
 		GridLayout layout = new GridLayout(1, false);
 		layout.verticalSpacing = 0;
-
-		parent.setLayout(layout); //new GridLayout(1, true));
+		parent.setLayout(layout);
 
 		//create buttons
 		createButtons(parent);
@@ -68,17 +64,16 @@ public class TableControlAdaption extends AbstractControlAdaption {
 			table.addEmptyRow();
 		}
 
-		PageableGridTable pageableTable = new PageableGridTable(parent, table);
-		pageableTable.setPageLoader(new PageResultLoaderList<>(rows));
-		tableViewer = pageableTable.getViewer();
+		//PageableGridTable pageableTable = new PageableGridTable(parent, table);
+		//pageableTable.setPageLoader(new PageResultLoaderList<>(rows));
+		//tableViewer = pageableTable.getViewer();
 
-		PageableController controller = pageableTable.getController();
+		tableViewer = new NatTableViewer(parent, table);
 
-		controller.setCurrentPage(0);
+		//PageableController controller = pageableTable.getController();
+		//controller.setCurrentPage(0);
 
-		parent.setSize(50, 50);
-
-		optimizeColumnWidths();
+		//optimizeColumnWidths();
 
 	}
 
@@ -116,7 +111,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 			@Override
 			public void handleEvent(Event event) {
-				int row = tableViewer.getGrid().getSelectionIndex();
+				int row = tableViewer.getSelectionIndex();
 				tableViewer.addRow(row);
 			}
 		});
@@ -133,7 +128,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 			@Override
 			public void handleEvent(Event event) {
-				int row = tableViewer.getGrid().getSelectionIndex();
+				int row = tableViewer.getSelectionIndex();
 				tableViewer.deleteRow(row);
 			}
 		});
@@ -150,7 +145,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 			@Override
 			public void handleEvent(Event event) {
-				int row = tableViewer.getGrid().getSelectionIndex();
+				int row = tableViewer.getSelectionIndex();
 				tableViewer.upRow(row);
 			}
 		});
@@ -167,7 +162,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 			@Override
 			public void handleEvent(Event event) {
-				int row = tableViewer.getGrid().getSelectionIndex();
+				int row = tableViewer.getSelectionIndex();
 				tableViewer.downRow(row);
 			}
 		});

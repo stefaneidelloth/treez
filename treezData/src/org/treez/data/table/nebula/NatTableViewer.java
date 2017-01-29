@@ -11,36 +11,33 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CellLabelProvider;
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.window.ToolTip;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
-import org.eclipse.nebula.widgets.grid.Grid;
-import org.eclipse.nebula.widgets.grid.GridColumn;
-import org.eclipse.nebula.widgets.grid.GridItem;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.data.IColumnAccessor;
+import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
+import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
+import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
+import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
-import org.treez.data.column.EmptyHeaderRenderer;
-import org.treez.data.column.HeaderRenderer;
-import org.treez.data.row.EmptyRowHeaderRenderer;
-import org.treez.data.row.RowHeaderRenderer;
 import org.treez.data.table.TreezTableViewer;
 
 /**
  * Shows a table with row headers and copy paste support
  */
-public class TableViewer extends GridTableViewer {
+public class NatTableViewer extends TableViewer {
 
 	private static final Logger LOG = Logger.getLogger(TreezTableViewer.class);
 
@@ -58,54 +55,99 @@ public class TableViewer extends GridTableViewer {
 	 */
 	private Table table;
 
+	private NatTable natTable;
+
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public TableViewer(Composite parent, Table table) {
+	public NatTableViewer(Composite parent, Table table) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		this.table = table;
-		configureTableViewer();
+		configureTableViewer(parent);
 	}
 
 	//#end region
 
 	//#region METHODS
 
-	private void configureTableViewer() {
+	private void configureTableViewer(Composite parent) {
 
 		//get headers
-		List<String> headers = table.getHeaders();
-
-		//get number of columns
-		int numberOfColumns = headers.size();
 
 		//enable tool tips
-		ColumnViewerToolTipSupport.enableFor(this, ToolTip.NO_RECREATE);
+		//ColumnViewerToolTipSupport.enableFor(this, ToolTip.NO_RECREATE);
 
-		//get grid of table viewer
-		final Grid grid = getGrid();
+		createNatTable(parent);
+		//hookControl(natTable);
+
+		//IConfigRegistry configRegistry = natTable.getConfigRegistry();
+		//configRegistry.registerConfigAttribute(CellConfigAttributes.RENDER_GRID_LINES, true);
 
 		//set table layout and style
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		grid.setLayoutData(data);
-		grid.setHeaderVisible(true);
-		grid.setRowHeaderVisible(true);
-		grid.setCellSelectionEnabled(true);
+		natTable.setLayoutData(data);
 
-		//create and set header renderer
-		HeaderRenderer headerRenderer = createHeaderRenderers(grid);
-
-		//configure columns of table viewer
-		configureColumns(headers, numberOfColumns, headerRenderer, grid);
+		//natTable.natTable.setHeaderVisible(true);
+		//natTable.setRowHeaderVisible(true);
+		//natTable.setCellSelectionEnabled(true);
 
 		//set content provider
 		setContentProvider(new ArrayContentProvider());
 
 		//add key shortcuts
 		Listener keyListener = createKeyListener();
-		grid.addListener(SWT.KeyUp, keyListener);
+		//natTable.addListener(SWT.KeyUp, keyListener);
 
+	}
+
+	private void createNatTable(Composite parent) {
+
+		IDataProvider bodyDataProvider = createBodyDataProvider();
+		BodyLayerStack bodyLayer = new BodyLayerStack(bodyDataProvider);
+
+		List<String> headers = table.getHeaders();
+		String[] headersArray = headers.toArray(new String[headers.size()]);
+		DefaultColumnHeaderDataProvider colHeaderDataProvider = new DefaultColumnHeaderDataProvider(headersArray);
+		ColumnHeaderLayerStack columnHeaderLayer = new ColumnHeaderLayerStack(colHeaderDataProvider, bodyLayer);
+
+		DefaultRowHeaderDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(bodyDataProvider);
+		RowHeaderLayerStack rowHeaderLayer = new RowHeaderLayerStack(rowHeaderDataProvider, bodyLayer);
+
+		DefaultCornerDataProvider cornerDataProvider = new DefaultCornerDataProvider(
+				colHeaderDataProvider,
+				rowHeaderDataProvider);
+
+		CornerLayer cornerLayer = new CornerLayer(new DataLayer(cornerDataProvider), rowHeaderLayer, columnHeaderLayer);
+
+		GridLayer gridLayer = new GridLayer(bodyLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
+
+		natTable = new NatTable(parent, gridLayer);
+	}
+
+	private IDataProvider createBodyDataProvider() {
+
+		IColumnAccessor<Row> columnAccessor = new IColumnAccessor<Row>() {
+
+			@Override
+			public Object getDataValue(Row row, int columnIndex) {
+				String columnHeader = table.getHeaders().get(columnIndex);
+				return row.getEntry(columnHeader);
+			}
+
+			@Override
+			public void setDataValue(Row row, int columnIndex, Object newValue) {
+				String columnHeader = table.getHeaders().get(columnIndex);
+				row.setEntry(columnHeader, newValue);
+			}
+
+			@Override
+			public int getColumnCount() {
+				return table.getNumberOfColumns();
+			}
+
+		};
+		return new ListDataProvider<Row>(table.getRows(), columnAccessor);
 	}
 
 	private Listener createKeyListener() {
@@ -130,37 +172,6 @@ public class TableViewer extends GridTableViewer {
 			}
 
 		};
-	}
-
-	private void configureColumns(List<String> headers, int numberOfColumns, HeaderRenderer headerRenderer, Grid grid) {
-
-		for (int columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
-			String header = headers.get(columnIndex);
-			ColumnType columnType = table.getColumnType(header);
-			GridViewerColumn column = new GridViewerColumn(this, SWT.NONE);
-
-			CellLabelProvider labelProvider = table.getLabelProvider(header, columnType);
-			column.setLabelProvider(labelProvider);
-
-			// CellEditor cellEditor = table.getCellEditor(header, columnType, grid);
-			// column.setEditingSupport(new EditingProvider(this, table, header, cellEditor));
-
-			GridColumn gridColumn = column.getColumn();
-			gridColumn.setText(header);
-			gridColumn.setHeaderRenderer(headerRenderer);
-			String columnToolTip = table.getColumnHeaderTooltip(header);
-			gridColumn.setHeaderTooltip(columnToolTip);
-			gridColumn.setCellSelectionEnabled(true);
-		}
-	}
-
-	private static HeaderRenderer createHeaderRenderers(final Grid grid) {
-		grid.setEmptyRowHeaderRenderer(new EmptyRowHeaderRenderer());
-		grid.setRowHeaderRenderer(new RowHeaderRenderer());
-		grid.setEmptyColumnHeaderRenderer(new EmptyHeaderRenderer());
-		grid.setTopLeftRenderer(new EmptyHeaderRenderer());
-		HeaderRenderer headerRenderer = new HeaderRenderer();
-		return headerRenderer;
 	}
 
 	/**
@@ -306,12 +317,15 @@ public class TableViewer extends GridTableViewer {
 	private Map<Integer, List<Integer>> getSelectedColumnsMap() {
 		HashMap<Integer, List<Integer>> selectedColumnsMap = new HashMap<>();
 
-		Grid grid = getGrid();
-		Point[] selectionCoordinates = grid.getCellSelection();
+		//TODO
+
+		/*
+		NatTable natTable = getNatTable();
+		Point[] selectionCoordinates = natTable.getCellSelection();
 		for (Point coordinates : selectionCoordinates) {
 			int row = coordinates.y + 1;
 			int column = coordinates.x + 1;
-
+		
 			boolean rowExists = selectedColumnsMap.containsKey(row);
 			if (rowExists) {
 				List<Integer> columns = selectedColumnsMap.get(row);
@@ -322,6 +336,7 @@ public class TableViewer extends GridTableViewer {
 				selectedColumnsMap.put(row, columns);
 			}
 		}
+		*/
 
 		return selectedColumnsMap;
 	}
@@ -333,12 +348,19 @@ public class TableViewer extends GridTableViewer {
 	 */
 	private ArrayList<Row> getSelectedRows() {
 		ArrayList<Row> selectedRows = new ArrayList<>();
+
+		return selectedRows;
+
+		//TODO
+
+		/*
 		GridItem[] selectedItems = getGrid().getSelection();
 		for (GridItem gridItem : selectedItems) {
 			Row row = (Row) gridItem.getData();
 			selectedRows.add(row);
 		}
 		return selectedRows;
+		*/
 	}
 
 	/**
@@ -407,11 +429,27 @@ public class TableViewer extends GridTableViewer {
 	 */
 	public void optimizeColumnWidths() {
 
-		GridColumn[] tableColumns = getGrid().getColumns();
-		for (GridColumn column : tableColumns) {
-			column.pack();
-		}
+		//TODO
 
+		//GridColumn[] tableColumns = getNatTable().getColumns();
+		//for (GridColumn column : tableColumns) {
+		//	column.pack();
+		//}
+
+	}
+
+	//#end region
+
+	//#region ACCESSORs
+
+	public NatTable getNatTable() {
+		return natTable;
+	}
+
+	public int getSelectionIndex() {
+		//TODO
+		//return getNatTable().getSelectionIndex();
+		return 1;
 	}
 
 	//#end region
