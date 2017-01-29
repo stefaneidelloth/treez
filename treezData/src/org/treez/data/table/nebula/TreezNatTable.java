@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.data.IColumnAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
@@ -22,11 +20,11 @@ import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvide
 import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
+import org.eclipse.nebula.widgets.nattable.layer.ILayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -34,10 +32,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.treez.core.data.row.Row;
 import org.treez.data.table.TreezTableViewer;
 
-/**
- * Shows a table with row headers and copy paste support
- */
-public class NatTableViewer extends TableViewer {
+public class TreezNatTable extends NatTable {
 
 	private static final Logger LOG = Logger.getLogger(TreezTableViewer.class);
 
@@ -55,55 +50,21 @@ public class NatTableViewer extends TableViewer {
 	 */
 	private Table table;
 
-	private NatTable natTable;
-
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public NatTableViewer(Composite parent, Table table) {
-		super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+	public TreezNatTable(Composite parent, Table table) {
+		super(parent, createNatLayers(table));
 		this.table = table;
-		configureTableViewer(parent);
 	}
 
 	//#end region
 
 	//#region METHODS
 
-	private void configureTableViewer(Composite parent) {
-
-		//get headers
-
-		//enable tool tips
-		//ColumnViewerToolTipSupport.enableFor(this, ToolTip.NO_RECREATE);
-
-		createNatTable(parent);
-		//hookControl(natTable);
-
-		//IConfigRegistry configRegistry = natTable.getConfigRegistry();
-		//configRegistry.registerConfigAttribute(CellConfigAttributes.RENDER_GRID_LINES, true);
-
-		//set table layout and style
-		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		natTable.setLayoutData(data);
-
-		//natTable.natTable.setHeaderVisible(true);
-		//natTable.setRowHeaderVisible(true);
-		//natTable.setCellSelectionEnabled(true);
-
-		//set content provider
-		setContentProvider(new ArrayContentProvider());
-
-		//add key shortcuts
-		Listener keyListener = createKeyListener();
-		//natTable.addListener(SWT.KeyUp, keyListener);
-
-	}
-
-	private void createNatTable(Composite parent) {
-
-		IDataProvider bodyDataProvider = createBodyDataProvider();
+	private static ILayer createNatLayers(Table table) {
+		IDataProvider bodyDataProvider = createBodyDataProvider(table);
 		BodyLayerStack bodyLayer = new BodyLayerStack(bodyDataProvider);
 
 		List<String> headers = table.getHeaders();
@@ -121,11 +82,10 @@ public class NatTableViewer extends TableViewer {
 		CornerLayer cornerLayer = new CornerLayer(new DataLayer(cornerDataProvider), rowHeaderLayer, columnHeaderLayer);
 
 		GridLayer gridLayer = new GridLayer(bodyLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
-
-		natTable = new NatTable(parent, gridLayer);
+		return gridLayer;
 	}
 
-	private IDataProvider createBodyDataProvider() {
+	private static IDataProvider createBodyDataProvider(Table table) {
 
 		IColumnAccessor<Row> columnAccessor = new IColumnAccessor<Row>() {
 
@@ -150,6 +110,7 @@ public class NatTableViewer extends TableViewer {
 		return new ListDataProvider<Row>(table.getRows(), columnAccessor);
 	}
 
+	//TODO: add key listener and repair  copy paste
 	private Listener createKeyListener() {
 		return new Listener() {
 
@@ -431,7 +392,7 @@ public class NatTableViewer extends TableViewer {
 
 		//TODO
 
-		//GridColumn[] tableColumns = getNatTable().getColumns();
+		//GridColumn[] tableColumns = getColumns();
 		//for (GridColumn column : tableColumns) {
 		//	column.pack();
 		//}
@@ -442,13 +403,9 @@ public class NatTableViewer extends TableViewer {
 
 	//#region ACCESSORs
 
-	public NatTable getNatTable() {
-		return natTable;
-	}
-
 	public int getSelectionIndex() {
 		//TODO
-		//return getNatTable().getSelectionIndex();
+
 		return 1;
 	}
 

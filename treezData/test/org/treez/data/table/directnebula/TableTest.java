@@ -1,4 +1,4 @@
-package org.treez.data.table.nebula;
+package org.treez.data.table.directnebula;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
 import org.treez.core.scripting.ScriptType;
 import org.treez.data.column.Column;
+import org.treez.data.table.nebula.Table;
 import org.treez.testutils.PreviewWindow;
 import org.treez.testutils.TestUtils;
 
@@ -29,10 +30,7 @@ public class TableTest extends AbstractAbstractAtomTest {
 	@Override
 	@Before
 	public void createTestAtom() {
-
-		//create test atom
 		atom = new Table(atomName);
-
 	}
 
 	@Override
