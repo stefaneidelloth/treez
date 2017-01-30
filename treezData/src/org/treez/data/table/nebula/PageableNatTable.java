@@ -2,18 +2,22 @@ package org.treez.data.table.nebula;
 
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.pagination.AbstractPaginationWidget;
+import org.eclipse.nebula.widgets.pagination.PageableController;
 import org.eclipse.nebula.widgets.pagination.collections.PageResultContentProvider;
-import org.eclipse.nebula.widgets.pagination.renderers.ICompositeRendererFactory;
 import org.eclipse.nebula.widgets.pagination.renderers.navigation.ResultAndNavigationPageLinksRendererFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.treez.core.data.table.TreezTable;
 
 public class PageableNatTable extends AbstractPaginationWidget<NatTable> {
 
 	//#region ATTRIBUTES
 
-	private Table table;
+	private static Color BACKGROUND_COLOR = new Color(null, 255, 255, 255);
+
+	private TreezTable table;
 
 	protected TreezNatTable treezNatTable;
 
@@ -21,11 +25,11 @@ public class PageableNatTable extends AbstractPaginationWidget<NatTable> {
 
 	//#region CONSTRUCTORS
 
-	public PageableNatTable(Composite parent, Table table) {
+	public PageableNatTable(Composite parent, TreezTable table, int pageSize) {
 		super(
 				parent,
-				SWT.BORDER,
-				2,
+				SWT.NONE,
+				pageSize,
 				PageResultContentProvider.getInstance(),
 				null,
 				ResultAndNavigationPageLinksRendererFactory.getFactory(),
@@ -33,6 +37,11 @@ public class PageableNatTable extends AbstractPaginationWidget<NatTable> {
 
 		this.table = table;
 		createUI(this);
+		setBackground(BACKGROUND_COLOR);
+
+		PageableController controller = getController();
+		controller.setCurrentPage(0);
+
 	}
 
 	//#end region
@@ -42,6 +51,7 @@ public class PageableNatTable extends AbstractPaginationWidget<NatTable> {
 	@Override
 	protected TreezNatTable createWidget(Composite parent) {
 		treezNatTable = new TreezNatTable(parent, table);
+		treezNatTable.setBackground(BACKGROUND_COLOR);
 
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		treezNatTable.setLayoutData(gridData);
@@ -60,10 +70,6 @@ public class PageableNatTable extends AbstractPaginationWidget<NatTable> {
 
 	public TreezNatTable getTreezNatTable() {
 		return treezNatTable;
-	}
-
-	public static ICompositeRendererFactory getDefaultPageRendererTopFactory() {
-		return ResultAndNavigationPageLinksRendererFactory.getFactory();
 	}
 
 	//#end region

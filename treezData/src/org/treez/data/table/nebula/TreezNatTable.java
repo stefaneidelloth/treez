@@ -2,6 +2,7 @@
 package org.treez.data.table.nebula;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,9 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
+import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
+import org.eclipse.nebula.widgets.nattable.style.theme.ModernNatTableThemeConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -30,6 +34,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.treez.core.data.row.Row;
+import org.treez.core.data.table.TreezTable;
 import org.treez.data.table.TreezTableViewer;
 
 public class TreezNatTable extends NatTable {
@@ -48,44 +53,54 @@ public class TreezNatTable extends NatTable {
 	/**
 	 * The table (definition of the columns) this table viewer represents
 	 */
-	private Table table;
+	private TreezTable table;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public TreezNatTable(Composite parent, Table table) {
+	public TreezNatTable(Composite parent, TreezTable table) {
 		super(parent, createNatLayers(table));
 		this.table = table;
+
+		this.setTheme(new ModernNatTableThemeConfiguration());
+
+		Listener keyListener = createKeyListener();
+		this.addListener(SWT.KeyUp, keyListener);
 	}
 
 	//#end region
 
 	//#region METHODS
 
-	private static ILayer createNatLayers(Table table) {
+	private static ILayer createNatLayers(TreezTable table) {
 		IDataProvider bodyDataProvider = createBodyDataProvider(table);
-		BodyLayerStack bodyLayer = new BodyLayerStack(bodyDataProvider);
+		BodyLayerStack bodyLayerStack = new BodyLayerStack(bodyDataProvider);
 
 		List<String> headers = table.getHeaders();
 		String[] headersArray = headers.toArray(new String[headers.size()]);
 		DefaultColumnHeaderDataProvider colHeaderDataProvider = new DefaultColumnHeaderDataProvider(headersArray);
-		ColumnHeaderLayerStack columnHeaderLayer = new ColumnHeaderLayerStack(colHeaderDataProvider, bodyLayer);
+		ColumnHeaderLayerStack columnHeaderLayerStack = new ColumnHeaderLayerStack(
+				colHeaderDataProvider,
+				bodyLayerStack);
 
 		DefaultRowHeaderDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(bodyDataProvider);
-		RowHeaderLayerStack rowHeaderLayer = new RowHeaderLayerStack(rowHeaderDataProvider, bodyLayer);
+		RowHeaderLayerStack rowHeaderLayerStack = new RowHeaderLayerStack(rowHeaderDataProvider, bodyLayerStack);
 
 		DefaultCornerDataProvider cornerDataProvider = new DefaultCornerDataProvider(
 				colHeaderDataProvider,
 				rowHeaderDataProvider);
 
-		CornerLayer cornerLayer = new CornerLayer(new DataLayer(cornerDataProvider), rowHeaderLayer, columnHeaderLayer);
+		CornerLayer cornerLayer = new CornerLayer(
+				new DataLayer(cornerDataProvider),
+				rowHeaderLayerStack,
+				columnHeaderLayerStack);
 
-		GridLayer gridLayer = new GridLayer(bodyLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
+		GridLayer gridLayer = new GridLayer(bodyLayerStack, columnHeaderLayerStack, rowHeaderLayerStack, cornerLayer);
 		return gridLayer;
 	}
 
-	private static IDataProvider createBodyDataProvider(Table table) {
+	private static IDataProvider createBodyDataProvider(TreezTable table) {
 
 		IColumnAccessor<Row> columnAccessor = new IColumnAccessor<Row>() {
 
@@ -103,14 +118,13 @@ public class TreezNatTable extends NatTable {
 
 			@Override
 			public int getColumnCount() {
-				return table.getNumberOfColumns();
+				return table.getHeaders().size();
 			}
 
 		};
 		return new ListDataProvider<Row>(table.getRows(), columnAccessor);
 	}
 
-	//TODO: add key listener and repair  copy paste
 	private Listener createKeyListener() {
 		return new Listener() {
 
@@ -226,15 +240,15 @@ public class TreezNatTable extends NatTable {
 
 		//split text and paste data as new row
 		String[] rowStrings = text.split(ROW_SEPARATOR);
-		//		for (String rowString : rowStrings) {
-		//			String[] entries = rowString.split(COLUMN_SEPARATOR);
-		//Row row = new Row(table);
-		//			for (int index = 0; index < entries.length; index++) {
-		//				row.setEntry(headers.get(index), entries[index]);
-		//			}
-		//			table.getRows().add(rowIndex, row);
-		//			rowIndex = rowIndex + 1;
-		//		}
+		for (String rowString : rowStrings) {
+			String[] entries = rowString.split(COLUMN_SEPARATOR);
+			Row row = new Row(table);
+			for (int index = 0; index < entries.length; index++) {
+				row.setEntry(headers.get(index), entries[index]);
+			}
+			table.getRows().add(rowIndex, row);
+			rowIndex = rowIndex + 1;
+		}
 		//refresh
 		refresh();
 	}
@@ -278,50 +292,38 @@ public class TreezNatTable extends NatTable {
 	private Map<Integer, List<Integer>> getSelectedColumnsMap() {
 		HashMap<Integer, List<Integer>> selectedColumnsMap = new HashMap<>();
 
-		//TODO
+		SelectionLayer selectionLayer = getSelectionLayer();
 
-		/*
-		NatTable natTable = getNatTable();
-		Point[] selectionCoordinates = natTable.getCellSelection();
-		for (Point coordinates : selectionCoordinates) {
-			int row = coordinates.y + 1;
-			int column = coordinates.x + 1;
-		
-			boolean rowExists = selectedColumnsMap.containsKey(row);
+		Collection<ILayerCell> selectedCells = selectionLayer.getSelectedCells();
+		for (ILayerCell cell : selectedCells) {
+			int rowIndex = cell.getRowIndex();
+			int columnIndex = cell.getColumnIndex();
+			boolean rowExists = selectedColumnsMap.containsKey(rowIndex);
 			if (rowExists) {
-				List<Integer> columns = selectedColumnsMap.get(row);
-				columns.add(column);
+				List<Integer> columns = selectedColumnsMap.get(rowIndex);
+				columns.add(columnIndex);
 			} else {
 				List<Integer> columns = new ArrayList<>();
-				columns.add(column);
-				selectedColumnsMap.put(row, columns);
+				columns.add(columnIndex);
+				selectedColumnsMap.put(rowIndex, columns);
 			}
 		}
-		*/
 
 		return selectedColumnsMap;
 	}
 
-	/**
-	 * Gets the selected rows
-	 *
-	 * @return
-	 */
 	private ArrayList<Row> getSelectedRows() {
+
 		ArrayList<Row> selectedRows = new ArrayList<>();
 
-		return selectedRows;
-
-		//TODO
-
-		/*
-		GridItem[] selectedItems = getGrid().getSelection();
-		for (GridItem gridItem : selectedItems) {
-			Row row = (Row) gridItem.getData();
+		SelectionLayer selectionLayer = getSelectionLayer();
+		int[] indices = selectionLayer.getFullySelectedRowPositions();
+		List<Row> rows = table.getRows();
+		for (int rowIndex : indices) {
+			Row row = rows.get(rowIndex);
 			selectedRows.add(row);
 		}
 		return selectedRows;
-		*/
 	}
 
 	/**
@@ -392,6 +394,9 @@ public class TreezNatTable extends NatTable {
 
 		//TODO
 
+		//see auto resizing columns:
+		//http://www.eclipse.org/nattable/documentation.php?page=faq
+
 		//GridColumn[] tableColumns = getColumns();
 		//for (GridColumn column : tableColumns) {
 		//	column.pack();
@@ -401,12 +406,22 @@ public class TreezNatTable extends NatTable {
 
 	//#end region
 
-	//#region ACCESSORs
+	//#region ACCESSORS
 
-	public int getSelectionIndex() {
-		//TODO
+	private SelectionLayer getSelectionLayer() {
+		GridLayer gridLayer = (GridLayer) this.getLayer();
+		BodyLayerStack bodyLayer = (BodyLayerStack) gridLayer.getBodyLayer();
+		SelectionLayer selectionLayer = bodyLayer.getSelectionLayer();
+		return selectionLayer;
+	}
 
-		return 1;
+	public Integer getSelectionIndex() {
+		SelectionLayer selectionLayer = getSelectionLayer();
+		int[] indices = selectionLayer.getFullySelectedRowPositions();
+		if (indices.length > 0) {
+			return indices[0];
+		}
+		return 0;
 	}
 
 	//#end region

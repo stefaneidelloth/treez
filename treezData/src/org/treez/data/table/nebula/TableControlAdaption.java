@@ -2,7 +2,6 @@ package org.treez.data.table.nebula;
 
 import java.util.List;
 
-import org.eclipse.nebula.widgets.pagination.PageableController;
 import org.eclipse.nebula.widgets.pagination.collections.PageResultLoaderList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -18,9 +17,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.data.row.Row;
+import org.treez.core.data.table.TreezTable;
 
 /**
- * Shows a table viewer and additional buttons
+ * Shows a table and additional buttons
  */
 public class TableControlAdaption extends AbstractControlAdaption {
 
@@ -32,61 +32,34 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 	//#region CONSTRUCTORS
 
-	public TableControlAdaption(Composite parent, Table nebulaTable) {
-		super(parent, nebulaTable);
-		createControl(parent, nebulaTable);
+	public TableControlAdaption(Composite parent, Table table) {
+		super(parent, table);
+		createControl(parent, table);
 	}
 
 	//#end region
 
 	//#region METHODS
 
-	/**
-	 * Creates the control
-	 *
-	 * @param parent
-	 * @param table
-	 */
-	private void createControl(Composite parent, Table table) {
-		//delete old contents
+	private void createControl(Composite parent, TreezTable table) {
+		deleteOldContent(parent);
+		setParentLayout(parent);
+		createButtons(parent);
+		createPageableTable(parent, table);
+	}
+
+	private static void deleteOldContent(Composite parent) {
 		for (Control child : parent.getChildren()) {
 			child.dispose();
 		}
+	}
 
-		//set parent layout
+	private static void setParentLayout(Composite parent) {
 		GridLayout layout = new GridLayout(1, false);
 		layout.verticalSpacing = 0;
 		parent.setLayout(layout);
-
-		//create buttons
-		createButtons(parent);
-
-		//get rows and initialize them if they are null or empty
-		List<Row> rows = table.getRows();
-		if (rows == null || rows.isEmpty()) {
-			table.addEmptyRow();
-		}
-
-		PageableNatTable pageableTable = new PageableNatTable(parent, table);
-		pageableTable.setPageLoader(new PageResultLoaderList<>(rows));
-
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
-		pageableTable.setLayoutData(gridData);
-
-		PageableController controller = pageableTable.getController();
-		controller.setCurrentPage(0);
-
-		treezNatTable = pageableTable.getTreezNatTable();
-
-		//optimizeColumnWidths();
-
 	}
 
-	/**
-	 * Creates the control buttons
-	 *
-	 * @param parent
-	 */
 	private void createButtons(Composite parent) {
 
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
@@ -96,13 +69,9 @@ public class TableControlAdaption extends AbstractControlAdaption {
 		buttonComposite.setLayout(gridLayout);
 
 		createAddButton(toolkit, buttonComposite);
-
 		createDeleteButton(toolkit, buttonComposite);
-
 		createUpButton(toolkit, buttonComposite);
-
 		createDownButton(toolkit, buttonComposite);
-
 		createColumnWidthButton(toolkit, buttonComposite);
 
 	}
@@ -116,8 +85,8 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 			@Override
 			public void handleEvent(Event event) {
-				int row = treezNatTable.getSelectionIndex();
-				treezNatTable.addRow(row);
+				int rowIndex = treezNatTable.getSelectionIndex();
+				treezNatTable.addRow(rowIndex);
 			}
 		});
 
@@ -133,8 +102,8 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 			@Override
 			public void handleEvent(Event event) {
-				int row = treezNatTable.getSelectionIndex();
-				treezNatTable.deleteRow(row);
+				int rowIndex = treezNatTable.getSelectionIndex();
+				treezNatTable.deleteRow(rowIndex);
 			}
 		});
 
@@ -150,8 +119,8 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 			@Override
 			public void handleEvent(Event event) {
-				int row = treezNatTable.getSelectionIndex();
-				treezNatTable.upRow(row);
+				int rowIndex = treezNatTable.getSelectionIndex();
+				treezNatTable.upRow(rowIndex);
 			}
 		});
 
@@ -167,8 +136,8 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 			@Override
 			public void handleEvent(Event event) {
-				int row = treezNatTable.getSelectionIndex();
-				treezNatTable.downRow(row);
+				int rowIndex = treezNatTable.getSelectionIndex();
+				treezNatTable.downRow(rowIndex);
 			}
 		});
 
@@ -191,9 +160,31 @@ public class TableControlAdaption extends AbstractControlAdaption {
 		return optimizeColumnWidthsButton;
 	}
 
-	/**
-	 * Optimizes the column widths
-	 */
+	private void createPageableTable(Composite parent, TreezTable table) {
+
+		int defaultPageSize = 2;
+
+		PageableNatTable pageableTable = new PageableNatTable(parent, table, defaultPageSize);
+		List<Row> rows = initializeRows(table);
+
+		pageableTable.setPageLoader(new PageResultLoaderList<Row>(rows));
+
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+		pageableTable.setLayoutData(gridData);
+
+		treezNatTable = pageableTable.getTreezNatTable();
+
+		optimizeColumnWidths();
+	}
+
+	private static List<Row> initializeRows(TreezTable table) {
+		List<Row> rows = table.getRows();
+		if (rows == null || rows.isEmpty()) {
+			table.addEmptyRow();
+		}
+		return rows;
+	}
+
 	public void optimizeColumnWidths() {
 		treezNatTable.optimizeColumnWidths();
 	}

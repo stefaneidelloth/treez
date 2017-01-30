@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
+import org.junit.Test;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
@@ -47,7 +48,7 @@ public class TableTest extends AbstractAbstractAtomTest {
 	/**
 	 * Tests the construction of the atom
 	 */
-
+	@Test
 	public void testConstructionWithColumns() {
 
 		Table table = (Table) atom;
@@ -59,10 +60,20 @@ public class TableTest extends AbstractAbstractAtomTest {
 		table.addColumn(nameColumn);
 
 		List<Row> rows = new ArrayList<>();
-		Row row = new Row(table);
-		row.setEntry("id", 1);
-		row.setEntry("name", "hallo");
-		rows.add(row);
+		Row row1 = new Row(table);
+		row1.setEntry("id", 1);
+		row1.setEntry("name", "foo");
+		rows.add(row1);
+
+		Row row2 = new Row(table);
+		row2.setEntry("id", 2);
+		row2.setEntry("name", "bar");
+		rows.add(row2);
+
+		Row row3 = new Row(table);
+		row3.setEntry("id", 3);
+		row3.setEntry("name", "qux");
+		rows.add(row3);
 
 		table.setRows(rows);
 

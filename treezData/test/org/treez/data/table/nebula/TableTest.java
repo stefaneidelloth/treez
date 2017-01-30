@@ -1,7 +1,5 @@
-package org.treez.data.table.directnebula;
+package org.treez.data.table.nebula;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
@@ -13,10 +11,8 @@ import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
 import org.treez.core.data.column.ColumnType;
-import org.treez.core.data.row.Row;
 import org.treez.core.scripting.ScriptType;
 import org.treez.data.column.Column;
-import org.treez.data.table.nebula.Table;
 import org.treez.testutils.PreviewWindow;
 import org.treez.testutils.TestUtils;
 
@@ -43,7 +39,8 @@ public class TableTest extends AbstractAbstractAtomTest {
 	//#region TESTS
 
 	@Test
-	public void testConstructionWithColumns() {
+	@Override
+	public void testConstructionOfTestAtom() {
 
 		Table table = (Table) atom;
 
@@ -53,13 +50,9 @@ public class TableTest extends AbstractAbstractAtomTest {
 		Column nameColumn = new Column("name", ColumnType.TEXT);
 		table.addColumn(nameColumn);
 
-		List<Row> rows = new ArrayList<>();
-		Row row = new Row(table);
-		row.setEntry("id", 1);
-		row.setEntry("name", "hallo");
-		rows.add(row);
-
-		table.setRows(rows);
+		for (int rowIndex = 1; rowIndex < 10; rowIndex++) {
+			table.addRow(rowIndex, "name_" + rowIndex);
+		}
 
 		//get preview window
 		PreviewWindow previewWindow = TestUtils.getPreviewWindow();
