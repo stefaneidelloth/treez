@@ -16,86 +16,79 @@ public interface TreezTable extends Adaptable {
 
 	/**
 	 * Returns the column names (=headers)
-	 *
-	 * @return
 	 */
 	List<String> getHeaders();
 
 	/**
 	 * Returns the column type for the given column header
-	 *
-	 * @param header
-	 * @return
 	 */
 	ColumnType getColumnType(String header);
 
 	/**
 	 * Returns the header tool tip for the given column header
-	 *
-	 * @param header
-	 * @return
 	 */
 	String getColumnHeaderTooltip(String header);
 
 	/**
 	 * Returns true if the column with the given header is editable
-	 *
-	 * @param header
-	 * @return
 	 */
 	Boolean isEditable(String header);
 
 	/**
 	 * Returns the rows of this table
-	 *
-	 * @return
 	 */
 	List<Row> getRows();
 
 	/**
 	 * Adds a new empty row
 	 */
-	void addEmptyRow();
+	TreezTable addEmptyRow();
 
 	/**
-	 * Returns a label provider for the given header and column type
-	 *
-	 * @param header
-	 * @param columnType
-	 * @return
+	 * Returns a label provider for the given header and column type TODO: This interface should not depend on classes
+	 * of JFace
 	 */
 	CellLabelProvider getLabelProvider(String header, ColumnType columnType);
 
 	/**
-	 * Returns a cell editor for the given header and column type
-	 *
-	 * @param header
-	 * @param columnType
-	 * @return
+	 * Returns a cell editor for the given header and column type TODO: This interface should not depend on classes of
+	 * JFace
 	 */
 	CellEditor getCellEditor(String header, ColumnType columnType, Composite parentComposite);
 
 	/**
 	 * Returns the class for the data entries of the column with the given column header
-	 *
-	 * @param columnHeader
-	 * @return
 	 */
 	Class<?> getColumnDataClass(String columnHeader);
 
 	/**
 	 * Returns true if the table is linked to a table source
-	 *
-	 * @return
 	 */
 	boolean isLinkedToSource();
 
 	/**
 	 * Checks if the linked table source is compatible to the given TableSourceInformaiton
-	 *
-	 * @param tableSourceInfo
-	 * @return
 	 */
 	boolean checkSourceLink(TableSourceInformation tableSourceInfo) throws IllegalStateException;
+
+	/**
+	 * Returns a list of rows. If no paged rows have been explicitly set before, all rows will be returned.
+	 */
+	List<Row> getPagedRows();
+
+	/**
+	 * Stores a list of rows that can be retrieved with getPagedRows();
+	 */
+	TreezTable setPagedRows(List<Row> pagedRows);
+
+	/**
+	 * Returns offset for the display of row numbers
+	 */
+	int getRowIndexOffset();
+
+	/**
+	 * Sets offset for the display of row numbers
+	 */
+	TreezTable setRowIndexOffset(int offset);
 
 }

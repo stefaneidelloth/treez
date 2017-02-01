@@ -11,8 +11,8 @@ import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.CodeAdaption;
-import org.treez.core.adaptable.GraphicsAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
+import org.treez.core.adaptable.GraphicsAdaption;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.data.cell.CellEditorFactory;
 import org.treez.core.data.column.ColumnType;
@@ -38,6 +38,10 @@ public class VariableDefinitionTable implements TreezTable {
 	private Map<String, Boolean> editable = null;
 
 	private List<Row> definitionRows;
+
+	private List<Row> pagedRows;
+
+	private int rowIndexOffset;
 
 	private VariableDefinition parent;
 
@@ -65,9 +69,10 @@ public class VariableDefinitionTable implements TreezTable {
 	}
 
 	@Override
-	public void addEmptyRow() {
+	public VariableDefinitionTable addEmptyRow() {
 		VariableDefinitionRow emptyRow = new VariableDefinitionRow(parent, "", "", "");
 		definitionRows.add(emptyRow);
+		return this;
 	}
 
 	@Override
@@ -137,7 +142,9 @@ public class VariableDefinitionTable implements TreezTable {
 	}
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 		return null; //dummy implementation: not used here
 	}
 
@@ -149,6 +156,33 @@ public class VariableDefinitionTable implements TreezTable {
 	@Override
 	public boolean isLinkedToSource() {
 		return false;
+	}
+
+	@Override
+	public List<Row> getPagedRows() {
+		if (pagedRows != null) {
+			return pagedRows;
+		} else {
+			return definitionRows;
+		}
+
+	}
+
+	@Override
+	public VariableDefinitionTable setPagedRows(List<Row> pagedRows) {
+		this.pagedRows = pagedRows;
+		return this;
+	}
+
+	@Override
+	public int getRowIndexOffset() {
+		return rowIndexOffset;
+	}
+
+	@Override
+	public VariableDefinitionTable setRowIndexOffset(int rowIndexOffset) {
+		this.rowIndexOffset = rowIndexOffset;
+		return this;
 	}
 
 	//#end region

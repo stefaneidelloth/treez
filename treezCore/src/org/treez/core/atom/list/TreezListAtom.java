@@ -11,20 +11,18 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.copy.CopyHelper;
-import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.data.cell.CellEditorFactory;
 import org.treez.core.data.cell.TreezTableJFaceLabelProvider;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
-import org.treez.core.data.table.TableSourceInformation;
-import org.treez.core.data.table.TreezTable;
+import org.treez.core.data.table.AbstractTreezTable;
 import org.treez.core.treeview.TreeViewerRefreshable;
 
 /**
  * This atom contains a list that consists of Rows (having a single column). This atom implements TreezTable. The
  * corresponding control adaption shows the list and some additional buttons to edit the list.
  */
-public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> implements TreezTable {
+public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 
 	//#region ATTRIBUTES
 
@@ -42,16 +40,6 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 	 * The Column type of the single column
 	 */
 	private ColumnType columnType = ColumnType.TEXT;
-
-	/**
-	 * Row separator for text representations
-	 */
-	private final String ROW_SEPARATOR = "\n";
-
-	/**
-	 * The rows of the list
-	 */
-	private List<Row> rows = null; //null;
 
 	/**
 	 * If this flag is true, and the column type of the treezList is ColumnType.TEXT, an additional button will be shown
@@ -85,11 +73,6 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 
 	//#region CONSTRUCTORS
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
 	public TreezListAtom(String name) {
 		super(name);
 	}
@@ -175,6 +158,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 	 *
 	 * @return
 	 */
+	@Override
 	public String getData() {
 		String dataString = getData(ROW_SEPARATOR);
 		return dataString;
@@ -235,7 +219,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 	}
 
 	@Override
-	public void addEmptyRow() {
+	public TreezListAtom addEmptyRow() {
 		if (rows == null) {
 			rows = new ArrayList<>();
 		}
@@ -252,6 +236,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 		}
 
 		rows.add(emptyRow);
+		return this;
 	}
 
 	/**
@@ -264,11 +249,10 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 		return header.equals(expectedHeader);
 	}
 
-	/**
-	 * Deletes all rows of the table
-	 */
-	public void deleteAllRows() {
-		setRows(new ArrayList<Row>());
+	@Override
+	public TreezListAtom deleteAllRows() {
+		super.deleteAllRows();
+		return this;
 	}
 
 	//#end region
@@ -292,6 +276,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 	 *
 	 * @param rows
 	 */
+	@Override
 	public TreezListAtom setRows(List<Row> rows) {
 		this.rows = rows;
 		refreshControlAdaption();
@@ -483,6 +468,7 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 	 *
 	 * @return
 	 */
+	@Override
 	public String getRowSeparator() {
 		return ROW_SEPARATOR;
 	}
@@ -522,16 +508,6 @@ public class TreezListAtom extends AbstractUiSynchronizingAtom<TreezListAtom> im
 		showDirectoryPathButton = true;
 		return getThis();
 
-	}
-
-	@Override
-	public boolean isLinkedToSource() {
-		return false;
-	}
-
-	@Override
-	public boolean checkSourceLink(TableSourceInformation tableSourceInfo) throws IllegalStateException {
-		return false;
 	}
 
 	//#end region

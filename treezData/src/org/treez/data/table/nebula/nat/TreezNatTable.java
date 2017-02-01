@@ -1,5 +1,5 @@
 
-package org.treez.data.table.nebula;
+package org.treez.data.table.nebula.nat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,12 +12,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.nebula.widgets.nattable.NatTable;
-import org.eclipse.nebula.widgets.nattable.data.IColumnAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
-import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
-import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
@@ -74,7 +71,7 @@ public class TreezNatTable extends NatTable {
 	//#region METHODS
 
 	private static ILayer createNatLayers(TreezTable table) {
-		IDataProvider bodyDataProvider = createBodyDataProvider(table);
+		IDataProvider bodyDataProvider = new BodyDataProvider(table);
 		BodyLayerStack bodyLayerStack = new BodyLayerStack(bodyDataProvider);
 
 		List<String> headers = table.getHeaders();
@@ -84,7 +81,7 @@ public class TreezNatTable extends NatTable {
 				colHeaderDataProvider,
 				bodyLayerStack);
 
-		DefaultRowHeaderDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(bodyDataProvider);
+		IDataProvider rowHeaderDataProvider = new RowHeaderDataProvider(bodyDataProvider, table);
 		RowHeaderLayerStack rowHeaderLayerStack = new RowHeaderLayerStack(rowHeaderDataProvider, bodyLayerStack);
 
 		DefaultCornerDataProvider cornerDataProvider = new DefaultCornerDataProvider(
@@ -98,31 +95,6 @@ public class TreezNatTable extends NatTable {
 
 		GridLayer gridLayer = new GridLayer(bodyLayerStack, columnHeaderLayerStack, rowHeaderLayerStack, cornerLayer);
 		return gridLayer;
-	}
-
-	private static IDataProvider createBodyDataProvider(TreezTable table) {
-
-		IColumnAccessor<Row> columnAccessor = new IColumnAccessor<Row>() {
-
-			@Override
-			public Object getDataValue(Row row, int columnIndex) {
-				String columnHeader = table.getHeaders().get(columnIndex);
-				return row.getEntry(columnHeader);
-			}
-
-			@Override
-			public void setDataValue(Row row, int columnIndex, Object newValue) {
-				String columnHeader = table.getHeaders().get(columnIndex);
-				row.setEntry(columnHeader, newValue);
-			}
-
-			@Override
-			public int getColumnCount() {
-				return table.getHeaders().size();
-			}
-
-		};
-		return new ListDataProvider<Row>(table.getRows(), columnAccessor);
 	}
 
 	private Listener createKeyListener() {

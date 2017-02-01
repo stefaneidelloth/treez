@@ -1,4 +1,4 @@
-package org.treez.data.table.nebula;
+package org.treez.data.table.nebula.nat;
 
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;

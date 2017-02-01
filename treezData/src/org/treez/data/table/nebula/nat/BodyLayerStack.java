@@ -1,4 +1,4 @@
-package org.treez.data.table.nebula;
+package org.treez.data.table.nebula.nat;
 
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.hideshow.ColumnHideShowLayer;
@@ -10,7 +10,13 @@ import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 
 public class BodyLayerStack extends AbstractLayerTransform {
 
+	//#region ATTRIBUTES
+
 	private SelectionLayer selectionLayer;
+
+	//#end region
+
+	//#Region CONSTRUCTORS
 
 	public BodyLayerStack(IDataProvider dataProvider) {
 		DataLayer bodyDataLayer = new DataLayer(dataProvider);
@@ -21,7 +27,13 @@ public class BodyLayerStack extends AbstractLayerTransform {
 		setUnderlyingLayer(viewportLayer);
 	}
 
+	//#end region
+
+	//#region ACCESSORS
+
 	public SelectionLayer getSelectionLayer() {
 		return this.selectionLayer;
 	}
+
+	//#end region
 }
