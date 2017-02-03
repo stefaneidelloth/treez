@@ -11,16 +11,10 @@ import org.eclipse.nebula.widgets.pagination.PageLoaderStrategyHelper;
 import org.eclipse.nebula.widgets.pagination.PageableController;
 import org.eclipse.nebula.widgets.pagination.collections.PageResult;
 import org.eclipse.nebula.widgets.pagination.collections.PageResultContentProvider;
-import org.eclipse.nebula.widgets.pagination.renderers.navigation.ResultAndNavigationPageLinksRendererFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.data.row.Row;
 import org.treez.core.data.table.TreezTable;
 
@@ -34,8 +28,6 @@ public class PageableTreezNatTable extends AbstractPaginationWidget<NatTable> {
 	private TreezTable treezTable;
 
 	protected TreezNatTable treezNatTable;
-
-	private Text pageSizeField;
 
 	//#end region
 
@@ -52,14 +44,13 @@ public class PageableTreezNatTable extends AbstractPaginationWidget<NatTable> {
 				limitForNumberOfRowsPerPage,
 				PageResultContentProvider.getInstance(),
 				null,
-				ResultAndNavigationPageLinksRendererFactory.getFactory(),
+				new PaginationComponentFactory(),
 				false);
 
 		this.treezTable = treezTable;
 		setPageLoader(pageLoader);
 		createUI(this);
 		setBackgroundColor();
-		extendPageControlWithExtraInputFields(limitForNumberOfRowsPerPage);
 
 		PageableController controller = getController();
 		controller.setCurrentPage(0);
@@ -130,49 +121,6 @@ public class PageableTreezNatTable extends AbstractPaginationWidget<NatTable> {
 				setBackgroundRecoursivly(child);
 			}
 		}
-	}
-
-	private void extendPageControlWithExtraInputFields(int limitForNumberOfRowsPerPage) {
-		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
-		Composite bottomComposite = getCompositeBottom();
-
-		Composite pageNumberComposite = (Composite) bottomComposite.getChildren()[1];
-		addPageNumberField(pageNumberComposite, toolkit);
-
-		createPageSizeControl(bottomComposite, limitForNumberOfRowsPerPage, toolkit);
-
-	}
-
-	private static void addPageNumberField(Composite pageNumberComposite, FormToolkit toolkit) {
-		addExtraColumn(pageNumberComposite);
-		Text pageNumberField = toolkit.createText(pageNumberComposite, "1");
-		GridData pageNumberFieldGridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		pageNumberField.setLayoutData(pageNumberFieldGridData);
-
-		Control firstChild = pageNumberComposite.getChildren()[0];
-		pageNumberField.moveAbove(firstChild);
-
-	}
-
-	private void createPageSizeControl(
-			Composite bottomComposite,
-			int limitForNumberOfRowsPerPage,
-			FormToolkit toolkit) {
-
-		addExtraColumn(bottomComposite);
-
-		Composite pageSizeContainer = toolkit.createComposite(bottomComposite);
-		pageSizeContainer.setLayout(new GridLayout(2, true));
-
-		toolkit.createLabel(pageSizeContainer, "Page size");
-		pageSizeField = toolkit.createText(pageSizeContainer, "" + limitForNumberOfRowsPerPage);
-		GridData pageSizeFieldGridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		pageSizeField.setLayoutData(pageSizeFieldGridData);
-	}
-
-	private static void addExtraColumn(Composite compositeWithGridLayout) {
-		GridLayout gridLayout = (GridLayout) compositeWithGridLayout.getLayout();
-		gridLayout.numColumns += 1;
 	}
 
 	//#end region
