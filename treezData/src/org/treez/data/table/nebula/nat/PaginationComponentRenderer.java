@@ -3,6 +3,8 @@ package org.treez.data.table.nebula.nat;
 import org.eclipse.nebula.widgets.pagination.AbstractPageControllerComposite;
 import org.eclipse.nebula.widgets.pagination.PageableController;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -61,13 +63,13 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 		layout.marginTop = 0;
 		layout.marginBottom = 0;
 		this.setLayout(layout);
-		//this.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
 		createButtonsAndInputFields(parent);
 
 		createRowLimitForPagesField(parent);
 	}
 
+	@SuppressWarnings("checkstyle:magicnumber")
 	private void createButtonsAndInputFields(Composite parent) {
 
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
@@ -89,7 +91,7 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 		createFirstButton(toolkit, rowContainer, controller);
 		createPreviousButton(toolkit, rowContainer, controller);
 
-		createCurrentPageField(toolkit, rowContainer, controller);
+		createCurrentPageField(toolkit, rowContainer);
 
 		crateNextButton(toolkit, rowContainer, controller);
 		createLastButton(toolkit, rowContainer, controller);
@@ -115,15 +117,33 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 		});
 	}
 
-	private void createCurrentPageField(FormToolkit toolkit, Composite container, PageableController controller) {
+	@SuppressWarnings("checkstyle:magicnumber")
+	private void createCurrentPageField(FormToolkit toolkit, Composite container) {
 		currentPageIndexField = toolkit.createText(container, "1", SWT.NONE);
 		currentPageIndexField.setLayoutData(new GridData(40, 15));
 		currentPageIndexField.setToolTipText("Page index");
-		currentPageIndexField.addListener(SWT.MouseDown, (e) -> {
-			int pageNumberStartingWithOne = getPageIndexFromPageNumberField();
-			controller.setCurrentPage(pageNumberStartingWithOne - 1);
+		currentPageIndexField.addTraverseListener((e) -> updateCurrentPageIndex());
+		currentPageIndexField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				updateCurrentPageIndex();
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+
+			}
+
 		});
 
+	}
+
+	private void updateCurrentPageIndex() {
+		PageableController controller = getController();
+		int pageNumberStartingWithOne = getValidPageIndex();
+		controller.setCurrentPage(pageNumberStartingWithOne - 1);
+		currentPageIndexField.setText("" + pageNumberStartingWithOne);
 	}
 
 	private void createMaxPageLabel(FormToolkit toolkit, Composite parent, PageableController controller) {
@@ -183,10 +203,27 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 
 		pageSizeField.setLayoutData(new GridData(40, 15));
 
-		pageSizeField.addListener(SWT.MouseDown, (e) -> {
-			int pageSize = getPageSizeFromPageSizeField();
-			controller.setPageSize(pageSize);
+		pageSizeField.addTraverseListener((e) -> upatePageSize());
+		pageSizeField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				upatePageSize();
+			}
+
+			@Override
+			public void focusGained(FocusEvent arg0) {}
+
 		});
+	}
+
+	private void upatePageSize() {
+		PageableController controller = getController();
+		int pageSize = getValidPageSize();
+		pageSizeField.setText("" + pageSize);
+		controller.setPageSize(pageSize);
+
+		updateCurrentPageIndex();
 	}
 
 	@Override
@@ -198,12 +235,14 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 	@Override
 	public void totalElementsChanged(long oldTotalElements, long newTotalElements, PageableController controller) {
 		totalPagesLabel.setText("" + controller.getTotalPages());
+		upatePageSize();
 		refreshEnabled(controller);
 	}
 
 	@Override
 	public void pageSizeChanged(int oldPageSize, int newPageSize, PageableController controller) {
 		pageSizeField.setText("" + controller.getPageSize());
+		totalPagesLabel.setText("" + controller.getTotalPages());
 		refreshEnabled(controller);
 	}
 
@@ -217,8 +256,9 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 		// Do nothing
 	}
 
-	private int getPageIndexFromPageNumberField() {
-		int currentPageIndex = getController().getCurrentPage() + 1;
+	private int getValidPageIndex() {
+		PageableController controller = getController();
+		int currentPageIndex = controller.getCurrentPage() + 1;
 		int pageIndex = currentPageIndex;
 		try {
 			pageIndex = Integer.parseInt(currentPageIndexField.getText());
@@ -228,15 +268,18 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 			return currentPageIndex;
 		}
 
-		if (pageIndex > getController().getTotalElements()) {
-			return currentPageIndex;
+		int totalPages = controller.getTotalPages();
+		if (pageIndex > totalPages) {
+			return totalPages;
 		}
 
 		return pageIndex;
 	}
 
-	private int getPageSizeFromPageSizeField() {
-		int currentPageSize = getController().getPageSize();
+	private int getValidPageSize() {
+
+		PageableController controller = getController();
+		int currentPageSize = controller.getPageSize();
 		int pageSize = currentPageSize;
 		try {
 			pageSize = Integer.parseInt(pageSizeField.getText());

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.eclipse.nebula.widgets.pagination.IPageLoader;
 import org.eclipse.nebula.widgets.pagination.collections.PageResult;
-import org.eclipse.nebula.widgets.pagination.collections.PageResultLoaderList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,6 +19,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.data.row.Row;
 import org.treez.core.data.table.TreezTable;
+import org.treez.data.table.nebula.nat.PageResultLoader;
 import org.treez.data.table.nebula.nat.PageableTreezNatTable;
 import org.treez.data.table.nebula.nat.TreezNatTable;
 
@@ -169,7 +169,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 		int defaultPageSize = 2;
 
 		List<Row> rows = initializeRows(table);
-		IPageLoader<PageResult<Row>> pageLoader = new PageResultLoaderList<Row>(rows);
+		IPageLoader<PageResult<Row>> pageLoader = new PageResultLoader(rows);
 		PageableTreezNatTable pageableTable = new PageableTreezNatTable(parent, table, defaultPageSize, pageLoader);
 
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
