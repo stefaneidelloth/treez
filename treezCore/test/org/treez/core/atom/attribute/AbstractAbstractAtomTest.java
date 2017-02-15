@@ -42,11 +42,14 @@ public abstract class AbstractAbstractAtomTest {
 
 	//#end region
 
+	//#region METHODS
+
+	protected Boolean isShowingPreviewWindow() {
+		return false;
+	}
+
 	//#region SETUP
 
-	/**
-	 * Setup
-	 */
 	@BeforeClass
 	public static void setUpClass() {
 		TestUtils.initializeLogging();
@@ -98,14 +101,10 @@ public abstract class AbstractAbstractAtomTest {
 		//check obtained objects
 		checkOptainedObjects(name, atomImage, controlAdaption, graphicsAdaption, codeAdaption, treeNodeAdaption);
 
-		if (isOpeningWindowThatNeedsToBeClosed()) {
+		if (isShowingPreviewWindow()) {
 			previewWindow.showUntilManuallyClosed();
 		}
 
-	}
-
-	protected Boolean isOpeningWindowThatNeedsToBeClosed() {
-		return false;
 	}
 
 	private void checkOptainedObjects(
@@ -132,7 +131,9 @@ public abstract class AbstractAbstractAtomTest {
 		//tree node adaption
 		assertEquals("adaptable", atom, treeNodeAdaption.getAdaptable());
 		List<TreeNodeAdaption> children = treeNodeAdaption.getChildren();
-		assertEquals("number of children", 0, children.size());
+
+		//assertEquals("number of children", 0, children.size());
+
 		TreeNodeAdaption parent = treeNodeAdaption.getParent();
 		assertEquals("parent", null, parent);
 		Image nodeImage = treeNodeAdaption.getImage();
@@ -145,6 +146,8 @@ public abstract class AbstractAbstractAtomTest {
 		final double tolerance = 1e-6;
 		assertEquals("x coordinate", 0, graphicsAdaption.getX(), tolerance);
 	}
+
+	//#end region
 
 	//#end region
 

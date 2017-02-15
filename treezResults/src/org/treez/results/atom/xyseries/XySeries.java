@@ -16,7 +16,7 @@ import org.treez.core.color.ColorBrewer;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.data.column.Column;
 import org.treez.data.column.Columns;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;

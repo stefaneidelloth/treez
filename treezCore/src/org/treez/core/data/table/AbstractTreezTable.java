@@ -11,7 +11,7 @@ import org.treez.core.data.row.Row;
 
 public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extends AbstractUiSynchronizingAtom<A>
 		implements
-		TreezTable {
+		LinkableTreezTable {
 
 	//#region ATTRIBUTES
 
@@ -20,6 +20,10 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 	private List<Row> pagedRows = null;
 
 	private int rowIndexOffset = 0;
+
+	protected boolean isLinkedToSource = false;
+
+	protected boolean isCaching = false;
 
 	/**
 	 * Column separator for text representations
@@ -70,31 +74,7 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 	 */
 	public AbstractTreezTable<A> addRow(List<Object> data) {
 
-		//create empty row
-		Row row = new Row(this);
-
-		//fill row with data from NativeArray
-		int size = data.size();
-		//LOG.debug("size:" + size);
-
-		for (int columnIndex = 0; columnIndex < size; columnIndex++) {
-			String header = getHeaders().get(columnIndex);
-			Object value = data.get(columnIndex);
-			ColumnType columnType = getColumnType(header);
-			Class<?> associatedClass = columnType.getAssociatedClass();
-
-			Object formattedValue;
-			try {
-				formattedValue = associatedClass.cast(value);
-			} catch (ClassCastException exception) {
-				String message = "The value '" + value.toString() + "' does not have the required type '"
-						+ associatedClass.getSimpleName() + "'. Please change the type of the column '" + header
-						+ "' or the type of the value. ";
-				throw new IllegalArgumentException(message);
-			}
-
-			row.setEntry(header, formattedValue);
-		}
+		Row row = createRow(data, this);
 
 		//LOG.debug("new row:" + row);
 
@@ -103,6 +83,22 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 		//LOG.debug("added");
 
 		return this;
+	}
+
+	public static Row createRow(List<Object> data, TreezTable treezTable) {
+		//create empty row
+		Row row = new Row(treezTable);
+
+		//fill row with data from NativeArray
+		int size = data.size();
+		List<String> headers = treezTable.getHeaders();
+
+		for (int columnIndex = 0; columnIndex < size; columnIndex++) {
+			String header = headers.get(columnIndex);
+			Object value = data.get(columnIndex);
+			row.setEntryUnchecked(header, value);
+		}
+		return row;
 	}
 
 	/**
@@ -167,7 +163,7 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 	}
 
 	@Override
-	public boolean checkSourceLink(TableSourceInformation tableSourceInfo) throws IllegalStateException {
+	public boolean sourceEquals(TableSource tableSourceInfo) {
 		return false;
 	}
 
@@ -263,7 +259,26 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 
 	@Override
 	public boolean isLinkedToSource() {
-		return false;
+		return isLinkedToSource;
+	}
+
+	@Override
+	public boolean isCached() {
+		return isCaching;
+	}
+
+	@Override
+	public void resetCache() {
+		isCaching = false;
+	}
+
+	public void setCaching(boolean isCaching) {
+		this.isCaching = isCaching;
+	}
+
+	@Override
+	public TableSource getTableSource() {
+		return null;
 	}
 
 	//#end region

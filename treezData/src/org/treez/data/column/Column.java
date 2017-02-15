@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
+import org.treez.core.Activator;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ColumnTypeComboBox;
@@ -16,9 +17,8 @@ import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
+import org.treez.core.data.table.TreezTable;
 import org.treez.core.treeview.TreeViewerRefreshable;
-import org.treez.data.Activator;
-import org.treez.data.table.Table;
 
 /**
  * Represents a table
@@ -160,7 +160,7 @@ public class Column extends AdjustableAtom {
 		List<Object> valueList = new ArrayList<>();
 
 		//get all rows of the table
-		Table table = getTable();
+		TreezTable table = getTable();
 		List<Row> rows = table.getRows();
 
 		//iterate over the rows to fill the value list with all data of this column
@@ -247,11 +247,11 @@ public class Column extends AdjustableAtom {
 	 *
 	 * @return
 	 */
-	private Table getTable() {
+	private TreezTable getTable() {
 		try {
 			Columns columns = (Columns) this.createTreeNodeAdaption().getParent().getAdaptable();
 			try {
-				Table table = (Table) columns.createTreeNodeAdaption().getParent().getAdaptable();
+				TreezTable table = (TreezTable) columns.createTreeNodeAdaption().getParent().getAdaptable();
 				return table;
 			} catch (ClassCastException e) {
 				throw new IllegalStateException(

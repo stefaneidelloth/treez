@@ -2,7 +2,7 @@ package org.treez.standalone;
 
 import org.treez.core.scripting.ModelProvider;
 import org.treez.data.column.Columns;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.contour.Contour;
 import org.treez.results.atom.data.Data;

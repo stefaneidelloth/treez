@@ -1,5 +1,8 @@
 package org.treez.core.data.column;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Column types for the TableEditor
  */
@@ -8,17 +11,21 @@ public enum ColumnType {
 
 	//#region VALUES
 
+	INTEGER("INTEGER", Integer.class),
+
+	REAL("REAL", Double.class),
+
+	TEXT("TEXT", String.class),
+
+	BLOB("BLOB", Object.class),
+
 	DOUBLE("Double", Double.class),
 
 	BOOLEAN("Boolean", Boolean.class),
 
 	COLOR("Color", String.class),
 
-	ENUM("Enum", String.class),
-
-	INTEGER("Integer", Integer.class),
-
-	TEXT("Text", String.class);
+	ENUM("Enum", String.class);
 
 	//#end region
 
@@ -71,8 +78,7 @@ public enum ColumnType {
 				return columnType;
 			}
 		}
-		throw new IllegalArgumentException(
-				"Column type '" + type + "' could not be found.");
+		throw new IllegalArgumentException("Column type '" + type + "' could not be found.");
 	}
 
 	/**
@@ -110,27 +116,58 @@ public enum ColumnType {
 		return false;
 	}
 
-	/**
-	 * Returns a default ColumnType for the given Class
-	 *
-	 * @param xType
-	 * @return
-	 */
-	public static ColumnType getDefaultTypeForClass(Class<?> xType) {
+	public static List<ColumnType> getAllowedTypesForClass(Class<?> xType) {
 
+		List<ColumnType> allowedTypes = new ArrayList<>();
 		boolean isEnum = xType.isEnum();
 		if (isEnum) {
-			return ENUM;
+			allowedTypes.add(ENUM);
+			allowedTypes.add(TEXT);
+			allowedTypes.add(BLOB);
+			return allowedTypes;
+
 		}
 
 		String className = xType.getSimpleName();
 		switch (className) {
-			case "Integer" :
-				return INTEGER;
-			case "Double" :
-				return DOUBLE;
-			default :
-				return TEXT;
+		case "Integer":
+			allowedTypes.add(INTEGER);
+			allowedTypes.add(BLOB);
+			return allowedTypes;
+		case "Double":
+			allowedTypes.add(REAL);
+			allowedTypes.add(BLOB);
+			return allowedTypes;
+		case "String":
+			allowedTypes.add(TEXT);
+			allowedTypes.add(BLOB);
+			return allowedTypes;
+		default:
+			allowedTypes.add(BLOB);
+			return allowedTypes;
+		}
+
+	}
+
+	public static ColumnType getDefaultTypeForClass(Class<?> xType) {
+
+		boolean isEnum = xType.isEnum();
+		if (isEnum) {
+			return TEXT;
+		}
+
+		String className = xType.getSimpleName();
+		switch (className) {
+		case "Integer":
+			return INTEGER;
+		case "Float":
+			return REAL;
+		case "Double":
+			return REAL;
+		case "String":
+			return TEXT;
+		default:
+			return BLOB;
 		}
 
 	}

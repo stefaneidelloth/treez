@@ -1,4 +1,4 @@
-package org.treez.data.table.nebula.nat;
+package org.treez.data.table.nebula.nat.pagination;
 
 import org.eclipse.nebula.widgets.pagination.PageableController;
 import org.eclipse.nebula.widgets.pagination.renderers.ICompositeRendererFactory;

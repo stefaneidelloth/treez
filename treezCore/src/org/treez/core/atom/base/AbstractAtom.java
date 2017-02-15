@@ -729,14 +729,28 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	/**
 	 * Gets a list of all child atoms with the given class. Returns an empty list if no child with the given class could
 	 * be found.
-	 *
-	 * @param clazz
-	 * @return
 	 */
 	public <T> List<T> getChildrenByClass(Class<T> clazz) {
 		List<T> wantedChildren = new ArrayList<>();
 		for (AbstractAtom<?> currentChild : children) {
 			boolean isWantedChild = currentChild.getClass().equals(clazz);
+			if (isWantedChild) {
+				@SuppressWarnings("unchecked")
+				T castedChild = (T) currentChild;
+				wantedChildren.add(castedChild);
+			}
+		}
+		return wantedChildren;
+	}
+
+	/**
+	 * Gets a list of all child atoms that implement the given Interface. Returns an empty list if no child implements
+	 * the interface.
+	 */
+	public <T> List<T> getChildrenByInterface(Class<T> clazz) {
+		List<T> wantedChildren = new ArrayList<>();
+		for (AbstractAtom<?> currentChild : children) {
+			boolean isWantedChild = clazz.isInstance(currentChild);
 			if (isWantedChild) {
 				@SuppressWarnings("unchecked")
 				T castedChild = (T) currentChild;

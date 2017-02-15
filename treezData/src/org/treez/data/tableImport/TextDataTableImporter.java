@@ -1,4 +1,4 @@
-package org.treez.model.atom.tableImport;
+package org.treez.data.tableImport;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -35,16 +35,20 @@ public final class TextDataTableImporter {
 	public static TableData importData(String filePath, String columnSeparator, int rowLimit) {
 
 		//read tab separated entries
-		List<List<String>> data = readTextData(filePath, columnSeparator, rowLimit);
+		List<List<Object>> data = readTextData(filePath, columnSeparator, rowLimit);
 
 		//check data size (number of lines > 1, number of columns equal)
 		checkDataSizes(data);
 
 		//get header data
-		List<String> currentHeaderData = data.get(0);
+		List<Object> currentHeaderDataObjects = data.get(0);
+		List<String> currentHeaderData = new ArrayList<>();
+		for (Object headerObj : currentHeaderDataObjects) {
+			currentHeaderData.add(headerObj.toString());
+		}
 
 		//get row data
-		List<List<String>> currentRowData = data.subList(1, data.size());
+		List<List<Object>> currentRowData = data.subList(1, data.size());
 
 		TableData tableData = new TableData() {
 
@@ -59,7 +63,7 @@ public final class TextDataTableImporter {
 			}
 
 			@Override
-			public List<List<String>> getRowData() {
+			public List<List<Object>> getRowData() {
 				return currentRowData;
 			}
 		};
@@ -72,7 +76,7 @@ public final class TextDataTableImporter {
 	 *
 	 * @param data
 	 */
-	private static void checkDataSizes(List<List<String>> data) {
+	private static void checkDataSizes(List<List<Object>> data) {
 		int numberOfLines = data.size();
 
 		//check number of lines
@@ -85,7 +89,7 @@ public final class TextDataTableImporter {
 
 		//check number of columns of all lines
 		int lineCounter = 1;
-		for (List<String> entries : data) {
+		for (List<Object> entries : data) {
 			int currentNumberOfColumns = entries.size();
 			boolean hasSameNumberOfColumns = (currentNumberOfColumns == numberOfColumns);
 			if (!hasSameNumberOfColumns) {
@@ -104,9 +108,9 @@ public final class TextDataTableImporter {
 	 * @param filePath
 	 * @return
 	 */
-	private static List<List<String>> readTextData(String filePath, String columnSeparator, int rowLimit) {
+	private static List<List<Object>> readTextData(String filePath, String columnSeparator, int rowLimit) {
 
-		List<List<String>> lines = new ArrayList<>();
+		List<List<Object>> lines = new ArrayList<>();
 		int rowCount = 0;
 		try (
 				BufferedReader br = new BufferedReader(new FileReader(filePath))) {

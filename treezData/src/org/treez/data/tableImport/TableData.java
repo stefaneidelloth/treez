@@ -1,4 +1,4 @@
-package org.treez.model.atom.tableImport;
+package org.treez.data.tableImport;
 
 import java.util.List;
 
@@ -10,6 +10,6 @@ public interface TableData {
 
 	ColumnType getColumnType(String header);
 
-	List<List<String>> getRowData();
+	List<List<Object>> getRowData();
 
 }

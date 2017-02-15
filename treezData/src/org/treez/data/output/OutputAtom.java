@@ -13,6 +13,7 @@ import org.treez.core.atom.base.AtomCodeAdaption;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
+import org.treez.data.table.nebula.Table;
 
 /**
  * Contains the output of a Model or Study
@@ -112,12 +113,9 @@ public class OutputAtom extends AbstractUiSynchronizingAtom<OutputAtom> {
 
 	/**
 	 * Creates a Table child
-	 *
-	 * @param name
-	 * @return
 	 */
-	public org.treez.data.table.Table createTable(String name) {
-		org.treez.data.table.Table table = new org.treez.data.table.Table(name);
+	public Table createTable(String name) {
+		Table table = new Table(name);
 		addChild(table);
 		return table;
 	}

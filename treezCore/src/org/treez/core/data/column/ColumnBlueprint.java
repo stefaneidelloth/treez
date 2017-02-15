@@ -5,17 +5,38 @@ public class ColumnBlueprint {
 	//#region ATTRIBUTES
 
 	private String name;
+
 	private ColumnType type;
-	private String description;
+
+	private boolean isNullable;
+
+	private boolean isPrimaryKey;
+
+	private Object defaultValue;
+
+	private String legend;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public ColumnBlueprint(String name, ColumnType type, String legend) {
-		this.setName(name);
-		this.setType(type);
-		this.setDescription(legend);
+	public ColumnBlueprint(String name, ColumnType columnType, String legend) {
+		this(name, columnType, true, false, null, legend);
+	}
+
+	public ColumnBlueprint(
+			String name,
+			ColumnType columnType,
+			boolean isNullable,
+			boolean isPrimaryKey,
+			Object defaultValue,
+			String legend) {
+		this.name = name;
+		this.type = columnType;
+		this.isNullable = isNullable;
+		this.isPrimaryKey = isPrimaryKey;
+		this.defaultValue = defaultValue;
+		this.legend = legend;
 	}
 
 	//#end region
@@ -26,24 +47,24 @@ public class ColumnBlueprint {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public ColumnType getType() {
 		return type;
 	}
 
-	public void setType(ColumnType type) {
-		this.type = type;
+	public boolean isNullable() {
+		return isNullable;
 	}
 
-	public String getDescription() {
-		return description;
+	public boolean isPrimaryKey() {
+		return isPrimaryKey;
 	}
 
-	public void setDescription(String legend) {
-		this.description = legend;
+	public Object getDefaultValue() {
+		return defaultValue;
+	}
+
+	public String getLegend() {
+		return legend;
 	}
 
 	//#end region

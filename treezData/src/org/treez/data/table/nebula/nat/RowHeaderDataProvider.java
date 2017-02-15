@@ -1,13 +1,13 @@
 package org.treez.data.table.nebula.nat;
 
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
-import org.treez.core.data.table.TreezTable;
+import org.treez.core.data.table.PaginatedTreezTable;
 
 public class RowHeaderDataProvider implements IDataProvider {
 
 	//#region ATTRIBUTES
 
-	private TreezTable table;
+	private PaginatedTreezTable table;
 
 	private IDataProvider bodyDataProvider;
 
@@ -15,7 +15,7 @@ public class RowHeaderDataProvider implements IDataProvider {
 
 	//#region CONSTRUCTORS
 
-	public RowHeaderDataProvider(IDataProvider bodyDataProvider, TreezTable table) {
+	public RowHeaderDataProvider(IDataProvider bodyDataProvider, PaginatedTreezTable table) {
 		this.table = table;
 		this.bodyDataProvider = bodyDataProvider;
 	}

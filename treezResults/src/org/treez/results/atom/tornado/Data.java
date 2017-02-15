@@ -13,7 +13,7 @@ import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.Scale;

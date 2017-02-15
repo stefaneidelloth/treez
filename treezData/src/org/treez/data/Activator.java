@@ -78,6 +78,17 @@ public class Activator extends AbstractActivator {
 		return getInstance().getImageDescriptorFromInstance(name);
 	}
 
+	/**
+	 * Returns the absolute help context id for the given relative help context id
+	 *
+	 * @param relativeHelpContextId
+	 * @return
+	 */
+	public static String getAbsoluteHelpContextIdStatic(String relativeHelpContextId) {
+		String absoluteHelpContextId = getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
+		return absoluteHelpContextId;
+	}
+
 	//#end region
 
 	//#region ACCESSORS

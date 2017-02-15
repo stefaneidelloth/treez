@@ -1,29 +1,28 @@
 package org.treez.data.table.nebula;
 
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
+import org.treez.core.atom.attribute.DemoForAbstractAtom;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.table.TableSourceType;
 import org.treez.data.column.Column;
 import org.treez.data.tableSource.TableSource;
 
-public class TableTest extends AbstractAbstractAtomTest {
+public class TableDemo extends DemoForAbstractAtom {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(TableTest.class);
-
-	//#region SETUP
+	@SuppressWarnings({ "unused", "checkstyle:uncommentedmain" })
+	public static void main(final String[] args) {
+		new TableDemo();
+	}
 
 	@Override
-	@Before
-	public void createTestAtom() {
+	protected void createDemoAtom() {
 		Table table = new Table(atomName);
 
-		TableSource tableSource = table.createTableSource("source");
+		TableSource tableSource = new TableSource("source");
 		tableSource.setSourceType(TableSourceType.SQLITE);
 		tableSource.filePath.set("D:/EclipseJava/workspaceTreez/treezData/testResources/example.sqlite");
 		tableSource.tableName.set("example");
+
+		table.addChild(tableSource);
 
 		Column idColumn = new Column("id", ColumnType.INTEGER);
 		table.addColumn(idColumn);
@@ -38,16 +37,5 @@ public class TableTest extends AbstractAbstractAtomTest {
 		atom = table;
 
 	}
-
-	@Override
-	protected Boolean isShowingPreviewWindow() {
-		return true;
-	}
-
-	//#end region
-
-	//#region TESTS
-
-	//#end region
 
 }

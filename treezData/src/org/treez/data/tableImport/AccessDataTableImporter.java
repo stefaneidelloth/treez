@@ -1,4 +1,4 @@
-package org.treez.model.atom.tableImport;
+package org.treez.data.tableImport;
 
 public final class AccessDataTableImporter {
 

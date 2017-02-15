@@ -1,4 +1,4 @@
-package org.treez.data.table.nebula.nat;
+package org.treez.data.table.nebula.nat.pagination;
 
 import java.util.List;
 
@@ -15,17 +15,23 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.treez.core.adaptable.Refreshable;
 import org.treez.core.data.row.Row;
+import org.treez.core.data.table.LinkableTreezTable;
+import org.treez.core.data.table.PaginatedTreezTable;
 import org.treez.core.data.table.TreezTable;
+import org.treez.data.table.nebula.nat.TreezNatTable;
+import org.treez.data.table.nebula.nat.pageloader.DatabasePageResultLoader;
+import org.treez.data.table.nebula.nat.pageloader.ListPageResultLoader;
 
-public class PageableTreezNatTable extends AbstractPaginationWidget<NatTable> {
+public class PaginationWidget extends AbstractPaginationWidget<NatTable> implements Refreshable {
 
 	//#region ATTRIBUTES
 
 	@SuppressWarnings("checkstyle:magicnumber")
 	private static Color BACKGROUND_COLOR = new Color(null, 255, 255, 255);
 
-	private TreezTable treezTable;
+	private PaginatedTreezTable treezTable;
 
 	protected TreezNatTable treezNatTable;
 
@@ -33,9 +39,13 @@ public class PageableTreezNatTable extends AbstractPaginationWidget<NatTable> {
 
 	//#region CONSTRUCTORS
 
-	public PageableTreezNatTable(
+	public PaginationWidget(Composite parent, LinkableTreezTable treezTable, int limitForNumberOfRowsPerPage) {
+		this(parent, treezTable, limitForNumberOfRowsPerPage, createPageLoader(treezTable));
+	}
+
+	public PaginationWidget(
 			Composite parent,
-			TreezTable treezTable,
+			PaginatedTreezTable treezTable,
 			int limitForNumberOfRowsPerPage,
 			IPageLoader<PageResult<Row>> pageLoader) {
 		super(
@@ -61,15 +71,37 @@ public class PageableTreezNatTable extends AbstractPaginationWidget<NatTable> {
 
 	//#region METHODS
 
+	private static IPageLoader<PageResult<Row>> createPageLoader(LinkableTreezTable table) {
+		if (table.isLinkedToSource()) {
+			return new DatabasePageResultLoader(table);
+		} else {
+			List<Row> rows = initializeRows(table);
+			return new ListPageResultLoader(rows);
+		}
+	}
+
+	private static List<Row> initializeRows(TreezTable table) {
+		List<Row> rows = table.getRows();
+		if (rows == null || rows.isEmpty()) {
+			table.addEmptyRow();
+		}
+		return rows;
+	}
+
 	@Override
 	protected TreezNatTable createWidget(Composite parent) {
-		treezNatTable = new TreezNatTable(parent, treezTable);
+		treezNatTable = new TreezNatTable(parent, treezTable, this);
 		treezNatTable.setBackground(BACKGROUND_COLOR);
 
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		treezNatTable.setLayoutData(gridData);
 
 		return treezNatTable;
+	}
+
+	@Override
+	public void refresh() {
+		refreshPage();
 	}
 
 	@Override

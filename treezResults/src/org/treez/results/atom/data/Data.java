@@ -13,7 +13,7 @@ import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.data.output.OutputAtom;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
 import org.treez.results.Activator;
 import org.treez.results.atom.probe.AbstractProbe;
 import org.treez.results.atom.probe.PickingProbe;
@@ -44,7 +44,9 @@ public class Data extends AdjustableAtom {
 	 * Provides a control to represent this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		return new EmptyControlAdaption(parent, this, "This atom represents data.");
 	}
@@ -135,9 +137,6 @@ public class Data extends AdjustableAtom {
 
 	/**
 	 * Creates a Table child
-	 *
-	 * @param name
-	 * @return
 	 */
 	public Table createTable(String name) {
 		Table child = new Table(name);

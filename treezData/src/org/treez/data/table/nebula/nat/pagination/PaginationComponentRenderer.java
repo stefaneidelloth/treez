@@ -1,4 +1,4 @@
-package org.treez.data.table.nebula.nat;
+package org.treez.data.table.nebula.nat.pagination;
 
 import org.eclipse.nebula.widgets.pagination.AbstractPageControllerComposite;
 import org.eclipse.nebula.widgets.pagination.PageableController;
@@ -103,7 +103,7 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 	private void createFirstButton(FormToolkit toolkit, Composite container, PageableController controller) {
 
 		first = toolkit.createLabel(container, "", SWT.NONE);
-		first.setImage(Activator.getImage("first"));
+		first.setImage(Activator.getImage("first.png"));
 		first.addListener(SWT.MouseDown, (e) -> {
 			controller.setCurrentPage(0);
 		});
@@ -111,7 +111,7 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 
 	private void createPreviousButton(FormToolkit toolkit, Composite container, PageableController controller) {
 		previous = toolkit.createLabel(container, "", SWT.NONE);
-		previous.setImage(Activator.getImage("previous"));
+		previous.setImage(Activator.getImage("previous.png"));
 		previous.addListener(SWT.MouseDown, (e) -> {
 			controller.setCurrentPage(controller.getCurrentPage() - 1);
 		});
@@ -160,7 +160,7 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 
 	private void crateNextButton(FormToolkit toolkit, Composite container, PageableController controller) {
 		next = toolkit.createLabel(container, "", SWT.NONE);
-		next.setImage(Activator.getImage("next"));
+		next.setImage(Activator.getImage("next.png"));
 		next.addListener(SWT.MouseDown, (e) -> {
 			controller.setCurrentPage(controller.getCurrentPage() + 1);
 		});
@@ -168,7 +168,7 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 
 	private void createLastButton(FormToolkit toolkit, Composite container, PageableController controller) {
 		last = toolkit.createLabel(container, "", SWT.NONE);
-		last.setImage(Activator.getImage("last"));
+		last.setImage(Activator.getImage("last.png"));
 		last.addListener(SWT.MouseDown, (e) -> {
 			controller.setCurrentPage(controller.getTotalPages() - 1);
 		});
@@ -193,8 +193,6 @@ public class PaginationComponentRenderer extends AbstractPageControllerComposite
 		container.setLayout(layout);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		container.setLayoutData(gridData);
-
-		//createSpacer(toolkit, container);
 
 		toolkit.createLabel(container, "Max rows per page: ");
 

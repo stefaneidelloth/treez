@@ -17,7 +17,6 @@ import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.data.cell.CellEditorFactory;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
-import org.treez.core.data.table.TableSourceInformation;
 import org.treez.core.data.table.TreezTable;
 import org.treez.core.scripting.ScriptType;
 import org.treez.data.row.VariableDefinitionLabelProvider;
@@ -39,10 +38,6 @@ public class VariableDefinitionTable implements TreezTable {
 
 	private List<Row> definitionRows;
 
-	private List<Row> pagedRows;
-
-	private int rowIndexOffset;
-
 	private VariableDefinition parent;
 
 	//#end region
@@ -52,11 +47,6 @@ public class VariableDefinitionTable implements TreezTable {
 	public VariableDefinitionTable(VariableDefinition parent, List<Row> definitionRows) {
 		this.parent = parent;
 		this.definitionRows = definitionRows;
-	}
-
-	@Override
-	public boolean checkSourceLink(TableSourceInformation tableSourceInfo) throws IllegalStateException {
-		return false;
 	}
 
 	//#end region
@@ -151,38 +141,6 @@ public class VariableDefinitionTable implements TreezTable {
 	@Override
 	public Class<?> getColumnDataClass(String columnHeader) {
 		return getColumnType(columnHeader).getAssociatedClass();
-	}
-
-	@Override
-	public boolean isLinkedToSource() {
-		return false;
-	}
-
-	@Override
-	public List<Row> getPagedRows() {
-		if (pagedRows != null) {
-			return pagedRows;
-		} else {
-			return definitionRows;
-		}
-
-	}
-
-	@Override
-	public VariableDefinitionTable setPagedRows(List<Row> pagedRows) {
-		this.pagedRows = pagedRows;
-		return this;
-	}
-
-	@Override
-	public int getRowIndexOffset() {
-		return rowIndexOffset;
-	}
-
-	@Override
-	public VariableDefinitionTable setRowIndexOffset(int rowIndexOffset) {
-		this.rowIndexOffset = rowIndexOffset;
-		return this;
 	}
 
 	//#end region

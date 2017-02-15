@@ -3,7 +3,7 @@ package org.treez.core.data.table;
 /**
  * Provides the information that is required to define a table source
  */
-public interface TableSourceInformation {
+public interface TableSource {
 
 	/**
 	 * Returns the TableSourceType
@@ -66,6 +66,6 @@ public interface TableSourceInformation {
 	 *
 	 * @return
 	 */
-	String getTable();
+	String getTableName();
 
 }

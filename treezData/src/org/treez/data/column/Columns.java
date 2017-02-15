@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -21,7 +22,6 @@ import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
-import org.treez.data.Activator;
 
 /**
  * Represents all columns of a table. This will be a child of a table and the individual columns will be children of
@@ -311,7 +311,7 @@ public class Columns extends AdjustableAtom {
 	public Column createColumn(ColumnBlueprint columnBlueprint) {
 		String columnHeader = columnBlueprint.getName();
 		ColumnType columnType = columnBlueprint.getType();
-		String legendText = columnBlueprint.getDescription();
+		String legendText = columnBlueprint.getLegend();
 		return createColumn(columnHeader, columnType, legendText);
 	}
 

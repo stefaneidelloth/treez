@@ -2,7 +2,7 @@ package org.treez.example;
 
 import org.treez.core.atom.variablefield.DoubleVariableField;
 import org.treez.core.scripting.ModelProvider;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
 import org.treez.model.atom.Models;
 import org.treez.model.atom.executable.Executable;
 import org.treez.model.atom.genericInput.GenericInputModel;

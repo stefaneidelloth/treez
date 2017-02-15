@@ -18,7 +18,7 @@ import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
 import org.treez.core.quantity.Quantity;
 import org.treez.data.output.OutputAtom;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
 import org.treez.results.Activator;
 
 /**

@@ -5,13 +5,13 @@ import java.util.List;
 import org.eclipse.nebula.widgets.nattable.data.IColumnAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.treez.core.data.row.Row;
-import org.treez.core.data.table.TreezTable;
+import org.treez.core.data.table.PaginatedTreezTable;
 
 public class BodyDataProvider implements IDataProvider {
 
 	//#region ATTRIBUTES
 
-	private TreezTable table;
+	private PaginatedTreezTable table;
 
 	private IColumnAccessor<Row> columnAccessor;
 
@@ -19,7 +19,7 @@ public class BodyDataProvider implements IDataProvider {
 
 	//#region CONSTRUCTORS
 
-	public BodyDataProvider(TreezTable table) {
+	public BodyDataProvider(PaginatedTreezTable table) {
 		this.table = table;
 		columnAccessor = new ColumnAccessor(table);
 	}

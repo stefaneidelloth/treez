@@ -1,6 +1,5 @@
 package org.treez.model.atom.tableImport;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -24,12 +23,18 @@ import org.treez.core.atom.variablefield.IntegerVariableField;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.data.column.ColumnType;
-import org.treez.core.data.table.TableSourceInformation;
+import org.treez.core.data.table.TableSource;
 import org.treez.core.data.table.TableSourceType;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.data.column.Columns;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
+import org.treez.data.tableImport.AccessDataTableImporter;
+import org.treez.data.tableImport.ExcelDataTableImporter;
+import org.treez.data.tableImport.MySqlDataTableImporter;
+import org.treez.data.tableImport.SqLiteDataTableImporter;
+import org.treez.data.tableImport.TableData;
+import org.treez.data.tableImport.TextDataTableImporter;
 import org.treez.model.Activator;
 import org.treez.model.atom.AbstractModel;
 import org.treez.model.atom.executable.Executable;
@@ -40,7 +45,7 @@ import org.treez.model.output.ModelOutput;
  * Imports data from the file system (e.g. from a text file) to a result table.
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class TableImport extends AbstractModel implements TableSourceInformation {
+public class TableImport extends AbstractModel implements TableSource {
 
 	private static final Logger LOG = Logger.getLogger(TableImport.class);
 
@@ -366,26 +371,26 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		}
 
 		//determine file extension (=>data type)
-		TableData dataTable;
+		TableData tableData;
 		switch (tableSourceType) {
 		case CSV:
-			dataTable = TextDataTableImporter.importData(sourcePath, columnSeparatorString, maxRows);
-			return dataTable;
+			tableData = TextDataTableImporter.importData(sourcePath, columnSeparatorString, maxRows);
+			return tableData;
 		case EXCEL:
-			dataTable = ExcelDataTableImporter.importData(sourcePath, tableNameString, filterRows, jobId, maxRows);
-			return dataTable;
+			tableData = ExcelDataTableImporter.importData(sourcePath, tableNameString, filterRows, jobId, maxRows);
+			return tableData;
 		case SQLITE:
-			dataTable = SqLiteDataTableImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
-					jobId, maxRows);
-			return dataTable;
+			tableData = SqLiteDataTableImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
+					jobId, maxRows, 0);
+			return tableData;
 		case MYSQL:
-			dataTable = MySqlDataTableImporter.importData(hostString, portString, userString, passwordString,
+			tableData = MySqlDataTableImporter.importData(hostString, portString, userString, passwordString,
 					schemaString, tableNameString, filterRows, jobId, maxRows);
-			return dataTable;
+			return tableData;
 		case ACCESS:
-			dataTable = AccessDataTableImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
+			tableData = AccessDataTableImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
 					jobId, maxRows);
-			return dataTable;
+			return tableData;
 
 		default:
 			throw new IllegalStateException("The TableSourceType '" + tableSourceType + "' is not yet implemented.");
@@ -435,7 +440,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	private Table writeDataToResultTable(
 			TableData tableData,
 			String tableModelPath,
-			TableSourceInformation tableSourceInfo,
+			TableSource tableSourceInfo,
 			boolean appendData) {
 
 		boolean isLinked = tableSourceInfo.isLinked();
@@ -456,21 +461,20 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 		}
 
 		//write data rows to table
-		for (List<String> rowEntries : tableData.getRowData()) {
-			List<Object> objectList = new ArrayList<Object>(rowEntries);
-			treezTable.addRow(objectList);
+		for (List<Object> rowEntries : tableData.getRowData()) {
+			treezTable.addRow(rowEntries);
 		}
 
 		return treezTable;
 
 	}
 
-	private static void checkAndPrepareSourceLinkIfRequired(TableSourceInformation tableSourceInfo, Table treezTable) {
+	private static void checkAndPrepareSourceLinkIfRequired(TableSource tableSourceInfo, Table treezTable) {
 		//check if table is already linked and create link if not
 		boolean tableIsLinked = treezTable.isLinkedToSource();
 		if (tableIsLinked) {
 			//check if existing link fits to required link
-			boolean linkIsOk = treezTable.checkSourceLink(tableSourceInfo);
+			boolean linkIsOk = treezTable.sourceEquals(tableSourceInfo);
 			if (!linkIsOk) {
 				String message = "The result table is already linked to a different source.";
 				throw new IllegalStateException(message);
@@ -582,7 +586,7 @@ public class TableImport extends AbstractModel implements TableSourceInformation
 	}
 
 	@Override
-	public String getTable() {
+	public String getTableName() {
 		return table.get();
 	}
 

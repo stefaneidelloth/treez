@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.log4j.Logger;
 import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
@@ -20,18 +22,21 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
+import org.eclipse.nebula.widgets.nattable.resize.command.InitializeAutoResizeColumnsCommand;
+import org.eclipse.nebula.widgets.nattable.resize.command.InitializeAutoResizeRowsCommand;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.style.theme.ModernNatTableThemeConfiguration;
+import org.eclipse.nebula.widgets.nattable.util.GCFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.treez.core.adaptable.Refreshable;
 import org.treez.core.data.row.Row;
-import org.treez.core.data.table.TreezTable;
+import org.treez.core.data.table.PaginatedTreezTable;
 import org.treez.data.table.TreezTableViewer;
 
 public class TreezNatTable extends NatTable {
@@ -40,25 +45,18 @@ public class TreezNatTable extends NatTable {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * Separators for clip board
-	 */
-	static final String COLUMN_SEPARATOR = "\t";
+	private PaginatedTreezTable treezTable;
 
-	static final String ROW_SEPARATOR = "\n";
-
-	/**
-	 * The table (definition of the columns) this table viewer represents
-	 */
-	private TreezTable table;
+	private Refreshable pagination;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public TreezNatTable(Composite parent, TreezTable table) {
+	public TreezNatTable(Composite parent, PaginatedTreezTable table, Refreshable pagination) {
 		super(parent, createNatLayers(table));
-		this.table = table;
+		this.treezTable = table;
+		this.pagination = pagination;
 
 		this.setTheme(new ModernNatTableThemeConfiguration());
 
@@ -70,7 +68,7 @@ public class TreezNatTable extends NatTable {
 
 	//#region METHODS
 
-	private static ILayer createNatLayers(TreezTable table) {
+	private static ILayer createNatLayers(PaginatedTreezTable table) {
 		IDataProvider bodyDataProvider = new BodyDataProvider(table);
 		BodyLayerStack bodyLayerStack = new BodyLayerStack(bodyDataProvider);
 
@@ -105,10 +103,6 @@ public class TreezNatTable extends NatTable {
 
 				//LOG.debug("Key event-----------");
 
-				if (event.stateMask == SWT.CTRL && event.keyCode == 'c') {
-					copy();
-				}
-
 				if (event.stateMask == SWT.CTRL && event.keyCode == 'v') {
 					paste();
 				}
@@ -122,75 +116,12 @@ public class TreezNatTable extends NatTable {
 	}
 
 	/**
-	 * Handles the copy action triggered by Ctrl+C
-	 */
-	void copy() {
-
-		//get map of selected cells
-		Map<Integer, List<Integer>> selectedColumnsMap = getSelectedColumnsMap();
-
-		//get headers
-		List<String> headers = table.getHeaders();
-
-		//collect column headers
-		String copyString = "";
-		Set<Integer> usedColumns = getUsedColums(selectedColumnsMap);
-		for (int columnIndex : usedColumns) {
-			String header = headers.get(columnIndex - 1);
-			copyString = copyString + header + COLUMN_SEPARATOR;
-		}
-		copyString = copyString.substring(0, copyString.length() - COLUMN_SEPARATOR.length()); //remove last separator
-		copyString = copyString + ROW_SEPARATOR;
-
-		//collect data
-		Set<Integer> selectedRowIndices = selectedColumnsMap.keySet();
-		for (Integer rowIndex : selectedRowIndices) {
-			Row row = table.getRows().get(rowIndex - 1);
-			List<Integer> selectedColumns = selectedColumnsMap.get(rowIndex);
-			for (int columnIndex : usedColumns) {
-				boolean columnSelected = selectedColumns.contains(columnIndex);
-				if (columnSelected) {
-					String entry = row.getEntryAsString(headers.get(columnIndex - 1)).trim();
-					copyString = copyString + entry + COLUMN_SEPARATOR;
-				} else {
-					copyString = copyString + "" + COLUMN_SEPARATOR;
-				}
-			}
-			copyString = copyString.substring(0, copyString.length() - COLUMN_SEPARATOR.length()); //remove last separator
-			copyString = copyString + ROW_SEPARATOR;
-		}
-
-		//copy data to clip board
-		Clipboard cb = new Clipboard(Display.getCurrent());
-		TextTransfer textTransfer = TextTransfer.getInstance();
-		cb.setContents(new Object[] { copyString }, new Transfer[] { textTransfer });
-
-		LOG.debug(copyString);
-	}
-
-	/**
-	 * Returns all column indices that exist in a row=>columnIndice map
-	 *
-	 * @param selectedColumnsMap
-	 * @return
-	 */
-
-	private static Set<Integer> getUsedColums(Map<Integer, List<Integer>> selectedColumnsMap) {
-		Set<Integer> selectedRowIndices = selectedColumnsMap.keySet();
-		Set<Integer> usedColumns = new HashSet<>();
-		for (Integer rowIndex : selectedRowIndices) {
-			List<Integer> columnIndice = selectedColumnsMap.get(rowIndex);
-			for (int columnIndex : columnIndice) {
-				usedColumns.add(columnIndex);
-			}
-		}
-		return usedColumns;
-	}
-
-	/**
 	 * Handles the paste action triggered by Ctrl + V
 	 */
 	void paste() {
+
+		final String columnSeparator = "\t";
+		final String rowSeparator = "\n";
 
 		LOG.debug("paste");
 		//get clip board text
@@ -201,24 +132,24 @@ public class TreezNatTable extends NatTable {
 		LOG.debug(text);
 
 		//get row index
-		int rowIndex = table.getRows().size() - 2;
+		int rowIndex = treezTable.getRows().size() - 2;
 		ArrayList<Row> selectedRows = getSelectedRows();
 		if (selectedRows.size() > 0) {
 			rowIndex = selectedRows.get(0).getIndex();
 		}
 
 		//get headers
-		List<String> headers = table.getHeaders();
+		List<String> headers = treezTable.getHeaders();
 
 		//split text and paste data as new row
-		String[] rowStrings = text.split(ROW_SEPARATOR);
+		String[] rowStrings = text.split(rowSeparator);
 		for (String rowString : rowStrings) {
-			String[] entries = rowString.split(COLUMN_SEPARATOR);
-			Row row = new Row(table);
+			String[] entries = rowString.split(columnSeparator);
+			Row row = new Row(treezTable);
 			for (int index = 0; index < entries.length; index++) {
 				row.setEntry(headers.get(index), entries[index]);
 			}
-			table.getRows().add(rowIndex, row);
+			treezTable.getRows().add(rowIndex, row);
 			rowIndex = rowIndex + 1;
 		}
 		//refresh
@@ -232,8 +163,10 @@ public class TreezNatTable extends NatTable {
 		List<Row> selectedRows = getFullySelectedRows();
 		Collections.reverse(selectedRows);
 		for (Row row : selectedRows) {
-			deleteRow(row.getIndex());
+			int pagedRowIndex = row.getIndex();
+			deletePagedRow(pagedRowIndex);
 		}
+		pagination.refresh();
 	}
 
 	/**
@@ -246,11 +179,12 @@ public class TreezNatTable extends NatTable {
 		List<Row> fullySelectedRows = new ArrayList<>();
 		Map<Integer, List<Integer>> selectedColumnsMap = getSelectedColumnsMap();
 		Set<Integer> selectedRowIndices = selectedColumnsMap.keySet();
+		int numberOfColumns = this.treezTable.getHeaders().size();
 		for (Integer rowIndex : selectedRowIndices) {
 			List<Integer> columnIndice = selectedColumnsMap.get(rowIndex);
-			boolean isFullySelected = (columnIndice.size() == 6);
+			boolean isFullySelected = (columnIndice.size() == numberOfColumns);
 			if (isFullySelected) {
-				fullySelectedRows.add(table.getRows().get(rowIndex - 1));
+				fullySelectedRows.add(treezTable.getRows().get(rowIndex));
 			}
 		}
 		return fullySelectedRows;
@@ -290,7 +224,7 @@ public class TreezNatTable extends NatTable {
 
 		SelectionLayer selectionLayer = getSelectionLayer();
 		int[] indices = selectionLayer.getFullySelectedRowPositions();
-		List<Row> rows = table.getRows();
+		List<Row> rows = treezTable.getRows();
 		for (int rowIndex : indices) {
 			Row row = rows.get(rowIndex);
 			selectedRows.add(row);
@@ -308,9 +242,9 @@ public class TreezNatTable extends NatTable {
 		LOG.debug("add row with index " + rowIndex);
 
 		if (rowIndex > -1) {
-			Row currentRow = table.getRows().get(rowIndex);
+			Row currentRow = treezTable.getRows().get(rowIndex);
 			Row newRow = currentRow.copy();
-			table.getRows().add(rowIndex + 1, newRow);
+			treezTable.getPagedRows().add(rowIndex + 1, newRow);
 			refresh();
 		} else {
 			addEmptyRow();
@@ -321,18 +255,45 @@ public class TreezNatTable extends NatTable {
 	 * Adds an empty row at the end of the table
 	 */
 	public void addEmptyRow() {
-		table.addEmptyRow();
+		treezTable.addEmptyRow();
+		refresh();
+	}
+
+	/**
+	 * Deletes the rows with given indice
+	 */
+	public void deletePagedRows(List<Integer> rowIndice) {
+		treezTable.getPagedRows().removeAll(rowIndice);
 		refresh();
 	}
 
 	/**
 	 * Deletes the row with given index
-	 *
-	 * @param rowIndex
+	 */
+	public void deletePagedRow(int rowIndex) {
+		treezTable.getPagedRows().remove(rowIndex);
+		refresh();
+	}
+
+	/**
+	 * Deletes the row with given index
 	 */
 	public void deleteRow(int rowIndex) {
-		table.getRows().remove(rowIndex);
+		treezTable.getRows().remove(rowIndex);
 		refresh();
+	}
+
+	public void moveRowsDownAndSelect(List<Integer> selectedIndices) {
+		int numberOfRows = treezTable.getRows().size();
+		for (int index = selectedIndices.size() - 1; index > -1; index--) {
+			int rowIndex = selectedIndices.get(index);
+			downRow(rowIndex);
+			if (rowIndex + 1 < numberOfRows) {
+				selectedIndices.set(index, rowIndex + 1);
+			}
+		}
+		refresh();
+		selectRows(selectedIndices);
 	}
 
 	/**
@@ -341,10 +302,23 @@ public class TreezNatTable extends NatTable {
 	 * @param rowIndex
 	 */
 	public void downRow(int rowIndex) {
-		if (rowIndex + 1 < table.getRows().size()) {
-			Collections.swap(table.getRows(), rowIndex, rowIndex + 1);
+		if (rowIndex + 1 < treezTable.getRows().size()) {
+			Collections.swap(treezTable.getRows(), rowIndex, rowIndex + 1);
 			refresh();
 		}
+	}
+
+	public void moveRowsUpAndSelect(List<Integer> selectedIndices) {
+
+		for (int index = 0; index < selectedIndices.size(); index++) {
+			int rowIndex = selectedIndices.get(index);
+			upRow(rowIndex);
+			if (rowIndex > 0) {
+				selectedIndices.set(index, rowIndex - 1);
+			}
+		}
+		refresh();
+		selectRows(selectedIndices);
 	}
 
 	/**
@@ -354,7 +328,7 @@ public class TreezNatTable extends NatTable {
 	 */
 	public void upRow(int rowIndex) {
 		if (rowIndex > 0) {
-			Collections.swap(table.getRows(), rowIndex, rowIndex - 1);
+			Collections.swap(treezTable.getRows(), rowIndex, rowIndex - 1);
 			refresh();
 		}
 	}
@@ -364,16 +338,35 @@ public class TreezNatTable extends NatTable {
 	 */
 	public void optimizeColumnWidths() {
 
-		//TODO
+		IConfigRegistry registry = getConfigRegistry();
+		GCFactory gcFactory = new GCFactory(this);
 
-		//see auto resizing columns:
-		//http://www.eclipse.org/nattable/documentation.php?page=faq
+		for (int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++) {
+			InitializeAutoResizeColumnsCommand columnCommand = new InitializeAutoResizeColumnsCommand(
+					this,
+					columnIndex,
+					registry,
+					gcFactory);
 
-		//GridColumn[] tableColumns = getColumns();
-		//for (GridColumn column : tableColumns) {
-		//	column.pack();
-		//}
+			doCommand(columnCommand);
+		}
 
+		for (int rowIndex = 0; rowIndex < getRowCount(); rowIndex++) {
+			InitializeAutoResizeRowsCommand rowCommand = new InitializeAutoResizeRowsCommand(
+					this,
+					rowIndex,
+					registry,
+					gcFactory);
+			doCommand(rowCommand);
+		}
+
+	}
+
+	private void selectRows(List<Integer> selectedIndices) {
+		SelectionLayer selectionLayer = getSelectionLayer();
+		for (int rowIndex : selectedIndices) {
+			selectionLayer.selectRow(0, rowIndex, false, true);
+		}
 	}
 
 	//#end region
@@ -394,6 +387,17 @@ public class TreezNatTable extends NatTable {
 			return indices[0];
 		}
 		return 0;
+	}
+
+	public List<Integer> getSelectionIndices() {
+		SelectionLayer selectionLayer = getSelectionLayer();
+		int[] indices = selectionLayer.getFullySelectedRowPositions();
+		if (indices.length > 0) {
+			return IntStream.of(indices).boxed().collect(Collectors.toList());
+		}
+		List<Integer> listContaindingFirstIndex = new ArrayList<>();
+		listContaindingFirstIndex.add(0);
+		return listContaindingFirstIndex;
 	}
 
 	//#end region

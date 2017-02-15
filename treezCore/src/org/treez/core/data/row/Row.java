@@ -1,6 +1,7 @@
 package org.treez.core.data.row;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -97,8 +98,7 @@ public class Row implements Copiable<Row> {
 	}
 
 	/**
-	 * Copies the row for a new table (use this if you copy the complete parent
-	 * table)
+	 * Copies the row for a new table (use this if you copy the complete parent table)
 	 *
 	 * @param newTable
 	 * @return
@@ -163,11 +163,12 @@ public class Row implements Copiable<Row> {
 		return entryMap.get(columnHeader);
 	}
 
+	public void setEntryUnchecked(String columnHeader, Object value) {
+		this.entryMap.put(columnHeader, value);
+	}
+
 	/**
-	 * Sets a value in this row for a given column header
-	 *
-	 * @param columnHeader
-	 * @param value
+	 * Sets a value in this row for a given column header. The value is checked to be compatible to the column.
 	 */
 	public void setEntry(String columnHeader, Object value) {
 
@@ -175,12 +176,10 @@ public class Row implements Copiable<Row> {
 		if (columnExists) {
 			if (value != null) {
 				Class<?> valueClass = value.getClass();
-				ColumnType expectedColumnType = ColumnType
-						.getDefaultTypeForClass(valueClass);
+				List<ColumnType> allowedColumnTypes = ColumnType.getAllowedTypesForClass(valueClass);
 				ColumnType columnType = table.getColumnType(columnHeader);
 
-				boolean columnTypeFitsToValue = expectedColumnType
-						.equals(columnType);
+				boolean columnTypeFitsToValue = allowedColumnTypes.contains(columnType);
 
 				//allow to set "enum entries" with strings
 				//boolean isEnumType = columnType.equals(ColumnType.ENUM);
@@ -193,12 +192,8 @@ public class Row implements Copiable<Row> {
 					//set entry
 					this.entryMap.put(columnHeader, value);
 				} else {
-					String message = "The expected column type for column '"
-							+ columnHeader + "' is '" + expectedColumnType
-							+ "'. The actual column type is '" + columnType
-							+ "'. The class '" + valueClass.getSimpleName()
-							+ "' of the given value '" + value
-							+ "' is not compatible.";
+					String message = "The class '" + valueClass.getSimpleName() + "' of the given value '" + value
+							+ "' is not compatible to the " + " column type '" + columnType + "'";
 
 					throw new IllegalArgumentException(message);
 				}
@@ -207,8 +202,7 @@ public class Row implements Copiable<Row> {
 			}
 
 		} else {
-			String message = "The columnHeader '" + columnHeader
-					+ "' does not exist and the value '" + value
+			String message = "The columnHeader '" + columnHeader + "' does not exist and the value '" + value
 					+ "' could not be set.";
 			throw new IllegalArgumentException(message);
 		}
@@ -229,30 +223,29 @@ public class Row implements Copiable<Row> {
 		Object object = null;
 
 		switch (columnType) {
-			case BOOLEAN :
-				object = entry;
-				break;
-			case COLOR :
-				object = Utils.convertToRGB((String) entry);
-				break;
-			case DOUBLE :
-				object = entry;
-				break;
-			case ENUM :
-				int value = getEnumValue(cellEditor, entry);
-				cellEditor.setValue(value); //reset to default if entry is not
-				//found
-				object = value;
-				break;
-			case INTEGER :
-				object = entry;
-				break;
-			case TEXT :
-				object = entry;
-				break;
-			default :
-				throw new IllegalStateException(
-						"Unknown column type " + columnType);
+		case BOOLEAN:
+			object = entry;
+			break;
+		case COLOR:
+			object = Utils.convertToRGB((String) entry);
+			break;
+		case DOUBLE:
+			object = entry;
+			break;
+		case ENUM:
+			int value = getEnumValue(cellEditor, entry);
+			cellEditor.setValue(value); //reset to default if entry is not
+			//found
+			object = value;
+			break;
+		case INTEGER:
+			object = entry;
+			break;
+		case TEXT:
+			object = entry;
+			break;
+		default:
+			throw new IllegalStateException("Unknown column type " + columnType);
 
 		}
 

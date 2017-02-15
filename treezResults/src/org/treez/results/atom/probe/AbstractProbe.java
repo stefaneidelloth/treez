@@ -12,7 +12,7 @@ import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.utils.Utils;
 import org.treez.data.column.Columns;
-import org.treez.data.table.Table;
+import org.treez.data.table.nebula.Table;
 
 /**
  * Represents the root atom for all models
@@ -53,7 +53,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	 * Runs the Probe to create a table with collected probe data
 	 */
 	@Override
-	public Table runProbe(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+	public void runProbe(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
 
 		String identifier = this.getClass().getSimpleName() + " '" + getName() + "'";
 
@@ -87,7 +87,6 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 
 		LOG.info("Finished " + identifier + ".");
 
-		return table;
 	}
 
 	/**

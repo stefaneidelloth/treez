@@ -1,4 +1,4 @@
-package org.treez.data.table.nebula.nat;
+package org.treez.data.table.nebula.nat.pageloader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,11 @@ import org.eclipse.nebula.widgets.pagination.collections.SortProcessor;
 import org.eclipse.swt.SWT;
 import org.treez.core.data.row.Row;
 
-public class PageResultLoader implements IPageLoader<PageResult<Row>> {
+public class ListPageResultLoader implements IPageLoader<PageResult<Row>> {
 
 	private List<Row> items;
 
-	public PageResultLoader(List<Row> items) {
+	public ListPageResultLoader(List<Row> items) {
 		this.items = items;
 	}
 

@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -16,16 +17,22 @@ import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.copy.CopyHelper;
 import org.treez.core.data.cell.CellEditorFactory;
+import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.table.AbstractTreezTable;
+import org.treez.core.data.table.TableSource;
+import org.treez.core.data.table.TableSourceType;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.treeview.action.TreeViewerAction;
-import org.treez.data.Activator;
 import org.treez.data.cell.TreezTableNebulaLabelProvider;
 import org.treez.data.column.Column;
 import org.treez.data.column.Columns;
+import org.treez.data.table.nebula.nat.pageloader.DatabasePageResultLoader;
+import org.treez.data.tableImport.SqLiteDataTableImporter;
+
+import javafx.application.Platform;
 
 public class Table extends AbstractTreezTable<Table> {
 
@@ -34,7 +41,7 @@ public class Table extends AbstractTreezTable<Table> {
 	/**
 	 * For columns that use enums as value, this maps from column name to EnumSet (=allowed values)
 	 */
-	private Map<String, List<String>> comboTextMap = null; //null;
+	private Map<String, List<String>> comboTextMap = null;
 
 	//#end region
 
@@ -76,6 +83,9 @@ public class Table extends AbstractTreezTable<Table> {
 			Composite parent,
 			FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
+
+		loadTableStructureIfLinkedToSource();
+
 		List<String> headers = null;
 		try {
 			headers = getHeaders();
@@ -162,8 +172,6 @@ public class Table extends AbstractTreezTable<Table> {
 		getColumns().createColumn(header, type);
 	}
 
-	//#region CREATE CHILD ATOMS
-
 	/**
 	 * Creates a Columns child
 	 */
@@ -173,7 +181,78 @@ public class Table extends AbstractTreezTable<Table> {
 		return child;
 	}
 
-	//#end region
+	/**
+	 * Returns the first TableSource that can be found in the children of this atom or null
+	 */
+	@Override
+	public TableSource getTableSource() {
+
+		List<TableSource> sources = this.getChildrenByInterface(TableSource.class);
+		if (sources.isEmpty()) {
+			return null;
+		} else {
+			return sources.get(0);
+		}
+
+	}
+
+	public org.treez.data.tableSource.TableSource createTableSource(String name) {
+		org.treez.data.tableSource.TableSource tableSource = new org.treez.data.tableSource.TableSource(name);
+		addChild(tableSource);
+		this.isLinkedToSource = true;
+		return tableSource;
+	}
+
+	public void reload() {
+		this.resetCache();
+		loadTableStructureIfLinkedToSource();
+		Platform.runLater(() -> refresh());
+
+	}
+
+	private void loadTableStructureIfLinkedToSource() {
+		if (isLinkedToSource()) {
+			loadTableStructureFromSource();
+		}
+	}
+
+	private void loadTableStructureFromSource() {
+		TableSource tableSource = this.getTableSource();
+		TableSourceType sourceType = tableSource.getSourceType();
+		if (sourceType.equals(TableSourceType.SQLITE)) {
+
+			deleteColumnsIfExist();
+			List<ColumnBlueprint> tableStructure = readTableStructureForSqLiteTable(tableSource);
+			createColumns(tableStructure);
+		} else {
+
+			throw new IllegalStateException("not yet implemented for current source type " + sourceType);
+		}
+
+	}
+
+	private void deleteColumnsIfExist() {
+		List<Columns> columnsToDelete = this.getChildrenByClass(Columns.class);
+		for (Columns columns : columnsToDelete) {
+			children.remove(columns);
+		}
+	}
+
+	private static List<ColumnBlueprint> readTableStructureForSqLiteTable(TableSource tableSource) {
+		String sqLiteFilePath = tableSource.getSourceFilePath();
+		String tableName = tableSource.getTableName();
+		String password = tableSource.getPassword();
+		List<ColumnBlueprint> tableStructure = SqLiteDataTableImporter.readTableStructure(sqLiteFilePath, password,
+				tableName);
+		return tableStructure;
+	}
+
+	private void createColumns(List<ColumnBlueprint> columnBlueprints) {
+		Columns columns = createColumns("columns");
+		for (ColumnBlueprint columnBlueprint : columnBlueprints) {
+			columns.createColumn(columnBlueprint);
+		}
+	}
 
 	//#end region
 
@@ -219,9 +298,15 @@ public class Table extends AbstractTreezTable<Table> {
 	}
 
 	@Override
-	public ColumnType getColumnType(String header) {
-		ColumnType columnType = getColumns().getColumnType(header);
-		return columnType;
+	public ColumnType getColumnType(String columnHeader) {
+		if (isLinkedToSource()) {
+			TableSource tableSource = this.getTableSource();
+			return DatabasePageResultLoader.getColumnType(tableSource, columnHeader);
+		} else {
+			ColumnType columnType = getColumns().getColumnType(columnHeader);
+			return columnType;
+		}
+
 	}
 
 	@Override

@@ -1,25 +1,28 @@
-package org.treez.model.atom.tableImport;
+package org.treez.data.tableImport;
 
-public final class ExcelDataTableImporter {
+public final class MySqlDataTableImporter {
 
 	//#region CONSTRUCTORS
 
 	/**
 	 * Private Constructor that prevents construction
 	 */
-	private ExcelDataTableImporter() {}
+	private MySqlDataTableImporter() {}
 
 	//#end region
 
 	//#region METHODS
 
 	/**
-	 * @param filePath
 	 * @param tableName
 	 * @return
 	 */
 	public static TableData importData(
-			String filePath,
+			String host,
+			String port,
+			String user,
+			String password,
+			String schemaName,
 			String tableName,
 			boolean filterRowsByJobId,
 			String jobId,

@@ -17,7 +17,7 @@ public class JarExecutableTest extends AbstractAbstractAtomTest {
 	}
 
 	@Override
-	protected Boolean isOpeningWindowThatNeedsToBeClosed() {
+	protected Boolean isShowingPreviewWindow() {
 		return true;
 	}
 
