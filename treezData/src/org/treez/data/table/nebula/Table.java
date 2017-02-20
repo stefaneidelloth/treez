@@ -13,6 +13,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
+import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.copy.CopyHelper;
@@ -77,12 +78,22 @@ public class Table extends AbstractTreezTable<Table> {
 	}
 
 	@Override
+	public TreeNodeAdaption createTreeNodeAdaption() {
+		TreeNodeAdaption treeNodeAdaption = new TableTreeNodeAdaption(this);
+		return treeNodeAdaption;
+	}
+
+	@Override
 	public AbstractControlAdaption createControlAdaption(
 			Composite parent,
 			FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 
-		loadTableStructureIfLinkedToSource();
+		if (isLinkedToSource()) {
+			if (!hasColumns()) {
+				reload();
+			}
+		}
 
 		List<String> headers = null;
 		try {
@@ -201,6 +212,7 @@ public class Table extends AbstractTreezTable<Table> {
 		return tableSource;
 	}
 
+	@Override
 	public void reload() {
 		this.resetCache();
 		loadTableStructureIfLinkedToSource();
@@ -223,7 +235,6 @@ public class Table extends AbstractTreezTable<Table> {
 			List<ColumnBlueprint> tableStructure = readTableStructureForSqLiteTable(tableSource);
 			createColumns(tableStructure);
 		} else {
-
 			throw new IllegalStateException("not yet implemented for current source type " + sourceType);
 		}
 

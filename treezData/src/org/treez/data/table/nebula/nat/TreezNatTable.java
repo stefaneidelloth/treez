@@ -110,6 +110,11 @@ public class TreezNatTable extends NatTable {
 				if (event.keyCode == SWT.DEL) {
 					delete();
 				}
+
+				if (event.keyCode == SWT.F5) {
+					treezTable.reload();
+				}
+
 			}
 
 		};

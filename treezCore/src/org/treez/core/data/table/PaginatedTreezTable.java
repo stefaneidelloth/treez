@@ -29,4 +29,9 @@ public interface PaginatedTreezTable extends TreezTable {
 	 */
 	PaginatedTreezTable setRowIndexOffset(int offset);
 
+	/**
+	 * Reloads the data
+	 */
+	void reload();
+
 }

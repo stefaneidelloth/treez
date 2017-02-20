@@ -24,7 +24,7 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	/**
 	 * The adaptable that is adapted
 	 */
-	private AbstractAtom<?> atomAdaptable;
+	protected AbstractAtom<?> atomAdaptable;
 
 	//#end region
 
@@ -154,6 +154,11 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
 	}
 
+	@Override
+	public void preExpand() {
+		//This default implementation does nothing
+	}
+
 	/**
 	 * Get the parent tree node adaption
 	 *
@@ -239,8 +244,8 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
 	/**
 	 * Implements TreeNodeAdaption.setName() by setting the name of the corresponding AbstractAtom. (In order to be able
-	 * to identify an AbstractAtom<?> by its tree path, this name should only be used once for all children of the parent
-	 * AbstractAtom.)
+	 * to identify an AbstractAtom<?> by its tree path, this name should only be used once for all children of the
+	 * parent AbstractAtom.)
 	 */
 	@Override
 	public void setName(String name) {

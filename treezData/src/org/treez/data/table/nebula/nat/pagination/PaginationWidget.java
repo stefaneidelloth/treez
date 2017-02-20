@@ -115,6 +115,7 @@ public class PaginationWidget extends AbstractPaginationWidget<NatTable> impleme
 
 		PageableController controller = getController();
 		IPageContentProvider pageContentProvider = getPageContentProvider();
+
 		IPageLoaderHandler<PageableController> handler = null;
 		Object page = PageLoaderStrategyHelper.loadPageAndUpdateTotalElements(controller, pageLoader,
 				pageContentProvider, handler);

@@ -45,12 +45,8 @@ public class TableControlAdaption extends AbstractControlAdaption {
 		deleteOldContent(parent);
 		setParentLayout(parent);
 		createButtons(parent);
-
-		if (table.isLinkedToSource()) {
-			table.reload();
-		}
-
 		createPageableTable(parent, table);
+
 	}
 
 	private static void deleteOldContent(Composite parent) {
@@ -69,6 +65,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 		Composite buttonComposite = toolkit.createComposite(parent);
+
 		final int numberOfColumns = 6;
 		GridLayout gridLayout = new GridLayout(numberOfColumns, true);
 		buttonComposite.setLayout(gridLayout);

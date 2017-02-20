@@ -35,6 +35,11 @@ public interface TreeNodeAdaption extends Adaption {
 	void expand(TreeViewerRefreshable treeViewer);
 
 	/**
+	 * This method is called by the tree viewer before the tree node is expanded
+	 */
+	void preExpand();
+
+	/**
 	 * Fills the context menu of the TreeNodeAdaption with for the given TreeViewer with the given IMenuManager.
 	 *
 	 * @param treeViewer
