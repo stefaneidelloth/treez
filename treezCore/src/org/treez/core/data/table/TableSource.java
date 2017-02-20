@@ -7,8 +7,6 @@ public interface TableSource {
 
 	/**
 	 * Returns the TableSourceType
-	 *
-	 * @return
 	 */
 	TableSourceType getSourceType();
 

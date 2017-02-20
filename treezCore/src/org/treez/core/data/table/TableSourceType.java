@@ -10,30 +10,13 @@ import org.treez.javafxd3.javafx.EnumValueProvider;
  */
 public enum TableSourceType implements EnumValueProvider<TableSourceType> {
 
-	/**
-	 * A comma separated text file
-	 */
 	CSV("csv"),
 
-	/**
-	 * An excel file
-	 */
 	EXCEL("excel"),
 
-	/**
-	 * An SqLite database
-	 */
 	SQLITE("sqlite"),
 
-	/**
-	 * A MySQL database
-	 */
-	MYSQL("mysql"),
-
-	/**
-	 * A Microsoft Access file
-	 */
-	ACCESS("access");
+	MYSQL("mysql");
 
 	//#region ATTRIBUTES
 

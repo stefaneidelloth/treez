@@ -32,8 +32,6 @@ import org.treez.data.column.Columns;
 import org.treez.data.table.nebula.nat.pageloader.DatabasePageResultLoader;
 import org.treez.data.tableImport.SqLiteDataTableImporter;
 
-import javafx.application.Platform;
-
 public class Table extends AbstractTreezTable<Table> {
 
 	//#region ATTRIBUTES
@@ -206,7 +204,7 @@ public class Table extends AbstractTreezTable<Table> {
 	public void reload() {
 		this.resetCache();
 		loadTableStructureIfLinkedToSource();
-		Platform.runLater(() -> refresh());
+		refresh();
 
 	}
 

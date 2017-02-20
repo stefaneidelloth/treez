@@ -29,7 +29,6 @@ import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.data.column.Columns;
 import org.treez.data.table.nebula.Table;
-import org.treez.data.tableImport.AccessDataTableImporter;
 import org.treez.data.tableImport.ExcelDataTableImporter;
 import org.treez.data.tableImport.MySqlDataTableImporter;
 import org.treez.data.tableImport.SqLiteDataTableImporter;
@@ -208,9 +207,6 @@ public class TableImport extends AbstractModel implements TableSource {
 		case MYSQL:
 			enableAndDisableCompontentsForMySql();
 			break;
-		case ACCESS:
-			enableAndDisableCompontentsForAccess();
-			break;
 		default:
 			String message = "The TableSourceType " + tableSourceType + " is not yet implemented.";
 			throw new IllegalStateException(message);
@@ -271,21 +267,6 @@ public class TableImport extends AbstractModel implements TableSource {
 		setEnabled(user, true);
 		setEnabled(password, true);
 		setEnabled(schema, true);
-		setEnabled(table, true);
-	}
-
-	private void enableAndDisableCompontentsForAccess() {
-		setEnabled(inheritSourceFilePath, true);
-
-		boolean inheritPath = inheritSourceFilePath.get();
-		setEnabled(sourceFilePath, !inheritPath);
-
-		setEnabled(columnSeparator, false);
-		setEnabled(host, false);
-		setEnabled(port, false);
-		setEnabled(user, false);
-		setEnabled(password, true);
-		setEnabled(schema, false);
 		setEnabled(table, true);
 	}
 
@@ -387,11 +368,6 @@ public class TableImport extends AbstractModel implements TableSource {
 			tableData = MySqlDataTableImporter.importData(hostString, portString, userString, passwordString,
 					schemaString, tableNameString, filterRows, jobId, maxRows);
 			return tableData;
-		case ACCESS:
-			tableData = AccessDataTableImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
-					jobId, maxRows);
-			return tableData;
-
 		default:
 			throw new IllegalStateException("The TableSourceType '" + tableSourceType + "' is not yet implemented.");
 		}

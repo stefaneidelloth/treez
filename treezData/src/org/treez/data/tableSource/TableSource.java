@@ -139,9 +139,6 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		case MYSQL:
 			enableAndDisableCompontentsForMySql();
 			break;
-		case ACCESS:
-			enableAndDisableCompontentsForAccess();
-			break;
 		default:
 			String message = "The TableSourceType " + tableSourceType + " is not yet implemented.";
 			throw new IllegalStateException(message);
@@ -192,17 +189,6 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		setEnabled(tableName, true);
 	}
 
-	private void enableAndDisableCompontentsForAccess() {
-
-		setEnabled(columnSeparator, false);
-		setEnabled(host, false);
-		setEnabled(port, false);
-		setEnabled(user, false);
-		setEnabled(password, true);
-		setEnabled(schema, false);
-		setEnabled(tableName, true);
-	}
-
 	/**
 	 * Sets the enabled state of the given attribute atom
 	 *
@@ -249,7 +235,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 	public void setSourceType(TableSourceType sourceTypeEnum) {
 		Wrap<String> sourceTypeWrap = (Wrap<String>) sourceType;
 		EnumComboBox<TableSourceType> combo = (EnumComboBox<TableSourceType>) sourceTypeWrap.getAttribute();
-		combo.set(sourceTypeEnum.name());
+		combo.set(sourceTypeEnum.toString());
 	}
 
 	@Override
