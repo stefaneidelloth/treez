@@ -172,8 +172,15 @@ public class EnumComboBox<T extends EnumValueProvider<?>> extends AbstractString
 	public void refreshAttributeAtomControl() {
 		if (isAvailable(comboBox)) {
 			List<String> values = enumValueProviderInstance.getValues();
-			String vale = get();
-			int index = values.indexOf(vale);
+			String value = get();
+			int index = values.indexOf(value);
+
+			if (index == -1) {
+				String message = "The value '" + value + "' is not part of the allowed values {"
+						+ String.join(",", values) + "}";
+				throw new IllegalStateException(message);
+			}
+
 			if (comboBox.getSelectionIndex() != index) {
 				comboBox.select(index);
 			}
