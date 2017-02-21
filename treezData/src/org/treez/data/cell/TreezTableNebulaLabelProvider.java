@@ -10,13 +10,11 @@ import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
-import org.treez.core.utils.Utils;
 
 /**
  * Label provider for table entries that is able to validate the table entry. Text validation might also depend on the
@@ -77,15 +75,8 @@ public class TreezTableNebulaLabelProvider extends StyledCellLabelProvider imple
 			cell.setForeground(TEXT_COLOR);
 		}
 
-		//set background color for color columns
-		if (columnType == ColumnType.COLOR) {
-			RGB rgb = Utils.convertToRGB(label);
-			Color color = new Color(Display.getCurrent(), rgb.red, rgb.green, rgb.blue);
-			cell.setBackground(color);
-		}
-
 		//validate content for text columns (may also set background color)
-		if (columnType == ColumnType.TEXT) {
+		if (columnType == ColumnType.STRING) {
 			GridItem tableItem = (GridItem) cell.getItem();
 			validateTableItem(tableItem);
 		}

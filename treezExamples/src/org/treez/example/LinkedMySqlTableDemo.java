@@ -11,7 +11,7 @@ import org.treez.views.tree.rootAtom.Root;
 /**
  * Demonstrates the import from an SqLite database to Treez
  */
-public class LinkedTableDemo extends ModelProvider {
+public class LinkedMySqlTableDemo extends ModelProvider {
 
 	@Override
 	public Root createModel() {
@@ -24,13 +24,15 @@ public class LinkedTableDemo extends ModelProvider {
 		Data data = results.createData("data");
 		Table table = data.createTable("table");
 
-		String treezExamplePath = "D:/EclipseJava/workspaceTreez/TreezExamples";
-		String sqLitePath = treezExamplePath + "/resources/example.sqlite";
-
 		TableSource tableSource = table.createTableSource("source");
-		tableSource.setSourceType(TableSourceType.SQLITE);
-		tableSource.filePath.set(sqLitePath);
-		tableSource.tableName.set("example");
+		tableSource.setSourceType(TableSourceType.MYSQL);
+		tableSource.host.set("localhost");
+		tableSource.port.set("3306");
+		tableSource.schema.set("treez");
+		tableSource.user.set("root");
+		tableSource.password.set("password");
+
+		tableSource.tableName.set("country");
 
 		//#end region
 

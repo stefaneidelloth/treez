@@ -2,12 +2,8 @@ package org.treez.data.cell;
 
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
-import org.treez.core.utils.Utils;
 
 /**
  * Label provider for table entries
@@ -44,12 +40,6 @@ public class LabelProvider extends CellLabelProvider {
 		String value = row.getEntryAsString(header);
 		cell.setText(value);
 
-		//set background value
-		if (columnType == ColumnType.COLOR) {
-			RGB rgb = Utils.convertToRGB(value);
-			Color color = new Color(Display.getCurrent(), rgb.red, rgb.green, rgb.blue);
-			cell.setBackground(color);
-		}
 	}
 
 	//#end region

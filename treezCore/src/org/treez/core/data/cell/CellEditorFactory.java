@@ -31,26 +31,19 @@ public final class CellEditorFactory {
 		TreezStringCellEditor cellEditor = null;
 
 		switch (columnType) {
-		case TEXT:
-			cellEditor = new TreezStringCellEditor(parent);
-			break;
-		case BOOLEAN:
-			cellEditor = new TreezBooleanCellEditor(parent);
-			break;
-		case COLOR:
-			String message = "The cell editor for column type " + columnType + " is not yet implemented.";
-			throw new IllegalArgumentException(message);
-			//break;
-		case DOUBLE:
-			cellEditor = new TreezDoubleCellEditor(parent);
-			break;
-		case ENUM:
-			String messagee = "The cell editor for column type " + columnType + " is not yet implemented.";
-			throw new IllegalArgumentException(messagee);
-			//break;
+
 		case INTEGER:
 			cellEditor = new TreezIntegerCellEditor(parent);
 			break;
+		case DOUBLE:
+			cellEditor = new TreezDoubleCellEditor(parent);
+			break;
+		case STRING:
+			cellEditor = new TreezStringCellEditor(parent);
+			break;
+		//case BOOLEAN:
+		//	cellEditor = new TreezBooleanCellEditor(parent);
+		//	break;
 		default:
 			String messagedef = "The column type " + columnType + " is not known.";
 			throw new IllegalArgumentException(messagedef);

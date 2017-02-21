@@ -14,7 +14,8 @@ import org.treez.core.data.table.AbstractTreezTable;
 import org.treez.core.data.table.LinkableTreezTable;
 import org.treez.core.data.table.TableSource;
 import org.treez.core.data.table.TableSourceType;
-import org.treez.data.tableImport.SqLiteDataTableImporter;
+import org.treez.data.database.mysql.MySqlDataTableImporter;
+import org.treez.data.database.sqlite.SqLiteDataTableImporter;
 import org.treez.data.tableImport.TableData;
 
 public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
@@ -105,6 +106,36 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 
 			return new PageResult<Row>(rows, totalSize);
 
+		} else if (sourceType.equals(TableSourceType.MYSQL)) {
+
+			String host = tableSource.getHost();
+			String port = tableSource.getPort();
+			String schema = tableSource.getSchema();
+			String url = host + ":" + port + "/" + schema;
+
+			String user = tableSource.getUser();
+			String password = tableSource.getPassword();
+
+			String tableName = tableSource.getTableName();
+
+			int totalSize = MySqlDataTableImporter.getNumberOfRows(url, user, password, tableName);
+			int pageOffset = controller.getPageOffset();
+			if (pageOffset > totalSize) {
+				return new PageResult<Row>(new ArrayList<Row>(), totalSize);
+			}
+
+			int pageSize = controller.getPageSize();
+
+			TableData tableData = MySqlDataTableImporter.importData(url, user, password, tableName, false, null,
+					pageSize, pageOffset);
+
+			List<Row> rows = new ArrayList<>();
+			for (List<Object> rowEntries : tableData.getRowData()) {
+				Row row = AbstractTreezTable.createRow(rowEntries, treezTable);
+				rows.add(row);
+			}
+
+			return new PageResult<Row>(rows, totalSize);
 		}
 
 		String message = "The TableSourceType " + sourceType + " is not yet implemented.";

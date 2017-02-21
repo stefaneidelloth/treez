@@ -78,7 +78,7 @@ public class StringItemList extends AbstractAttributeAtom<StringItemList, List<S
 	 */
 	protected void createTreezList(String availableItems) {
 		treezList = new TreezListAtom("treezList");
-		treezList.setColumnType(ColumnType.TEXT);
+		treezList.setColumnType(ColumnType.STRING);
 		treezList.setAvailableStringItems(availableItems);
 		treezList.setShowHeader(false);
 		treezList.setFirstRowAutoCreation(false);

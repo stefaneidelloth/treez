@@ -223,7 +223,7 @@ public class PickingProbe extends AbstractProbe {
 			columnBlueprints = createColumnBlueprintsWithTimeSeries();
 		} else {
 			//domain column
-			columnBlueprints.add(new ColumnBlueprint("Sample", ColumnType.TEXT, ""));
+			columnBlueprints.add(new ColumnBlueprint("Sample", ColumnType.STRING, ""));
 
 			//probe column
 			ColumnType probeColumnType = this.getPickingProbeColumnType();
@@ -358,7 +358,7 @@ public class PickingProbe extends AbstractProbe {
 				throw new IllegalArgumentException(message);
 			}
 		}
-		ColumnType columnType = ColumnType.getDefaultTypeForClass(domainColumnType);
+		ColumnType columnType = ColumnType.getType(domainColumnType);
 		return columnType;
 	}
 
@@ -393,14 +393,14 @@ public class PickingProbe extends AbstractProbe {
 			/*
 			//get y information
 			String yLabelString = yLabel.get();
-
+			
 			//get tuple information
 			String tupleyPath = tupleList.get();
 			List<?> tupleListValues = getTupleValues(tupleyPath);
-
+			
 			//column names
 			List<String> columnNames = createColumnNames(timeLabelString, yLabelString, tupleListValues);
-
+			
 			*/
 
 			//get sweep output path

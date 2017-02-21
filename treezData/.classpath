@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-5.1.40-bin.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.nebula.widgets.grid.source_1.0.0.201609231530.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.nebula.widgets.nattable.core.source_1.4.0.201606011907.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.nebula.widgets.pagination.source_1.0.0.201701041652.jar"/>

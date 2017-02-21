@@ -34,7 +34,7 @@ public class TableImportFromSqLite extends ModelProvider {
 		tableImport.sourceType.set("sqlite");
 		tableImport.inheritSourceFilePath.set(false);
 		tableImport.sourceFilePath.set(sqLitePath);
-		tableImport.table.set("treez");
+		tableImport.table.set("example");
 		tableImport.rowLimit.set(1000);
 		tableImport.resultTableModelPath.set("root.results.data.table");
 

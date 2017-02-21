@@ -39,7 +39,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	/**
 	 * The Column type of the single column
 	 */
-	private ColumnType columnType = ColumnType.TEXT;
+	private ColumnType columnType = ColumnType.STRING;
 
 	/**
 	 * If this flag is true, and the column type of the treezList is ColumnType.TEXT, an additional button will be shown

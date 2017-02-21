@@ -1,4 +1,4 @@
-package org.treez.data.sqlite;
+package org.treez.data.database.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,18 +6,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class SqLiteDatabase {
+import org.treez.data.database.ResultSetProcessor;
+
+public class MySqlDatabase {
 
 	//#region ATTRIBUTES
 
-	private String filePath;
+	private String url;
+
+	private String user;
+
+	private String password;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public SqLiteDatabase(String filePath) {
-		this.filePath = filePath;
+	public MySqlDatabase(String url, String user, String password) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
 		checkConnection();
 
 	}
@@ -29,16 +37,16 @@ public class SqLiteDatabase {
 	private void checkConnection() {
 
 		try {
-			Class.forName("org.sqlite.JDBC");
+			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException driverException) {
-			String message = "Could not establish SqLite database connection due to missing driver.";
+			String message = "Could not establish MySql database connection due to missing driver.";
 			throw new IllegalStateException(message, driverException);
 		}
 
 		try (
-				Connection connection = DriverManager
-						.getConnection("jdbc:sqlite:" + filePath);) {} catch (SQLException exception) {
-			String message = "Could not establish SqLite database connection to " + filePath;
+				Connection connection = DriverManager.getConnection("jdbc:mysql://" + url, user,
+						password);) {} catch (SQLException exception) {
+			String message = "Could not establish SqLite database connection to " + url;
 			throw new IllegalStateException(message, exception);
 		}
 
@@ -49,7 +57,7 @@ public class SqLiteDatabase {
 	 */
 	public void execute(String query) {
 		try (
-				Connection connection = DriverManager.getConnection("jdbc:sqlite:" + filePath);
+				Connection connection = DriverManager.getConnection("jdbc:mysql://" + url, user, password);
 				Statement statement = connection.createStatement();) {
 			statement.executeUpdate(query);
 		} catch (SQLException exception) {
@@ -63,7 +71,7 @@ public class SqLiteDatabase {
 	 */
 	public void executeAndProcess(String query, ResultSetProcessor processor) {
 		try (
-				Connection connection = DriverManager.getConnection("jdbc:sqlite:" + filePath);
+				Connection connection = DriverManager.getConnection("jdbc:mysql://" + url, user, password);
 				Statement statement = connection.createStatement();) {
 			ResultSet resultSet = statement.executeQuery(query);
 			processor.process(resultSet);
@@ -72,10 +80,6 @@ public class SqLiteDatabase {
 			throw new IllegalStateException(message, exception);
 		}
 	}
-
-	//#end region
-
-	//#region ACCESSORS
 
 	//#end region
 

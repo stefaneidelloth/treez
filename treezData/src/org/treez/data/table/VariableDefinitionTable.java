@@ -79,7 +79,7 @@ public class VariableDefinitionTable implements TreezTable {
 		if (columnTypes == null) {
 			columnTypes = new HashMap<>();
 			for (int index = 0; index < getHeaders().size(); index++) {
-				columnTypes.put(headers.get(index), ColumnType.TEXT);
+				columnTypes.put(headers.get(index), ColumnType.STRING);
 			}
 		}
 		return columnTypes.get(header);

@@ -163,7 +163,7 @@ public class SensitivityProbe extends AbstractProbe {
 		String timeLabelString = timeLabel.get();
 		String timeColumnName = timeLabelString;
 		Class<?> timeType = getTimeType();
-		ColumnType timeColumnType = ColumnType.getDefaultTypeForClass(timeType);
+		ColumnType timeColumnType = ColumnType.getType(timeType);
 		String timeLegend = timeLabelString;
 		columnBlueprints.add(new ColumnBlueprint(timeColumnName, timeColumnType, timeLegend));
 
@@ -171,7 +171,7 @@ public class SensitivityProbe extends AbstractProbe {
 
 		//get y information
 		String yLabelString = yLabel.get();
-		ColumnType yColumnType = ColumnType.TEXT;
+		ColumnType yColumnType = ColumnType.STRING;
 
 		//get tuple information
 		String tupleListLabelString = tupleListLabel.get();

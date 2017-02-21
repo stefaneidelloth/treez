@@ -28,10 +28,9 @@ import org.treez.core.data.table.TableSourceType;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.data.column.Columns;
+import org.treez.data.database.sqlite.SqLiteDataTableImporter;
 import org.treez.data.table.nebula.Table;
 import org.treez.data.tableImport.ExcelDataTableImporter;
-import org.treez.data.tableImport.MySqlDataTableImporter;
-import org.treez.data.tableImport.SqLiteDataTableImporter;
 import org.treez.data.tableImport.TableData;
 import org.treez.data.tableImport.TextDataTableImporter;
 import org.treez.model.Activator;
@@ -365,8 +364,10 @@ public class TableImport extends AbstractModel implements TableSource {
 					jobId, maxRows, 0);
 			return tableData;
 		case MYSQL:
-			tableData = MySqlDataTableImporter.importData(hostString, portString, userString, passwordString,
-					schemaString, tableNameString, filterRows, jobId, maxRows);
+			String url = hostString + ":" + portString + "/" + schemaString;
+
+			tableData = org.treez.data.database.mysql.MySqlDataTableImporter.importData(url, userString, passwordString,
+					tableNameString, filterRows, jobId, maxRows, 0);
 			return tableData;
 		default:
 			throw new IllegalStateException("The TableSourceType '" + tableSourceType + "' is not yet implemented.");
@@ -481,7 +482,7 @@ public class TableImport extends AbstractModel implements TableSource {
 			}
 
 			for (String header : headers) {
-				columns.createColumn(header, ColumnType.TEXT);
+				columns.createColumn(header, ColumnType.STRING);
 			}
 		}
 	}

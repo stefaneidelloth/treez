@@ -1,44 +1,23 @@
 package org.treez.core.data.index;
 
-import org.treez.core.data.column.ColumnType;
-
 public class IndexBlueprint {
 
 	//#region ATTRIBUTES
 
 	private String name;
 
-	private ColumnType type;
+	private String fields;
 
-	private boolean isNullable;
-
-	private boolean isPrimaryKey;
-
-	private Object defaultValue;
-
-	private String legend;
+	private boolean isUnique;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public IndexBlueprint(String name, ColumnType columnType, String legend) {
-		this(name, columnType, true, false, null, legend);
-	}
-
-	public IndexBlueprint(
-			String name,
-			ColumnType columnType,
-			boolean isNullable,
-			boolean isPrimaryKey,
-			Object defaultValue,
-			String legend) {
+	public IndexBlueprint(String name, String fields, boolean isUnique) {
 		this.name = name;
-		this.type = columnType;
-		this.isNullable = isNullable;
-		this.isPrimaryKey = isPrimaryKey;
-		this.defaultValue = defaultValue;
-		this.legend = legend;
+		this.fields = fields;
+		this.isUnique = isUnique;
 	}
 
 	//#end region
@@ -49,24 +28,12 @@ public class IndexBlueprint {
 		return name;
 	}
 
-	public ColumnType getType() {
-		return type;
+	public String getFields() {
+		return fields;
 	}
 
-	public boolean isNullable() {
-		return isNullable;
-	}
-
-	public boolean isPrimaryKey() {
-		return isPrimaryKey;
-	}
-
-	public Object getDefaultValue() {
-		return defaultValue;
-	}
-
-	public String getLegend() {
-		return legend;
+	public boolean isUnique() {
+		return isUnique;
 	}
 
 	//#end region

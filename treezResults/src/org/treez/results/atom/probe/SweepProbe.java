@@ -209,7 +209,7 @@ public class SweepProbe extends AbstractProbe {
 		String domainLabelString = domainLabel.get();
 		String domainColumnName = domainLabelString;
 		Class<?> domainType = getDomainType();
-		ColumnType domainColumnType = ColumnType.getDefaultTypeForClass(domainType);
+		ColumnType domainColumnType = ColumnType.getType(domainType);
 		String domainLegend = domainLabelString;
 		columnBlueprints.add(new ColumnBlueprint(domainColumnName, domainColumnType, domainLegend));
 
@@ -217,7 +217,7 @@ public class SweepProbe extends AbstractProbe {
 
 		//get probe information
 		String probeLabelString = probeLabel.get();
-		ColumnType probeColumnType = ColumnType.TEXT;
+		ColumnType probeColumnType = ColumnType.STRING;
 
 		//get first family information
 		String firstFamilyLabelString = firstFamilyLegend.get();

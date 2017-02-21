@@ -8,7 +8,6 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -16,23 +15,18 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
-import org.treez.core.utils.Utils;
 
 /**
- * Label provider for table entries that is able to validate the table entry.
- * Text validation might also depend on the cell editor.
+ * Label provider for table entries that is able to validate the table entry. Text validation might also depend on the
+ * cell editor.
  */
-public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider
-		implements
-			ILabelProvider {
+public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
 
 	//#region ATTRIBUTES
 
-	private static final Color COLOR_NO_ERROR = new Color(Display.getCurrent(),
-			255, 255, 255);
+	private static final Color COLOR_NO_ERROR = new Color(Display.getCurrent(), 255, 255, 255);
 
-	private static final Color COLOR_ERROR = new Color(Display.getCurrent(),
-			250, 200, 128);
+	private static final Color COLOR_ERROR = new Color(Display.getCurrent(), 250, 200, 128);
 
 	private String header;
 
@@ -41,8 +35,7 @@ public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider
 	private boolean pathValidationIsEnabled = false;
 
 	/**
-	 * The last edited table item. (Needed to validated all table items if
-	 * validation is enabled/disabled).
+	 * The last edited table item. (Needed to validated all table items if validation is enabled/disabled).
 	 */
 	private TableItem lastRenderedTableItem;
 
@@ -70,16 +63,8 @@ public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider
 		String label = row.getEntryAsString(header);
 		cell.setText(label);
 
-		//set background value for color columns
-		if (columnType == ColumnType.COLOR) {
-			RGB rgb = Utils.convertToRGB(label);
-			Color color = new Color(Display.getCurrent(), rgb.red, rgb.green,
-					rgb.blue);
-			cell.setBackground(color);
-		}
-
-		//validate content for text columns (may also set background color)
-		if (columnType == ColumnType.TEXT) {
+		//validate content for string columns (may also set background color)
+		if (columnType == ColumnType.STRING) {
 			TableItem tableItem = (TableItem) cell.getItem();
 			validateTableItem(tableItem);
 		}
@@ -102,8 +87,8 @@ public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider
 	}
 
 	/**
-	 * Validates the label to represents a valid file path. If it is not a valid
-	 * file path, a red background color is shown to "highlight an error state".
+	 * Validates the label to represents a valid file path. If it is not a valid file path, a red background color is
+	 * shown to "highlight an error state".
 	 *
 	 * @param label
 	 * @param cell

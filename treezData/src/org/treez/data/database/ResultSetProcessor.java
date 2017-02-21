@@ -1,4 +1,4 @@
-package org.treez.data.sqlite;
+package org.treez.data.database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -28,7 +28,7 @@ public class TableTest extends AbstractAbstractAtomTest {
 		Column idColumn = new Column("id", ColumnType.INTEGER);
 		table.addColumn(idColumn);
 
-		Column nameColumn = new Column("name", ColumnType.TEXT);
+		Column nameColumn = new Column("name", ColumnType.STRING);
 		table.addColumn(nameColumn);
 
 		for (int rowIndex = 1; rowIndex < 10; rowIndex++) {

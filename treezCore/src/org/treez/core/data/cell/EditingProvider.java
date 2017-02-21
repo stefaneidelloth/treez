@@ -25,8 +25,7 @@ public class EditingProvider extends EditingSupport {
 
 	//#region CONSTRUCTORS
 
-	public EditingProvider(ColumnViewer tableViewer, TreezTable table,
-			String header, CellEditor cellEditor) {
+	public EditingProvider(ColumnViewer tableViewer, TreezTable table, String header, CellEditor cellEditor) {
 		super(tableViewer);
 		this.tableViewer = tableViewer;
 		this.table = table;
@@ -51,7 +50,7 @@ public class EditingProvider extends EditingSupport {
 	@Override
 	protected Object getValue(Object element) {
 		Row row = (Row) element;
-		Object value = row.getObject(header, cellEditor);
+		Object value = row.getObject(header);
 		return value;
 	}
 

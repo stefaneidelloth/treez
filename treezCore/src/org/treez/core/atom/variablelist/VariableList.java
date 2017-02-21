@@ -87,7 +87,7 @@ public class VariableList extends AbstractAttributeAtom<VariableList, List<Varia
 	 */
 	protected void createTreezList(List<VariableField<?, ?>> availableVariableFields) {
 		treezList = new TreezListAtom("treezList");
-		treezList.setColumnType(ColumnType.TEXT);
+		treezList.setColumnType(ColumnType.STRING);
 
 		setAvailableVariables(availableVariableFields);
 

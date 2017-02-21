@@ -365,7 +365,7 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 			ColumnType defaultValue) {
 		String attributeName = getFieldName(wrap, attributeParent);
 		ColumnTypeComboBox combo = new ColumnTypeComboBox(attributeName);
-		combo.setDefaultValue(defaultValue.getValue());
+		combo.setDefaultValue(defaultValue);
 		addChild(combo);
 		combo.wrap(wrap);
 		return combo;
@@ -956,6 +956,7 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 		this.description = description;
 	}
 
+	@Override
 	public boolean isEnabled() {
 		return isEnabled;
 	}

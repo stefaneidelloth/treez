@@ -8,7 +8,7 @@ public class ColumnTypeComboBox extends AbstractComboBox<ColumnTypeComboBox> {
 
 	public ColumnTypeComboBox(String name) {
 		super(name);
-		this.setItems(ColumnType.TEXT);
+		this.setItems(ColumnType.STRING);
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class ColumnTypeComboBox extends AbstractComboBox<ColumnTypeComboBox> {
 
 	@Override
 	public void set(String columnTypeString) {
-		boolean isColumnType = ColumnType.representsType(columnTypeString);
+		boolean isColumnType = ColumnType.representsAColumnType(columnTypeString);
 		if (isColumnType) {
 			super.setValue(columnTypeString);
 		} else {
@@ -48,18 +48,18 @@ public class ColumnTypeComboBox extends AbstractComboBox<ColumnTypeComboBox> {
 	}
 
 	public void set(ColumnType columnTypeToSet) {
-		set(columnTypeToSet.getValue());
+		set(columnTypeToSet.name());
 	}
 
 	public ColumnType getType() {
-		String columnTypeString = get();
-		ColumnType columnTypeValue = ColumnType.getType(columnTypeString);
+		String columnTypeName = get();
+		ColumnType columnTypeValue = ColumnType.getType(columnTypeName);
 		return columnTypeValue;
 	}
 
 	@Override
 	public ColumnTypeComboBox setDefaultValue(String defaultValue) {
-		boolean valueAllowed = ColumnType.representsType(defaultValue);
+		boolean valueAllowed = ColumnType.representsAColumnType(defaultValue);
 		if (valueAllowed) {
 			this.defaultValue = defaultValue;
 		} else {

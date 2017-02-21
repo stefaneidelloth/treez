@@ -59,7 +59,7 @@ public final class TextDataTableImporter {
 
 			@Override
 			public ColumnType getColumnType(String header) {
-				return ColumnType.TEXT;
+				return ColumnType.STRING;
 			}
 
 			@Override

@@ -1,15 +1,11 @@
 package org.treez.core.data.row;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.treez.core.atom.copy.Copiable;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.table.TreezTable;
-import org.treez.core.utils.Utils;
 
 /**
  * Represents a table row
@@ -176,18 +172,10 @@ public class Row implements Copiable<Row> {
 		if (columnExists) {
 			if (value != null) {
 				Class<?> valueClass = value.getClass();
-				List<ColumnType> allowedColumnTypes = ColumnType.getAllowedTypesForClass(valueClass);
+				ColumnType valueColumnType = ColumnType.getType(valueClass);
 				ColumnType columnType = table.getColumnType(columnHeader);
 
-				boolean columnTypeFitsToValue = allowedColumnTypes.contains(columnType);
-
-				//allow to set "enum entries" with strings
-				//boolean isEnumType = columnType.equals(ColumnType.ENUM);
-				//boolean valueIsString = valueClass.equals(String.class);
-				//if (isEnumType && valueIsString){
-				//columnTypeFitsToValue=true;
-				//}
-
+				boolean columnTypeFitsToValue = valueColumnType.equals(columnType);
 				if (columnTypeFitsToValue) {
 					//set entry
 					this.entryMap.put(columnHeader, value);
@@ -212,10 +200,9 @@ public class Row implements Copiable<Row> {
 	 * Get an object that can be used by the corresponding cell editor
 	 *
 	 * @param columnHeader
-	 * @param cellEditor
 	 * @return
 	 */
-	public Object getObject(String columnHeader, CellEditor cellEditor) {
+	public Object getObject(String columnHeader) {
 
 		ColumnType columnType = table.getColumnType(columnHeader);
 		Object entry = entryMap.get(columnHeader);
@@ -223,45 +210,20 @@ public class Row implements Copiable<Row> {
 		Object object = null;
 
 		switch (columnType) {
-		case BOOLEAN:
+		case INTEGER:
 			object = entry;
-			break;
-		case COLOR:
-			object = Utils.convertToRGB((String) entry);
 			break;
 		case DOUBLE:
 			object = entry;
 			break;
-		case ENUM:
-			int value = getEnumValue(cellEditor, entry);
-			cellEditor.setValue(value); //reset to default if entry is not
-			//found
-			object = value;
-			break;
-		case INTEGER:
-			object = entry;
-			break;
-		case TEXT:
+		case STRING:
 			object = entry;
 			break;
 		default:
 			throw new IllegalStateException("Unknown column type " + columnType);
-
 		}
 
 		return object;
-	}
-
-	private static int getEnumValue(CellEditor cellEditor, Object entry) {
-		String[] items = ((ComboBoxCellEditor) cellEditor).getItems();
-		int value = 0;
-		for (int i = 0; i < items.length; i++) {
-			if (items[i].equals(entry)) {
-				cellEditor.setValue(i);
-				value = i;
-			}
-		}
-		return value;
 	}
 
 	/**

@@ -30,8 +30,9 @@ import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.data.cell.TreezTableNebulaLabelProvider;
 import org.treez.data.column.Column;
 import org.treez.data.column.Columns;
+import org.treez.data.database.mysql.MySqlDataTableImporter;
+import org.treez.data.database.sqlite.SqLiteDataTableImporter;
 import org.treez.data.table.nebula.nat.pageloader.DatabasePageResultLoader;
-import org.treez.data.tableImport.SqLiteDataTableImporter;
 
 public class Table extends AbstractTreezTable<Table> {
 
@@ -234,6 +235,11 @@ public class Table extends AbstractTreezTable<Table> {
 			deleteColumnsIfExist();
 			List<ColumnBlueprint> tableStructure = readTableStructureForSqLiteTable(tableSource);
 			createColumns(tableStructure);
+		} else if (sourceType.equals(TableSourceType.MYSQL)) {
+
+			deleteColumnsIfExist();
+			List<ColumnBlueprint> tableStructure = readTableStructureForMySqlTable(tableSource);
+			createColumns(tableStructure);
 		} else {
 			throw new IllegalStateException("not yet implemented for current source type " + sourceType);
 		}
@@ -252,6 +258,22 @@ public class Table extends AbstractTreezTable<Table> {
 		String tableName = tableSource.getTableName();
 		String password = tableSource.getPassword();
 		List<ColumnBlueprint> tableStructure = SqLiteDataTableImporter.readTableStructure(sqLiteFilePath, password,
+				tableName);
+		return tableStructure;
+	}
+
+	private static List<ColumnBlueprint> readTableStructureForMySqlTable(TableSource tableSource) {
+		String host = tableSource.getHost();
+		String port = tableSource.getPort();
+		String schema = tableSource.getSchema();
+		String url = host + ":" + port + "/" + schema;
+
+		String user = tableSource.getUser();
+		String password = tableSource.getPassword();
+
+		String tableName = tableSource.getTableName();
+
+		List<ColumnBlueprint> tableStructure = MySqlDataTableImporter.readTableStructure(url, user, password,
 				tableName);
 		return tableStructure;
 	}

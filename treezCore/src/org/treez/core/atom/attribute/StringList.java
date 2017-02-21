@@ -84,7 +84,7 @@ public class StringList extends AbstractAttributeAtom<StringList, List<String>> 
 	 */
 	protected void createTreezList() {
 		treezList = new TreezListAtom("treezList");
-		treezList.setColumnType(ColumnType.TEXT);
+		treezList.setColumnType(ColumnType.STRING);
 		treezList.setShowHeader(false);
 	}
 

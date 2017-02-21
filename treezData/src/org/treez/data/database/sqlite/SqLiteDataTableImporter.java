@@ -1,4 +1,4 @@
-package org.treez.data.tableImport;
+package org.treez.data.database.sqlite;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -7,10 +7,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
+import org.treez.core.data.column.ColumnTypeConverter;
 import org.treez.core.data.foreignkey.ForeignKeyBlueprint;
 import org.treez.core.data.index.IndexBlueprint;
-import org.treez.data.sqlite.ResultSetProcessor;
-import org.treez.data.sqlite.SqLiteDatabase;
+import org.treez.data.database.ResultSetProcessor;
+import org.treez.data.tableImport.TableData;
 
 public final class SqLiteDataTableImporter {
 
@@ -56,10 +57,10 @@ public final class SqLiteDataTableImporter {
 			Integer rowLimit,
 			Integer rowOffset) {
 
-		//read headers
 		List<String> headers = readHeaders(filePath, password, tableName);
 
-		//read data
+		List<ColumnBlueprint> columnBlueprints = readTableStructure(filePath, password, tableName);
+
 		List<List<Object>> data = readData(filePath, password, tableName, filterRowsByJobId, jobId, rowLimit, rowOffset,
 				headers);
 
@@ -72,7 +73,13 @@ public final class SqLiteDataTableImporter {
 
 			@Override
 			public ColumnType getColumnType(String header) {
-				return ColumnType.TEXT;
+
+				for (ColumnBlueprint columnBlueprint : columnBlueprints) {
+					if (header.equals(columnBlueprint.getName())) {
+						return columnBlueprint.getType();
+					}
+				}
+				throw new IllegalStateException("Could not determine ColumnType for column '" + header + "'");
 			}
 
 			@Override
@@ -107,11 +114,13 @@ public final class SqLiteDataTableImporter {
 
 		List<ColumnBlueprint> tableStructure = new ArrayList<>();
 
+		ColumnTypeConverter columnTypeConverter = new SqLiteColumnTypeConverter();
+
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			while (resultSet.next()) {
 				String name = resultSet.getString("name"); //available columns: cid, name, notnull, dflt_value, pk
 
-				ColumnType type = ColumnType.getType(resultSet.getString("type"));
+				ColumnType type = columnTypeConverter.getType(resultSet.getString("type"));
 				boolean isNullable = !resultSet.getBoolean("notnull");
 				boolean isPrimaryKey = resultSet.getBoolean("pk");
 				Object defaultValue = resultSet.getObject("dflt_value");
@@ -127,13 +136,26 @@ public final class SqLiteDataTableImporter {
 
 	public static List<ForeignKeyBlueprint> readForeignKeys(String filePath, String password, String tableName) {
 
-		//PRAGMA foreign_key_list('table')
+		//TODO:
+		//PRAGMA foreign_key_list('table_name')
+		//
+		//The pragma command does not yield the name of the foreign key.
+		//The name can be extracted from column sql in sqlite_master table.
+		//That would however require some extra parsing. The parsing would
+		//have to consider the existance of several foreign keys. Also see
+		//http://stackoverflow.com/questions/41595152/how-to-get-the-names-of-foreign-key-constraints-in-sqlite
+		//
+		//SELECT sql FROM sqlite_master WHERE name = 'table_name'
+
 		return null;
 	}
 
 	public static List<IndexBlueprint> readIndices(String filePath, String password, String tableName) {
 
-		//PRAGMA index_list('table')
+		//TODO:
+		//select * from sqlite_master where type='index' and tbl_name = 'table_name'
+		//and
+		//PRAGMA index_list('table_name')
 		return null;
 
 	}
@@ -144,6 +166,7 @@ public final class SqLiteDataTableImporter {
 		String structureQuery = "PRAGMA table_info('" + tableName + "');";
 
 		List<ColumnType> columnTypeContainer = new ArrayList<>();
+		ColumnTypeConverter columnTypeConverter = new SqLiteColumnTypeConverter();
 
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			while (resultSet.next()) {
@@ -151,7 +174,7 @@ public final class SqLiteDataTableImporter {
 				boolean isWantedColumn = columnName.equals(currentColumnName);
 				if (isWantedColumn) {
 					String type = resultSet.getString("type");
-					ColumnType columnType = ColumnType.getType(type);
+					ColumnType columnType = columnTypeConverter.getType(type);
 					columnTypeContainer.add(columnType);
 					return;
 				}

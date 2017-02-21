@@ -1,6 +1,5 @@
 package org.treez.data.column;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,12 +40,6 @@ public class Column extends AdjustableAtom {
 	public final Attribute<Boolean> isPrimaryKey = new Wrap<>();
 
 	public final Attribute<String> defaultValueString = new Wrap<>();
-
-	/**
-	 * The enum values that are allowed for the column
-	 */
-	@SuppressWarnings("unused")
-	public final Attribute<String> enumValues = new Wrap<>();
 
 	//#end region
 
@@ -120,10 +113,8 @@ public class Column extends AdjustableAtom {
 
 		section.createTextField(header, this, name);
 
-		section.createTextField(legend, this, "");
-
 		section
-				.createColumnTypeComboBox(columnType, this, ColumnType.TEXT) //
+				.createColumnTypeComboBox(columnType, this, ColumnType.STRING) //
 				.setLabel("Type");
 
 		section
@@ -138,9 +129,7 @@ public class Column extends AdjustableAtom {
 				.createTextField(defaultValueString, this) //
 				.setLabel("Default value");
 
-		section
-				.createTextField(enumValues, this, "item1,item2") //
-				.setEnabled(false);
+		section.createTextField(legend, this, "");
 
 		setModel(root);
 
@@ -199,17 +188,11 @@ public class Column extends AdjustableAtom {
 	public List<Double> getDoubleValues() {
 		List<Object> valueObjects = getValues();
 		switch (getColumnType()) {
-		case BOOLEAN:
-			return getDoubleValuesFromBooleans(valueObjects);
-		case COLOR:
-			return getDoubleValuesFromColors(valueObjects);
-		case DOUBLE:
-			return getDoubleValuesFromNumbers(valueObjects);
-		case ENUM:
-			return getDoubleValuesFromEnums(valueObjects);
 		case INTEGER:
 			return getDoubleValuesFromNumbers(valueObjects);
-		case TEXT:
+		case DOUBLE:
+			return getDoubleValuesFromNumbers(valueObjects);
+		case STRING:
 			return getDoubleValuesFromStrings(valueObjects);
 		default:
 			String message = "Unknown column type " + getColumnType();
@@ -217,41 +200,10 @@ public class Column extends AdjustableAtom {
 		}
 	}
 
-	private static List<Double> getDoubleValuesFromBooleans(List<Object> valueObjects) {
-		List<Double> values = valueObjects.stream().map(element -> {
-			Boolean bool = (Boolean) element;
-			if (bool) {
-				return 1.0;
-			} else {
-				return 0.0;
-			}
-		}).collect(Collectors.toList());
-		return values;
-	}
-
-	private static List<Double> getDoubleValuesFromColors(List<Object> valueObjects) {
-
-		List<Double> values = valueObjects.stream().map(element -> {
-			Color color = (Color) element;
-			int rgb = color.getRGB();
-			return new Double(rgb);
-		}).collect(Collectors.toList());
-		return values;
-	}
-
 	private static List<Double> getDoubleValuesFromNumbers(List<Object> valueObjects) {
 		List<Double> values = valueObjects.stream().map(element -> {
 			Number number = (Number) element;
 			return number.doubleValue();
-		}).collect(Collectors.toList());
-		return values;
-	}
-
-	private static List<Double> getDoubleValuesFromEnums(List<Object> valueObjects) {
-		List<Double> values = valueObjects.stream().map(element -> {
-			Enum<?> enumeration = (Enum<?>) element;
-			int ordinal = enumeration.ordinal();
-			return new Double(ordinal);
 		}).collect(Collectors.toList());
 		return values;
 	}

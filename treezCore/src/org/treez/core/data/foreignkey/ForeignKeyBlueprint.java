@@ -1,44 +1,38 @@
 package org.treez.core.data.foreignkey;
 
-import org.treez.core.data.column.ColumnType;
-
 public class ForeignKeyBlueprint {
 
 	//#region ATTRIBUTES
 
 	private String name;
 
-	private ColumnType type;
+	private String fields;
 
-	private boolean isNullable;
+	private String referencedTable;
 
-	private boolean isPrimaryKey;
+	private String referencedFields;
 
-	private Object defaultValue;
+	private String onDelete;
 
-	private String legend;
+	private String onUpdate;
 
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public ForeignKeyBlueprint(String name, ColumnType columnType, String legend) {
-		this(name, columnType, true, false, null, legend);
-	}
-
 	public ForeignKeyBlueprint(
 			String name,
-			ColumnType columnType,
-			boolean isNullable,
-			boolean isPrimaryKey,
-			Object defaultValue,
-			String legend) {
+			String fields,
+			String referencedTable,
+			String referencedFields,
+			String onDelete,
+			String onUpdate) {
 		this.name = name;
-		this.type = columnType;
-		this.isNullable = isNullable;
-		this.isPrimaryKey = isPrimaryKey;
-		this.defaultValue = defaultValue;
-		this.legend = legend;
+		this.fields = fields;
+		this.referencedTable = referencedTable;
+		this.referencedFields = referencedFields;
+		this.onDelete = onDelete;
+		this.onUpdate = onUpdate;
 	}
 
 	//#end region
@@ -49,24 +43,24 @@ public class ForeignKeyBlueprint {
 		return name;
 	}
 
-	public ColumnType getType() {
-		return type;
+	public String getFields() {
+		return fields;
 	}
 
-	public boolean isNullable() {
-		return isNullable;
+	public String getReferencedTable() {
+		return referencedTable;
 	}
 
-	public boolean isPrimaryKey() {
-		return isPrimaryKey;
+	public String getReferencedFields() {
+		return referencedFields;
 	}
 
-	public Object getDefaultValue() {
-		return defaultValue;
+	public String getOnDelete() {
+		return onDelete;
 	}
 
-	public String getLegend() {
-		return legend;
+	public String getOnUpdate() {
+		return onUpdate;
 	}
 
 	//#end region
