@@ -376,6 +376,7 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	 *
 	 * @return
 	 */
+	@Override
 	public boolean isEnabled() {
 		return isEnabled;
 	}

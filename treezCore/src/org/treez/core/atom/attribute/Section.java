@@ -366,6 +366,7 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 		String attributeName = getFieldName(wrap, attributeParent);
 		ColumnTypeComboBox combo = new ColumnTypeComboBox(attributeName);
 		combo.setDefaultValue(defaultValue.getValue());
+		addChild(combo);
 		combo.wrap(wrap);
 		return combo;
 	}

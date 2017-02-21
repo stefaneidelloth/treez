@@ -210,6 +210,11 @@ public class SectionAction extends AbstractAttributeContainerAtom<SectionAction>
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@Override
 	public SectionAction setEnabled(boolean enable) {
 		throw new IllegalStateException("not yet implemented");
 	}

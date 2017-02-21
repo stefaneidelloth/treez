@@ -84,6 +84,8 @@ Export-Package: org.apache.commons.exec;uses:="new org.apache.commons.exec",
    org.eclipse.swt.widgets,
    org.eclipse.jface.viewers",
  org.treez.core.data.column,
+ org.treez.core.data.foreignkey,
+ org.treez.core.data.index,
  org.treez.core.data.row;uses:="org.treez.core.data.table,org.treez.core.atom.copy,org.eclipse.jface.viewers",
  org.treez.core.data.table;
   uses:="org.treez.core.data.column,

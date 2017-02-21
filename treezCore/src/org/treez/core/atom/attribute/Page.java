@@ -260,6 +260,11 @@ public class Page extends AbstractAttributeContainerAtom<Page> {
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@Override
 	public Page setEnabled(boolean enable) {
 		throw new IllegalStateException("not yet implemented");
 	}

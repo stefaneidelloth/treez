@@ -32,9 +32,15 @@ public class Column extends AdjustableAtom {
 
 	public final Attribute<String> header = new Wrap<>();
 
-	public final Attribute<String> description = new Wrap<>();
+	public final Attribute<String> legend = new Wrap<>();
 
 	public final Attribute<String> columnType = new Wrap<>();
+
+	public final Attribute<Boolean> isNullable = new Wrap<>();
+
+	public final Attribute<Boolean> isPrimaryKey = new Wrap<>();
+
+	public final Attribute<String> defaultValueString = new Wrap<>();
 
 	/**
 	 * The enum values that are allowed for the column
@@ -68,7 +74,7 @@ public class Column extends AdjustableAtom {
 		Attribute<String> attribute = wrap.getAttribute();
 		ColumnTypeComboBox combo = (ColumnTypeComboBox) attribute;
 		combo.set(type);
-		this.description.set(description);
+		this.legend.set(description);
 	}
 
 	public Column(String name, String columnType) {
@@ -114,11 +120,27 @@ public class Column extends AdjustableAtom {
 
 		section.createTextField(header, this, name);
 
-		section.createTextField(description, this, "");
+		section.createTextField(legend, this, "");
 
-		section.createColumnTypeComboBox(columnType, this, ColumnType.TEXT).setLabel("Type");
+		section
+				.createColumnTypeComboBox(columnType, this, ColumnType.TEXT) //
+				.setLabel("Type");
 
-		section.createTextField(enumValues, this, "item1,item2");
+		section
+				.createCheckBox(isNullable, this, true) //
+				.setLabel("Nullable");
+
+		section
+				.createCheckBox(isPrimaryKey, this, false) //
+				.setLabel("Primary key");
+
+		section
+				.createTextField(defaultValueString, this) //
+				.setLabel("Default value");
+
+		section
+				.createTextField(enumValues, this, "item1,item2") //
+				.setEnabled(false);
 
 		setModel(root);
 

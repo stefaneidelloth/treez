@@ -1,6 +1,7 @@
 package org.treez.core.atom.attribute.base;
 
 import org.treez.core.adaptable.CodeContainer;
+import org.treez.core.atom.attribute.base.parent.AbstractAttributeParentAtom;
 import org.treez.core.atom.attribute.base.parent.AttributeParentCodeAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.quantity.Quantity;
@@ -33,18 +34,29 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 
 		CodeContainer attributeContainer = new CodeContainer(scriptType);
 
+		CodeContainer extendedContainer = attributeContainer;
+
 		@SuppressWarnings("unchecked")
 		AbstractAttributeAtom<?, T> attributeAtom = (AbstractAttributeAtom<?, T>) atom;
 		boolean hasDefaultValue = attributeAtom.hasDefaultValue();
-		if (hasDefaultValue) {
-			return attributeContainer;
-		} else {
-			CodeContainer nonDefaultContainer = buildCodeContainerForNonDefaultAttribute(attributeContainer,
-					attributeAtom);
-			return nonDefaultContainer;
-
+		if (!hasDefaultValue) {
+			extendedContainer = buildCodeContainerForNonDefaultAttribute(attributeContainer, attributeAtom);
 		}
 
+		extendedContainer = setEnabledStateIfAtomIsDisabled(extendedContainer);
+
+		return extendedContainer;
+
+	}
+
+	private CodeContainer setEnabledStateIfAtomIsDisabled(CodeContainer extendedContainer) {
+		AbstractAttributeParentAtom<?> attributeParentAtom = (AbstractAttributeParentAtom<?>) atom;
+		boolean isEnabled = attributeParentAtom.isEnabled();
+		if (!isEnabled) {
+			String newBulkLine = "\t\t" + VARIABLE_NAME + ".setEnabled(false);";
+			extendedContainer.extendBulk(newBulkLine);
+		}
+		return extendedContainer;
 	}
 
 	/**

@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
+import org.treez.core.data.foreignkey.ForeignKeyBlueprint;
+import org.treez.core.data.index.IndexBlueprint;
 import org.treez.data.sqlite.ResultSetProcessor;
 import org.treez.data.sqlite.SqLiteDatabase;
 
@@ -121,6 +123,19 @@ public final class SqLiteDataTableImporter {
 		database.executeAndProcess(structureQuery, processor);
 
 		return tableStructure;
+	}
+
+	public static List<ForeignKeyBlueprint> readForeignKeys(String filePath, String password, String tableName) {
+
+		//PRAGMA foreign_key_list('table')
+		return null;
+	}
+
+	public static List<IndexBlueprint> readIndices(String filePath, String password, String tableName) {
+
+		//PRAGMA index_list('table')
+		return null;
+
 	}
 
 	public static ColumnType getColumnType(String filePath, String password, String tableName, String columnName) {

@@ -56,6 +56,8 @@ public abstract class AbstractAttributeParentAtom<A extends AbstractAttributePar
 		return codeAdaption;
 	}
 
+	public abstract boolean isEnabled();
+
 	/**
 	 * Enables or disables the property atom. This can be used for example by the class ComboBoxEnableTarget if the
 	 * inheriting class provides a meaningful implementation

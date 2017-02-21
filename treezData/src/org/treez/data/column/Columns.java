@@ -189,7 +189,7 @@ public class Columns extends AdjustableAtom {
 	 * @return
 	 */
 	public String getColumnHeaderTooltip(String header) {
-		return getColumn(header).description.get();
+		return getColumn(header).legend.get();
 	}
 
 	//#end region
@@ -312,7 +312,18 @@ public class Columns extends AdjustableAtom {
 		String columnHeader = columnBlueprint.getName();
 		ColumnType columnType = columnBlueprint.getType();
 		String legendText = columnBlueprint.getLegend();
-		return createColumn(columnHeader, columnType, legendText);
+		Column column = createColumn(columnHeader, columnType, legendText);
+		column.isNullable.set(columnBlueprint.isNullable());
+		column.isPrimaryKey.set(columnBlueprint.isPrimaryKey());
+
+		Object defaultValue = columnBlueprint.getDefaultValue();
+		if (defaultValue == null) {
+			column.defaultValueString.set("null");
+		} else {
+			column.defaultValueString.set(defaultValue.toString());
+		}
+
+		return column;
 	}
 
 	/**
