@@ -230,6 +230,7 @@ public class Table extends AbstractTreezTable<Table> {
 	private void loadTableStructureFromSource() {
 		TableSource tableSource = this.getTableSource();
 		TableSourceType sourceType = tableSource.getSourceType();
+
 		if (sourceType.equals(TableSourceType.SQLITE)) {
 
 			deleteColumnsIfExist();

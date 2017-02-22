@@ -119,6 +119,8 @@ public final class SqLiteImporter extends AbstractImporter {
 
 		ColumnTypeConverter columnTypeConverter = new SqLiteColumnTypeConverter();
 
+		boolean isLinkedToSource = true;
+
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			while (resultSet.next()) {
 				String name = resultSet.getString("name"); //available columns: cid, name, notnull, dflt_value, pk
@@ -129,7 +131,14 @@ public final class SqLiteImporter extends AbstractImporter {
 				Object defaultValue = resultSet.getObject("dflt_value");
 				String legend = name;
 
-				tableStructure.add(new ColumnBlueprint(name, type, isNullable, isPrimaryKey, defaultValue, legend));
+				tableStructure.add(new ColumnBlueprint(
+						name,
+						type,
+						isNullable,
+						isPrimaryKey,
+						defaultValue,
+						legend,
+						isLinkedToSource));
 			}
 		};
 		database.executeAndProcess(structureQuery, processor);
@@ -158,6 +167,8 @@ public final class SqLiteImporter extends AbstractImporter {
 
 		ColumnTypeConverter columnTypeConverter = new SqLiteColumnTypeConverter();
 
+		boolean isLinkedToSource = true;
+
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			resultSet.next();
 			ResultSetMetaData metaData = resultSet.getMetaData();
@@ -167,11 +178,9 @@ public final class SqLiteImporter extends AbstractImporter {
 				String name = metaData.getColumnName(columnIndex);
 				ColumnType type = columnTypeConverter.getType(metaData.getColumnTypeName(columnIndex));
 				boolean isNullable = metaData.isNullable(columnIndex) == 1;
-				boolean isPrimaryKey = false; //virtual columns are not and for real columns some extra query would be needed.
-				Object defaultValue = null;
 				String legend = metaData.getColumnLabel(columnIndex);
 
-				tableStructure.add(new ColumnBlueprint(name, type, isNullable, isPrimaryKey, defaultValue, legend));
+				tableStructure.add(new ColumnBlueprint(name, type, isNullable, legend, isLinkedToSource));
 			}
 
 		};
@@ -302,12 +311,8 @@ public final class SqLiteImporter extends AbstractImporter {
 			throw new IllegalStateException("Custom query must not be empty");
 		}
 
-		String dataQuery = customQuery;
-		boolean endsWithSemicolon = customQuery.substring(length - 1).equalsIgnoreCase(";");
-		if (endsWithSemicolon) {
-			dataQuery = dataQuery.substring(0, length - 2);
-		}
-		dataQuery = customQuery.replace(JOB_ID_PLACEHOLDER, jobId);
+		String dataQuery = removeTrailingSemicolon(customQuery);
+		dataQuery = injectJobIdIfIncludesPlaceholder(dataQuery, jobId);
 
 		int offset = 0;
 		if (rowOffset != null) {

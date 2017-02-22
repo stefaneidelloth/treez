@@ -4,18 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.Activator;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.CheckBox;
 import org.treez.core.atom.attribute.ColumnTypeComboBox;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.TextField;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
+import org.treez.core.data.table.LinkableTreezTable;
 import org.treez.core.data.table.TreezTable;
 import org.treez.core.treeview.TreeViewerRefreshable;
 
@@ -24,8 +26,6 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Column extends AdjustableAtom {
-
-	private static final Logger LOG = Logger.getLogger(Column.class);
 
 	//#region ATTRIBUTES
 
@@ -41,38 +41,57 @@ public class Column extends AdjustableAtom {
 
 	public final Attribute<String> defaultValueString = new Wrap<>();
 
+	private boolean isVirtual = false;
+
+	private boolean isLinkedToSource = false;
+
+	private TextField headerField;
+
+	private ColumnTypeComboBox typeCombo;
+
+	private CheckBox isNullableCheckBox;
+
+	private CheckBox isPrimaryCheckBox;
+
+	private TextField defaultValueField;
+
+	private TextField labelField;
+
 	//#end region
 
 	//#region CONSTRUCTORS
 
 	public Column(String name) {
 		super(name);
-		LOG.debug("creating column " + name);
 		createColumnAtomModel();
+
 	}
 
 	public Column(String name, ColumnType type) {
-		super(name);
-		createColumnAtomModel();
+		this(name);
 		Wrap<String> columnTypeWrap = (Wrap<String>) columnType;
 		ColumnTypeComboBox combo = (ColumnTypeComboBox) columnTypeWrap.getAttribute();
 		combo.set(type);
 
 	}
 
-	public Column(String name, ColumnType type, String description) {
+	public Column(String name, ColumnType type, String description, boolean isLinkedToSource, boolean isVirtual) {
 		super(name);
+		this.isLinkedToSource = isLinkedToSource;
+		this.isVirtual = isVirtual;
 		createColumnAtomModel();
+
 		Wrap<String> wrap = (Wrap<String>) columnType;
 		Attribute<String> attribute = wrap.getAttribute();
 		ColumnTypeComboBox combo = (ColumnTypeComboBox) attribute;
 		combo.set(type);
+
 		this.legend.set(description);
+
 	}
 
 	public Column(String name, String columnType) {
-		super(name);
-		createColumnAtomModel();
+		this(name);
 		this.columnType.set(columnType);
 
 	}
@@ -111,27 +130,55 @@ public class Column extends AdjustableAtom {
 
 		Section section = page.createSection("section");
 
-		section.createTextField(header, this, name);
+		headerField = section.createTextField(header, this, name);
 
-		section
+		typeCombo = section
 				.createColumnTypeComboBox(columnType, this, ColumnType.STRING) //
 				.setLabel("Type");
 
-		section
+		isNullableCheckBox = section
 				.createCheckBox(isNullable, this, true) //
 				.setLabel("Nullable");
 
-		section
+		isPrimaryCheckBox = section
 				.createCheckBox(isPrimaryKey, this, false) //
 				.setLabel("Primary key");
 
-		section
+		defaultValueField = section
 				.createTextField(defaultValueString, this) //
 				.setLabel("Default value");
 
-		section.createTextField(legend, this, "");
+		labelField = section.createTextField(legend, this, "");
 
 		setModel(root);
+
+	}
+
+	@Override
+	protected void afterCreateControlAdaptionHook() {
+		if (isLinkedToSource) {
+			disableAttributes();
+		}
+
+		if (isVirtual) {
+			isPrimaryCheckBox.setVisible(false);
+			defaultValueField.setVisible(false);
+		} else {
+			isPrimaryCheckBox.setVisible(true);
+			defaultValueField.setVisible(true);
+		}
+	}
+
+	private void disableAttributes() {
+
+		headerField.setEnabled(false);
+		typeCombo.setEnabled(false);
+		isNullableCheckBox.setEnabled(false);
+		if (!isVirtual) {
+			isPrimaryCheckBox.setEnabled(false);
+			defaultValueField.setEnabled(false);
+		}
+		labelField.setEnabled(false);
 
 	}
 
@@ -221,11 +268,14 @@ public class Column extends AdjustableAtom {
 	 *
 	 * @return
 	 */
-	private TreezTable getTable() {
+	private LinkableTreezTable getTable() {
 		try {
 			Columns columns = (Columns) this.createTreeNodeAdaption().getParent().getAdaptable();
 			try {
-				TreezTable table = (TreezTable) columns.createTreeNodeAdaption().getParent().getAdaptable();
+				LinkableTreezTable table = (LinkableTreezTable) columns
+						.createTreeNodeAdaption()
+						.getParent()
+						.getAdaptable();
 				return table;
 			} catch (ClassCastException e) {
 				throw new IllegalStateException(

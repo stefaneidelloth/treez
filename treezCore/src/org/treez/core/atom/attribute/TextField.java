@@ -381,6 +381,13 @@ public class TextField extends AbstractStringAttributeAtom<TextField> {
 		return getThis();
 	}
 
+	public void setVisible(boolean visible) {
+		if (isAvailable(contentContainer)) {
+			contentContainer.setVisible(visible);
+		}
+
+	}
+
 	//#end region
 
 }

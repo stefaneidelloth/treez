@@ -380,6 +380,17 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 		return getThis();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public A setEnabled(boolean state) {
+		super.setEnabled(state);
+		if (isAvailable(comboBox)) {
+			comboBox.setEnabled(state);
+		}
+		return (A) this;
+
+	}
+
 	//#end region
 
 }

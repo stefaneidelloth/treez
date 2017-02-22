@@ -296,8 +296,13 @@ public class Columns extends AdjustableAtom {
 	 * @param header
 	 * @param type
 	 */
-	public Column createColumn(String header, ColumnType type, String description) {
-		Column column = new Column(header, type, description);
+	public Column createColumn(
+			String header,
+			ColumnType type,
+			String description,
+			boolean isLinkedToSource,
+			boolean isVirtual) {
+		Column column = new Column(header, type, description, isLinkedToSource, isVirtual);
 		addChild(column);
 		return column;
 
@@ -312,9 +317,13 @@ public class Columns extends AdjustableAtom {
 		String columnHeader = columnBlueprint.getName();
 		ColumnType columnType = columnBlueprint.getType();
 		String legendText = columnBlueprint.getLegend();
-		Column column = createColumn(columnHeader, columnType, legendText);
-		column.isNullable.set(columnBlueprint.isNullable());
-		column.isPrimaryKey.set(columnBlueprint.isPrimaryKey());
+		boolean isLinkedToSource = columnBlueprint.isLinkedToSource();
+		boolean isVirtual = columnBlueprint.isVirtual();
+		Column column = createColumn(columnHeader, columnType, legendText, isLinkedToSource, isVirtual);
+		if (!isVirtual) {
+			column.isNullable.set(columnBlueprint.isNullable());
+			column.isPrimaryKey.set(columnBlueprint.isPrimaryKey());
+		}
 
 		Object defaultValue = columnBlueprint.getDefaultValue();
 		if (defaultValue == null) {

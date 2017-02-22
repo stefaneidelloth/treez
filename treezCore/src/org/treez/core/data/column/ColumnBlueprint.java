@@ -16,12 +16,16 @@ public class ColumnBlueprint {
 
 	private String legend;
 
+	private boolean isVirtual;
+
+	private boolean isLinkedToSource = false;
+
 	//#end region
 
 	//#region CONSTRUCTORS
 
 	public ColumnBlueprint(String name, ColumnType columnType, String legend) {
-		this(name, columnType, true, false, null, legend);
+		this(name, columnType, true, false, null, legend, false);
 	}
 
 	public ColumnBlueprint(
@@ -30,13 +34,31 @@ public class ColumnBlueprint {
 			boolean isNullable,
 			boolean isPrimaryKey,
 			Object defaultValue,
-			String legend) {
+			String legend,
+			boolean isLinkedToSource) {
 		this.name = name;
 		this.type = columnType;
 		this.isNullable = isNullable;
 		this.isPrimaryKey = isPrimaryKey;
 		this.defaultValue = defaultValue;
 		this.legend = legend;
+		this.isLinkedToSource = isLinkedToSource;
+
+	}
+
+	public ColumnBlueprint(
+			String name,
+			ColumnType columnType,
+			boolean isNullable,
+			String legend,
+			boolean isLinkedToSource) {
+		this.name = name;
+		this.type = columnType;
+		this.isNullable = isNullable;
+		this.legend = legend;
+		this.isLinkedToSource = isLinkedToSource;
+		this.isVirtual = true;
+
 	}
 
 	//#end region
@@ -49,6 +71,10 @@ public class ColumnBlueprint {
 
 	public ColumnType getType() {
 		return type;
+	}
+
+	public boolean isVirtual() {
+		return isVirtual;
 	}
 
 	public boolean isNullable() {
@@ -65,6 +91,10 @@ public class ColumnBlueprint {
 
 	public String getLegend() {
 		return legend;
+	}
+
+	public boolean isLinkedToSource() {
+		return isLinkedToSource;
 	}
 
 	//#end region

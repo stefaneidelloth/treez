@@ -126,6 +126,8 @@ public final class MySqlImporter extends AbstractImporter {
 
 		ColumnTypeConverter columnTypeConverter = new MySqlColumnTypeConverter();
 
+		boolean isLinkedToSource = true;
+
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			while (resultSet.next()) {
 				String name = resultSet.getString("field"); //available columns: field, type, null, key, default, extra
@@ -139,7 +141,14 @@ public final class MySqlImporter extends AbstractImporter {
 				Object defaultValue = resultSet.getObject("default");
 				String legend = name;
 
-				tableStructure.add(new ColumnBlueprint(name, type, isNullable, isPrimaryKey, defaultValue, legend));
+				tableStructure.add(new ColumnBlueprint(
+						name,
+						type,
+						isNullable,
+						isPrimaryKey,
+						defaultValue,
+						legend,
+						isLinkedToSource));
 			}
 		};
 		database.executeAndProcess(structureQuery, processor);
@@ -168,6 +177,9 @@ public final class MySqlImporter extends AbstractImporter {
 
 		ColumnTypeConverter columnTypeConverter = new SqLiteColumnTypeConverter();
 
+		boolean isLinkedToSource = true;
+		boolean isVirtual = true;
+
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			resultSet.next();
 			ResultSetMetaData metaData = resultSet.getMetaData();
@@ -177,11 +189,9 @@ public final class MySqlImporter extends AbstractImporter {
 				String name = metaData.getColumnName(columnIndex);
 				ColumnType type = columnTypeConverter.getType(metaData.getColumnTypeName(columnIndex));
 				boolean isNullable = metaData.isNullable(columnIndex) == 1;
-				boolean isPrimaryKey = false; //virtual columns are not and for real columns some extra query would be needed.
-				Object defaultValue = null;
 				String legend = metaData.getColumnLabel(columnIndex);
 
-				tableStructure.add(new ColumnBlueprint(name, type, isNullable, isPrimaryKey, defaultValue, legend));
+				tableStructure.add(new ColumnBlueprint(name, type, isNullable, legend, isLinkedToSource));
 			}
 
 		};
