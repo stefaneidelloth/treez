@@ -77,7 +77,10 @@ public class Activator extends AbstractActivator {
 	 * @return
 	 */
 	public static String getAbsoluteHelpContextIdStatic(String relativeHelpContextId) {
-		String absoluteHelpContextId = getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
+		if (instance == null) {
+			return null;
+		}
+		String absoluteHelpContextId = instance.getAbsoluteHelpContextId(relativeHelpContextId);
 		return absoluteHelpContextId;
 	}
 

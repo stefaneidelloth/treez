@@ -161,12 +161,14 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean currentValue = valueCheckBox.getSelection();
+
 				set(currentValue);
 				//updated enabled states if ComboBoxEnableTarget children exist
 				updateTargetsEnabledStates(currentValue);
 
 				//trigger modification listeners
 				triggerListeners();
+
 			}
 
 		});
@@ -178,11 +180,16 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 		if (isAvailable(valueCheckBox)) {
 			valueCheckBox.setEnabled(state);
 		}
+
+		this.refreshAttributeAtomControl();
+
+		return getThis();
+	}
+
+	public void refreshTreeView() {
 		if (treeViewRefreshable != null) {
 			treeViewRefreshable.refresh();
 		}
-		this.refreshAttributeAtomControl();
-		return getThis();
 	}
 
 	@Override

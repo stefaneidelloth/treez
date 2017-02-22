@@ -1,6 +1,7 @@
 package org.treez.data.database.sqlite;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,19 +11,20 @@ import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.column.ColumnTypeConverter;
 import org.treez.core.data.foreignkey.ForeignKeyBlueprint;
 import org.treez.core.data.index.IndexBlueprint;
+import org.treez.data.database.AbstractImporter;
 import org.treez.data.database.ResultSetProcessor;
-import org.treez.data.tableImport.TableData;
+import org.treez.data.database.TableData;
 
-public final class SqLiteDataTableImporter {
+public final class SqLiteImporter extends AbstractImporter {
 
-	private static Logger LOG = Logger.getLogger(SqLiteDataTableImporter.class);
+	private static Logger LOG = Logger.getLogger(SqLiteImporter.class);
 
 	//#region CONSTRUCTORS
 
 	/**
 	 * Private Constructor that prevents construction
 	 */
-	private SqLiteDataTableImporter() {}
+	private SqLiteImporter() {}
 
 	//#end region
 
@@ -48,6 +50,29 @@ public final class SqLiteDataTableImporter {
 
 	}
 
+	public static int getNumberOfRowsForCustomQuery(String filePath, String customQuery, String jobId) {
+
+		SqLiteDatabase database = new SqLiteDatabase(filePath);
+
+		String subQuery = removeTrailingSemicolon(customQuery);
+		subQuery = injectJobIdIfIncludesPlaceholder(subQuery, jobId);
+		String sizeQuery = "SELECT COUNT(*) FROM (" + subQuery + ");";
+
+		int[] size = { 0 };
+		ResultSetProcessor processor = (ResultSet resultSet) -> {
+			resultSet.getFetchSize();
+			while (resultSet.next()) {
+				int result = resultSet.getInt("COUNT(*)");
+				size[0] = result;
+				return;
+			}
+		};
+		database.executeAndProcess(sizeQuery, processor);
+
+		return size[0];
+
+	}
+
 	public static TableData importData(
 			String filePath,
 			String password,
@@ -57,55 +82,33 @@ public final class SqLiteDataTableImporter {
 			Integer rowLimit,
 			Integer rowOffset) {
 
-		List<String> headers = readHeaders(filePath, password, tableName);
-
 		List<ColumnBlueprint> columnBlueprints = readTableStructure(filePath, password, tableName);
 
 		List<List<Object>> data = readData(filePath, password, tableName, filterRowsByJobId, jobId, rowLimit, rowOffset,
-				headers);
+				columnBlueprints);
 
-		TableData tableData = new TableData() {
-
-			@Override
-			public List<String> getHeaderData() {
-				return headers;
-			}
-
-			@Override
-			public ColumnType getColumnType(String header) {
-
-				for (ColumnBlueprint columnBlueprint : columnBlueprints) {
-					if (header.equals(columnBlueprint.getName())) {
-						return columnBlueprint.getType();
-					}
-				}
-				throw new IllegalStateException("Could not determine ColumnType for column '" + header + "'");
-			}
-
-			@Override
-			public List<List<Object>> getRowData() {
-				return data;
-			}
-		};
+		TableData tableData = new TableData(columnBlueprints, data);
 
 		return tableData;
 	}
 
-	public static List<String> readHeaders(String filePath, String password, String tableName) {
-		SqLiteDatabase database = new SqLiteDatabase(filePath);
-		String structureQuery = "PRAGMA table_info('" + tableName + "');";
+	public static TableData importDataWithCustomQuery(
+			String filePath,
+			String password,
+			String customQuery,
+			String jobId,
+			Integer rowLimit,
+			Integer rowOffset) {
 
-		List<String> columnNames = new ArrayList<>();
+		List<ColumnBlueprint> columnBlueprints = readTableStructureWithCustomQuery(filePath, password, customQuery,
+				jobId);
 
-		ResultSetProcessor processor = (ResultSet resultSet) -> {
-			while (resultSet.next()) {
-				String columnName = resultSet.getString("name"); //available columns: cid, name, type, notnull, dflt_value, pk
-				columnNames.add(columnName);
-			}
-		};
-		database.executeAndProcess(structureQuery, processor);
+		List<List<Object>> data = readDataWithCustomQuery(filePath, password, customQuery, jobId, rowLimit, rowOffset,
+				columnBlueprints);
 
-		return columnNames;
+		TableData tableData = new TableData(columnBlueprints, data);
+
+		return tableData;
 	}
 
 	public static List<ColumnBlueprint> readTableStructure(String filePath, String password, String tableName) {
@@ -130,6 +133,49 @@ public final class SqLiteDataTableImporter {
 			}
 		};
 		database.executeAndProcess(structureQuery, processor);
+
+		return tableStructure;
+	}
+
+	public static List<ColumnBlueprint> readTableStructureWithCustomQuery(
+			String filePath,
+			String password,
+			String customQuery,
+			String jobId) {
+		SqLiteDatabase database = new SqLiteDatabase(filePath);
+
+		int length = customQuery.length();
+		if (length < 1) {
+			throw new IllegalStateException("Custom query must not be empty");
+		}
+
+		String firstLineQuery = customQuery;
+		firstLineQuery = removeTrailingSemicolon(customQuery);
+		firstLineQuery = injectJobIdIfIncludesPlaceholder(firstLineQuery, jobId);
+		firstLineQuery += " LIMIT 1;";
+
+		List<ColumnBlueprint> tableStructure = new ArrayList<>();
+
+		ColumnTypeConverter columnTypeConverter = new SqLiteColumnTypeConverter();
+
+		ResultSetProcessor processor = (ResultSet resultSet) -> {
+			resultSet.next();
+			ResultSetMetaData metaData = resultSet.getMetaData();
+			int numberOfColumns = metaData.getColumnCount();
+			for (int columnIndex = 1; columnIndex <= numberOfColumns; columnIndex++) {
+
+				String name = metaData.getColumnName(columnIndex);
+				ColumnType type = columnTypeConverter.getType(metaData.getColumnTypeName(columnIndex));
+				boolean isNullable = metaData.isNullable(columnIndex) == 1;
+				boolean isPrimaryKey = false; //virtual columns are not and for real columns some extra query would be needed.
+				Object defaultValue = null;
+				String legend = metaData.getColumnLabel(columnIndex);
+
+				tableStructure.add(new ColumnBlueprint(name, type, isNullable, isPrimaryKey, defaultValue, legend));
+			}
+
+		};
+		database.executeAndProcess(firstLineQuery, processor);
 
 		return tableStructure;
 	}
@@ -198,7 +244,7 @@ public final class SqLiteDataTableImporter {
 			String jobId,
 			Integer rowLimit,
 			Integer rowOffset,
-			List<String> headers) {
+			List<ColumnBlueprint> columnBlueprints) {
 		SqLiteDatabase database = new SqLiteDatabase(filePath);
 		String dataQuery = "SELECT * FROM '" + tableName + "'";
 
@@ -220,8 +266,8 @@ public final class SqLiteDataTableImporter {
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			while (resultSet.next()) {
 				List<Object> rowData = new ArrayList<>();
-				for (String header : headers) {
-					Object entry = resultSet.getObject(header);
+				for (ColumnBlueprint columnBlueprint : columnBlueprints) {
+					Object entry = resultSet.getObject(columnBlueprint.getName());
 					rowData.add(entry);
 				}
 				data.add(rowData);
@@ -236,6 +282,58 @@ public final class SqLiteDataTableImporter {
 			}
 			LOG.warn(message);
 
+		}
+
+		return data;
+	}
+
+	private static List<List<Object>> readDataWithCustomQuery(
+			String filePath,
+			String password,
+			String customQuery,
+			String jobId,
+			Integer rowLimit,
+			Integer rowOffset,
+			List<ColumnBlueprint> columnBlueprints) {
+		SqLiteDatabase database = new SqLiteDatabase(filePath);
+
+		int length = customQuery.length();
+		if (length < 1) {
+			throw new IllegalStateException("Custom query must not be empty");
+		}
+
+		String dataQuery = customQuery;
+		boolean endsWithSemicolon = customQuery.substring(length - 1).equalsIgnoreCase(";");
+		if (endsWithSemicolon) {
+			dataQuery = dataQuery.substring(0, length - 2);
+		}
+		dataQuery = customQuery.replace(JOB_ID_PLACEHOLDER, jobId);
+
+		int offset = 0;
+		if (rowOffset != null) {
+			offset = rowOffset;
+		}
+
+		//if OFFSET is not efficient enough, also see
+		//http://stackoverflow.com/questions/14468586/efficient-paging-in-sqlite-with-millions-of-records
+		dataQuery += " LIMIT " + rowLimit + " OFFSET " + offset + ";";
+
+		List<List<Object>> data = new ArrayList<>();
+		ResultSetProcessor processor = (ResultSet resultSet) -> {
+			while (resultSet.next()) {
+				List<Object> rowData = new ArrayList<>();
+				for (ColumnBlueprint columnBlueprint : columnBlueprints) {
+					Object entry = resultSet.getObject(columnBlueprint.getName());
+					rowData.add(entry);
+				}
+				data.add(rowData);
+			}
+		};
+		database.executeAndProcess(dataQuery, processor);
+
+		if (data.isEmpty()) {
+			String message = "Could not find any rows with query " + dataQuery;
+			LOG.warn(message);
 		}
 
 		return data;

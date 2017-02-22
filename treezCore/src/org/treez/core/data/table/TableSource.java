@@ -66,4 +66,18 @@ public interface TableSource {
 	 */
 	String getTableName();
 
+	/**
+	 * If the table source is used for a parameter variation, the data can be filtered by the job of the parameter
+	 * variation. If the job filter is enabled this will return true.
+	 */
+	Boolean isFilteringForJob();
+
+	String getJobId();
+
+	void setJobId(String jobId);
+
+	Boolean isUsingCustomQuery();
+
+	String getCustomQuery();
+
 }

@@ -1,6 +1,7 @@
 package org.treez.data.database.mysql;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,19 +11,21 @@ import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.column.ColumnTypeConverter;
 import org.treez.core.data.foreignkey.ForeignKeyBlueprint;
 import org.treez.core.data.index.IndexBlueprint;
+import org.treez.data.database.AbstractImporter;
 import org.treez.data.database.ResultSetProcessor;
-import org.treez.data.tableImport.TableData;
+import org.treez.data.database.TableData;
+import org.treez.data.database.sqlite.SqLiteColumnTypeConverter;
 
-public final class MySqlDataTableImporter {
+public final class MySqlImporter extends AbstractImporter {
 
-	private static Logger LOG = Logger.getLogger(MySqlDataTableImporter.class);
+	private static Logger LOG = Logger.getLogger(MySqlImporter.class);
 
 	//#region CONSTRUCTORS
 
 	/**
 	 * Private Constructor that prevents construction
 	 */
-	private MySqlDataTableImporter() {}
+	private MySqlImporter() {}
 
 	//#end region
 
@@ -32,6 +35,33 @@ public final class MySqlDataTableImporter {
 
 		MySqlDatabase database = new MySqlDatabase(url, user, password);
 		String sizeQuery = "SELECT COUNT(*) FROM " + tableName + ";";
+
+		int[] size = { 0 };
+		ResultSetProcessor processor = (ResultSet resultSet) -> {
+			resultSet.getFetchSize();
+			while (resultSet.next()) {
+				int result = resultSet.getInt("COUNT(*)");
+				size[0] = result;
+				return;
+			}
+		};
+		database.executeAndProcess(sizeQuery, processor);
+
+		return size[0];
+
+	}
+
+	public static int getNumberOfRowsForCustomQuery(
+			String url,
+			String user,
+			String password,
+			String customQuery,
+			String jobId) {
+
+		MySqlDatabase database = new MySqlDatabase(url, user, password);
+		String subQuery = removeTrailingSemicolon(customQuery);
+		subQuery = injectJobIdIfIncludesPlaceholder(subQuery, jobId);
+		String sizeQuery = "SELECT COUNT(*) FROM (" + subQuery + ");";
 
 		int[] size = { 0 };
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
@@ -58,55 +88,34 @@ public final class MySqlDataTableImporter {
 			Integer rowLimit,
 			Integer rowOffset) {
 
-		List<String> headers = readHeaders(url, user, password, tableName);
-
 		List<ColumnBlueprint> columnBlueprints = readTableStructure(url, user, password, tableName);
 
 		List<List<Object>> data = readData(url, user, password, tableName, filterRowsByJobId, jobId, rowLimit,
-				rowOffset, headers);
+				rowOffset, columnBlueprints);
 
-		TableData tableData = new TableData() {
-
-			@Override
-			public List<String> getHeaderData() {
-				return headers;
-			}
-
-			@Override
-			public ColumnType getColumnType(String header) {
-
-				for (ColumnBlueprint columnBlueprint : columnBlueprints) {
-					if (header.equals(columnBlueprint.getName())) {
-						return columnBlueprint.getType();
-					}
-				}
-				throw new IllegalStateException("Could not determine ColumnType for column '" + header + "'");
-			}
-
-			@Override
-			public List<List<Object>> getRowData() {
-				return data;
-			}
-		};
+		TableData tableData = new TableData(columnBlueprints, data);
 
 		return tableData;
 	}
 
-	public static List<String> readHeaders(String url, String user, String password, String tableName) {
-		MySqlDatabase database = new MySqlDatabase(url, user, password);
-		String structureQuery = "SHOW COLUMNS FROM " + tableName + ";";
+	public static TableData importDataWithCustomQuery(
+			String url,
+			String user,
+			String password,
+			String customQuery,
+			String jobId,
+			Integer rowLimit,
+			Integer rowOffset) {
 
-		List<String> columnNames = new ArrayList<>();
+		List<ColumnBlueprint> columnBlueprints = readTableStructureWithCustomQuery(url, user, password, customQuery,
+				jobId);
 
-		ResultSetProcessor processor = (ResultSet resultSet) -> {
-			while (resultSet.next()) {
-				String columnName = resultSet.getString("field"); //available columns: field, type, null, key, default, extra
-				columnNames.add(columnName);
-			}
-		};
-		database.executeAndProcess(structureQuery, processor);
+		List<List<Object>> data = readDataWithCustomQuery(url, user, password, customQuery, jobId, rowLimit, rowOffset,
+				columnBlueprints);
 
-		return columnNames;
+		TableData tableData = new TableData(columnBlueprints, data);
+
+		return tableData;
 	}
 
 	public static List<ColumnBlueprint> readTableStructure(String url, String user, String password, String tableName) {
@@ -134,6 +143,49 @@ public final class MySqlDataTableImporter {
 			}
 		};
 		database.executeAndProcess(structureQuery, processor);
+
+		return tableStructure;
+	}
+
+	public static List<ColumnBlueprint> readTableStructureWithCustomQuery(
+			String url,
+			String user,
+			String password,
+			String customQuery,
+			String jobId) {
+		MySqlDatabase database = new MySqlDatabase(url, user, password);
+
+		int length = customQuery.length();
+		if (length < 1) {
+			throw new IllegalStateException("Custom query must not be empty");
+		}
+
+		String firstLineQuery = removeTrailingSemicolon(customQuery);
+		firstLineQuery = injectJobIdIfIncludesPlaceholder(firstLineQuery, jobId);
+		firstLineQuery += " LIMIT 1;";
+
+		List<ColumnBlueprint> tableStructure = new ArrayList<>();
+
+		ColumnTypeConverter columnTypeConverter = new SqLiteColumnTypeConverter();
+
+		ResultSetProcessor processor = (ResultSet resultSet) -> {
+			resultSet.next();
+			ResultSetMetaData metaData = resultSet.getMetaData();
+			int numberOfColumns = metaData.getColumnCount();
+			for (int columnIndex = 1; columnIndex <= numberOfColumns; columnIndex++) {
+
+				String name = metaData.getColumnName(columnIndex);
+				ColumnType type = columnTypeConverter.getType(metaData.getColumnTypeName(columnIndex));
+				boolean isNullable = metaData.isNullable(columnIndex) == 1;
+				boolean isPrimaryKey = false; //virtual columns are not and for real columns some extra query would be needed.
+				Object defaultValue = null;
+				String legend = metaData.getColumnLabel(columnIndex);
+
+				tableStructure.add(new ColumnBlueprint(name, type, isNullable, isPrimaryKey, defaultValue, legend));
+			}
+
+		};
+		database.executeAndProcess(firstLineQuery, processor);
 
 		return tableStructure;
 	}
@@ -178,7 +230,8 @@ public final class MySqlDataTableImporter {
 
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			while (resultSet.next()) {
-				String currentColumnName = resultSet.getString("field"); //available columns: cid, name, type, notnull, dflt_value, pk
+				String currentColumnName = resultSet.getString("field");
+				//available columns: cid, name, type, notnull, dflt_value, pk
 				boolean isWantedColumn = columnName.equals(currentColumnName);
 				if (isWantedColumn) {
 					String typeString = resultSet.getString("type");
@@ -209,7 +262,7 @@ public final class MySqlDataTableImporter {
 			String jobId,
 			Integer rowLimit,
 			Integer rowOffset,
-			List<String> headers) {
+			List<ColumnBlueprint> columnBlueprints) {
 		MySqlDatabase database = new MySqlDatabase(url, user, password);
 		String dataQuery = "SELECT * FROM `" + tableName + "`";
 
@@ -231,8 +284,8 @@ public final class MySqlDataTableImporter {
 		ResultSetProcessor processor = (ResultSet resultSet) -> {
 			while (resultSet.next()) {
 				List<Object> rowData = new ArrayList<>();
-				for (String header : headers) {
-					Object entry = resultSet.getObject(header);
+				for (ColumnBlueprint columnBlueprint : columnBlueprints) {
+					Object entry = resultSet.getObject(columnBlueprint.getName());
 					rowData.add(entry);
 				}
 				data.add(rowData);
@@ -247,6 +300,55 @@ public final class MySqlDataTableImporter {
 			}
 			LOG.warn(message);
 
+		}
+
+		return data;
+	}
+
+	private static List<List<Object>> readDataWithCustomQuery(
+			String url,
+			String user,
+			String password,
+			String customQuery,
+			String jobId,
+			Integer rowLimit,
+			Integer rowOffset,
+			List<ColumnBlueprint> columnBlueprints) {
+		MySqlDatabase database = new MySqlDatabase(url, user, password);
+
+		int length = customQuery.length();
+		if (length < 1) {
+			throw new IllegalStateException("Custom query must not be empty");
+		}
+
+		String dataQuery = removeTrailingSemicolon(customQuery);
+		dataQuery = injectJobIdIfIncludesPlaceholder(dataQuery, jobId);
+
+		int offset = 0;
+		if (rowOffset != null) {
+			offset = rowOffset;
+		}
+
+		//if OFFSET is not efficient enough, also see
+		//http://stackoverflow.com/questions/14468586/efficient-paging-in-sqlite-with-millions-of-records
+		dataQuery += " LIMIT " + rowLimit + " OFFSET " + offset + ";";
+
+		List<List<Object>> data = new ArrayList<>();
+		ResultSetProcessor processor = (ResultSet resultSet) -> {
+			while (resultSet.next()) {
+				List<Object> rowData = new ArrayList<>();
+				for (ColumnBlueprint columnBlueprint : columnBlueprints) {
+					Object entry = resultSet.getObject(columnBlueprint.getName());
+					rowData.add(entry);
+				}
+				data.add(rowData);
+			}
+		};
+		database.executeAndProcess(dataQuery, processor);
+
+		if (data.isEmpty()) {
+			String message = "Could not find any rows with query " + dataQuery;
+			LOG.warn(message);
 		}
 
 		return data;

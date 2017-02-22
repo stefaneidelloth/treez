@@ -14,8 +14,8 @@ import org.treez.core.data.table.AbstractTreezTable;
 import org.treez.core.data.table.LinkableTreezTable;
 import org.treez.core.data.table.TableSource;
 import org.treez.core.data.table.TableSourceType;
-import org.treez.data.database.mysql.MySqlDataTableImporter;
-import org.treez.data.database.sqlite.SqLiteDataTableImporter;
+import org.treez.data.database.mysql.MySqlImporter;
+import org.treez.data.database.sqlite.SqLiteImporter;
 import org.treez.data.tableImport.TableData;
 
 public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
@@ -42,20 +42,6 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 
 	//#region METHODS
 
-	public static List<String> getHeadersFromSource(TableSource tableSource) {
-
-		TableSourceType sourceType = tableSource.getSourceType();
-		if (sourceType.equals(TableSourceType.SQLITE)) {
-			String sqLiteFilePath = tableSource.getSourceFilePath();
-			String tableName = tableSource.getTableName();
-			String password = tableSource.getPassword();
-
-			return SqLiteDataTableImporter.readHeaders(sqLiteFilePath, password, tableName);
-		}
-
-		return null;
-	}
-
 	public static ColumnType getColumnType(TableSource tableSource, String columnName) {
 		TableSourceType sourceType = tableSource.getSourceType();
 		if (sourceType.equals(TableSourceType.SQLITE)) {
@@ -63,7 +49,7 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 			String tableName = tableSource.getTableName();
 			String password = tableSource.getPassword();
 
-			return SqLiteDataTableImporter.getColumnType(sqLiteFilePath, password, tableName, columnName);
+			return SqLiteImporter.getColumnType(sqLiteFilePath, password, tableName, columnName);
 		}
 
 		return null;
@@ -80,31 +66,50 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 		//	processor.sort(items, controller.getSortPropertyName(), sortDirection);
 		//}
 
+		int totalSize = getTotalSize(tableSource);
+
+		int pageOffset = controller.getPageOffset();
+		if (pageOffset > totalSize) {
+			return new PageResult<Row>(new ArrayList<Row>(), totalSize);
+		}
+
+		int pageSize = controller.getPageSize();
+
+		TableData tableData = importData(tableSource, pageOffset, pageSize);
+
+		List<Row> rows = new ArrayList<>();
+		for (List<Object> rowEntries : tableData.getRowData()) {
+			Row row = AbstractTreezTable.createRow(rowEntries, treezTable);
+			rows.add(row);
+		}
+
+		return new PageResult<Row>(rows, totalSize);
+
+	}
+
+	private static TableData importData(TableSource tableSource, int pageOffset, int pageSize) {
+
 		TableSourceType sourceType = tableSource.getSourceType();
+		String jobId = tableSource.getJobId();
+		boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
+
 		if (sourceType.equals(TableSourceType.SQLITE)) {
 
 			String sqLiteFilePath = tableSource.getSourceFilePath();
-			String tableName = tableSource.getTableName();
 			String password = tableSource.getPassword();
 
-			int totalSize = SqLiteDataTableImporter.getNumberOfRows(sqLiteFilePath, tableName);
-			int pageOffset = controller.getPageOffset();
-			if (pageOffset > totalSize) {
-				return new PageResult<Row>(new ArrayList<Row>(), totalSize);
+			if (isUsingCustomQuery) {
+				String customQuery = tableSource.getCustomQuery();
+				TableData tableData = SqLiteImporter.importDataWithCustomQuery(sqLiteFilePath, password, customQuery,
+						jobId, pageSize, pageOffset);
+				return tableData;
+			} else {
+				String tableName = tableSource.getTableName();
+				boolean filterForJob = tableSource.isFilteringForJob();
+				TableData tableData = SqLiteImporter.importData(sqLiteFilePath, password, tableName, filterForJob,
+						jobId, pageSize, pageOffset);
+				return tableData;
 			}
-
-			int pageSize = controller.getPageSize();
-
-			TableData tableData = SqLiteDataTableImporter.importData(sqLiteFilePath, password, tableName, false, null,
-					pageSize, pageOffset);
-
-			List<Row> rows = new ArrayList<>();
-			for (List<Object> rowEntries : tableData.getRowData()) {
-				Row row = AbstractTreezTable.createRow(rowEntries, treezTable);
-				rows.add(row);
-			}
-
-			return new PageResult<Row>(rows, totalSize);
 
 		} else if (sourceType.equals(TableSourceType.MYSQL)) {
 
@@ -116,26 +121,68 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 			String user = tableSource.getUser();
 			String password = tableSource.getPassword();
 
-			String tableName = tableSource.getTableName();
+			if (isUsingCustomQuery) {
+				String customQuery = tableSource.getCustomQuery();
 
-			int totalSize = MySqlDataTableImporter.getNumberOfRows(url, user, password, tableName);
-			int pageOffset = controller.getPageOffset();
-			if (pageOffset > totalSize) {
-				return new PageResult<Row>(new ArrayList<Row>(), totalSize);
+				TableData tableData = MySqlImporter.importDataWithCustomQuery(url, user, password, customQuery, null,
+						pageSize, pageOffset);
+				return tableData;
+			} else {
+				String tableName = tableSource.getTableName();
+				boolean filterForJob = tableSource.isFilteringForJob();
+				TableData tableData = MySqlImporter.importData(url, user, password, tableName, filterForJob, jobId,
+						pageSize, pageOffset);
+				return tableData;
 			}
 
-			int pageSize = controller.getPageSize();
+		}
 
-			TableData tableData = MySqlDataTableImporter.importData(url, user, password, tableName, false, null,
-					pageSize, pageOffset);
+		String message = "The TableSourceType " + sourceType + " is not yet implemented.";
+		throw new IllegalStateException(message);
+	}
 
-			List<Row> rows = new ArrayList<>();
-			for (List<Object> rowEntries : tableData.getRowData()) {
-				Row row = AbstractTreezTable.createRow(rowEntries, treezTable);
-				rows.add(row);
+	private static int getTotalSize(TableSource tableSource) {
+
+		TableSourceType sourceType = tableSource.getSourceType();
+		boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
+
+		if (sourceType.equals(TableSourceType.SQLITE)) {
+
+			String sqLiteFilePath = tableSource.getSourceFilePath();
+
+			if (isUsingCustomQuery) {
+				String customQuery = tableSource.getCustomQuery();
+				String jobId = tableSource.getJobId();
+				int totalSize = SqLiteImporter.getNumberOfRowsForCustomQuery(sqLiteFilePath, customQuery, jobId);
+				return totalSize;
+			} else {
+
+				String tableName = tableSource.getTableName();
+				int totalSize = SqLiteImporter.getNumberOfRows(sqLiteFilePath, tableName);
+				return totalSize;
 			}
 
-			return new PageResult<Row>(rows, totalSize);
+		} else if (sourceType.equals(TableSourceType.MYSQL)) {
+
+			String host = tableSource.getHost();
+			String port = tableSource.getPort();
+			String schema = tableSource.getSchema();
+			String url = host + ":" + port + "/" + schema;
+
+			String user = tableSource.getUser();
+			String password = tableSource.getPassword();
+
+			if (isUsingCustomQuery) {
+				String customQuery = tableSource.getCustomQuery();
+				String jobId = tableSource.getJobId();
+				int totalSize = MySqlImporter.getNumberOfRowsForCustomQuery(url, user, password, customQuery, jobId);
+				return totalSize;
+			} else {
+				String tableName = tableSource.getTableName();
+				int totalSize = MySqlImporter.getNumberOfRows(url, user, password, tableName);
+				return totalSize;
+			}
+
 		}
 
 		String message = "The TableSourceType " + sourceType + " is not yet implemented.";

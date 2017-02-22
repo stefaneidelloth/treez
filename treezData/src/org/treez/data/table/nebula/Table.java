@@ -30,8 +30,8 @@ import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.data.cell.TreezTableNebulaLabelProvider;
 import org.treez.data.column.Column;
 import org.treez.data.column.Columns;
-import org.treez.data.database.mysql.MySqlDataTableImporter;
-import org.treez.data.database.sqlite.SqLiteDataTableImporter;
+import org.treez.data.database.mysql.MySqlImporter;
+import org.treez.data.database.sqlite.SqLiteImporter;
 import org.treez.data.table.nebula.nat.pageloader.DatabasePageResultLoader;
 
 public class Table extends AbstractTreezTable<Table> {
@@ -255,11 +255,23 @@ public class Table extends AbstractTreezTable<Table> {
 
 	private static List<ColumnBlueprint> readTableStructureForSqLiteTable(TableSource tableSource) {
 		String sqLiteFilePath = tableSource.getSourceFilePath();
-		String tableName = tableSource.getTableName();
+
 		String password = tableSource.getPassword();
-		List<ColumnBlueprint> tableStructure = SqLiteDataTableImporter.readTableStructure(sqLiteFilePath, password,
-				tableName);
-		return tableStructure;
+
+		Boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
+		if (isUsingCustomQuery) {
+			String customQuery = tableSource.getCustomQuery();
+			String jobId = tableSource.getJobId();
+			List<ColumnBlueprint> tableStructure = SqLiteImporter.readTableStructureWithCustomQuery(sqLiteFilePath,
+					password, customQuery, jobId);
+			return tableStructure;
+		} else {
+			String tableName = tableSource.getTableName();
+			List<ColumnBlueprint> tableStructure = SqLiteImporter.readTableStructure(sqLiteFilePath, password,
+					tableName);
+			return tableStructure;
+		}
+
 	}
 
 	private static List<ColumnBlueprint> readTableStructureForMySqlTable(TableSource tableSource) {
@@ -271,11 +283,18 @@ public class Table extends AbstractTreezTable<Table> {
 		String user = tableSource.getUser();
 		String password = tableSource.getPassword();
 
-		String tableName = tableSource.getTableName();
-
-		List<ColumnBlueprint> tableStructure = MySqlDataTableImporter.readTableStructure(url, user, password,
-				tableName);
-		return tableStructure;
+		Boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
+		if (isUsingCustomQuery) {
+			String customQuery = tableSource.getCustomQuery();
+			String jobId = tableSource.getJobId();
+			List<ColumnBlueprint> tableStructure = MySqlImporter.readTableStructureWithCustomQuery(url, user, password,
+					customQuery, jobId);
+			return tableStructure;
+		} else {
+			String tableName = tableSource.getTableName();
+			List<ColumnBlueprint> tableStructure = MySqlImporter.readTableStructure(url, user, password, tableName);
+			return tableStructure;
+		}
 	}
 
 	private void createColumns(List<ColumnBlueprint> columnBlueprints) {
@@ -304,12 +323,12 @@ public class Table extends AbstractTreezTable<Table> {
 	}
 
 	public void addColumn(Column newColumn) {
-		createColumnsIfNotExists();
+		createColumnsIfNotExist();
 		Columns columns = getColumns();
 		columns.addChild(newColumn);
 	}
 
-	private void createColumnsIfNotExists() {
+	private void createColumnsIfNotExist() {
 		boolean columnsExist = columnsExist();
 		if (!columnsExist) {
 			createColumns("columns");

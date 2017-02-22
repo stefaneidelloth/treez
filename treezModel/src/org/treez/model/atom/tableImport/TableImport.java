@@ -28,7 +28,7 @@ import org.treez.core.data.table.TableSourceType;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.data.column.Columns;
-import org.treez.data.database.sqlite.SqLiteDataTableImporter;
+import org.treez.data.database.sqlite.SqLiteImporter;
 import org.treez.data.table.nebula.Table;
 import org.treez.data.tableImport.ExcelDataTableImporter;
 import org.treez.data.tableImport.TableData;
@@ -74,6 +74,12 @@ public class TableImport extends AbstractModel implements TableSource {
 	public final Attribute<String> table = new Wrap<>();
 
 	public final Attribute<Boolean> filterForJob = new Wrap<>();
+
+	public final Attribute<String> jobId = new Wrap<>();
+
+	public final Attribute<Boolean> useCustomQuery = new Wrap<>();
+
+	public final Attribute<String> customQuery = new Wrap<>();
 
 	public final Attribute<String> resultTableModelPath = new Wrap<>();
 
@@ -360,13 +366,13 @@ public class TableImport extends AbstractModel implements TableSource {
 			tableData = ExcelDataTableImporter.importData(sourcePath, tableNameString, filterRows, jobId, maxRows);
 			return tableData;
 		case SQLITE:
-			tableData = SqLiteDataTableImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
-					jobId, maxRows, 0);
+			tableData = SqLiteImporter.importData(sourcePath, passwordString, tableNameString, filterRows, jobId,
+					maxRows, 0);
 			return tableData;
 		case MYSQL:
 			String url = hostString + ":" + portString + "/" + schemaString;
 
-			tableData = org.treez.data.database.mysql.MySqlDataTableImporter.importData(url, userString, passwordString,
+			tableData = org.treez.data.database.mysql.MySqlImporter.importData(url, userString, passwordString,
 					tableNameString, filterRows, jobId, maxRows, 0);
 			return tableData;
 		default:
@@ -570,7 +576,31 @@ public class TableImport extends AbstractModel implements TableSource {
 	@Override
 	public boolean isLinked() {
 		return this.linkSource.get();
+	}
 
+	@Override
+	public Boolean isUsingCustomQuery() {
+		return useCustomQuery.get();
+	}
+
+	@Override
+	public String getCustomQuery() {
+		return customQuery.get();
+	}
+
+	@Override
+	public Boolean isFilteringForJob() {
+		return filterForJob.get();
+	}
+
+	@Override
+	public String getJobId() {
+		return jobId.get();
+	}
+
+	@Override
+	public void setJobId(String jobId) {
+		this.jobId.set(jobId);
 	}
 
 	//#end region

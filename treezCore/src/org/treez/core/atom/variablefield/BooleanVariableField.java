@@ -70,6 +70,7 @@ public class BooleanVariableField extends CheckBox implements VariableField<Bool
 	@Override
 	public BooleanVariableField setEnabled(boolean state) {
 		super.setEnabled(state);
+		super.refreshTreeView();
 		return getThis();
 	}
 

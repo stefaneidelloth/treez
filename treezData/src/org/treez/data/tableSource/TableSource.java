@@ -44,6 +44,12 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 
 	public final Attribute<Boolean> filterForJob = new Wrap<>();
 
+	public final Attribute<String> jobId = new Wrap<>();
+
+	public final Attribute<Boolean> useCustomQuery = new Wrap<>();
+
+	public final Attribute<String> customQuery = new Wrap<>();
+
 	//#end region
 
 	//#region CONSTRUCTORS
@@ -69,6 +75,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 
 		createSourceTypeSection(dataPage, absoluteHelpContextId);
 		createSourceDataSection(dataPage, absoluteHelpContextId);
+
 		setModel(root);
 	}
 
@@ -83,7 +90,6 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		sourceTypeCheck.setLabel("Source type");
 		sourceTypeCheck.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
 
-		sourceTypeSection.createCheckBox(filterForJob, this, false).setLabel("Filter rows with JobId");
 	}
 
 	private void createSourceDataSection(Page dataPage, String absoluteHelpContextId) {
@@ -117,6 +123,25 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		//table name (e.g. name of Excel sheet or SqLite table )
 		TextField tableField = sourceDataSection.createTextField(tableName, this, "Sheet1");
 		tableField.setLabel("Table name");
+
+		sourceDataSection
+				.createCheckBox(filterForJob, this, false) //
+				.setLabel("Filter rows with JobId") //
+				.addModifyListener("enableAndDistableJobComponents", (event) -> enableAndDisableJobComponents());
+
+		sourceDataSection
+				.createTextField(jobId, this) //
+				.setLabel("JobId");
+
+		sourceDataSection
+				.createCheckBox(useCustomQuery, this, false) //
+				.setLabel("Use custom query") //
+				.addModifyListener("enableAndDistableQueryComponents", (event) -> enableAndDisableQueryComponents());
+
+		sourceDataSection
+				.createTextArea(customQuery, this) //
+				.setLabel("Custom query");
+
 	}
 
 	@Override
@@ -130,9 +155,6 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		case CSV:
 			enableAndDisableCompontentsForCsv();
 			break;
-		case EXCEL:
-			enableAndDisableCompontentsForExcel();
-			break;
 		case SQLITE:
 			enableAndDisableCompontentsForSqLite();
 			break;
@@ -145,6 +167,30 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		}
 	}
 
+	private void enableAndDisableJobComponents() {
+		boolean isFilteringForJob = filterForJob.get();
+		if (isFilteringForJob) {
+			setEnabled(jobId, true);
+		} else {
+			setEnabled(jobId, false);
+		}
+	}
+
+	private synchronized void enableAndDisableQueryComponents() {
+		boolean isUsingCustomQuery = useCustomQuery.get();
+		if (isUsingCustomQuery) {
+			setEnabled(customQuery, true);
+			setEnabled(tableName, false);
+			setEnabled(filterForJob, false);
+			setEnabled(jobId, true);
+		} else {
+			setEnabled(customQuery, false);
+			setEnabled(tableName, true);
+			setEnabled(filterForJob, true);
+			enableAndDisableJobComponents();
+		}
+	}
+
 	private void enableAndDisableCompontentsForCsv() {
 
 		setEnabled(host, false);
@@ -153,17 +199,10 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		setEnabled(password, false);
 		setEnabled(schema, false);
 		setEnabled(tableName, false);
-	}
-
-	private void enableAndDisableCompontentsForExcel() {
-
-		setEnabled(columnSeparator, false);
-		setEnabled(host, false);
-		setEnabled(port, false);
-		setEnabled(user, false);
-		setEnabled(password, false);
-		setEnabled(schema, false);
-		setEnabled(tableName, true);
+		setEnabled(filterForJob, false);
+		setEnabled(jobId, false);
+		setEnabled(useCustomQuery, false);
+		setEnabled(customQuery, false);
 	}
 
 	private void enableAndDisableCompontentsForSqLite() {
@@ -175,6 +214,9 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		setEnabled(password, true);
 		setEnabled(schema, false);
 		setEnabled(tableName, true);
+		setEnabled(filterForJob, true);
+		setEnabled(useCustomQuery, true);
+		enableAndDisableQueryComponents();
 	}
 
 	private void enableAndDisableCompontentsForMySql() {
@@ -187,6 +229,9 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		setEnabled(password, true);
 		setEnabled(schema, true);
 		setEnabled(tableName, true);
+		setEnabled(filterForJob, true);
+		setEnabled(useCustomQuery, true);
+		enableAndDisableQueryComponents();
 	}
 
 	/**
@@ -276,6 +321,31 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 	@Override
 	public boolean isLinked() {
 		return true;
+	}
+
+	@Override
+	public Boolean isUsingCustomQuery() {
+		return useCustomQuery.get();
+	}
+
+	@Override
+	public String getCustomQuery() {
+		return customQuery.get();
+	}
+
+	@Override
+	public Boolean isFilteringForJob() {
+		return filterForJob.get();
+	}
+
+	@Override
+	public String getJobId() {
+		return jobId.get();
+	}
+
+	@Override
+	public void setJobId(String jobId) {
+		this.jobId.set(jobId);
 	}
 
 	//#end region
