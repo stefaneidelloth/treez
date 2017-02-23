@@ -760,6 +760,17 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 		return wantedChildren;
 	}
 
+	public void removeChildrenByInterface(Class<?> clazz) {
+		List<AbstractAtom<?>> childrenToRemove = new ArrayList<>();
+		for (AbstractAtom<?> child : children) {
+			boolean isWantedChild = clazz.isInstance(child);
+			if (isWantedChild) {
+				childrenToRemove.add(child);
+			}
+		}
+		children.removeAll(childrenToRemove);
+	}
+
 	/**
 	 * Checks if any of the children, sub children and so on is of the class with the given name
 	 *
@@ -911,7 +922,17 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	 * @param wrappingAttribute
 	 * @param consumer
 	 */
-	protected static <T> void addModificationConsumer(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
+	protected <T>
+			AbstractAtom<A>
+			addModificationConsumer(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
+		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
+		wrappedAttribute.addModificationConsumer(key, consumer);
+		return this;
+	}
+
+	protected static <T>
+			void
+			addModificationConsumerStatic(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
 		wrappedAttribute.addModificationConsumer(key, consumer);
 	}

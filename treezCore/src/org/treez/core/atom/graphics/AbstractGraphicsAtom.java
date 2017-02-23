@@ -222,11 +222,11 @@ public abstract class AbstractGraphicsAtom extends AdjustableAtom implements Mou
 
 		updateTranslation(selection, leftMargin, topMargin);
 
-		addModificationConsumer(key, leftMargin, () -> {
+		addModificationConsumerStatic(key, leftMargin, () -> {
 			updateTranslation(selection, leftMargin, topMargin);
 		});
 
-		addModificationConsumer(key, topMargin, () -> {
+		addModificationConsumerStatic(key, topMargin, () -> {
 			updateTranslation(selection, leftMargin, topMargin);
 		});
 

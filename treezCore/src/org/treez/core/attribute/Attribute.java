@@ -23,8 +23,8 @@ public interface Attribute<T> extends ObservableValue<T> {
 	@Override
 	String toString();
 
-	void addModificationConsumer(String key, Consumer listener);
+	<C extends Attribute<T>> C addModificationConsumer(String key, Consumer listener);
 
-	void addModificationConsumerAndRun(String key, Consumer listener);
+	<C extends Attribute<T>> C addModificationConsumerAndRun(String key, Consumer listener);
 
 }

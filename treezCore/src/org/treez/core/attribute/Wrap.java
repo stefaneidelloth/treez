@@ -63,15 +63,19 @@ public class Wrap<T> implements AttributeWrapper<T> {
 		this.wrappedAttribute = wrappedAttribute;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void addModificationConsumer(String key, Consumer consumer) {
+	public <C extends Attribute<T>> C addModificationConsumer(String key, Consumer consumer) {
 		wrappedAttribute.addModificationConsumer(key, consumer);
+		return (C) this;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void addModificationConsumerAndRun(String key, Consumer consumer) {
+	public <C extends Attribute<T>> C addModificationConsumerAndRun(String key, Consumer consumer) {
 		wrappedAttribute.addModificationConsumer(key, consumer);
 		consumer.consume();
+		return (C) this;
 	}
 
 	@Override

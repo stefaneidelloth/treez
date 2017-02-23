@@ -21,8 +21,6 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 
 	private int rowIndexOffset = 0;
 
-	protected boolean isLinkedToSource = false;
-
 	protected boolean isCaching = false;
 
 	/**
@@ -162,11 +160,6 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 		return this;
 	}
 
-	@Override
-	public boolean sourceEquals(TableSource tableSourceInfo) {
-		return false;
-	}
-
 	//#end region
 
 	//#region ACCESSORS
@@ -259,7 +252,8 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 
 	@Override
 	public boolean isLinkedToSource() {
-		return isLinkedToSource;
+		TableSource tableSource = getTableSource();
+		return tableSource != null;
 	}
 
 	@Override
@@ -278,7 +272,12 @@ public abstract class AbstractTreezTable<A extends AbstractTreezTable<A>> extend
 
 	@Override
 	public TableSource getTableSource() {
-		return null;
+		List<TableSource> tableSources = getChildrenByInterface(TableSource.class);
+		if (tableSources.isEmpty()) {
+			return null;
+		} else {
+			return tableSources.get(0);
+		}
 	}
 
 	//#end region

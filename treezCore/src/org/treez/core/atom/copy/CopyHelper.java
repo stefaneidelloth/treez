@@ -19,8 +19,7 @@ public final class CopyHelper {
 	/**
 	 * Private Constructor that prevents construction
 	 */
-	private CopyHelper() {
-	}
+	private CopyHelper() {}
 
 	//#end region
 
@@ -29,8 +28,7 @@ public final class CopyHelper {
 	//#region ATTRIBUTE VALUE
 
 	/**
-	 * Copies the given attribute value (a simple value, a Copiable, a list of
-	 * simple values or a list of Copiable)
+	 * Copies the given attribute value (a simple value, a Copiable, a list of simple values or a list of Copiable)
 	 *
 	 * @param <T>
 	 * @param valueToCopy
@@ -62,8 +60,7 @@ public final class CopyHelper {
 			try {
 				typedList = (T) list;
 			} catch (ClassCastException exception) {
-				String message = "Could not cast list of type '"
-						+ list.getClass().getSimpleName()
+				String message = "Could not cast list of type '" + list.getClass().getSimpleName()
 						+ "' to expected type of list attribute value.";
 				throw new IllegalStateException(message, exception);
 			}
@@ -71,8 +68,7 @@ public final class CopyHelper {
 		} else {
 			//other iterables are not yet supported
 			String message = "The attribute value must be a single value or of type List to be able to copy it. "
-					+ "The type '" + valueToCopy.getClass().getSimpleName()
-					+ "' is not yet implemented.";
+					+ "The type '" + valueToCopy.getClass().getSimpleName() + "' is not yet implemented.";
 			throw new IllegalStateException(message);
 		}
 	}
@@ -86,8 +82,7 @@ public final class CopyHelper {
 		}
 
 		//check for primitive value
-		boolean isPrimitiveOrString = isPrimitiveOrString(
-				valueToCopy.getClass());
+		boolean isPrimitiveOrString = isPrimitiveOrString(valueToCopy.getClass());
 		if (isPrimitiveOrString) {
 			return valueToCopy;
 		}
@@ -116,15 +111,13 @@ public final class CopyHelper {
 		}
 
 		//this place should not be reached
-		String message = "Could not copy value of type '"
-				+ valueToCopy.getClass().getName()
+		String message = "Could not copy value of type '" + valueToCopy.getClass().getName()
 				+ "'. It must implement Copiable.";
 		throw new IllegalStateException(message);
 	}
 
 	/**
-	 * Returns true if the given type is primitive or a string. This means the
-	 * type is immutable.
+	 * Returns true if the given type is primitive or a string. This means the type is immutable.
 	 *
 	 * @param type
 	 * @return
@@ -139,17 +132,16 @@ public final class CopyHelper {
 
 	/**
 	 * Copies the given list of rows for the given target table
-	 *
-	 * @param definitionRowsToCopy
-	 * @param targetTable
-	 * @return
 	 */
-	public static List<Row> copyRowsForTargetTable(
-			List<Row> definitionRowsToCopy, TreezTable targetTable) {
+	public static List<Row> copyRowsForTargetTable(List<Row> rowsToCopy, TreezTable targetTable) {
 		Objects.requireNonNull(targetTable, "New table must not be null.");
 
+		if (rowsToCopy == null) {
+			return null;
+		}
+
 		List<Row> rows = new ArrayList<>();
-		for (Row rowToCopy : definitionRowsToCopy) {
+		for (Row rowToCopy : rowsToCopy) {
 			Row row = rowToCopy.copyForNewTable(targetTable);
 			rows.add(row);
 		}
@@ -167,8 +159,7 @@ public final class CopyHelper {
 	 * @param mapToCopy
 	 * @return
 	 */
-	public static Map<String, List<String>> copyNestedStringMap(
-			Map<String, List<String>> mapToCopy) {
+	public static Map<String, List<String>> copyNestedStringMap(Map<String, List<String>> mapToCopy) {
 
 		if (mapToCopy == null) {
 			return null;

@@ -19,10 +19,13 @@ public interface TableSource {
 
 	/**
 	 * Returns the file path for file based table sources
-	 *
-	 * @return
 	 */
 	String getSourceFilePath();
+
+	/**
+	 * Returns the column separator for text file based table sources (e.g. "," for CSV)
+	 */
+	String getColumnSeparator();
 
 	/**
 	 * Returns the host, e.g. localhost for server based table sources

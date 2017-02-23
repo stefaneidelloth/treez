@@ -107,7 +107,7 @@ public abstract class AbstractAbstractAtomTest {
 
 	}
 
-	private void checkOptainedObjects(
+	protected void checkOptainedObjects(
 			String name,
 			Image atomImage,
 			AbstractControlAdaption controlAdaption,

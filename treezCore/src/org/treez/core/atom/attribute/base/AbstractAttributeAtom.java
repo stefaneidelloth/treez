@@ -354,15 +354,20 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void addModificationConsumer(String key, Consumer consumer) {
+	public <C extends Attribute<T>> C addModificationConsumer(String key, Consumer consumer) {
+
 		addModifyListener(key, (event) -> consumer.consume());
+		return (C) this;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void addModificationConsumerAndRun(String key, Consumer consumer) {
+	public <C extends Attribute<T>> C addModificationConsumerAndRun(String key, Consumer consumer) {
 		addModificationConsumer(key, consumer);
 		consumer.consume();
+		return (C) this;
 	}
 
 	//#end region
@@ -418,7 +423,7 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 		if (value != attributeValue) {
 			attributeValue = value;
 			setInitialized();
-			refreshAttributeAtomControl();
+			this.runUiJobBlocking(() -> refreshAttributeAtomControl());
 			triggerListeners();
 		}
 	}

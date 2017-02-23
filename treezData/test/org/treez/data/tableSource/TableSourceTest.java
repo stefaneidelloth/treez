@@ -3,7 +3,6 @@ package org.treez.data.tableSource;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
-import org.treez.data.tableSource.TableSource;
 
 public class TableSourceTest extends AbstractAbstractAtomTest {
 
@@ -17,7 +16,10 @@ public class TableSourceTest extends AbstractAbstractAtomTest {
 	public void createTestAtom() {
 
 		//create test atom
-		atom = new TableSource(atomName);
+		TableSource tableSource = new TableSource(atomName);
+		//tableSource.jobId.set("5");
+
+		atom = tableSource;
 
 	}
 

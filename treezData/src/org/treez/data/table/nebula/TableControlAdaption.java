@@ -42,6 +42,7 @@ public class TableControlAdaption extends AbstractControlAdaption {
 	//#region METHODS
 
 	private void createControl(Composite parent, Table table) {
+
 		deleteOldContent(parent);
 		setParentLayout(parent);
 		createButtons(parent);

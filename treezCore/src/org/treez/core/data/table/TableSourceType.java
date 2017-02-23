@@ -12,8 +12,6 @@ public enum TableSourceType implements EnumValueProvider<TableSourceType> {
 
 	CSV("csv"),
 
-	EXCEL("excel"),
-
 	SQLITE("sqlite"),
 
 	MYSQL("mysql");

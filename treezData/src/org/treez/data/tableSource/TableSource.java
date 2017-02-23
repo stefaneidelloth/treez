@@ -60,6 +60,27 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		createTableSourceModel();
 	}
 
+	/**
+	 * Copy constructor based on interface
+	 */
+	public TableSource(org.treez.core.data.table.TableSource tableSource) {
+		this("TableSource");
+		sourceType.set(tableSource.getSourceType().toString());
+		filePath.set(tableSource.getSourceFilePath());
+		columnSeparator.set(tableSource.getColumnSeparator());
+		host.set(tableSource.getHost());
+		port.set(tableSource.getPort());
+		user.set(tableSource.getUser());
+		password.set(tableSource.getPassword());
+		schema.set(tableSource.getSchema());
+		tableName.set(tableSource.getTableName());
+		filterForJob.set(tableSource.isFilteringForJob());
+		jobId.set(tableSource.getJobId());
+		useCustomQuery.set(tableSource.isUsingCustomQuery());
+		customQuery.set(tableSource.getCustomQuery());
+
+	}
+
 	//#end region
 
 	//#region METHODS
@@ -176,7 +197,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		}
 	}
 
-	private synchronized void enableAndDisableQueryComponents() {
+	private void enableAndDisableQueryComponents() {
 		boolean isUsingCustomQuery = useCustomQuery.get();
 		if (isUsingCustomQuery) {
 			setEnabled(customQuery, true);
@@ -286,6 +307,11 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 	@Override
 	public String getSourceFilePath() {
 		return filePath.get();
+	}
+
+	@Override
+	public String getColumnSeparator() {
+		return columnSeparator.get();
 	}
 
 	@Override

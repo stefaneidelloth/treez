@@ -16,11 +16,6 @@ public interface LinkableTreezTable extends PaginatedTreezTable {
 	TableSource getTableSource();
 
 	/**
-	 * Checks if this table is already linked to the given TableSource
-	 */
-	boolean sourceEquals(TableSource tableSource);
-
-	/**
 	 * Returns true if the table currently caches data from the table source
 	 */
 	public boolean isCached();

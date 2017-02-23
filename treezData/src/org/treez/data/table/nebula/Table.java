@@ -2,7 +2,6 @@ package org.treez.data.table.nebula;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.CellEditor;
@@ -16,7 +15,6 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.copy.CopyHelper;
 import org.treez.core.data.cell.CellEditorFactory;
 import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
@@ -38,11 +36,6 @@ public class Table extends AbstractTreezTable<Table> {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * For columns that use enums as value, this maps from column name to EnumSet (=allowed values)
-	 */
-	private Map<String, List<String>> comboTextMap = null;
-
 	//#end region
 
 	//#region CONSTRUCTORS
@@ -56,7 +49,6 @@ public class Table extends AbstractTreezTable<Table> {
 	 */
 	private Table(Table tableToCopy) {
 		super(tableToCopy);
-		comboTextMap = CopyHelper.copyNestedStringMap(tableToCopy.comboTextMap);
 	}
 
 	//#end region
@@ -70,7 +62,15 @@ public class Table extends AbstractTreezTable<Table> {
 
 	@Override
 	public Table copy() {
-		return new Table(this);
+		Table newTable = new Table(this);
+		org.treez.data.tableSource.TableSource newTableSource = copyTableSource(getTableSource());
+		newTable.addChild(newTableSource);
+		return newTable;
+	}
+
+	private static org.treez.data.tableSource.TableSource copyTableSource(TableSource tableSource) {
+		org.treez.data.tableSource.TableSource newTableSource = new org.treez.data.tableSource.TableSource(tableSource);
+		return newTableSource;
 	}
 
 	@Override
@@ -209,7 +209,6 @@ public class Table extends AbstractTreezTable<Table> {
 	public org.treez.data.tableSource.TableSource createTableSource(String name) {
 		org.treez.data.tableSource.TableSource tableSource = new org.treez.data.tableSource.TableSource(name);
 		addChild(tableSource);
-		this.isLinkedToSource = true;
 		return tableSource;
 	}
 
@@ -218,7 +217,6 @@ public class Table extends AbstractTreezTable<Table> {
 		this.resetCache();
 		loadTableStructureIfLinkedToSource();
 		refresh();
-
 	}
 
 	private void loadTableStructureIfLinkedToSource() {
@@ -375,15 +373,6 @@ public class Table extends AbstractTreezTable<Table> {
 	public CellEditor getCellEditor(String header, ColumnType columnType, Composite parent) {
 		CellEditor cellEditor = CellEditorFactory.createCellEditor(columnType, parent);
 		return cellEditor;
-	}
-
-	/**
-	 * Get map from column name to allowed string values. This is used for combo text columns.
-	 *
-	 * @return the allowedValuesMap
-	 */
-	public Map<String, List<String>> getComboTextMap() {
-		return comboTextMap;
 	}
 
 	@SuppressWarnings("checkstyle:illegalcatch")

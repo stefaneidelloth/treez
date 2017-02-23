@@ -121,8 +121,11 @@ public class TextField extends AbstractStringAttributeAtom<TextField> {
 		CustomLabel labelComposite = new CustomLabel(toolkit, contentContainer, currentLabel);
 		labelComposite.setPrefferedWidth(prefferedLabelWidth);
 
+		String foo = name;
+
 		//text field
-		textField = toolkit.createText(contentContainer, get());
+		String value = get();
+		textField = toolkit.createText(contentContainer, value);
 		textField.setEnabled(isEnabled());
 		textField.setToolTipText(tooltip);
 

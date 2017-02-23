@@ -69,7 +69,7 @@ public class Data extends AdjustableAtom {
 		Action addTable = new AddChildAtomTreeViewerAction(
 				Table.class,
 				"table",
-				org.treez.data.Activator.getImage("table.png"),
+				org.treez.core.Activator.getImage("table.png"),
 				this,
 				treeViewer);
 		actions.add(addTable);

@@ -19,7 +19,6 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.variablefield.IntegerVariableField;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.data.column.ColumnType;
@@ -30,12 +29,10 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.data.column.Columns;
 import org.treez.data.database.sqlite.SqLiteImporter;
 import org.treez.data.table.nebula.Table;
-import org.treez.data.tableImport.ExcelDataTableImporter;
 import org.treez.data.tableImport.TableData;
 import org.treez.data.tableImport.TextDataTableImporter;
 import org.treez.model.Activator;
 import org.treez.model.atom.AbstractModel;
-import org.treez.model.atom.executable.Executable;
 import org.treez.model.atom.executable.FilePathProvider;
 import org.treez.model.output.ModelOutput;
 
@@ -71,11 +68,11 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	public final Attribute<String> schema = new Wrap<>();
 
-	public final Attribute<String> table = new Wrap<>();
+	public final Attribute<String> tableName = new Wrap<>();
 
 	public final Attribute<Boolean> filterForJob = new Wrap<>();
 
-	public final Attribute<String> jobId = new Wrap<>();
+	public final Attribute<String> customJobId = new Wrap<>();
 
 	public final Attribute<Boolean> useCustomQuery = new Wrap<>();
 
@@ -117,18 +114,46 @@ public class TableImport extends AbstractModel implements TableSource {
 		setModel(root);
 	}
 
-	private void createTargetSection(Page dataPage, String absoluteHelpContextId) {
-		Section targetSection = dataPage.createSection("target", absoluteHelpContextId);
+	private void createSourceTypeSection(Page dataPage, String absoluteHelpContextId) {
+		Section sourceTypeSection = dataPage.createSection("sourceTypeSection", absoluteHelpContextId);
+		sourceTypeSection.setLabel("Source type");
+		sourceTypeSection.createSectionAction("action", "Import data", () -> execute(treeViewRefreshable));
 
-		//target result table (must already exist for manual execution of the TableImport)
-		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
-		ModelPath resultTable = targetSection.createModelPath(resultTableModelPath, this, null, Table.class,
-				selectionType, this, false);
-		resultTable.setLabel("Result table");
+		//source type
+		EnumComboBox<TableSourceType> sourceTypeCheck = sourceTypeSection.createEnumComboBox(sourceType, this,
+				TableSourceType.CSV);
+		sourceTypeCheck.setLabel("Source type");
+		sourceTypeCheck.addModifyListener("enableAndDisableDependentComponents",
+				(event) -> enableAndDisableDependentComponents());
 
-		//append check box (if true, existing data is not deleted and new data is appended)
-		CheckBox appendDataCheck = targetSection.createCheckBox(appendData, this, false);
-		appendDataCheck.setLabel("Append data");
+		//if true, the target table is linked to the original source
+		//pro: for huge tables only the first few rows need to be initialized and the
+		//remaining data can be loaded lazily.
+		//con: if the source is replaced/changed/deleted, e.g. in a sweep, the
+		//link might not give meaningful data.
+		sourceTypeSection
+				.createCheckBox(linkSource, this, false) //
+				.setLabel("Link source") //
+				.addModificationConsumer("enableAndDisableLinkComponents", () -> {
+					enableAndDisableLinkComponents();
+				});
+
+		sourceTypeSection
+				.createIntegerVariableField(rowLimit, this, 1000) //
+				.setLabel("Row limit");
+
+	}
+
+	private void enableAndDisableLinkComponents() {
+		boolean linkToSource = linkSource.get();
+		if (linkToSource) {
+			setEnabled(rowLimit, false);
+			setEnabled(appendData, false);
+		} else {
+			setEnabled(rowLimit, true);
+			setEnabled(appendData, true);
+		}
+
 	}
 
 	private void createSourceDataSection(Page dataPage, String absoluteHelpContextId) {
@@ -163,33 +188,70 @@ public class TableImport extends AbstractModel implements TableSource {
 		schemaField.setLabel("Schema name");
 
 		//table name (e.g. name of Excel sheet or SqLite table )
-		TextField tableField = sourceDataSection.createTextField(table, this, "Sheet1");
+		TextField tableField = sourceDataSection.createTextField(tableName, this, "Sheet1");
 		tableField.setLabel("Table name");
+
+		sourceDataSection
+				.createCheckBox(filterForJob, this, false) //
+				.setLabel("Filter rows with JobId") //
+				.addModifyListener("enableAndDistableJobComponents", (event) -> enableAndDisableJobComponents());
+
+		sourceDataSection
+				.createTextField(customJobId, this) //
+				.setLabel("JobId") //
+				.addModificationConsumer("updateJobIdOfAbstractModelWithUserInput", () -> {
+					if (getJobId() != customJobId.get()) {
+						this.setJobId(customJobId.get());
+					}
+				});
+
+		sourceDataSection
+				.createCheckBox(useCustomQuery, this, false) //
+				.setLabel("Use custom query") //
+				.addModifyListener("enableAndDistableQueryComponents", (event) -> enableAndDisableQueryComponents());
+
+		sourceDataSection
+				.createTextArea(customQuery, this) //
+				.setLabel("Custom query");
+
 	}
 
-	private void createSourceTypeSection(Page dataPage, String absoluteHelpContextId) {
-		Section sourceTypeSection = dataPage.createSection("sourceTypeSection", absoluteHelpContextId);
-		sourceTypeSection.setLabel("Source type");
-		sourceTypeSection.createSectionAction("action", "Import data", () -> execute(treeViewRefreshable));
+	private void enableAndDisableJobComponents() {
+		boolean isFilteringForJob = filterForJob.get();
+		if (isFilteringForJob) {
+			setEnabled(customJobId, true);
+		} else {
+			setEnabled(customJobId, false);
+		}
+	}
 
-		//source type
-		EnumComboBox<TableSourceType> sourceTypeCheck = sourceTypeSection.createEnumComboBox(sourceType, this,
-				TableSourceType.CSV);
-		sourceTypeCheck.setLabel("Source type");
-		sourceTypeCheck.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
+	private void enableAndDisableQueryComponents() {
+		boolean isUsingCustomQuery = useCustomQuery.get();
+		if (isUsingCustomQuery) {
+			setEnabled(customQuery, true);
+			setEnabled(tableName, false);
+			setEnabled(filterForJob, false);
+			setEnabled(customJobId, true);
+		} else {
+			setEnabled(customQuery, false);
+			setEnabled(tableName, true);
+			setEnabled(filterForJob, true);
+			enableAndDisableJobComponents();
+		}
+	}
 
-		//if true, the target table is linked to the original source
-		//pro: for huge tables only the first few rows need to be initialized and the
-		//remaining data can be loaded lazily.
-		//con: if the source is replaced/changed/deleted, e.g. in a sweep, the
-		//link might not give meaningful data.
-		CheckBox linkSourceCheck = sourceTypeSection.createCheckBox(linkSource, this, false);
-		linkSourceCheck.setLabel("Link source");
+	private void createTargetSection(Page dataPage, String absoluteHelpContextId) {
+		Section targetSection = dataPage.createSection("target", absoluteHelpContextId);
 
-		IntegerVariableField rowLimitField = sourceTypeSection.createIntegerVariableField(rowLimit, this, 1000);
-		rowLimitField.setLabel("Row limit");
+		//target result table (must already exist for manual execution of the TableImport)
+		ModelPathSelectionType selectionType = ModelPathSelectionType.FLAT;
+		ModelPath resultTable = targetSection.createModelPath(resultTableModelPath, this, null, Table.class,
+				selectionType, this, false);
+		resultTable.setLabel("Result table");
 
-		sourceTypeSection.createCheckBox(filterForJob, this, false).setLabel("Filter rows with JobId");
+		//append check box (if true, existing data is not deleted and new data is appended)
+		CheckBox appendDataCheck = targetSection.createCheckBox(appendData, this, false);
+		appendDataCheck.setLabel("Append data");
 	}
 
 	@Override
@@ -202,9 +264,6 @@ public class TableImport extends AbstractModel implements TableSource {
 		switch (tableSourceType) {
 		case CSV:
 			enableAndDisableCompontentsForCsv();
-			break;
-		case EXCEL:
-			enableAndDisableCompontentsForExcel();
 			break;
 		case SQLITE:
 			enableAndDisableCompontentsForSqLite();
@@ -219,6 +278,10 @@ public class TableImport extends AbstractModel implements TableSource {
 	}
 
 	private void enableAndDisableCompontentsForCsv() {
+
+		setEnabled(linkSource, false); //TODO: check if csv can be read paginated. If so, it might make sense to enable this
+		setEnabled(filterForJob, false);
+
 		setEnabled(inheritSourceFilePath, true);
 
 		boolean inheritPath = inheritSourceFilePath.get();
@@ -230,25 +293,16 @@ public class TableImport extends AbstractModel implements TableSource {
 		setEnabled(user, false);
 		setEnabled(password, false);
 		setEnabled(schema, false);
-		setEnabled(table, false);
-	}
+		setEnabled(tableName, false);
 
-	private void enableAndDisableCompontentsForExcel() {
-		setEnabled(inheritSourceFilePath, true);
-
-		boolean inheritPath = inheritSourceFilePath.get();
-		setEnabled(sourceFilePath, !inheritPath);
-
-		setEnabled(columnSeparator, false);
-		setEnabled(host, false);
-		setEnabled(port, false);
-		setEnabled(user, false);
-		setEnabled(password, false);
-		setEnabled(schema, false);
-		setEnabled(table, true);
+		setEnabled(useCustomQuery, false);
 	}
 
 	private void enableAndDisableCompontentsForSqLite() {
+
+		setEnabled(linkSource, true);
+		setEnabled(filterForJob, true);
+
 		setEnabled(inheritSourceFilePath, true);
 
 		boolean inheritPath = inheritSourceFilePath.get();
@@ -260,10 +314,17 @@ public class TableImport extends AbstractModel implements TableSource {
 		setEnabled(user, false);
 		setEnabled(password, true);
 		setEnabled(schema, false);
-		setEnabled(table, true);
+		setEnabled(tableName, true);
+
+		setEnabled(useCustomQuery, true);
+		enableAndDisableQueryComponents();
 	}
 
 	private void enableAndDisableCompontentsForMySql() {
+
+		setEnabled(linkSource, true);
+		setEnabled(filterForJob, true);
+
 		setEnabled(inheritSourceFilePath, false);
 		setEnabled(sourceFilePath, false);
 		setEnabled(columnSeparator, false);
@@ -272,7 +333,10 @@ public class TableImport extends AbstractModel implements TableSource {
 		setEnabled(user, true);
 		setEnabled(password, true);
 		setEnabled(schema, true);
-		setEnabled(table, true);
+		setEnabled(tableName, true);
+
+		setEnabled(useCustomQuery, true);
+		enableAndDisableQueryComponents();
 	}
 
 	/**
@@ -300,15 +364,20 @@ public class TableImport extends AbstractModel implements TableSource {
 
 		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
-		// import table data
-		TableData tableData = importTableData();
-
-		// write data to result table
 		String targetModelPath = resultTableModelPath.get();
-		Boolean appendFlag = appendData.get();
-		Table treezTable = writeDataToResultTable(tableData, targetModelPath, this, appendFlag);
 
-		//create a copy of the result table to be able to conserve it as a model output for the current run
+		Table treezTable;
+
+		boolean linkToSource = linkSource.get();
+		if (linkToSource) {
+			treezTable = linkTargetTableToSource(targetModelPath, this);
+		} else {
+			TableData tableData = importTableData();
+			Boolean appendFlag = appendData.get();
+			treezTable = writeDataToTargetTable(tableData, targetModelPath, appendFlag);
+		}
+
+		//create a copy of the target table to be able to conserve it as a model output for the current run
 		String outputTableName = getName() + "Output";
 		Table outputTable = treezTable.copy();
 		outputTable.setName(outputTableName);
@@ -319,18 +388,12 @@ public class TableImport extends AbstractModel implements TableSource {
 			return outputTable;
 		};
 
+		LOG.info(this.getClass().getSimpleName() + " '" + getName() + "' finished.");
+
 		//return model output
 		return modelOutput;
 	}
 
-	/**
-	 * Imports table data from the file system
-	 *
-	 * @param dataFilePath
-	 * @param databaseName
-	 * @param table
-	 * @return
-	 */
 	private TableData importTableData() {
 
 		TableSourceType tableSourceType = getSourceType();
@@ -340,21 +403,11 @@ public class TableImport extends AbstractModel implements TableSource {
 
 		String columnSeparatorString = columnSeparator.get();
 
-		String hostString = host.get();
-		String portString = port.get();
-		String userString = user.get();
 		String passwordString = password.get();
-		String schemaString = schema.get();
-		String tableNameString = table.get();
+		String tableNameString = tableName.get();
 
-		Boolean filterRows = this.filterForJob.get();
-
-		String jobId = null;
-		if (filterRows) {
-			AbstractAtom<?> parent = this.getParentAtom();
-			Executable executable = (Executable) parent;
-			jobId = executable.getJobId();
-		}
+		Boolean filterRows = filterForJob.get();
+		String jobIdString = getJobId();
 
 		//determine file extension (=>data type)
 		TableData tableData;
@@ -362,18 +415,19 @@ public class TableImport extends AbstractModel implements TableSource {
 		case CSV:
 			tableData = TextDataTableImporter.importData(sourcePath, columnSeparatorString, maxRows);
 			return tableData;
-		case EXCEL:
-			tableData = ExcelDataTableImporter.importData(sourcePath, tableNameString, filterRows, jobId, maxRows);
-			return tableData;
 		case SQLITE:
-			tableData = SqLiteImporter.importData(sourcePath, passwordString, tableNameString, filterRows, jobId,
+			tableData = SqLiteImporter.importData(sourcePath, passwordString, tableNameString, filterRows, jobIdString,
 					maxRows, 0);
 			return tableData;
 		case MYSQL:
+			String hostString = host.get();
+			String portString = port.get();
+			String userString = user.get();
+			String schemaString = schema.get();
 			String url = hostString + ":" + portString + "/" + schemaString;
 
 			tableData = org.treez.data.database.mysql.MySqlImporter.importData(url, userString, passwordString,
-					tableNameString, filterRows, jobId, maxRows, 0);
+					tableNameString, filterRows, jobIdString, maxRows, 0);
 			return tableData;
 		default:
 			throw new IllegalStateException("The TableSourceType '" + tableSourceType + "' is not yet implemented.");
@@ -411,6 +465,15 @@ public class TableImport extends AbstractModel implements TableSource {
 		}
 	}
 
+	private Table linkTargetTableToSource(String targetModelPath, TableSource tableSource) {
+		Table table = getChildFromRoot(targetModelPath);
+		table.removeChildrenByInterface(TableSource.class);
+		org.treez.data.tableSource.TableSource newTableSource = new org.treez.data.tableSource.TableSource(tableSource);
+		table.addChild(newTableSource);
+		table.refresh();
+		return table;
+	}
+
 	/**
 	 * Writes the given table data to the table with the given model path. If appendData = true the data is appended to
 	 * the table. If appendDate = false the data is overridden. At the end the adapted table is returned.
@@ -420,20 +483,10 @@ public class TableImport extends AbstractModel implements TableSource {
 	 * @param appendData
 	 * @return
 	 */
-	private Table writeDataToResultTable(
-			TableData tableData,
-			String tableModelPath,
-			TableSource tableSourceInfo,
-			boolean appendData) {
-
-		boolean isLinked = tableSourceInfo.isLinked();
+	private Table writeDataToTargetTable(TableData tableData, String tableModelPath, boolean appendData) {
 
 		//get result table
 		Table treezTable = getChildFromRoot(tableModelPath);
-
-		if (isLinked) {
-			checkAndPrepareSourceLinkIfRequired(tableSourceInfo, treezTable);
-		}
 
 		//check if columns already exist and create them if not
 		checkAndPrepareColumnsIfRequired(tableData, treezTable);
@@ -450,22 +503,6 @@ public class TableImport extends AbstractModel implements TableSource {
 
 		return treezTable;
 
-	}
-
-	private static void checkAndPrepareSourceLinkIfRequired(TableSource tableSourceInfo, Table treezTable) {
-		//check if table is already linked and create link if not
-		boolean tableIsLinked = treezTable.isLinkedToSource();
-		if (tableIsLinked) {
-			//check if existing link fits to required link
-			boolean linkIsOk = treezTable.sourceEquals(tableSourceInfo);
-			if (!linkIsOk) {
-				String message = "The result table is already linked to a different source.";
-				throw new IllegalStateException(message);
-			}
-		} else {
-			//create link
-
-		}
 	}
 
 	private static void checkAndPrepareColumnsIfRequired(TableData tableData, Table treezTable) {
@@ -544,6 +581,11 @@ public class TableImport extends AbstractModel implements TableSource {
 	}
 
 	@Override
+	public String getColumnSeparator() {
+		return columnSeparator.get();
+	}
+
+	@Override
 	public String getHost() {
 		return host.get();
 	}
@@ -570,7 +612,7 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	@Override
 	public String getTableName() {
-		return table.get();
+		return tableName.get();
 	}
 
 	@Override
@@ -594,13 +636,9 @@ public class TableImport extends AbstractModel implements TableSource {
 	}
 
 	@Override
-	public String getJobId() {
-		return jobId.get();
-	}
-
-	@Override
 	public void setJobId(String jobId) {
-		this.jobId.set(jobId);
+		super.setJobId(jobId);
+		this.customJobId.set(jobId);
 	}
 
 	//#end region
