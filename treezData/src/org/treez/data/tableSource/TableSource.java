@@ -85,6 +85,12 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 
 	//#region METHODS
 
+	@Override
+	public TableSource copy() {
+		TableSource newTableSource = new TableSource(this);
+		return newTableSource;
+	}
+
 	private void createTableSourceModel() {
 
 		AttributeRoot root = new AttributeRoot("root");

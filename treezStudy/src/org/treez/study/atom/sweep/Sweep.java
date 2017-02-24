@@ -241,7 +241,8 @@ public class Sweep extends AbstractParameterVariation {
 				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
 				String modelOutputName = getName() + "OutputId" + modelInput.getJobId();
 				modelOutputAtom.setName(modelOutputName);
-				sweepOutputAtom.addChild(modelOutputAtom);
+				//sweepOutputAtom.addChild(modelOutputAtom); //TODO: repair this 
+
 				refresh();
 				counter++;
 

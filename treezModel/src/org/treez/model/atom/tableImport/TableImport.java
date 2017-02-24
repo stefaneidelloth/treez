@@ -366,6 +366,10 @@ public class TableImport extends AbstractModel implements TableSource {
 
 		String targetModelPath = resultTableModelPath.get();
 
+		if (targetModelPath.isEmpty()) {
+			throw new IllegalStateException("The table import must define a target table.");
+		}
+
 		Table treezTable;
 
 		boolean linkToSource = linkSource.get();

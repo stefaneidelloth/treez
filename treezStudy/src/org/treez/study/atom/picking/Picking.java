@@ -438,7 +438,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 		//show end message
 		logAndShowSweepEndMessage();
-		LOG.info("The picking outout is located at " + studyOutputAtomPath);
+		LOG.info("The picking output is located at " + studyOutputAtomPath);
 		monitor.done();
 	}
 

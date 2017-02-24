@@ -72,9 +72,6 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 	//#region METHODS
 
-	/**
-	 * Creates the results atom if it does not yet exist
-	 */
 	protected void createResultsAtomIfNotExists() {
 		String resultAtomPath = "root.results";
 		boolean resultAtomExists = this.rootHasChild(resultAtomPath);
@@ -86,9 +83,6 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 		}
 	}
 
-	/**
-	 * Creates the data atom if it does not yet exist
-	 */
 	protected void createDataAtomIfNotExists() {
 		String resultAtomPath = "root.results";
 		String dataAtomName = "data";

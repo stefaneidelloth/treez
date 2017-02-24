@@ -63,14 +63,7 @@ public class Table extends AbstractTreezTable<Table> {
 	@Override
 	public Table copy() {
 		Table newTable = new Table(this);
-		org.treez.data.tableSource.TableSource newTableSource = copyTableSource(getTableSource());
-		newTable.addChild(newTableSource);
 		return newTable;
-	}
-
-	private static org.treez.data.tableSource.TableSource copyTableSource(TableSource tableSource) {
-		org.treez.data.tableSource.TableSource newTableSource = new org.treez.data.tableSource.TableSource(tableSource);
-		return newTableSource;
 	}
 
 	@Override

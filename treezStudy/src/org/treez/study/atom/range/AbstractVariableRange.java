@@ -141,7 +141,7 @@ public abstract class AbstractVariableRange<T> extends AdjustableAtom implements
 	 *
 	 * @param parent
 	 */
-	private void checkParentAndUpdateSourceModel(AbstractAtom<?> parent) {
+	public void checkParentAndUpdateSourceModel(AbstractAtom<?> parent) {
 
 		if (parent == null) {
 			// throw exception if the parent is null

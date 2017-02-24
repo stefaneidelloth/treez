@@ -23,6 +23,8 @@ public class VariableRangeCodeAdaption extends AdjustableAtomCodeAdaption {
 
 		AbstractVariableRange<?> rangeAtom = (AbstractVariableRange<?>) atom;
 
+		rangeAtom.checkParentAndUpdateSourceModel(rangeAtom.getParentAtom());
+
 		CodeContainer attributeContainer = new CodeContainer(scriptType);
 
 		String relativeModelPath = rangeAtom.getRelativeSourceVariableModelPath();
