@@ -52,7 +52,7 @@ public class VectorEvaluation {
 		Method rangeMethod = null;
 		try {
 			rangeMethod = this.getClass().getDeclaredMethod("range",
-					new Class[]{Number.class, Number.class, Number.class});
+					new Class[] { Number.class, Number.class, Number.class });
 		} catch (NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
@@ -67,22 +67,19 @@ public class VectorEvaluation {
 	 * @param stepNumber
 	 * @return
 	 */
-	public static List<Double> range(Number minNumber, Number maxNumber,
-			Number stepNumber) {
+	public static List<Double> range(Number minNumber, Number maxNumber, Number stepNumber) {
 
 		//check whether max >= min
 		Double min = minNumber.doubleValue();
 		Double max = maxNumber.doubleValue();
 		Double step = stepNumber.doubleValue();
 		if (max < min) {
-			throw new IllegalArgumentException(
-					"Second parameter max has to be >= first parameter min.");
+			throw new IllegalArgumentException("Second parameter max has to be >= first parameter min.");
 		}
 
 		//check whether step > 0
 		if (step <= 0) {
-			throw new IllegalArgumentException(
-					"Third parameter step has to be > 0.");
+			throw new IllegalArgumentException("Third parameter step has to be > 0.");
 		}
 
 		//create vector
@@ -108,7 +105,21 @@ public class VectorEvaluation {
 		String adaptedValueString = valueString.replace("NaN", "#NaN");
 
 		//parse
-		Expression expression = parser.parseExpression(adaptedValueString);
+		Expression expression = null;
+		try {
+			expression = parser.parseExpression(adaptedValueString);
+		} catch (NullPointerException exception) {
+
+		}
+
+		if (expression == null) {
+			String message = "Could not parse the value string '" + valueString
+					+ "' to a Double list. Returning  a list containing a single Double.NaN value.";
+			LOG.warn(message);
+			List<Double> nanList = new ArrayList<>();
+			nanList.add(Double.NaN);
+			return nanList;
+		}
 
 		//evaluate
 		Object result = expression.getValue(context, List.class);
@@ -136,15 +147,14 @@ public class VectorEvaluation {
 					return createSingleDoubleListFromResult(result);
 				} else {
 					String message = "Could not parse valueString to double since the resutl type '"
-							+ result.getClass().getSimpleName()
-							+ "' is not yet implemented.";
+							+ result.getClass().getSimpleName() + "' is not yet implemented.";
 					throw new IllegalArgumentException(message);
 				}
 
 			}
 		} else {
 			String message = "Could not parse the value string '" + valueString
-					+ "' to a double list. Returning  a list containing a single Double.NaN value.";
+					+ "' to a Double list. Returning  a list containing a single Double.NaN value.";
 			LOG.warn(message);
 			List<Double> nanList = new ArrayList<>();
 			nanList.add(Double.NaN);
@@ -166,7 +176,21 @@ public class VectorEvaluation {
 		String adaptedValueString = valueString.replace("NaN", "#NaN");
 
 		//parse
-		Expression expression = parser.parseExpression(adaptedValueString);
+		Expression expression = null;
+		try {
+			expression = parser.parseExpression(adaptedValueString);
+		} catch (NullPointerException exception) {
+
+		}
+
+		if (expression == null) {
+			String message = "Could not parse the value string '" + valueString
+					+ "' to an Integer list. Returning  a list containing a single null value.";
+			LOG.warn(message);
+			List<Integer> nanList = new ArrayList<>();
+			nanList.add(null);
+			return nanList;
+		}
 
 		//evaluate
 		Object result = expression.getValue(context, List.class);
@@ -194,8 +218,7 @@ public class VectorEvaluation {
 					return createSingleIntegerListFromResult(result);
 				} else {
 					String message = "Could not parse valueString to Integer since the resutl type '"
-							+ result.getClass().getSimpleName()
-							+ "' is not yet implemented.";
+							+ result.getClass().getSimpleName() + "' is not yet implemented.";
 					throw new IllegalArgumentException(message);
 				}
 
@@ -212,14 +235,12 @@ public class VectorEvaluation {
 	}
 
 	/**
-	 * Creates a Double list containing a single Double value which is passed as
-	 * an object.
+	 * Creates a Double list containing a single Double value which is passed as an object.
 	 *
 	 * @param result
 	 * @return
 	 */
-	private static List<Double> createSingleDoubleListFromResult(
-			Object result) {
+	private static List<Double> createSingleDoubleListFromResult(Object result) {
 		List<Double> singleValueList = new ArrayList<>();
 		Number numberValue = (Number) result;
 		singleValueList.add(numberValue.doubleValue());
@@ -227,14 +248,12 @@ public class VectorEvaluation {
 	}
 
 	/**
-	 * Creates an Integer list containing a single Integer value which is passed
-	 * as an object.
+	 * Creates an Integer list containing a single Integer value which is passed as an object.
 	 *
 	 * @param result
 	 * @return
 	 */
-	private static List<Integer> createSingleIntegerListFromResult(
-			Object result) {
+	private static List<Integer> createSingleIntegerListFromResult(Object result) {
 		List<Integer> singleValueList = new ArrayList<>();
 		Number numberValue = (Number) result;
 		singleValueList.add(numberValue.intValue());
