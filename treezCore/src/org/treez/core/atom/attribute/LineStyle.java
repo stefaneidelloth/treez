@@ -148,7 +148,7 @@ public class LineStyle extends AbstractStringAttributeAtom<LineStyle> {
 				imageLabel.setImage(Activator.getImage(currentStyle + ".png"));
 
 				//trigger modification listeners
-				triggerListeners();
+				triggerListeners(styleCombo);
 			}
 		});
 

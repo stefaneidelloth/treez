@@ -216,7 +216,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom<DirectoryPath> {
 				textField.setSelection(caretPosition);
 
 				//trigger modification listeners
-				triggerListeners();
+				triggerListeners(textField);
 			}
 
 		});

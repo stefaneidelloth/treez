@@ -1,7 +1,6 @@
 package org.treez.core.atom.attribute.event;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
@@ -12,28 +11,13 @@ public class AttributeAtomEventWidget extends Widget {
 
 	//#region CONSTRUCTORS
 
-	AttributeAtomEventWidget() {
-		super(determineShell(), SWT.NONE);
+	AttributeAtomEventWidget(Shell shell) {
+		super(shell, SWT.NONE);
 	}
 
 	//#end region
 
 	//#region METHODS
-
-	private static Widget determineShell() {
-
-		Display display = Display.getCurrent();
-		if (display == null) {
-			display = new Display();
-		}
-
-		Shell shell = display.getActiveShell();
-		if (shell == null) {
-			shell = new Shell(display);
-		}
-
-		return shell;
-	}
 
 	@Override
 	protected void checkSubclass() {

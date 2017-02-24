@@ -10,6 +10,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.base.AbstractAtom;
@@ -28,6 +29,8 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 	 * The refreshable tree view
 	 */
 	protected FocusChangingRefreshable treeViewRefreshable = null;
+
+	private static Shell SHELL;
 
 	//#end region
 
@@ -170,6 +173,24 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 			}
 		});
 
+	}
+
+	public static Shell determineShell() {
+
+		Display display = Display.getCurrent();
+		if (display == null) {
+			display = new Display();
+		}
+
+		Shell shell = display.getActiveShell();
+		if (shell == null) {
+			if (SHELL == null) {
+				SHELL = new Shell(display);
+			}
+			return SHELL;
+		}
+
+		return shell;
 	}
 
 	//#end region

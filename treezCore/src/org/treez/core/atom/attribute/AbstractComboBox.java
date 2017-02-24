@@ -173,7 +173,7 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 				updateTargetsEnabledStates(currentValue);
 
 				//trigger modification listeners
-				triggerListeners();
+				triggerListeners(comboBox);
 			}
 
 		});

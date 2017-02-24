@@ -2,6 +2,7 @@ package org.treez.core.atom.attribute.event;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Widget;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 
 /**
@@ -11,16 +12,10 @@ public class AttributeAtomEvent extends Event {
 
 	//#region CONSTRUCTORS
 
-	public AttributeAtomEvent() {
-		super();
-		this.data = null;
-		this.widget = new AttributeAtomEventWidget();
-	}
-
-	public AttributeAtomEvent(AbstractAttributeAtom<?, ?> attributeAtom) {
+	public AttributeAtomEvent(AbstractAttributeAtom<?, ?> attributeAtom, Widget widget) {
 		super();
 		this.data = attributeAtom.get();
-		this.widget = new AttributeAtomEventWidget();
+		this.widget = widget;
 	}
 
 	//#end region

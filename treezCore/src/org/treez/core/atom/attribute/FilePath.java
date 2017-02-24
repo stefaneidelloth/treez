@@ -253,7 +253,7 @@ public class FilePath extends AbstractStringAttributeAtom<FilePath> {
 				//restore caret position
 				textField.setSelection(caretPosition);
 
-				triggerListeners();
+				triggerListeners(textField);
 
 			}
 

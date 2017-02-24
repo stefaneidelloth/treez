@@ -613,7 +613,7 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 			textField.setText(get());
 
 			//trigger modification listeners
-			triggerListeners();
+			triggerListeners(textField);
 		}
 	}
 

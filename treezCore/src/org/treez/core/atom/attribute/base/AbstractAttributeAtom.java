@@ -13,6 +13,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -208,9 +210,17 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	 * Informs the modification listeners about changes
 	 */
 	public synchronized void triggerListeners() {
+		Shell shell = determineShell();
+		triggerListeners(shell);
+	}
+
+	/**
+	 * Informs the modification listeners about changes
+	 */
+	public synchronized void triggerListeners(Widget widget) {
 		if (this.modifyListenersEnabled) {
-			//trigger SWT modify listeners
-			ModifyEvent modifyEvent = new AttributeAtomEvent(this).createModifyEvent();
+
+			ModifyEvent modifyEvent = new AttributeAtomEvent(this, widget).createModifyEvent();
 			Set<ModifyListener> listeners = getModifyListeners();
 			for (ModifyListener listener : listeners) {
 				listener.modifyText(modifyEvent);
@@ -218,6 +228,7 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 
 			//trigger JavaFx change listeners
 			fireJavaFxValueChangedEvent();
+
 		}
 	}
 
@@ -424,7 +435,8 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 			attributeValue = value;
 			setInitialized();
 			this.runUiJobBlocking(() -> refreshAttributeAtomControl());
-			triggerListeners();
+			Shell shell = determineShell();
+			triggerListeners(shell);
 		}
 	}
 

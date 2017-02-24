@@ -170,7 +170,7 @@ public class DateTimeFirstDraft extends AbstractZonedDateTimeAttributeAtom<DateT
 				updateTargetsEnabledStates(currentValue);
 
 				//trigger modification listeners
-				triggerListeners();
+				triggerListeners(valueCheckBox);
 			}
 
 		});

@@ -43,10 +43,12 @@ public class TreeViewerRefreshable extends TreeViewer implements FocusChangingRe
 	@Override
 	public synchronized void refresh() {
 		//LOG.info("Refreshing tree view");
+
 		super.refresh(true);
 		if (actionRefreshable != null) {
 			actionRefreshable.refresh();
 		}
+
 	}
 
 	@Override

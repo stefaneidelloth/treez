@@ -69,7 +69,7 @@ public class Studies extends AdjustableAtom {
 
 			}
 		}
-		refresh();
+		//refresh();
 	}
 
 	/**
