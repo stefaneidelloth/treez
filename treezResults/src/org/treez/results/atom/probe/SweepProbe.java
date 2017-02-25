@@ -17,6 +17,7 @@ import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.row.Row;
 import org.treez.core.quantity.Quantity;
+import org.treez.data.column.Column;
 import org.treez.data.output.OutputAtom;
 import org.treez.data.table.nebula.Table;
 import org.treez.results.Activator;
@@ -126,7 +127,8 @@ public class SweepProbe extends AbstractProbe {
 		xRangePath.set("root.studies.sweep.threshold");
 
 		//first family section
-		Section firstFamilySection = page.createSection("firstFamily", "First family");
+		Section firstFamilySection = page.createSection("firstFamily") //
+				.setLabel("First family");
 		firstFamilySection.setExpanded(false);
 
 		TextField firstFamilyField = firstFamilySection.createTextField(firstFamilyLegend, this, "family1");
@@ -136,7 +138,8 @@ public class SweepProbe extends AbstractProbe {
 		firstFamilyRangePath.setLabel("Range for first family");
 
 		//second family section
-		Section secondFamilySection = page.createSection("secondFamily", "Second family");
+		Section secondFamilySection = page.createSection("secondFamily") //
+				.setLabel("Second family");
 		secondFamilySection.setExpanded(false);
 
 		TextField secondFamilyField = secondFamilySection.createTextField(secondFamilyLegend, this, "family2");
@@ -217,7 +220,7 @@ public class SweepProbe extends AbstractProbe {
 
 		//get probe information
 		String probeLabelString = probeLabel.get();
-		ColumnType probeColumnType = ColumnType.STRING;
+		ColumnType probeColumnType = getProbeColumnType();
 
 		//get first family information
 		String firstFamilyLabelString = firstFamilyLegend.get();
@@ -263,6 +266,17 @@ public class SweepProbe extends AbstractProbe {
 
 		LOG.info("Created table columns.");
 
+	}
+
+	private ColumnType getProbeColumnType() {
+
+		String probeTableRelativePath = getFirstProbeRelativePath();
+		String sweepOutputPath = sweepOutput.get();
+		String tablePath = sweepOutputPath + "." + probeTableRelativePath;
+		Table probeTable = this.getChildFromRoot(tablePath);
+		int columnIndex = Integer.parseInt(probeColumnIndex.get());
+		Column probeColumn = (Column) probeTable.getColumns().getChildAtoms().get(columnIndex);
+		return probeColumn.getColumnType();
 	}
 
 	private List<?> getFirstFamilyRangeValues() {
@@ -452,7 +466,7 @@ public class SweepProbe extends AbstractProbe {
 
 		//get probe value
 		String columnHeader = probeTable.getHeaders().get(columnIndex);
-		Row row = probeTable.getRows().get(rowIndex);
+		Row row = probeTable.getRow(rowIndex);
 		Object value = row.getEntry(columnHeader);
 
 		//return probe value

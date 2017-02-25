@@ -44,6 +44,8 @@ public class SweepStudyWithTableImportFromSqLite extends ModelProvider {
 		tableImport.inheritSourceFilePath.set(false);
 		tableImport.sourceFilePath.set("D:/EclipseJava/workspaceTreez/TreezExamples/resources/example.sqlite");
 		tableImport.tableName.set("example");
+		tableImport.useCustomQuery.set(true);
+		tableImport.customQuery.set("select * from example where id = {$jobId$}");
 		tableImport.resultTableModelPath.set("root.results.data.table");
 
 		//#end region
@@ -59,11 +61,11 @@ public class SweepStudyWithTableImportFromSqLite extends ModelProvider {
 
 		IntegerVariableRange integerRange0 = sweep0.createIntegerVariableRange("integerRange0");
 		integerRange0.setRelativeSourceVariableModelPath("integerVariable0");
-		integerRange0.setRange(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
+		integerRange0.setRange(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
 		IntegerVariableRange integerRange1 = sweep0.createIntegerVariableRange("integerRange1");
 		integerRange1.setRelativeSourceVariableModelPath("integerVariable1");
-		integerRange1.setRange(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+		integerRange1.setRange(1, 2, 3);
 
 		//#end region
 

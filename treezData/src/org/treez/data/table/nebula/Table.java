@@ -18,6 +18,7 @@ import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.data.cell.CellEditorFactory;
 import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
+import org.treez.core.data.row.Row;
 import org.treez.core.data.table.AbstractTreezTable;
 import org.treez.core.data.table.TableSource;
 import org.treez.core.data.table.TableSourceType;
@@ -296,6 +297,65 @@ public class Table extends AbstractTreezTable<Table> {
 		}
 	}
 
+	private Row readRowFromTableSource(TableSource tableSource, int rowIndex) {
+		TableSourceType sourceType = tableSource.getSourceType();
+
+		if (sourceType.equals(TableSourceType.SQLITE)) {
+			return readRowFromSqLiteTable(tableSource, rowIndex);
+		} else if (sourceType.equals(TableSourceType.MYSQL)) {
+			return readRowFromMySqlTable(tableSource, rowIndex);
+		} else {
+			throw new IllegalStateException("not yet implemented for current source type " + sourceType);
+		}
+	}
+
+	private Row readRowFromSqLiteTable(TableSource tableSource, int rowIndex) {
+		String sqLiteFilePath = tableSource.getSourceFilePath();
+
+		String password = tableSource.getPassword();
+		String jobId = tableSource.getJobId();
+
+		Boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
+		if (isUsingCustomQuery) {
+			String customQuery = tableSource.getCustomQuery();
+			Row row = SqLiteImporter.readRowWithCustomQuery(sqLiteFilePath, password, customQuery, jobId, rowIndex,
+					this);
+			return row;
+		} else {
+			String tableName = tableSource.getTableName();
+			Boolean filterRowsByJobId = tableSource.isFilteringForJob();
+
+			Row row = SqLiteImporter.readRow(sqLiteFilePath, password, tableName, filterRowsByJobId, jobId, rowIndex,
+					this);
+			return row;
+		}
+	}
+
+	private Row readRowFromMySqlTable(TableSource tableSource, int rowIndex) {
+		String host = tableSource.getHost();
+		String port = tableSource.getPort();
+		String schema = tableSource.getSchema();
+		String url = host + ":" + port + "/" + schema;
+
+		String user = tableSource.getUser();
+		String password = tableSource.getPassword();
+
+		String jobId = tableSource.getJobId();
+
+		Boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
+		if (isUsingCustomQuery) {
+			String customQuery = tableSource.getCustomQuery();
+
+			Row row = MySqlImporter.readRowWithCustomQuery(url, user, password, customQuery, jobId, rowIndex, this);
+			return row;
+		} else {
+			String tableName = tableSource.getTableName();
+			Boolean filterRowsByJobId = tableSource.isFilteringForJob();
+			Row row = MySqlImporter.readRow(url, user, password, tableName, filterRowsByJobId, jobId, rowIndex, this);
+			return row;
+		}
+	}
+
 	//#end region
 
 	//#region ACCESSORS
@@ -306,10 +366,22 @@ public class Table extends AbstractTreezTable<Table> {
 	}
 
 	public Columns getColumns() {
+
 		try {
 			Columns columns = getChildByClass(Columns.class);
 			return columns;
 		} catch (ClassCastException | IllegalArgumentException exception) {
+
+			if (isLinkedToSource()) {
+				reload();
+				try {
+					Columns columns = getChildByClass(Columns.class);
+					return columns;
+				} catch (ClassCastException | IllegalArgumentException secondException) {
+					throw new IllegalStateException("Could not get columns of table '" + getName() + "';");
+				}
+			}
+
 			throw new IllegalStateException("Could not get columns of table '" + getName() + "';");
 		}
 	}
@@ -401,6 +473,16 @@ public class Table extends AbstractTreezTable<Table> {
 			return columns.checkHeaders(expectedHeaders);
 		} catch (Exception exception) {
 			return false;
+		}
+	}
+
+	public Row getRow(int rowIndex) {
+
+		if (isLinkedToSource()) {
+			TableSource tableSource = getTableSource();
+			return readRowFromTableSource(tableSource, rowIndex);
+		} else {
+			return getRows().get(rowIndex);
 		}
 	}
 

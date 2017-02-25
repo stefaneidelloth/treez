@@ -11,6 +11,8 @@ import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.column.ColumnTypeConverter;
 import org.treez.core.data.foreignkey.ForeignKeyBlueprint;
 import org.treez.core.data.index.IndexBlueprint;
+import org.treez.core.data.row.Row;
+import org.treez.core.data.table.TreezTable;
 import org.treez.data.database.AbstractImporter;
 import org.treez.data.database.ResultSetProcessor;
 import org.treez.data.database.TableData;
@@ -362,6 +364,69 @@ public final class MySqlImporter extends AbstractImporter {
 		}
 
 		return data;
+	}
+
+	public static Row readRow(
+			String url,
+			String user,
+			String password,
+			String tableName,
+			boolean filterRowsByJobId,
+			String jobId,
+			int rowIndex,
+			TreezTable table) {
+
+		MySqlDatabase database = new MySqlDatabase(url, user, password);
+		String dataQuery = "SELECT * FROM '" + tableName + "'";
+
+		boolean applyFilter = filterRowsByJobId && jobId != null;
+		if (applyFilter) {
+			dataQuery += " WHERE job_id = '" + jobId + "'";
+		}
+
+		dataQuery += " LIMIT 1 OFFSET " + rowIndex + ";";
+		return readRow(table, database, dataQuery);
+	}
+
+	public static Row readRowWithCustomQuery(
+			String url,
+			String user,
+			String password,
+			String customQuery,
+			String jobId,
+			int rowIndex,
+			TreezTable table) {
+
+		MySqlDatabase database = new MySqlDatabase(url, user, password);
+
+		int length = customQuery.length();
+		if (length < 1) {
+			throw new IllegalStateException("Custom query must not be empty");
+		}
+
+		String dataQuery = removeTrailingSemicolon(customQuery);
+		dataQuery = injectJobIdIfIncludesPlaceholder(dataQuery, jobId);
+		dataQuery += " LIMIT 1 OFFSET " + rowIndex + ";";
+
+		return readRow(table, database, dataQuery);
+	}
+
+	private static Row readRow(TreezTable table, MySqlDatabase database, String dataQuery) {
+		Row row = new Row(table);
+		ResultSetProcessor processor = (ResultSet resultSet) -> {
+			while (resultSet.next()) {
+				ResultSetMetaData metaData = resultSet.getMetaData();
+				int columnCount = metaData.getColumnCount();
+				for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+					String columnName = metaData.getColumnName(columnIndex);
+					Object value = resultSet.getObject(columnIndex);
+					row.setEntry(columnName, value);
+				}
+			}
+		};
+		database.executeAndProcess(dataQuery, processor);
+
+		return row;
 	}
 
 	//#end region
