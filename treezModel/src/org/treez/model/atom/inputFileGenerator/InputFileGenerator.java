@@ -239,6 +239,8 @@ public class InputFileGenerator extends AdjustableAtom {
 		String generalPlaceHolderExpression = nameExpression.replace("{", "\\{");
 		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("}", "\\}");
 		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("$", "\\$");
+		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("<name>", ".*");
+		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("<label>", ".*");
 
 		String[] lines = resultString.split("\n");
 		List<String> removedLines = new ArrayList<>();
