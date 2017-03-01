@@ -148,7 +148,7 @@ public class Font extends AbstractStringAttributeAtom<Font> {
 				set(currentFont);
 
 				//trigger modification listeners
-				triggerListeners(fontCombo);
+				triggerListeners();
 			}
 		});
 

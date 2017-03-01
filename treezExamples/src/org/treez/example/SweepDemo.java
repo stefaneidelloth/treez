@@ -80,7 +80,7 @@ public class SweepDemo extends ModelProvider {
 		DoubleVariableRange yRange = new DoubleVariableRange("y");
 		sweep.addChild(yRange);
 		yRange.setRelativeSourceVariableModelPath("y");
-		yRange.setRangeValueString("{1,2,3}");
+		yRange.setRangeValueString("{1,2,3,4,5,6,7,8,9}");
 
 		//results------------------------------------------------------------
 		Results results = new Results("results");

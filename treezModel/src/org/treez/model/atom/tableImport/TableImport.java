@@ -123,8 +123,8 @@ public class TableImport extends AbstractModel implements TableSource {
 		EnumComboBox<TableSourceType> sourceTypeCheck = sourceTypeSection.createEnumComboBox(sourceType, this,
 				TableSourceType.CSV);
 		sourceTypeCheck.setLabel("Source type");
-		sourceTypeCheck.addModifyListener("enableAndDisableDependentComponents",
-				(event) -> enableAndDisableDependentComponents());
+		sourceTypeCheck.addModificationConsumer("enableAndDisableDependentComponents",
+				() -> enableAndDisableDependentComponents());
 
 		//if true, the target table is linked to the original source
 		//pro: for huge tables only the first few rows need to be initialized and the
@@ -163,7 +163,7 @@ public class TableImport extends AbstractModel implements TableSource {
 		//inherit source file path : take (modified) parent output path
 		CheckBox inheritSourcePath = sourceDataSection.createCheckBox(inheritSourceFilePath, this, true);
 		inheritSourcePath.setLabel("Inherit source file");
-		inheritSourcePath.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
+		inheritSourcePath.addModificationConsumer("enableComponents", () -> enableAndDisableDependentComponents());
 
 		//path to data file (enabled if source is file based)
 		sourceDataSection.createFilePath(sourceFilePath, this, "Source file", "C:\\data.txt");
@@ -194,7 +194,7 @@ public class TableImport extends AbstractModel implements TableSource {
 		sourceDataSection
 				.createCheckBox(filterForJob, this, false) //
 				.setLabel("Filter rows with JobId") //
-				.addModifyListener("enableAndDistableJobComponents", (event) -> enableAndDisableJobComponents());
+				.addModificationConsumer("enableAndDistableJobComponents", () -> enableAndDisableJobComponents());
 
 		sourceDataSection
 				.createTextField(customJobId, this) //
@@ -208,7 +208,7 @@ public class TableImport extends AbstractModel implements TableSource {
 		sourceDataSection
 				.createCheckBox(useCustomQuery, this, false) //
 				.setLabel("Use custom query") //
-				.addModifyListener("enableAndDistableQueryComponents", (event) -> enableAndDisableQueryComponents());
+				.addModificationConsumer("enableAndDistableQueryComponents", () -> enableAndDisableQueryComponents());
 
 		sourceDataSection
 				.createTextArea(customQuery, this) //

@@ -56,7 +56,7 @@ public class StringItemVariableRange extends AbstractVariableRange<String> {
 		ModelPath variablePath = data.createModelPath(sourceVariableModelPath, this, defaultValue,
 				StringItemVariableField.class, selectionType, modelEntryPoint, hasToBeEnabled);
 		variablePath.setLabel("String variable");
-		variablePath.addModifyListener("updateItemList", (event) -> {
+		variablePath.addModificationConsumer("updateItemList", () -> {
 			updateStringItemListWithSourceVariable();
 		});
 

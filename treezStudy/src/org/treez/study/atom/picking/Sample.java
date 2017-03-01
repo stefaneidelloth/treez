@@ -301,7 +301,7 @@ public class Sample extends AdjustableAtom {
 
 	protected void createEnabledCheckBox() {
 		CheckBox enabledCheck = pickingSection.createCheckBox(enabled, this, enabled.get());
-		enabledCheck.addModifyListener("updateEnabledState", (event) -> {
+		enabledCheck.addModificationConsumer("updateEnabledState", () -> {
 			boolean enabledState = enabled.get();
 			setEnabled(enabledState);
 		});

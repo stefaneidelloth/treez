@@ -8,7 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
@@ -24,6 +23,7 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.core.atom.attribute.TextArea;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -96,30 +96,30 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		Page dataPage = root.createPage("data", "   Data   ");
 
 		//update status listener
-		ModifyListener updateStatusListener = (ModifyEvent e) -> refreshStatus();
+		Consumer updateStatus = () -> refreshStatus();
 
 		//create sections
 
 		String executableRelativeHelpContextId = "executable";
 		String executableHelpContextId = Activator.getAbsoluteHelpContextIdStatic(executableRelativeHelpContextId);
-		createExecutableSection(dataPage, updateStatusListener, executableHelpContextId);
+		createExecutableSection(dataPage, updateStatus, executableHelpContextId);
 
 		String inputRelativeHelpContextId = "executableInput";
 		String inputHelpContextId = Activator.getAbsoluteHelpContextIdStatic(inputRelativeHelpContextId);
-		createInputSection(dataPage, updateStatusListener, inputHelpContextId);
+		createInputSection(dataPage, updateStatus, inputHelpContextId);
 
 		String outputRelativeHelpContextId = "executableOutput";
 		String outputHelpContextId = Activator.getAbsoluteHelpContextIdStatic(outputRelativeHelpContextId);
-		createOutputSection(dataPage, updateStatusListener, outputHelpContextId);
+		createOutputSection(dataPage, updateStatus, outputHelpContextId);
 
 		String outputModificationRelativeHelpContextId = "executableOutputModification";
 		String outputModificationHelpContextId = Activator
 				.getAbsoluteHelpContextIdStatic(outputModificationRelativeHelpContextId);
-		createOutputModificationSection(dataPage, updateStatusListener, outputModificationHelpContextId);
+		createOutputModificationSection(dataPage, updateStatus, outputModificationHelpContextId);
 
 		String loggingRelativeHelpContextId = "executableLogging";
 		String loggingHelpContextId = Activator.getAbsoluteHelpContextIdStatic(loggingRelativeHelpContextId);
-		createLoggingSection(dataPage, updateStatusListener, loggingHelpContextId);
+		createLoggingSection(dataPage, updateStatus, loggingHelpContextId);
 
 		String statusRelativeHelpContextId = "statusLogging";
 		String statusHelpContextId = Activator.getAbsoluteHelpContextIdStatic(statusRelativeHelpContextId);
@@ -148,49 +148,42 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		return this;
 	}
 
-	protected void createExecutableSection(
-			Page dataPage,
-			ModifyListener updateStatusListener,
-			String executableHelpContextId) {
+	protected
+			void
+			createExecutableSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
 		Section executable = dataPage.createSection("executable", executableHelpContextId);
 		Image resetImage = Activator.getImage("resetJobIndex.png");
 		executable.createSectionAction("resetJobIndex", "Reset the job index to 1", () -> resetJobIndex(), resetImage);
 		executable.createSectionAction("action", "Run external executable", () -> execute(treeViewRefreshable));
 
 		FilePath filePath = executable.createFilePath(executablePath, this, "Executable", "notepad.exe");
-		filePath.addModifyListener("updateStatus", updateStatusListener);
+		filePath.addModificationConsumer("updateStatus", updateStatusListener);
 
 	}
 
-	private void createInputSection(
-			Page dataPage,
-			ModifyListener updateStatusListener,
-			String executableHelpContextId) {
+	private void createInputSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
 		Section input = dataPage.createSection("input", executableHelpContextId);
 
 		TextArea argumentTextField = input.createTextArea(inputArguments, this);
 		argumentTextField.setLabel("Input arguments");
-		argumentTextField.addModifyListener("updateStatus", updateStatusListener);
+		argumentTextField.addModificationConsumer("updateStatus", updateStatusListener);
 		argumentTextField.setHelpId("org.eclipse.ui.ide.executable");
 
 		FileOrDirectoryPath inputPathChooser = input.createFileOrDirectoryPath(inputPath, this, "Input file or folder",
 				"");
-		inputPathChooser.addModifyListener("updateStatus", updateStatusListener);
+		inputPathChooser.addModificationConsumer("updateStatus", updateStatusListener);
 	}
 
-	private void createOutputSection(
-			Page dataPage,
-			ModifyListener updateStatusListener,
-			String executableHelpContextId) {
+	private void createOutputSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
 		Section output = dataPage.createSection("output", executableHelpContextId);
 
 		TextField outputArgs = output.createTextField(outputArguments, this, "");
 		outputArgs.setLabel("Output arguments");
-		outputArgs.addModifyListener("updateStatus", updateStatusListener);
+		outputArgs.addModificationConsumer("updateStatus", updateStatusListener);
 
 		FileOrDirectoryPath outputPathChooser = output.createFileOrDirectoryPath(outputPath, this,
 				"Output file or folder", "", false);
-		outputPathChooser.addModifyListener("updateStatus", updateStatusListener);
+		outputPathChooser.addModificationConsumer("updateStatus", updateStatusListener);
 
 		CheckBox copyInputField = output.createCheckBox(copyInputFile, this, true);
 		copyInputField.setLabel("Copy input file");
@@ -198,7 +191,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	private void createOutputModificationSection(
 			Page dataPage,
-			ModifyListener updateStatusListener,
+			Consumer updateStatusListener,
 			String executableHelpContextId) {
 		Section outputModification = dataPage.createSection("outputModification", executableHelpContextId);
 		outputModification.setLabel("Output modification");
@@ -208,15 +201,15 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		CheckBox dateInFolderCheck = outputModification.createCheckBox(includeDateInFolder, this, false);
 		dateInFolderCheck.setLabel("Folder name");
-		dateInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
+		dateInFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
 		CheckBox dateInSubFolderCheck = outputModification.createCheckBox(includeDateInSubFolder, this, false);
 		dateInSubFolderCheck.setLabel("Extra folder");
-		dateInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
+		dateInSubFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
 		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInFile, this, false);
 		dateInFileCheck.setLabel("File name");
-		dateInFileCheck.addModifyListener("updateStatus", updateStatusListener);
+		dateInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
 		@SuppressWarnings("unused")
 		org.treez.core.atom.attribute.Label jobIndexLabel = outputModification.createLabel("jobIndexLabel",
@@ -224,30 +217,27 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		CheckBox jobIndexInFolderCheck = outputModification.createCheckBox(includeJobIndexInFolder, this, false);
 		jobIndexInFolderCheck.setLabel("Folder name");
-		jobIndexInFolderCheck.addModifyListener("updateStatus", updateStatusListener);
+		jobIndexInFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
 		CheckBox jobIndexInSubFolderCheck = outputModification.createCheckBox(includeJobIndexInSubFolder, this, false);
 		jobIndexInSubFolderCheck.setLabel("Extra folder");
-		jobIndexInSubFolderCheck.addModifyListener("updateStatus", updateStatusListener);
+		jobIndexInSubFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
 		CheckBox jobIndexInFileCheck = outputModification.createCheckBox(includeJobIndexInFile, this, false);
 		jobIndexInFileCheck.setLabel("File name");
-		jobIndexInFileCheck.addModifyListener("updateStatus", updateStatusListener);
+		jobIndexInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
 	}
 
-	private void createLoggingSection(
-			Page dataPage,
-			ModifyListener updateStatusListener,
-			String executableHelpContextId) {
+	private void createLoggingSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
 		Section logging = dataPage.createSection("logging", executableHelpContextId);
 		logging.setExpanded(false);
 
 		TextField logArgumentsText = logging.createTextField(logArguments, this, "");
 		logArgumentsText.setLabel("Log arguments");
-		logArgumentsText.addModifyListener("updateStatus", updateStatusListener);
+		logArgumentsText.addModificationConsumer("updateStatus", updateStatusListener);
 
 		FilePath logFilePathChooser = logging.createFilePath(logFilePath, this, "Log file", "", false);
-		logFilePathChooser.addModifyListener("updateStatus", updateStatusListener);
+		logFilePathChooser.addModificationConsumer("updateStatus", updateStatusListener);
 	}
 
 	protected void createStatusSection(Page dataPage, String executableHelpContextId) {

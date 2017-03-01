@@ -153,7 +153,7 @@ public class FillStyle extends AbstractStringAttributeAtom<FillStyle> {
 				imageLabel.setImage(Activator.getImage(IMAGE_PREFIX + currentStyle + ".png"));
 
 				//trigger modification listeners
-				triggerListeners(styleCombo);
+				triggerListeners();
 			}
 		});
 

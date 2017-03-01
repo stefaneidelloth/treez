@@ -252,7 +252,7 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom<FileOrDirec
 				textField.setSelection(caretPosition);
 
 				//trigger listeners
-				triggerListeners(textField);
+				triggerListeners();
 
 			}
 

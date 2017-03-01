@@ -151,7 +151,7 @@ public class SymbolType extends AbstractStringAttributeAtom<SymbolType> {
 				imageLabel.setImage(Activator.getImage(imagePrefix + currentStyle + ".png"));
 
 				//trigger modification listeners
-				triggerListeners(styleCombo);
+				triggerListeners();
 			}
 		});
 

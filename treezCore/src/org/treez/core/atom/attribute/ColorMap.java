@@ -157,7 +157,7 @@ public class ColorMap extends AbstractStringAttributeAtom<ColorMap> {
 				set(currentStyle);
 
 				//trigger modification listeners
-				triggerListeners(styleCombo);
+				triggerListeners();
 			}
 		});
 

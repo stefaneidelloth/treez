@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -88,14 +86,9 @@ public class Probability extends AbstractParameterVariation {
 		FilePath filePath = pickingSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
-		filePath.addModifyListener("updateEnabledState", new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent e) {
-				boolean exportSweepInfoEnabled = exportStudyInfo.get();
-				filePath.setEnabled(exportSweepInfoEnabled);
-			}
-
+		filePath.addModificationConsumer("updateEnabledState", () -> {
+			boolean exportSweepInfoEnabled = exportStudyInfo.get();
+			filePath.setEnabled(exportSweepInfoEnabled);
 		});
 
 		setModel(root);

@@ -167,7 +167,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 				updateTargetsEnabledStates(currentValue);
 
 				//trigger modification listeners
-				triggerListeners(valueCheckBox);
+				triggerListeners();
 
 			}
 

@@ -11,8 +11,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -113,15 +111,12 @@ public class Sweep extends AbstractParameterVariation {
 		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
-		filePath.addModifyListener("updateEnabledState", new ModifyListener() {
+		filePath.addModificationConsumer("updateEnabledState", () -> {
+			boolean exportSweepInfoEnabled = exportStudyInfo.get();
+			filePath.setEnabled(exportSweepInfoEnabled);
+		}
 
-			@Override
-			public void modifyText(ModifyEvent e) {
-				boolean exportSweepInfoEnabled = exportStudyInfo.get();
-				filePath.setEnabled(exportSweepInfoEnabled);
-			}
-
-		});
+		);
 
 		setModel(root);
 	}

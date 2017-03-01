@@ -7,19 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeParentAtom;
-import org.treez.core.atom.attribute.event.AttributeAtomEvent;
 import org.treez.core.atom.copy.CopyHelper;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
@@ -66,7 +61,7 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	 * considered in the implementations of the AttributeAtom, e.g. by calling triggerModificationListeners) In order to
 	 * avoid duplicate lambda expressions, the listeners are managed as a map.
 	 */
-	private Map<String, ModifyListener> modifyListeners = null;
+	private Map<String, Consumer> modifyListeners = null;
 
 	/**
 	 * If this is true, the modifyListeners are informed when the method triggerModificationListeners is called. If it
@@ -193,37 +188,19 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 
 	//#region SWT MODIFICATION LISTENERS
 
-	/**
-	 * Adds a modify listener to be able to listen to changes of the attribute value
-	 *
-	 * @param listener
-	 */
-	public void addModifyListener(String key, ModifyListener listener) {
-		modifyListeners.put(key, listener);
-	}
-
 	public void removeModifyListener(String key) {
 		modifyListeners.remove(key);
 	}
 
 	/**
-	 * Informs the modification listeners about changes
+	 * Informs the modification consumers about changes
 	 */
 	public synchronized void triggerListeners() {
-		Shell shell = determineShell();
-		triggerListeners(shell);
-	}
-
-	/**
-	 * Informs the modification listeners about changes
-	 */
-	public synchronized void triggerListeners(Widget widget) {
 		if (this.modifyListenersEnabled) {
 
-			ModifyEvent modifyEvent = new AttributeAtomEvent(this, widget).createModifyEvent();
-			Set<ModifyListener> listeners = getModifyListeners();
-			for (ModifyListener listener : listeners) {
-				listener.modifyText(modifyEvent);
+			Set<Consumer> modificationConsumers = getModificationConsumers();
+			for (Consumer consumer : modificationConsumers) {
+				consumer.consume();
 			}
 
 			//trigger JavaFx change listeners
@@ -369,7 +346,7 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	@Override
 	public <C extends Attribute<T>> C addModificationConsumer(String key, Consumer consumer) {
 
-		addModifyListener(key, (event) -> consumer.consume());
+		this.modifyListeners.put(key, consumer);
 		return (C) this;
 	}
 
@@ -435,8 +412,7 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 			attributeValue = value;
 			setInitialized();
 			this.runUiJobBlocking(() -> refreshAttributeAtomControl());
-			Shell shell = determineShell();
-			triggerListeners(shell);
+			triggerListeners();
 		}
 	}
 
@@ -478,12 +454,12 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 
 	//#region MODIFICATION LISTENING
 
-	public Set<ModifyListener> getModifyListeners() {
-		Set<ModifyListener> listeners = new HashSet<>();
-		for (ModifyListener listener : modifyListeners.values()) {
-			listeners.add(listener);
+	public Set<Consumer> getModificationConsumers() {
+		Set<Consumer> modificationConsumers = new HashSet<>();
+		for (Consumer consumer : modifyListeners.values()) {
+			modificationConsumers.add(consumer);
 		}
-		return listeners;
+		return modificationConsumers;
 	}
 
 	/**

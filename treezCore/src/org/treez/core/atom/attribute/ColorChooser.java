@@ -234,7 +234,7 @@ public class ColorChooser extends AbstractStringAttributeAtom<ColorChooser> {
 				}
 
 				//trigger modification listeners
-				triggerListeners(colorCombo);
+				triggerListeners();
 			}
 		};
 	}
@@ -291,7 +291,7 @@ public class ColorChooser extends AbstractStringAttributeAtom<ColorChooser> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-
+	
 		});
 	}
 	*/

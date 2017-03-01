@@ -115,7 +115,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		EnumComboBox<TableSourceType> sourceTypeCheck = sourceTypeSection.createEnumComboBox(sourceType, this,
 				TableSourceType.CSV);
 		sourceTypeCheck.setLabel("Source type");
-		sourceTypeCheck.addModifyListener("enableComponents", (event) -> enableAndDisableDependentComponents());
+		sourceTypeCheck.addModificationConsumer("enableComponents", () -> enableAndDisableDependentComponents());
 
 	}
 
@@ -154,7 +154,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		sourceDataSection
 				.createCheckBox(filterForJob, this, false) //
 				.setLabel("Filter rows with JobId") //
-				.addModifyListener("enableAndDistableJobComponents", (event) -> enableAndDisableJobComponents());
+				.addModificationConsumer("enableAndDistableJobComponents", () -> enableAndDisableJobComponents());
 
 		sourceDataSection
 				.createTextField(jobId, this) //
@@ -163,7 +163,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		sourceDataSection
 				.createCheckBox(useCustomQuery, this, false) //
 				.setLabel("Use custom query") //
-				.addModifyListener("enableAndDistableQueryComponents", (event) -> enableAndDisableQueryComponents());
+				.addModificationConsumer("enableAndDistableQueryComponents", () -> enableAndDisableQueryComponents());
 
 		sourceDataSection
 				.createTextArea(customQuery, this) //

@@ -75,14 +75,14 @@ public class NormalAssumption extends AbstractAssumption {
 		//mean
 		TextField meanField = data.createTextField(mean, this, "0");
 		meanField.setLabel("Mean value");
-		meanField.addModifyListener("plotProbability", (event) -> {
+		meanField.addModificationConsumer("plotProbability", () -> {
 			plotProbability(mean.get(), standardDeviation.get());
 		});
 
 		//standard deviation
 		TextField standardDeviationField = data.createTextField(standardDeviation, this, "1");
 		standardDeviationField.setLabel("Standard deviation");
-		standardDeviationField.addModifyListener("plotProbability", (event) -> {
+		standardDeviationField.addModificationConsumer("plotProbability", () -> {
 			plotProbability(mean.get(), standardDeviation.get());
 		});
 

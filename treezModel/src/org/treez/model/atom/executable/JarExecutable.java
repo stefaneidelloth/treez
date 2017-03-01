@@ -1,7 +1,5 @@
 package org.treez.model.atom.executable;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.FileOrDirectoryPath;
 import org.treez.core.atom.attribute.FilePath;
@@ -12,6 +10,7 @@ import org.treez.core.atom.attribute.TextArea;
 import org.treez.core.atom.attribute.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.model.Activator;
 
@@ -41,10 +40,9 @@ public class JarExecutable extends Executable {
 	//#region METHODS
 
 	@Override
-	protected void createExecutableSection(
-			Page dataPage,
-			ModifyListener updateStatusListener,
-			String executableHelpContextId) {
+	protected
+			void
+			createExecutableSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
 		Section executable = dataPage
 				.createSection("javaExecutable", executableHelpContextId)
 				.setLabel("Java executable");
@@ -55,7 +53,7 @@ public class JarExecutable extends Executable {
 
 		FilePath filePath = executable.createFilePath(executablePath, this, "Path to java.exe",
 				"D:/EclipseJava/App/jdk1.8/bin/java.exe");
-		filePath.addModifyListener("updateStatus", updateStatusListener);
+		filePath.addModificationConsumer("updateStatus", updateStatusListener);
 
 	}
 
@@ -64,17 +62,14 @@ public class JarExecutable extends Executable {
 		AbstractAtom<?> root = this.getModel();
 		Page dataPage = (Page) root.getChild("data");
 
-		ModifyListener updateStatusListener = (ModifyEvent e) -> refreshStatus();
+		Consumer updateStatusConsumer = () -> refreshStatus();
 
-		createClassPathSection(dataPage, updateStatusListener, null);
-		createJvmArgumentsSection(dataPage, updateStatusListener, null);
+		createClassPathSection(dataPage, updateStatusConsumer, null);
+		createJvmArgumentsSection(dataPage, updateStatusConsumer, null);
 
 	}
 
-	private void createClassPathSection(
-			Page dataPage,
-			ModifyListener updateStatusListener,
-			String executableHelpContextId) {
+	private void createClassPathSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
 
 		Section section = dataPage
 				.createSection("classPath", executableHelpContextId) //
@@ -83,16 +78,16 @@ public class JarExecutable extends Executable {
 
 		FileOrDirectoryPath classPathChooser = section.createFileOrDirectoryPath(jarPath, this,
 				"Path to jar file (that provides main class)", "");
-		classPathChooser.addModifyListener("updateStatus", updateStatusListener);
+		classPathChooser.addModificationConsumer("updateStatus", updateStatusListener);
 
 		TextField fullClassNameField = section.createTextField(fullClassName, this, "");
 		fullClassNameField.setLabel("Full name of main class");
-		fullClassNameField.addModifyListener("updateStatus", updateStatusListener);
+		fullClassNameField.addModificationConsumer("updateStatus", updateStatusListener);
 	}
 
 	private void createJvmArgumentsSection(
 			Page dataPage,
-			ModifyListener updateStatusListener,
+			Consumer updateStatusListener,
 			String executableHelpContextId) {
 
 		Section section = dataPage
@@ -103,7 +98,7 @@ public class JarExecutable extends Executable {
 		TextArea jvmField = section.createTextArea(jvmArgument, this);
 		jvmField.setLabel("Arguments for tweaking Java Virtual Maschine");
 
-		jvmField.addModifyListener("updateStatus", updateStatusListener);
+		jvmField.addModificationConsumer("updateStatus", updateStatusListener);
 		jvmField.setHelpId("org.eclipse.ui.ide.jvmArguments");
 
 	}

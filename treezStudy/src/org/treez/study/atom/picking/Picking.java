@@ -12,8 +12,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
@@ -185,7 +183,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		variableList = variableSection.createVariableList(variables, this, "Picking variables");
 
 		//add listener to update variable list for new source model path and do initial update
-		modelPath.addModifyListener("updateVariableList", (modifyEvent) -> updateAvailableVariablesForVariableList());
+		modelPath.addModificationConsumer("updateVariableList", () -> updateAvailableVariablesForVariableList());
 
 		//study info
 		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
@@ -199,14 +197,9 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
-		filePath.addModifyListener("updateEnabledState", new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent e) {
-				boolean exportSweepInfoEnabled = exportStudyInfo.get();
-				filePath.setEnabled(exportSweepInfoEnabled);
-			}
-
+		filePath.addModificationConsumer("updateEnabledState", () -> {
+			boolean exportSweepInfoEnabled = exportStudyInfo.get();
+			filePath.setEnabled(exportSweepInfoEnabled);
 		});
 
 		setModel(root);

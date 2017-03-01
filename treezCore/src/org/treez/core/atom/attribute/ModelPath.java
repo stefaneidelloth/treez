@@ -145,7 +145,7 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 
 		//add listener to update relative root if value of parent ModelPath
 		//changes
-		parentModelPath.addModifyListener("updateRelativeRootAtom", (event) -> updateRelativeRootAtom());
+		parentModelPath.addModificationConsumer("updateRelativeRootAtom", () -> updateRelativeRootAtom());
 
 	}
 
@@ -168,7 +168,7 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 
 		//add listener to update relative root if value of parent ModelPath
 		//changes
-		parentModelPath.addModifyListener("updateRelativeRootAtom", (event) -> updateRelativeRootAtom());
+		parentModelPath.addModificationConsumer("updateRelativeRootAtom", () -> updateRelativeRootAtom());
 
 	}
 
@@ -613,7 +613,7 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 			textField.setText(get());
 
 			//trigger modification listeners
-			triggerListeners(textField);
+			triggerListeners();
 		}
 	}
 
