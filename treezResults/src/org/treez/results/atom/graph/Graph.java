@@ -7,6 +7,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.FocusChangingRefreshable;
+import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
@@ -178,8 +179,20 @@ public class Graph extends GraphicsPropertiesPage {
 
 	@Override
 	public void updatePlotWithD3(D3 d3) {
+		clearAutoScaleData();
 		plotPageModels(d3);
 		plotChildren(d3);
+	}
+
+	private void clearAutoScaleData() {
+		for (AbstractAtom<?> child : getChildAtoms()) {
+			boolean isAxis = child instanceof Axis;
+			if (isAxis) {
+				Axis axis = (Axis) child;
+				axis.clearDataForAutoScale();
+			}
+		}
+
 	}
 
 	private void plotPageModels(D3 d3) {

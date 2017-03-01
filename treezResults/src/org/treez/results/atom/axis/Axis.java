@@ -173,6 +173,10 @@ public class Axis extends GraphicsPropertiesPage {
 		quantitativeScaleBuilder.includeDataForAutScale(dataForAutoScale);
 	}
 
+	public void clearDataForAutoScale() {
+		quantitativeScaleBuilder.clearDataForAutoScale();
+	}
+
 	public boolean isOrdinal() {
 		boolean isOrdinal = this.data.isOrdinal();
 		return isOrdinal;

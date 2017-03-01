@@ -1,5 +1,7 @@
 package org.treez.results.atom.xy;
 
+import java.util.List;
+
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
 import org.treez.core.atom.attribute.Section;
@@ -99,7 +101,10 @@ public class Line implements GraphicsPropertiesPageFactory {
 				.interpolate(mode);
 
 		//plot new lines
-		String xyDataString = xy.getXyDataString();
+		List<Double> xDataValues = xy.getXDataAsDoubles();
+		List<Double> yDataValues = xy.getYDataAsDoubles();
+		String xyDataString = xy.createXyDataString(xDataValues, yDataValues);
+
 		Selection lines = linesSelection //
 				.append("path") //
 				.attr("d", linePathGenerator.generate(xyDataString))

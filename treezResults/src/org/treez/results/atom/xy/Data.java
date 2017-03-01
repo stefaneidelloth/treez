@@ -86,8 +86,9 @@ public class Data implements GraphicsPropertiesPageFactory {
 		//this property page factory does create an own d3 group; the work will be
 		//done by the other property page factories
 
+		Xy xy = (Xy) parent;
+
 		Consumer dataChangedConsumer = () -> {
-			Xy xy = (Xy) parent;
 			xy.updatePlotWithD3(d3);
 		};
 		xData.addModificationConsumer("replot", dataChangedConsumer);

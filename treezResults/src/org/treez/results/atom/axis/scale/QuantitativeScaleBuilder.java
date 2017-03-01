@@ -107,8 +107,7 @@ public class QuantitativeScaleBuilder {
 	}
 
 	private void updateAutoMinValue() {
-		Double autoMinValue = determineAutoMinValue();
-		Double correctedMin = correctMinIfLogScaleAndZero(autoMinValue);
+		Double correctedMin = getAutoMinValue();
 		setMinScaleValue(correctedMin);
 	}
 
@@ -202,6 +201,16 @@ public class QuantitativeScaleBuilder {
 		if (removed) {
 			updateAutoLimits();
 		}
+	}
+
+	public Double getAutoMinValue() {
+		Double autoMinValue = determineAutoMinValue();
+		Double correctedMin = correctMinIfLogScaleAndZero(autoMinValue);
+		return correctedMin;
+	}
+
+	public Double getAutoMaxValue() {
+		return determineAutoMaxValue();
 	}
 
 	//#end region

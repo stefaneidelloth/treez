@@ -89,6 +89,7 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 			Selection graphOrXySeriesSelection,
 			Selection graphRectSelection,
 			FocusChangingRefreshable refreshable) {
+
 		Objects.requireNonNull(d3);
 		this.treeViewRefreshable = refreshable;
 
@@ -111,6 +112,7 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 
 	@Override
 	public void updatePlotWithD3(D3 d3) {
+		contributeDataForAutoScale();
 		plotPageModels(d3);
 	}
 
@@ -118,6 +120,16 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		for (GraphicsPropertiesPageFactory pageModel : propertyPageFactories) {
 			xySelection = pageModel.plotWithD3(d3, xySelection, null, this);
 		}
+	}
+
+	private void contributeDataForAutoScale() {
+		List<Double> xDataValues = getXDataAsDoubles();
+		Axis xAxis = getXAxis();
+		xAxis.includeDataForAutoScale(xDataValues);
+
+		List<Double> yDataValues = getYDataAsDoubles();
+		Axis yAxis = getYAxis();
+		yAxis.includeDataForAutoScale(yDataValues);
 	}
 
 	@Override
@@ -153,10 +165,7 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return symbolSelection;
 	}
 
-	public String getXyDataString() {
-
-		List<Object> xDataValues = getXData();
-		List<Object> yDataValues = getYData();
+	public String createXyDataString(List<Double> xDataValues, List<Double> yDataValues) {
 
 		int xLength = xDataValues.size();
 		int yLength = yDataValues.size();
@@ -169,12 +178,8 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 
 		List<String> rowList = new java.util.ArrayList<>();
 		for (int rowIndex = 0; rowIndex < xLength; rowIndex++) {
-			Object xDatum = xDataValues.get(rowIndex);
-			Double x = Double.parseDouble(xDatum.toString());
-
-			Object yDatum = yDataValues.get(rowIndex);
-			Double y = Double.parseDouble(yDatum.toString());
-
+			Double x = xDataValues.get(rowIndex);
+			Double y = yDataValues.get(rowIndex);
 			String rowString = "[" + x + "," + y + "]";
 			rowList.add(rowString);
 		}
@@ -194,7 +199,7 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return scale;
 	}
 
-	private Axis getXAxis() {
+	public Axis getXAxis() {
 		String xAxisPath = data.xAxis.get();
 		if (xAxisPath == null || xAxisPath.isEmpty()) {
 			return null;
@@ -203,7 +208,7 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return xAxisAtom;
 	}
 
-	private Axis getYAxis() {
+	public Axis getYAxis() {
 		String yAxisPath = data.yAxis.get();
 		if (yAxisPath == null || yAxisPath.isEmpty()) {
 			return null;
@@ -212,23 +217,23 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return yAxisAtom;
 	}
 
-	private List<Object> getXData() {
+	public List<Double> getXDataAsDoubles() {
 		String xDataPath = data.xData.get();
 		if (xDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}
 		org.treez.data.column.Column xDataColumn = getChildFromRoot(xDataPath);
-		List<Object> xDataValues = xDataColumn.getValues();
+		List<Double> xDataValues = xDataColumn.getDoubleValues();
 		return xDataValues;
 	}
 
-	private List<Object> getYData() {
+	public List<Double> getYDataAsDoubles() {
 		String yDataPath = data.yData.get();
 		if (yDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}
 		org.treez.data.column.Column yDataColumn = getChildFromRoot(yDataPath);
-		List<Object> yDataValues = yDataColumn.getValues();
+		List<Double> yDataValues = yDataColumn.getDoubleValues();
 		return yDataValues;
 	}
 

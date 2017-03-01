@@ -292,6 +292,10 @@ public class Column extends AdjustableAtom {
 		return columnTypeEnumValue;
 	}
 
+	public void setColumnType(ColumnType columnType) {
+		this.columnType.set(columnType.name());
+	}
+
 	//#end region
 
 }

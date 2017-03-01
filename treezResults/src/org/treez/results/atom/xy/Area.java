@@ -1,5 +1,7 @@
 package org.treez.results.atom.xy;
 
+import java.util.List;
+
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.ColorChooser;
 import org.treez.core.atom.attribute.Page;
@@ -108,7 +110,11 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 		Xy xy = (Xy) parent;
 		String parentName = xy.getName();
-		String xyDataString = xy.getXyDataString();
+
+		List<Double> xData = xy.getXDataAsDoubles();
+		List<Double> yData = xy.getYDataAsDoubles();
+
+		String xyDataString = xy.createXyDataString(xData, yData);
 		QuantitativeScale<?> xScale = xy.getXScale();
 		QuantitativeScale<?> yScale = xy.getYScale();
 

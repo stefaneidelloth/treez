@@ -207,23 +207,23 @@ public class SectionControlProvider {
 		List<TreeNodeAdaption> childNodes = section.createTreeNodeAdaption().getChildren();
 		for (TreeNodeAdaption childNode : childNodes) {
 
+			AbstractAttributeAtom<?, ?> attributeAtom = null;
 			try {
-
-				AbstractAttributeAtom<?, ?> attributeAtom = (AbstractAttributeAtom<?, ?>) childNode.getAdaptable();
-				attributeAtom.createAttributeAtomControl(sectionContentComposite, treeViewerRefreshable);
-
+				attributeAtom = (AbstractAttributeAtom<?, ?>) childNode.getAdaptable();
 			} catch (ClassCastException exception) {
+				AbstractAttributeContainerAtom<?> attributeContainerAtom = null;
 				try {
-					//create controls for container atoms
-					AbstractAttributeContainerAtom<?> attributeContainerAtom = (AbstractAttributeContainerAtom<?>) childNode
-							.getAdaptable();
-					attributeContainerAtom.createAtomControl(sectionContentComposite, treeViewerRefreshable);
+					attributeContainerAtom = (AbstractAttributeContainerAtom<?>) childNode.getAdaptable();
 
 				} catch (Exception secondException) {
 					LOG.error("Could not create attribute atom.", secondException);
 					throw exception;
 				}
+				attributeContainerAtom.createAtomControl(sectionContentComposite, treeViewerRefreshable);
+				continue;
 			}
+
+			attributeAtom.createAttributeAtomControl(sectionContentComposite, treeViewerRefreshable);
 		}
 
 		sectionContentComposite.layout(true, true);

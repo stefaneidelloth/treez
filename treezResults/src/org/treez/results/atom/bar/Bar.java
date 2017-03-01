@@ -106,7 +106,18 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 
 	@Override
 	public void updatePlotWithD3(D3 d3) {
+		contributeDataForAutoScale();
 		plotPageModels(d3);
+	}
+
+	private void contributeDataForAutoScale() {
+		List<Double> xDataValues = getLengthDataAsDoubles();
+		Axis xAxis = getXAxis();
+		xAxis.includeDataForAutoScale(xDataValues);
+
+		List<Double> positionDataValues = getPositionDataAsDoubles();
+		Axis yAxis = getYAxis();
+		yAxis.includeDataForAutoScale(positionDataValues);
 	}
 
 	private void plotPageModels(D3 d3) {
@@ -170,7 +181,7 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 			Object positionDatum = positionDataValues.get(rowIndex);
 			Double position = Double.parseDouble(positionDatum.toString());
 
-			String rowString = "[" + length + "," + position + "]";
+			String rowString = "[" + position + "," + length + "]";
 			rowList.add(rowString);
 		}
 		String dataString = "[" + String.join(",", rowList) + "]";
@@ -246,23 +257,43 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 	}
 
 	private List<Object> getLengthData() {
-		String xDataPath = data.barLengths.get();
-		if (xDataPath.isEmpty()) {
+		String lengthDataPath = data.barLengths.get();
+		if (lengthDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}
-		org.treez.data.column.Column xDataColumn = getChildFromRoot(xDataPath);
-		List<Object> xDataValues = xDataColumn.getValues();
-		return xDataValues;
+		org.treez.data.column.Column lengthDataColumn = getChildFromRoot(lengthDataPath);
+		List<Object> lengthDataValues = lengthDataColumn.getValues();
+		return lengthDataValues;
+	}
+
+	private List<Double> getLengthDataAsDoubles() {
+		String lengthDataPath = data.barLengths.get();
+		if (lengthDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+		org.treez.data.column.Column lengthDataColumn = getChildFromRoot(lengthDataPath);
+		List<Double> lengthDataValues = lengthDataColumn.getDoubleValues();
+		return lengthDataValues;
 	}
 
 	private List<Object> getPositionData() {
-		String yDataPath = data.barPositions.get();
-		if (yDataPath.isEmpty()) {
+		String positionDataPath = data.barPositions.get();
+		if (positionDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}
-		org.treez.data.column.Column yDataColumn = getChildFromRoot(yDataPath);
-		List<Object> yDataValues = yDataColumn.getValues();
-		return yDataValues;
+		org.treez.data.column.Column positionDataColumn = getChildFromRoot(positionDataPath);
+		List<Object> positionDataValues = positionDataColumn.getValues();
+		return positionDataValues;
+	}
+
+	private List<Double> getPositionDataAsDoubles() {
+		String positionDataPath = data.barPositions.get();
+		if (positionDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+		org.treez.data.column.Column positionDataColumn = getChildFromRoot(positionDataPath);
+		List<Double> positionDataValues = positionDataColumn.getDoubleValues();
+		return positionDataValues;
 	}
 
 	//#end region

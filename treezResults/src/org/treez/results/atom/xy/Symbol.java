@@ -1,5 +1,7 @@
 package org.treez.results.atom.xy;
 
+import java.util.List;
+
 import org.treez.core.adaptable.Refreshable;
 import org.treez.core.atom.attribute.AttributeRoot;
 import org.treez.core.atom.attribute.Page;
@@ -214,7 +216,10 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		//create symbols
 		Xy xy = (Xy) parent;
-		String xyDataString = xy.getXyDataString();
+		List<Double> xData = xy.getXDataAsDoubles();
+		List<Double> yData = xy.getYDataAsDoubles();
+
+		String xyDataString = xy.createXyDataString(xData, yData);
 		QuantitativeScale<?> xScale = xy.getXScale();
 		QuantitativeScale<?> yScale = xy.getYScale();
 
