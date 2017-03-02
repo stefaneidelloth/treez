@@ -1,12 +1,14 @@
 package org.treez.results.atom.bar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.Refreshable;
+import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
@@ -14,6 +16,7 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
+import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
 import org.treez.results.atom.legend.LegendContributor;
 
@@ -106,18 +109,41 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 
 	@Override
 	public void updatePlotWithD3(D3 d3) {
-		contributeDataForAutoScale();
+		contributeDataForAutoScale(d3);
 		plotPageModels(d3);
 	}
 
-	private void contributeDataForAutoScale() {
-		List<Double> xDataValues = getLengthDataAsDoubles();
+	private void contributeDataForAutoScale(D3 d3) {
+		List<Double> xDataValues = getPositionDataAsDoubles();
 		Axis xAxis = getXAxis();
+		Double[] oldXLimits = xAxis.getQuantitativeLimits();
 		xAxis.includeDataForAutoScale(xDataValues);
+		Double[] xLimits = xAxis.getQuantitativeLimits();
+		boolean xScaleChanged = !Arrays.equals(xLimits, oldXLimits);
 
-		List<Double> positionDataValues = getPositionDataAsDoubles();
+		List<Double> yDataValues = getLengthDataAsDoubles();
 		Axis yAxis = getYAxis();
-		yAxis.includeDataForAutoScale(positionDataValues);
+		Double[] oldYLimits = yAxis.getQuantitativeLimits();
+		yAxis.includeDataForAutoScale(yDataValues);
+		Double[] yLimits = yAxis.getQuantitativeLimits();
+		boolean yScaleChanged = !Arrays.equals(yLimits, oldYLimits);
+
+		if (xScaleChanged || yScaleChanged) {
+			Graph graph = getGraph();
+			graph.updatePlotForChangedScales(d3);
+		}
+
+	}
+
+	private Graph getGraph() {
+		AbstractAtom<?> parent = getParentAtom();
+		boolean parentIsGraph = Graph.class.isAssignableFrom(parent.getClass());
+		if (parentIsGraph) {
+			return (Graph) parent;
+		} else {
+			AbstractAtom<?> grandParent = parent.getParentAtom();
+			return (Graph) grandParent;
+		}
 	}
 
 	private void plotPageModels(D3 d3) {

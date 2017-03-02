@@ -178,13 +178,13 @@ public class QuantitativeScaleBuilder {
 		updateAutoLimits();
 	}
 
-	public void includeDataForAutScale(Collection<Double> dataForAutoScale) {
+	public void includeDomainValuesForAutoScale(Collection<Double> dataForAutoScale) {
 		List<Double> minAndMax = getMinAndMax(dataForAutoScale);
 		this.dataForAutoScale.addAll(minAndMax);
 		updateAutoLimits();
 	}
 
-	public void includeForAutScale(Double valueToInclude) {
+	public void includeForAutoScale(Double valueToInclude) {
 		boolean added = dataForAutoScale.add(valueToInclude);
 		if (added) {
 			updateAutoLimits();

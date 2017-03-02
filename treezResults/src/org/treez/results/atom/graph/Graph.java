@@ -184,6 +184,10 @@ public class Graph extends GraphicsPropertiesPage {
 		plotChildren(d3);
 	}
 
+	public void updatePlotForChangedScales(D3 d3) {
+		plotChildren(d3);
+	}
+
 	private void clearAutoScaleData() {
 		for (AbstractAtom<?> child : getChildAtoms()) {
 			boolean isAxis = child instanceof Axis;

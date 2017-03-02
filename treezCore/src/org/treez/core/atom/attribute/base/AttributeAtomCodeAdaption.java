@@ -157,6 +157,21 @@ public class AttributeAtomCodeAdaption<T> extends AttributeParentCodeAdaption {
 		String attributeName = attributeAtom.getName();
 
 		T value = attributeAtom.get();
+
+		if (value == null) {
+			String newBulkLine = "\t\t" + VARIABLE_NAME + ".";
+
+			if (intermediateAtom != null) {
+				String parentName = intermediateAtom.getName();
+				newBulkLine += parentName + ".";
+			}
+
+			newBulkLine += attributeName + ".set(null);";
+
+			extendedContainer.extendBulk(newBulkLine);
+			return extendedContainer;
+		}
+
 		Class<?> valueClass = value.getClass();
 
 		//code for special case of setting a quantity value

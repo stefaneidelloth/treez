@@ -22,6 +22,7 @@ import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graph.Graph;
+import org.treez.results.atom.legend.Legend;
 import org.treez.results.atom.legend.LegendContributor;
 import org.treez.results.atom.legend.LegendContributorProvider;
 import org.treez.results.atom.xy.Xy;
@@ -127,9 +128,22 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 			Axis rangeAxis = getOrCreateRangeAxis(foundSourceTable);
 			removeAllChildren();
 			createNewXyChildren(sourceTablePath, domainAxis, rangeAxis);
+			createLegendForParentGraphIfNotExists();
 		} else {
 			LOG.warn("The xy series '" + this.name + "' has no source table.");
 		}
+	}
+
+	private void createLegendForParentGraphIfNotExists() {
+		Graph graph = (Graph) this.getParentAtom();
+
+		try {
+			graph.getChildByClass(Legend.class);
+		} catch (IllegalArgumentException exception) {
+			Legend legend = new Legend("legend");
+			graph.addChild(legend);
+		}
+
 	}
 
 	private void createNewXyChildren(String sourceTablePath, Axis domainAxis, Axis rangeAxis) {
@@ -328,6 +342,12 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 
 			}
 		}
+	}
+
+	public Xy createXy(String name) {
+		Xy xy = new Xy(name);
+		addChild(xy);
+		return xy;
 	}
 
 	//#end region

@@ -168,8 +168,11 @@ public class ColorMap extends AbstractStringAttributeAtom<ColorMap> {
 	@SuppressWarnings("checkstyle:magicnumber")
 	private static Composite createContainer(Composite parent, FormToolkit toolkit, GridData fillHorizontal) {
 		Composite container = toolkit.createComposite(parent);
-		GridLayout gridLayout = new GridLayout(3, false);
-		gridLayout.horizontalSpacing = 10;
+		GridLayout gridLayout = new GridLayout(4, false);
+		gridLayout.horizontalSpacing = 5;
+		gridLayout.marginHeight = 4;
+		gridLayout.marginWidth = 0;
+
 		container.setLayout(gridLayout);
 		container.setLayoutData(fillHorizontal);
 		return container;

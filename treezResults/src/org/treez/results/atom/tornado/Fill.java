@@ -1,6 +1,8 @@
 package org.treez.results.atom.tornado;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.treez.core.atom.attribute.AttributeRoot;
@@ -131,7 +133,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hideRightRects", rectsRightSelection, rightHide);
 
 		Consumer replotRects = () -> {
-			rePlotRects(parent);
+			rePlotRects(parent, d3);
 		};
 
 		//initially plot rects
@@ -145,9 +147,9 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		return tornado.getGraph();
 	}
 
-	private void rePlotRects(AbstractGraphicsAtom parent) {
+	private void rePlotRects(AbstractGraphicsAtom parent, D3 d3) {
 		removeOldRects();
-		plotNewRects(parent);
+		plotNewRects(parent, d3);
 
 	}
 
@@ -158,7 +160,7 @@ public class Fill implements GraphicsPropertiesPageFactory {
 				.remove();
 	}
 
-	private void plotNewRects(AbstractGraphicsAtom parent) {
+	private void plotNewRects(AbstractGraphicsAtom parent, D3 d3) {
 
 		Tornado tornado = (Tornado) parent;
 		Graph graph = tornado.getGraph();
@@ -181,17 +183,33 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		String rightDataString = tornado.data.getRightBarDataString();
 		int numberOfBars = tornado.data.getDataSize();
 
+		boolean inputScaleChanged = false;
 		if (inputAxisIsOrdinal) {
 			List<Object> labelData = tornado.data.getInputLabelData();
-			for (Object label : labelData) {
-				inputAxis.addOrdinalValue(label.toString());
-			}
-			inputAxis.update();
+
+			List<String> labels = labelData.stream() //
+					.map((labelObj) -> labelObj.toString()) //
+					.collect(Collectors.toList());
+
+			int oldNumberOfValues = inputAxis.getNumberOfValues();
+			inputAxis.includeOrdinalValuesForAutoScale(labels);
+			int numberOfValues = inputAxis.getNumberOfValues();
+			inputScaleChanged = numberOfValues != oldNumberOfValues;
+
+		} else {
+			//TODO
+			//inputAxis.includeDataForAutoScale(inputData);
 		}
 
 		List<Double> allOutputData = tornado.data.getAllBarData();
+		Double[] oldOutputLimits = outputAxis.getQuantitativeLimits();
 		outputAxis.includeDataForAutoScale(allOutputData);
-		outputAxis.update();
+		Double[] outputLimits = outputAxis.getQuantitativeLimits();
+		boolean outputScaleChanged = !Arrays.equals(outputLimits, oldOutputLimits);
+
+		if (inputScaleChanged || outputScaleChanged) {
+			graph.updatePlotForChangedScales(d3);
+		}
 
 		JsEngine engine = rectsLeftSelection.getJsEngine();
 

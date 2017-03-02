@@ -473,6 +473,12 @@ public class SweepProbe extends AbstractProbe {
 		return value;
 	}
 
+	public Table createTable(String name) {
+		Table table = new Table(name);
+		addChild(table);
+		return table;
+	}
+
 	//#end region
 
 	//#end region

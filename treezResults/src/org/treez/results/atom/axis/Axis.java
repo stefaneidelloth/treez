@@ -11,6 +11,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.Scale;
+import org.treez.javafxd3.d3.scales.Scales;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.scale.OrdinalScaleBuilder;
 import org.treez.results.atom.axis.scale.QuantitativeScaleBuilder;
@@ -141,13 +142,49 @@ public class Axis extends GraphicsPropertiesPage {
 		}
 	}
 
+	public void createScale(Double graphWidthInPx, Double graphHeightInPx) {
+
+		Scales scaleFactory = d3 //
+				.scale();
+
+		AxisMode axisMode = getAxisMode();
+		switch (axisMode) {
+		case QUANTITATIVE:
+			quantitativeScaleBuilder.createScale(scaleFactory, graphWidthInPx, graphHeightInPx);
+			break;
+		case ORDINAL:
+			ordinalScaleBuilder.createScale(scaleFactory, isHorizontal(), graphWidthInPx, graphHeightInPx);
+			break;
+		//case TIME:
+		//	throw new IllegalStateException("not yet implemented");
+		default:
+			throw new IllegalStateException("not yet implemented");
+		}
+	}
+
+	public void includeDataForAutoScale(Collection<Double> dataForAutoScale) {
+		quantitativeScaleBuilder.includeDomainValuesForAutoScale(dataForAutoScale);
+	}
+
+	public void clearDataForAutoScale() {
+		quantitativeScaleBuilder.clearDataForAutoScale();
+	}
+
+	public void includeOrdinalValuesForAutoScale(List<String> ordinalValues) {
+		ordinalScaleBuilder.includeDomainValuesForAutoScale(ordinalValues);
+	}
+
 	//#end region
 
 	//#region ACCESSORS
 
+	private AxisMode getAxisMode() {
+		return AxisMode.from(data.mode.get());
+	}
+
 	public Scale<?> getScale() {
 
-		AxisMode axisMode = data.getAxisMode();
+		AxisMode axisMode = getAxisMode();
 		switch (axisMode) {
 		case QUANTITATIVE:
 			return quantitativeScaleBuilder.getScale();
@@ -160,21 +197,23 @@ public class Axis extends GraphicsPropertiesPage {
 		}
 	}
 
+	public int getSize() {
+		AxisMode axisMode = getAxisMode();
+		switch (axisMode) {
+		case QUANTITATIVE:
+			throw new IllegalStateException("not yet implemented");
+		case ORDINAL:
+			return ordinalScaleBuilder.getNumberOfValues();
+		//case TIME:
+		//	throw new IllegalStateException("not yet implemented");
+		default:
+			throw new IllegalStateException("not yet implemented");
+		}
+	}
+
 	public Boolean isQuantitative() {
 		boolean hasQuantitativeScale = this.data.isQuantitative();
 		return hasQuantitativeScale;
-	}
-
-	public QuantitativeScaleBuilder getQuantitativeScaleBuilder() {
-		return quantitativeScaleBuilder;
-	}
-
-	public void includeDataForAutoScale(Collection<Double> dataForAutoScale) {
-		quantitativeScaleBuilder.includeDataForAutScale(dataForAutoScale);
-	}
-
-	public void clearDataForAutoScale() {
-		quantitativeScaleBuilder.clearDataForAutoScale();
 	}
 
 	public boolean isOrdinal() {
@@ -182,17 +221,19 @@ public class Axis extends GraphicsPropertiesPage {
 		return isOrdinal;
 	}
 
-	public OrdinalScaleBuilder getOrdinalScaleBuilder() {
-		return ordinalScaleBuilder;
-	}
-
-	public void addOrdinalValue(String ordinalValue) {
-		ordinalScaleBuilder.addValue(ordinalValue);
-	}
-
 	public boolean isHorizontal() {
 		String direction = data.direction.get();
 		return direction.equals(Direction.HORIZONTAL.toString());
+	}
+
+	public Double[] getQuantitativeLimits() {
+		Double min = quantitativeScaleBuilder.getAutoMinValue();
+		Double max = quantitativeScaleBuilder.getAutoMaxValue();
+		return new Double[] { min, max };
+	}
+
+	public int getNumberOfValues() {
+		return ordinalScaleBuilder.getNumberOfValues();
 	}
 
 	//#end region

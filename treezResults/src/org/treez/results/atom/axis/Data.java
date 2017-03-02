@@ -14,9 +14,6 @@ import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.scales.Scales;
-import org.treez.results.atom.axis.scale.OrdinalScaleBuilder;
-import org.treez.results.atom.axis.scale.QuantitativeScaleBuilder;
 import org.treez.results.atom.graph.Graph;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -108,7 +105,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		CheckBox autoMaxCheckBox = domain.createCheckBox(autoMax, this, true) //
 				.setLabel("Auto max");
-		autoMinCheckBox.createEnableTarget("enableBorderMax", "data.domain.borderMax");
+		autoMaxCheckBox.createEnableTarget("enableBorderMax", "data.domain.borderMax");
 		autoMaxCheckBox.createDisableTarget("disableMax", "data.domain.max");
 
 		domain.createEnumComboBox(borderMax, this, BorderMode.TWO);
@@ -145,7 +142,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 		Double graphWidthInPx = Length.toPx(graph.data.width.get());
 		Double graphHeightInPx = Length.toPx(graph.data.height.get());
 
-		createScale(d3, parentAxis, graphWidthInPx, graphHeightInPx);
+		parentAxis.createScale(graphWidthInPx, graphHeightInPx);
 		plotAxisWithD3(d3, axisSelection, parentAxis, graphWidthInPx, graphHeightInPx);
 
 		return axisSelection;
@@ -169,28 +166,6 @@ public class Data implements GraphicsPropertiesPageFactory {
 		max.addModificationConsumer("replotAxis", replotGraph);
 
 		log.addModificationConsumer("replotAxis", replotGraph);
-	}
-
-	private void createScale(D3 d3, Axis axis, Double graphWidthInPx, Double graphHeightInPx) {
-
-		Scales scaleFactory = d3 //
-				.scale();
-
-		AxisMode axisMode = getAxisMode();
-		switch (axisMode) {
-		case QUANTITATIVE:
-			QuantitativeScaleBuilder scaleBuilder = axis.getQuantitativeScaleBuilder();
-			scaleBuilder.createScale(scaleFactory, graphWidthInPx, graphHeightInPx);
-			break;
-		case ORDINAL:
-			OrdinalScaleBuilder ordinalScaleBuilder = axis.getOrdinalScaleBuilder();
-			ordinalScaleBuilder.createScale(scaleFactory, isHorizontal(), graphWidthInPx, graphHeightInPx);
-			break;
-		//case TIME:
-		//	throw new IllegalStateException("not yet implemented");
-		default:
-			throw new IllegalStateException("not yet implemented");
-		}
 	}
 
 	private Selection plotAxisWithD3(
@@ -259,13 +234,11 @@ public class Data implements GraphicsPropertiesPageFactory {
 		//also see https://github.com/mbostock/d3/wiki/Formatting#d3_format
 		String formatFunctionExpression = createFormatFunctionExpression(tickFormat);
 
-		QuantitativeScaleBuilder scaleBuilder = axisAtom.getQuantitativeScaleBuilder();
-
 		//create d3 axis
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(scaleBuilder.getScale()) //
+				.scale(axisAtom.getScale()) //
 				.outerTickSize(0.0) //
 				.tickPadding(tickPadding);
 
@@ -324,15 +297,13 @@ public class Data implements GraphicsPropertiesPageFactory {
 			tickPadding = -12.0;
 		}
 
-		OrdinalScaleBuilder scaleBuilder = axisAtom.getOrdinalScaleBuilder();
-
 		//create d3 axis
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(scaleBuilder.getScale()) //
+				.scale(axisAtom.getScale()) //
 				.outerTickSize(0.0) //
-				.ticks(scaleBuilder.getSize())
+				.ticks(axisAtom.getSize())
 				.tickPadding(tickPadding);
 
 		return axis;
@@ -381,12 +352,10 @@ public class Data implements GraphicsPropertiesPageFactory {
 	private static org.treez.javafxd3.d3.svg.Axis createSecondaryQuantitativeD3Axis(D3 d3, Axis axisAtom) {
 		int numberOfTicksAimedFor = Integer.parseInt(axisAtom.majorTicks.number.get());
 
-		QuantitativeScaleBuilder scaleBuilder = axisAtom.getQuantitativeScaleBuilder();
-
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(scaleBuilder.getScale()) //
+				.scale(axisAtom.getScale()) //
 				.outerTickSize(0.0) //
 				.ticks(numberOfTicksAimedFor) //for log axis only the tick labels will be influenced
 				.tickFormatExpression("function (d) { return ''; }"); //hides the tick labels
@@ -395,12 +364,10 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	private static org.treez.javafxd3.d3.svg.Axis createSecondaryOrdinalD3Axis(D3 d3, Axis axisAtom) {
 
-		OrdinalScaleBuilder scaleBuilder = axisAtom.getOrdinalScaleBuilder();
-
 		org.treez.javafxd3.d3.svg.Axis axis = d3 //
 				.svg() //
 				.axis() //
-				.scale(scaleBuilder.getScale()) //
+				.scale(axisAtom.getScale()) //
 				.outerTickSize(0.0) //
 				.tickFormatExpression("function (d) { return ''; }"); //hides the tick labels
 		return axis;

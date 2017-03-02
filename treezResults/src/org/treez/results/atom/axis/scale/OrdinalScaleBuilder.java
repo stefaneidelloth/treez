@@ -1,7 +1,7 @@
 package org.treez.results.atom.axis.scale;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.treez.javafxd3.d3.scales.OrdinalScale;
@@ -54,7 +54,7 @@ public class OrdinalScaleBuilder {
 		return scale;
 	}
 
-	public int getSize() {
+	public int getNumberOfValues() {
 		return scale.domain().sizes().get(0);
 	}
 
@@ -62,22 +62,12 @@ public class OrdinalScaleBuilder {
 		return ordinalValues;
 	}
 
-	public void setValues(Set<String> ordinalValues) {
-		this.ordinalValues = ordinalValues;
+	public void includeDomainValuesForAutoScale(List<String> ordinalValues) {
+		ordinalValues.addAll(ordinalValues);
 		updateDomain();
 	}
 
-	public void setValues(String... ordinalValues) {
-		Set<String> values = new HashSet<String>(Arrays.asList(ordinalValues));
-		setValues(values);
-	}
-
-	public void addValue(String ordinalValue) {
-		ordinalValues.add(ordinalValue);
-		updateDomain();
-	}
-
-	public void removeOrdinalValue(String ordinalValue) {
+	public void removeDomainValue(String ordinalValue) {
 		ordinalValues.remove(ordinalValue);
 		updateDomain();
 	}
