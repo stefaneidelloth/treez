@@ -13,15 +13,15 @@ import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.CheckBox;
-import org.treez.core.atom.attribute.FileOrDirectoryPath;
-import org.treez.core.atom.attribute.FilePath;
-import org.treez.core.atom.attribute.InfoText;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextArea;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.checkBox.CheckBox;
+import org.treez.core.atom.attribute.fileSystem.FileOrDirectoryPath;
+import org.treez.core.atom.attribute.fileSystem.FilePath;
+import org.treez.core.atom.attribute.text.InfoText;
+import org.treez.core.atom.attribute.text.TextArea;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
@@ -212,7 +212,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		dateInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
 		@SuppressWarnings("unused")
-		org.treez.core.atom.attribute.Label jobIndexLabel = outputModification.createLabel("jobIndexLabel",
+		org.treez.core.atom.attribute.text.Label jobIndexLabel = outputModification.createLabel("jobIndexLabel",
 				"Include job index in:");
 
 		CheckBox jobIndexInFolderCheck = outputModification.createCheckBox(includeJobIndexInFolder, this, false);

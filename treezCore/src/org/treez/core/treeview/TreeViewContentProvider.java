@@ -9,7 +9,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.TreeNodeAdaption;
-import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.utils.Utils;
 

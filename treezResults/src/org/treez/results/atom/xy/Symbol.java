@@ -3,10 +3,10 @@ package org.treez.results.atom.xy;
 import java.util.List;
 
 import org.treez.core.adaptable.Refreshable;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.SymbolStyleValue;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.comboBox.symbolType.SymbolStyleValue;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;

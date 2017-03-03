@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.attribute.Attribute;
@@ -21,6 +21,7 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
+import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.legend.Legend;
 import org.treez.results.atom.legend.LegendContributor;
@@ -69,7 +70,7 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 		AttributeRoot root = new AttributeRoot("root");
 
 		//page
-		org.treez.core.atom.attribute.Page page = root.createPage("page");
+		org.treez.core.atom.attribute.attributeContainer.Page page = root.createPage("page");
 
 		//section
 		Section section = page.createSection("section");
@@ -243,7 +244,7 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 		} else {
 			Graph graph = (Graph) this.getParentAtom();
 			Axis rangeAxis = graph.createAxis("yAxis");
-			rangeAxis.data.direction.set("vertical");
+			rangeAxis.data.direction.set(Direction.VERTICAL);
 			double[] rangeAxisLimits = getRangeLimits(sourceTable);
 			rangeAxis.data.min.set(rangeAxisLimits[0]);
 			rangeAxis.data.max.set(rangeAxisLimits[1]);

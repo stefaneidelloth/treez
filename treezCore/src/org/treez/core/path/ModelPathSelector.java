@@ -55,9 +55,11 @@ public final class ModelPathSelector {
 	 * @param typeNames
 	 * @return
 	 */
-	public static
-			List<String>
-			getAvailableTargetPaths(AbstractAtom<?> model, String typeNames, boolean hasToBeEnabled) {
+	public static List<String> getAvailableTargetPaths(
+			AbstractAtom<?> model,
+			String typeNames,
+			boolean hasToBeEnabled,
+			FilterDelegate filterDelegate) {
 
 		//convert comma separated type names to array of type names
 		String[] typeNameArray = typeNames.split(",");
@@ -74,21 +76,31 @@ public final class ModelPathSelector {
 			//add path of child atom if it has the wanted type
 			for (String typeName : typeNameArray) {
 				boolean hasWantedType = Utils.checkIfHasWantedType(child, typeName);
-				if (hasWantedType) {
-					String path = childNode.getTreePath();
-					if (hasToBeEnabled) {
-						boolean isEnabled = checkIfAtomIsEnabled(child);
-						if (isEnabled) {
-							availablePaths.add(path);
-						}
-					} else {
-						availablePaths.add(path);
+				if (!hasWantedType) {
+					continue;
+				}
+
+				if (filterDelegate != null) {
+					boolean passedFilter = filterDelegate.include(child);
+					if (!passedFilter) {
+						continue;
 					}
 				}
+
+				String path = childNode.getTreePath();
+				if (hasToBeEnabled) {
+					boolean isEnabled = checkIfAtomIsEnabled(child);
+					if (!isEnabled) {
+						continue;
+					}
+				}
+
+				availablePaths.add(path);
+
 			}
 
 			//collect available paths from sub children
-			availablePaths.addAll(getAvailableTargetPaths(child, typeNames, hasToBeEnabled));
+			availablePaths.addAll(getAvailableTargetPaths(child, typeNames, hasToBeEnabled, filterDelegate));
 
 		}
 

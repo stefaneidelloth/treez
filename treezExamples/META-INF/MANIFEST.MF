@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: TreezExamples
 Bundle-SymbolicName: TreezExamples
 Bundle-Version: 1.0.0.qualifier
-Export-Package: org.treez.example
 Require-Bundle: org.treez.javafxd3,
  org.treez.core,
  org.treez.data,

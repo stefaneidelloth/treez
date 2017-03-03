@@ -5,7 +5,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.DirectoryPath;
+import org.treez.core.atom.attribute.fileSystem.DirectoryPath;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 public class DirectoryPathVariableField extends DirectoryPath

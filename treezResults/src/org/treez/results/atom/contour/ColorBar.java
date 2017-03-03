@@ -1,9 +1,9 @@
 package org.treez.results.atom.contour;
 
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.EnumComboBox;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -30,11 +30,11 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 
 	private static final int MARGIN_AROUND_LEGEND_IN_PX = 20;
 
-	public final Attribute<String> positionReference = new Wrap<>();
+	public final Attribute<PositionReference> positionReference = new Wrap<>();
 
-	public final Attribute<String> horizontalPosition = new Wrap<>();
+	public final Attribute<HorizontalPosition> horizontalPosition = new Wrap<>();
 
-	public final Attribute<String> verticalPosition = new Wrap<>();
+	public final Attribute<VerticalPosition> verticalPosition = new Wrap<>();
 
 	public final Attribute<Integer> manualHorizontalPosition = new Wrap<>();
 
@@ -60,7 +60,7 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> title = new Wrap<>();
 
-	public final Attribute<String> titleSide = new Wrap<>();
+	public final Attribute<TitleSide> titleSide = new Wrap<>();
 
 	public final Attribute<String> titleFontColor = new Wrap<>();
 
@@ -74,7 +74,7 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<Integer> tickFontSize = new Wrap<>();
 
-	public final Attribute<String> tickPosition = new Wrap<>();
+	public final Attribute<TickPosition> tickPosition = new Wrap<>();
 
 	public final Attribute<String> tickColor = new Wrap<>();
 
@@ -314,9 +314,9 @@ public class ColorBar implements GraphicsPropertiesPageFactory {
 		this.rectSelection = colorBarSelection.select(".cbbg");
 		updatePosition = () -> setPosition(colorBarSelection, d3, graph);
 
-		PositionReference positionReferenceEnum = positionReferenceBox.getValueAsEnum();
-		HorizontalPosition horizontalPositionEnum = horizontalPositionBox.getValueAsEnum();
-		VerticalPosition verticalPositionEnum = verticalPositionBox.getValueAsEnum();
+		PositionReference positionReferenceEnum = positionReferenceBox.get();
+		HorizontalPosition horizontalPositionEnum = horizontalPositionBox.get();
+		VerticalPosition verticalPositionEnum = verticalPositionBox.get();
 
 		boolean isManualHorizontalPosition = horizontalPositionEnum.isManual();
 		if (isManualHorizontalPosition) {

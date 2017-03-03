@@ -9,8 +9,8 @@ import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.atom.base.RegionsAtomCodeAdaption;
 import org.treez.core.scripting.ScriptType;
@@ -55,7 +55,7 @@ public class Root extends AdjustableAtom {
 	 */
 	public void createRootModel() {
 		AttributeRoot root = new AttributeRoot("root");
-		org.treez.core.atom.attribute.Page dataPage = root.createPage("");
+		org.treez.core.atom.attribute.attributeContainer.Page dataPage = root.createPage("");
 		String relativeHelpContextId = "root";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 		Section studies = dataPage.createSection("root", absoluteHelpContextId);

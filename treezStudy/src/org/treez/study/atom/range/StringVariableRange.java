@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.ModelPathSelectionType;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.StringList;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.list.StringList;
+import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.StringVariableField;
 import org.treez.study.Activator;

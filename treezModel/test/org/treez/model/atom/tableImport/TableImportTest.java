@@ -7,6 +7,7 @@ import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.GraphicsAdaption;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
+import org.treez.core.data.table.TableSourceType;
 import org.treez.model.atom.Models;
 import org.treez.model.atom.executable.Executable;
 
@@ -26,7 +27,7 @@ public class TableImportTest extends AbstractAbstractAtomTest {
 		String sqLitePath = treezExamplePath + "/resources/example.sqlite";
 
 		TableImport tableImport = executable.createTableImport("tableImport");
-		tableImport.sourceType.set("sqlite");
+		tableImport.sourceType.set(TableSourceType.SQLITE);
 		tableImport.inheritSourceFilePath.set(false);
 		tableImport.sourceFilePath.set(sqLitePath);
 		tableImport.tableName.set("example");

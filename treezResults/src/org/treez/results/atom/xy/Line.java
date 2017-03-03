@@ -2,9 +2,9 @@ package org.treez.results.atom.xy;
 
 import java.util.List;
 
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -22,7 +22,7 @@ public class Line implements GraphicsPropertiesPageFactory {
 
 	//#region ATTRIBUTES
 
-	public final Attribute<String> interpolation = new Wrap<>();
+	public final Attribute<org.treez.javafxd3.d3.svg.InterpolationMode> interpolation = new Wrap<>();
 
 	//public final Attribute<Boolean> bezierJoin = new Wrap<>();
 
@@ -47,7 +47,7 @@ public class Line implements GraphicsPropertiesPageFactory {
 
 		Section line = linePage.createSection("line");
 
-		line.createEnumComboBox(interpolation, this, InterpolationMode.LINEAR);
+		line.createEnumComboBox(interpolation, this, org.treez.javafxd3.d3.svg.InterpolationMode.LINEAR);
 
 		//line.createCheckBox(bezierJoin, this).setLabel("Bezier join");
 
@@ -83,9 +83,8 @@ public class Line implements GraphicsPropertiesPageFactory {
 		Xy xy = (Xy) parent;
 
 		//get interpolation mode
-		String modeString = interpolation.get();
-		org.treez.javafxd3.d3.svg.InterpolationMode mode = org.treez.javafxd3.d3.svg.InterpolationMode
-				.fromValue(modeString);
+
+		org.treez.javafxd3.d3.svg.InterpolationMode mode = interpolation.get();
 
 		//line path generator
 		QuantitativeScale<?> xScale = xy.getXScale();

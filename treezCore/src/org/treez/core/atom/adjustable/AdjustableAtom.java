@@ -12,7 +12,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;

@@ -5,8 +5,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.ComboBox;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.comboBox.ComboBox;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 public class StringItemVariableField extends ComboBox implements VariableField<StringItemVariableField, String> {

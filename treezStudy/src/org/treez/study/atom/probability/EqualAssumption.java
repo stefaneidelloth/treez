@@ -3,12 +3,12 @@ package org.treez.study.atom.probability;
 import java.util.Objects;
 
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.FunctionPlotter;
-import org.treez.core.atom.attribute.ModelPath;
-import org.treez.core.atom.attribute.ModelPathSelectionType;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.modelPath.ModelPath;
+import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
+import org.treez.core.atom.attribute.plot.FunctionPlotter;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.DoubleVariableField;
 import org.treez.core.attribute.Attribute;

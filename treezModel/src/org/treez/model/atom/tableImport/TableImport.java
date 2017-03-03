@@ -8,16 +8,15 @@ import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.CheckBox;
-import org.treez.core.atom.attribute.ComboBox;
-import org.treez.core.atom.attribute.EnumComboBox;
-import org.treez.core.atom.attribute.ModelPath;
-import org.treez.core.atom.attribute.ModelPathSelectionType;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.checkBox.CheckBox;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
+import org.treez.core.atom.attribute.modelPath.ModelPath;
+import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -46,7 +45,7 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	//#region ATTRIBUTES
 
-	public final Attribute<String> sourceType = new Wrap<>();
+	public final Attribute<TableSourceType> sourceType = new Wrap<>();
 
 	public final Attribute<Boolean> linkSource = new Wrap<>();
 
@@ -559,16 +558,11 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	@Override
 	public TableSourceType getSourceType() {
-		Wrap<String> sourceTypeWrap = (Wrap<String>) sourceType;
-		EnumComboBox<TableSourceType> combo = (EnumComboBox<TableSourceType>) sourceTypeWrap.getAttribute();
-		TableSourceType type = combo.getValueAsEnum();
-		return type;
+		return sourceType.get();
 	}
 
 	public void setSourceType(TableSourceType sourceTypeEnum) {
-		Wrap<String> sourceTypeWrap = (Wrap<String>) sourceType;
-		ComboBox combo = (ComboBox) sourceTypeWrap.getAttribute();
-		combo.setValue(sourceTypeEnum);
+		sourceType.set(sourceTypeEnum);
 	}
 
 	public int getRowLimit() {

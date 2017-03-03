@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.ComboBox;
-import org.treez.core.atom.attribute.ModelPath;
-import org.treez.core.atom.attribute.ModelPathSelectionType;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.comboBox.ComboBox;
+import org.treez.core.atom.attribute.modelPath.ModelPath;
+import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.IntegerVariableField;
 import org.treez.core.atom.variablelist.NumberRangeProvider;
@@ -90,7 +90,7 @@ public class PickingProbe extends AbstractProbe {
 	private void createPickingProbeModel() {
 		AttributeRoot root = new AttributeRoot("root");
 
-		org.treez.core.atom.attribute.Page page = root.createPage("page");
+		org.treez.core.atom.attribute.attributeContainer.Page page = root.createPage("page");
 
 		//domain section
 		Section domainSection = page.createSection("domainSection", "DomainSectionHelpId");
@@ -393,14 +393,14 @@ public class PickingProbe extends AbstractProbe {
 			/*
 			//get y information
 			String yLabelString = yLabel.get();
-			
+
 			//get tuple information
 			String tupleyPath = tupleList.get();
 			List<?> tupleListValues = getTupleValues(tupleyPath);
-			
+
 			//column names
 			List<String> columnNames = createColumnNames(timeLabelString, yLabelString, tupleListValues);
-			
+
 			*/
 
 			//get sweep output path

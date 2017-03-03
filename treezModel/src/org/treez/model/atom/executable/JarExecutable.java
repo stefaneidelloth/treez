@@ -1,13 +1,13 @@
 package org.treez.model.atom.executable;
 
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.atom.attribute.FileOrDirectoryPath;
-import org.treez.core.atom.attribute.FilePath;
-import org.treez.core.atom.attribute.InfoText;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextArea;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.fileSystem.FileOrDirectoryPath;
+import org.treez.core.atom.attribute.fileSystem.FilePath;
+import org.treez.core.atom.attribute.text.InfoText;
+import org.treez.core.atom.attribute.text.TextArea;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;

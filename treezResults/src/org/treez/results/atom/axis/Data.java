@@ -1,10 +1,10 @@
 package org.treez.results.atom.axis;
 
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.CheckBox;
-import org.treez.core.atom.attribute.EnumComboBox;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.checkBox.CheckBox;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -23,9 +23,9 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> label = new Wrap<>();
 
-	public final Attribute<String> mode = new Wrap<>();
+	public final Attribute<AxisMode> mode = new Wrap<>();
 
-	public final Attribute<String> direction = new Wrap<>();
+	public final Attribute<Direction> direction = new Wrap<>();
 
 	/**
 	 * If true, the axis is mirrored to the other side of the graph: a second axis is shown.
@@ -36,7 +36,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	public Attribute<Boolean> autoMin = new Wrap<>();
 
-	public final Attribute<String> borderMin = new Wrap<>();
+	public final Attribute<BorderMode> borderMin = new Wrap<>();
 
 	public final Attribute<Double> min = new Wrap<>();
 
@@ -44,7 +44,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	public Attribute<Boolean> autoMax = new Wrap<>();
 
-	public final Attribute<String> borderMax = new Wrap<>();
+	public final Attribute<BorderMode> borderMax = new Wrap<>();
 
 	public final Attribute<Double> max = new Wrap<>();
 
@@ -116,11 +116,11 @@ public class Data implements GraphicsPropertiesPageFactory {
 		domain.createTextField(maxTime, this, "1") //
 				.setLabel("Max time") //
 				.setEnabled(false);
-
+		
 		domain.createTextField(timeFormat, this, "%a %d") //
 				.setLabel("Time format") //
 				.setEnabled(false);
-
+		
 		domain.createTextField(timeZone, this, "%a %d") //
 				.setLabel("Time zone") //
 				.setEnabled(false);
@@ -193,7 +193,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 				.attr("id", "primary")
 				.attr("class", "primary");
 
-		AxisMode axisMode = getAxisMode();
+		AxisMode axisMode = mode.get();
 		switch (axisMode) {
 		case QUANTITATIVE:
 			primaryD3Axis = createPrimaryQuantitativeD3Axis(d3, axisAtom, primaryAxisSelection, graphHeightInPx);
@@ -329,7 +329,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 		}
 
 		org.treez.javafxd3.d3.svg.Axis axis;
-		AxisMode axisMode = getAxisMode();
+		AxisMode axisMode = mode.get();
 		switch (axisMode) {
 		case QUANTITATIVE:
 			axis = createSecondaryQuantitativeD3Axis(d3, axisAtom);
@@ -377,22 +377,18 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region ACCESSORS
 
-	public AxisMode getAxisMode() {
-		return AxisMode.from(mode.get());
-	}
-
 	public boolean isHorizontal() {
 		boolean isHorizontal = direction.get().equals("" + Direction.HORIZONTAL);
 		return isHorizontal;
 	}
 
 	public boolean isQuantitative() {
-		AxisMode axisMode = getAxisMode();
+		AxisMode axisMode = mode.get();
 		return axisMode.equals(AxisMode.QUANTITATIVE);
 	}
 
 	public boolean isOrdinal() {
-		AxisMode axisMode = getAxisMode();
+		AxisMode axisMode = mode.get();
 		return axisMode.equals(AxisMode.ORDINAL);
 	}
 

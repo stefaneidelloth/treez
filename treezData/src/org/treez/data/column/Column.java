@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.Activator;
 import org.treez.core.atom.adjustable.AdjustableAtom;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.CheckBox;
-import org.treez.core.atom.attribute.ColumnTypeComboBox;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.checkBox.CheckBox;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.data.column.ColumnType;
@@ -33,7 +33,7 @@ public class Column extends AdjustableAtom {
 
 	public final Attribute<String> legend = new Wrap<>();
 
-	public final Attribute<String> columnType = new Wrap<>();
+	public final Attribute<ColumnType> columnType = new Wrap<>();
 
 	public final Attribute<Boolean> isNullable = new Wrap<>();
 
@@ -47,7 +47,7 @@ public class Column extends AdjustableAtom {
 
 	private TextField headerField;
 
-	private ColumnTypeComboBox typeCombo;
+	private EnumComboBox<ColumnType> typeCombo;
 
 	private CheckBox isNullableCheckBox;
 
@@ -69,10 +69,7 @@ public class Column extends AdjustableAtom {
 
 	public Column(String name, ColumnType type) {
 		this(name);
-		Wrap<String> columnTypeWrap = (Wrap<String>) columnType;
-		ColumnTypeComboBox combo = (ColumnTypeComboBox) columnTypeWrap.getAttribute();
-		combo.set(type);
-
+		columnType.set(type);
 	}
 
 	public Column(String name, ColumnType type, String description, boolean isLinkedToSource, boolean isVirtual) {
@@ -80,20 +77,8 @@ public class Column extends AdjustableAtom {
 		this.isLinkedToSource = isLinkedToSource;
 		this.isVirtual = isVirtual;
 		createColumnAtomModel();
-
-		Wrap<String> wrap = (Wrap<String>) columnType;
-		Attribute<String> attribute = wrap.getAttribute();
-		ColumnTypeComboBox combo = (ColumnTypeComboBox) attribute;
-		combo.set(type);
-
+		columnType.set(type);
 		this.legend.set(description);
-
-	}
-
-	public Column(String name, String columnType) {
-		this(name);
-		this.columnType.set(columnType);
-
 	}
 
 	/**
@@ -133,7 +118,7 @@ public class Column extends AdjustableAtom {
 		headerField = section.createTextField(header, this, name);
 
 		typeCombo = section
-				.createColumnTypeComboBox(columnType, this, ColumnType.STRING) //
+				.createEnumComboBox(columnType, this, ColumnType.STRING) //
 				.setLabel("Type");
 
 		isNullableCheckBox = section
@@ -288,12 +273,11 @@ public class Column extends AdjustableAtom {
 	}
 
 	public ColumnType getColumnType() {
-		ColumnType columnTypeEnumValue = ColumnType.getType(columnType.get());
-		return columnTypeEnumValue;
+		return columnType.get();
 	}
 
 	public void setColumnType(ColumnType columnType) {
-		this.columnType.set(columnType.name());
+		this.columnType.set(columnType);
 	}
 
 	//#end region

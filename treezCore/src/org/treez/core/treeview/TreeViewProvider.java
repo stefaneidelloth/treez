@@ -17,7 +17,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.treez.core.AbstractActivator;
 import org.treez.core.adaptable.Adaptable;
-import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.error.ErrorAtom;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.action.ActionProviderRefreshable;

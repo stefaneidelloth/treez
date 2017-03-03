@@ -171,11 +171,6 @@ public class Table extends AbstractTreezTable<Table> {
 		}
 	}
 
-	public void addColumn(String header, String type) {
-		initializeColumns();
-		getColumns().createColumn(header, type);
-	}
-
 	/**
 	 * Creates a Columns child
 	 */

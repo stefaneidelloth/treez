@@ -117,7 +117,7 @@ public class QuantitativeScaleBuilder {
 			Double minValue = dataForAutoScale.first();
 			Double maxValue = dataForAutoScale.last();
 			Double delta = maxValue - minValue;
-			BorderMode minBorderMode = BorderMode.from(parent.data.borderMin.get());
+			BorderMode minBorderMode = parent.data.borderMin.get();
 			Double borderFactor = minBorderMode.getFactor();
 			Double autoMinValue = minValue - borderFactor * delta;
 			return autoMinValue;
@@ -136,7 +136,7 @@ public class QuantitativeScaleBuilder {
 			Double minValue = dataForAutoScale.first();
 			Double maxValue = dataForAutoScale.last();
 			Double delta = maxValue - minValue;
-			BorderMode maxBorderMode = BorderMode.from(parent.data.borderMax.get());
+			BorderMode maxBorderMode = parent.data.borderMax.get();
 			Double borderFactor = maxBorderMode.getFactor();
 			Double autoMaxValue = maxValue + borderFactor * delta;
 			return autoMaxValue;

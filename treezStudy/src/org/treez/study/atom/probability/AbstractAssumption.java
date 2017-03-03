@@ -4,12 +4,12 @@ import java.util.Objects;
 
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.adjustable.AdjustableAtom;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.CheckBox;
-import org.treez.core.atom.attribute.ModelPath;
-import org.treez.core.atom.attribute.ModelPathSelectionType;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.checkBox.CheckBox;
+import org.treez.core.atom.attribute.modelPath.ModelPath;
+import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.DoubleVariableField;
 import org.treez.core.attribute.Attribute;

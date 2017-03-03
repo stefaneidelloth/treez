@@ -1,11 +1,6 @@
 package org.treez.results.atom.legend;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.treez.javafxd3.javafx.EnumValueProvider;
-
-public enum PositionReference implements EnumValueProvider<PositionReference> {
+public enum PositionReference {
 
 	//#region VALUES
 
@@ -33,21 +28,6 @@ public enum PositionReference implements EnumValueProvider<PositionReference> {
 	@Override
 	public String toString() {
 		return value;
-	}
-
-	@Override
-	public PositionReference fromString(final String value) {
-		return valueOf(value.toUpperCase().replace('-', '_'));
-	}
-
-	@Override
-	public List<String> getValues() {
-		List<String> values = new ArrayList<>();
-		for (PositionReference enumValue : values()) {
-			String stringValue = enumValue.value;
-			values.add(stringValue);
-		}
-		return values;
 	}
 
 	//#end region

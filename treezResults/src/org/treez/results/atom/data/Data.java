@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
-import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;

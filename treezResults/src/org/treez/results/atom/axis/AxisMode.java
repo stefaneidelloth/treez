@@ -1,11 +1,6 @@
 package org.treez.results.atom.axis;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.treez.javafxd3.javafx.EnumValueProvider;
-
-public enum AxisMode implements EnumValueProvider<AxisMode> {
+public enum AxisMode {
 
 	//#region VALUES
 
@@ -34,25 +29,6 @@ public enum AxisMode implements EnumValueProvider<AxisMode> {
 	@Override
 	public String toString() {
 		return value;
-	}
-
-	@Override
-	public AxisMode fromString(final String value) {
-		return from(value);
-	}
-
-	public static AxisMode from(final String value) {
-		return valueOf(value.toUpperCase().replace("-", "_"));
-	}
-
-	@Override
-	public List<String> getValues() {
-		List<String> values = new ArrayList<>();
-		for (AxisMode enumValue : values()) {
-			String stringValue = enumValue.value;
-			values.add(stringValue);
-		}
-		return values;
 	}
 
 	//#end region

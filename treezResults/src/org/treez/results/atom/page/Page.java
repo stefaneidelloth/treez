@@ -14,8 +14,8 @@ import org.eclipse.ui.PlatformUI;
 import org.treez.core.AbstractActivator;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -75,7 +75,7 @@ public class Page extends AbstractGraphicsAtom {
 		AttributeRoot root = new AttributeRoot("root");
 
 		//page
-		org.treez.core.atom.attribute.Page page = root.createPage("page");
+		org.treez.core.atom.attribute.attributeContainer.Page page = root.createPage("page");
 
 		//section
 		Section section = page.createSection("section");

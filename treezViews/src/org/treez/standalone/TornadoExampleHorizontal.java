@@ -5,6 +5,7 @@ import org.treez.data.column.Columns;
 import org.treez.data.table.nebula.Table;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.axis.AxisMode;
+import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.data.Data;
 import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.page.Page;
@@ -55,13 +56,13 @@ public class TornadoExampleHorizontal extends ModelProvider {
 		tornado.data.outputRight.set("root.results.data.table.columns.rangeRight");
 
 		Axis xAxis = graph.createAxis("xAxis");
-		xAxis.data.direction.set("horizontal");
+		xAxis.data.direction.set(Direction.HORIZONTAL);
 		xAxis.data.min.set(-100.0);
 		xAxis.data.max.set(100.0);
 
 		Axis yAxis = graph.createAxis("yAxis");
-		yAxis.data.direction.set("vertical");
-		yAxis.data.mode.set(AxisMode.ORDINAL.toString());
+		yAxis.data.direction.set(Direction.VERTICAL);
+		yAxis.data.mode.set(AxisMode.ORDINAL);
 
 		graph.createLegend("legend");
 

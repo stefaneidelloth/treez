@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.ModelPath;
-import org.treez.core.atom.attribute.ModelPathSelectionType;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.modelPath.ModelPath;
+import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.variablerange.VariableRange;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
@@ -76,7 +76,7 @@ public class ProbabilityProbe extends AbstractProbe {
 	private void createPickerProbeModel() {
 		AttributeRoot root = new AttributeRoot("root");
 
-		org.treez.core.atom.attribute.Page page = root.createPage("page");
+		org.treez.core.atom.attribute.attributeContainer.Page page = root.createPage("page");
 
 		//time section
 		Section timeSection = page.createSection("timeSection", "Time");

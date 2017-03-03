@@ -1,11 +1,6 @@
 package org.treez.results.atom.legend;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.treez.javafxd3.javafx.EnumValueProvider;
-
-public enum HorizontalPosition implements EnumValueProvider<HorizontalPosition> {
+public enum HorizontalPosition {
 
 	//#region VALUES
 
@@ -35,21 +30,6 @@ public enum HorizontalPosition implements EnumValueProvider<HorizontalPosition> 
 	@Override
 	public String toString() {
 		return value;
-	}
-
-	@Override
-	public HorizontalPosition fromString(final String value) {
-		return valueOf(value.toUpperCase().replace('-', '_'));
-	}
-
-	@Override
-	public List<String> getValues() {
-		List<String> values = new ArrayList<>();
-		for (HorizontalPosition enumValue : values()) {
-			String stringValue = enumValue.value;
-			values.add(stringValue);
-		}
-		return values;
 	}
 
 	//#end region

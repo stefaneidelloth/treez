@@ -1,11 +1,6 @@
 package org.treez.results.atom.axis;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.treez.javafxd3.javafx.EnumValueProvider;
-
-public enum BorderMode implements EnumValueProvider<BorderMode> {
+public enum BorderMode {
 
 	//#region VALUES
 
@@ -39,32 +34,6 @@ public enum BorderMode implements EnumValueProvider<BorderMode> {
 	@Override
 	public String toString() {
 		return value;
-	}
-
-	@Override
-	public BorderMode fromString(final String value) {
-		return from(value);
-	}
-
-	public static BorderMode from(final String value) {
-
-		for (BorderMode mode : BorderMode.values()) {
-			if (mode.value.equals(value)) {
-				return mode;
-			}
-		}
-		throw new IllegalStateException("Could not find value " + value);
-
-	}
-
-	@Override
-	public List<String> getValues() {
-		List<String> values = new ArrayList<>();
-		for (BorderMode enumValue : values()) {
-			String stringValue = enumValue.value;
-			values.add(stringValue);
-		}
-		return values;
 	}
 
 	//#end region

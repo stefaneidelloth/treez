@@ -1,6 +1,6 @@
 package org.treez.core.atom.base;
 
-import org.treez.core.atom.attribute.ModelPathSelectionType;
+import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 

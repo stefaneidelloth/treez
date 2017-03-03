@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Display;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
-import org.treez.core.atom.attribute.Page;
+import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.base.AbstractAtom;
 
 /**

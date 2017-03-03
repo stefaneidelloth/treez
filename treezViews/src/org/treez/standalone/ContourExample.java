@@ -4,6 +4,7 @@ import org.treez.core.scripting.ModelProvider;
 import org.treez.data.column.Columns;
 import org.treez.data.table.nebula.Table;
 import org.treez.results.atom.axis.Axis;
+import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.contour.Contour;
 import org.treez.results.atom.data.Data;
 import org.treez.results.atom.graph.Graph;
@@ -45,11 +46,11 @@ public class ContourExample extends ModelProvider {
 		contour.data.yAxis.set("root.results.page.graph.yAxis");
 
 		Axis xAxis = graph.createAxis("xAxis");
-		xAxis.data.direction.set("horizontal");
+		xAxis.data.direction.set(Direction.HORIZONTAL);
 		xAxis.data.max.set(4.0);
 
 		Axis yAxis = graph.createAxis("yAxis");
-		yAxis.data.direction.set("vertical");
+		yAxis.data.direction.set(Direction.VERTICAL);
 		yAxis.data.max.set(4.0);
 
 		graph.createLegend("legend");

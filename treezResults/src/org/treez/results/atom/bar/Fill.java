@@ -1,8 +1,8 @@
 package org.treez.results.atom.bar;
 
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -142,8 +142,8 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		QuantitativeScale<?> xScale = bar.getXScale();
 		QuantitativeScale<?> yScale = bar.getYScale();
 
-		String direction = bar.data.barDirection.get();
-		boolean isVertical = direction.equals(Direction.VERTICAL.toString());
+		Direction direction = bar.data.barDirection.get();
+		boolean isVertical = direction.equals(Direction.VERTICAL);
 
 		int positionSize = bar.getPositionSize();
 

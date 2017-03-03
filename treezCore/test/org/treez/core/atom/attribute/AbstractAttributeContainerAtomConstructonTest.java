@@ -17,7 +17,7 @@ import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.GraphicsAdaption;
 import org.treez.core.adaptable.TreeNodeAdaption;
-import org.treez.core.atom.attribute.base.parent.AbstractAttributeContainerAtom;
+import org.treez.core.atom.attribute.attributeContainer.AbstractAttributeContainerAtom;
 import org.treez.core.scripting.ScriptType;
 import org.treez.testutils.PreviewWindow;
 import org.treez.testutils.TestUtils;

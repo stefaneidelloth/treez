@@ -1,12 +1,12 @@
 package org.treez.results.atom.contour;
 
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.CheckBox;
-import org.treez.core.atom.attribute.CheckBoxEnableTarget;
-import org.treez.core.atom.attribute.ColorChooser;
-import org.treez.core.atom.attribute.EnumComboBox;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.checkBox.CheckBox;
+import org.treez.core.atom.attribute.checkBox.CheckBoxEnableTarget;
+import org.treez.core.atom.attribute.color.ColorChooser;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -36,7 +36,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<Boolean> automaticContours = new Wrap<>();
 
-	public final Attribute<String> coloring = new Wrap<>();
+	public final Attribute<Coloring> coloring = new Wrap<>();
 
 	public final Attribute<Integer> numberOfContours = new Wrap<>();
 
@@ -141,7 +141,11 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	@Override
 	@SuppressWarnings("checkstyle:magicnumber")
-	public Selection plotWithD3(D3 d3, Selection contourSelection, Selection rectSelection, AbstractGraphicsAtom parent) {
+	public Selection plotWithD3(
+			D3 d3,
+			Selection contourSelection,
+			Selection rectSelection,
+			AbstractGraphicsAtom parent) {
 
 		Contour contour = (Contour) parent;
 

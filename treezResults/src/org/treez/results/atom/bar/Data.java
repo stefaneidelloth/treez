@@ -1,17 +1,19 @@
 package org.treez.results.atom.bar;
 
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.path.FilterDelegate;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.axis.Direction;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -23,7 +25,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> barPositions = new Wrap<>();
 
-	public final Attribute<String> barDirection = new Wrap<>();
+	public final Attribute<Direction> barDirection = new Wrap<>();
 
 	public final Attribute<Double> barFillRatio = new Wrap<>();
 
@@ -46,16 +48,18 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Section data = dataPage.createSection("data", "Data");
 
-		Class<?> targetClass = org.treez.data.column.Column.class;
-		String value = "root.data.table.columns.x";
-		data.createModelPath(barLengths, this, value, targetClass, parent) //
+		Class<?> columClass = org.treez.data.column.Column.class;
+
+		String positionColumn = "root.data.table.columns.x";
+		data.createModelPath(barPositions, this, positionColumn, columClass, parent) //
+				.setLabel("Bar positions");
+
+		String lengthColumn = "root.data.table.columns.y";
+		data.createModelPath(barLengths, this, lengthColumn, columClass, parent) //
 				.setLabel("Bar lengths");
 
-		targetClass = org.treez.data.column.Column.class;
-		value = "root.data.table.columns.y";
-		data.createModelPath(barPositions, this, value, targetClass, parent) //
-				.setLabel("Bar positions");
-		data.createEnumComboBox(barDirection, this, Direction.VERTICAL).setLabel("Direction");
+		data.createEnumComboBox(barDirection, this, Direction.VERTICAL) //
+				.setLabel("Bar direction");
 
 		final double defaultBarFillRatio = 0.75;
 		data.createDoubleVariableField(barFillRatio, this, defaultBarFillRatio);
@@ -63,17 +67,24 @@ public class Data implements GraphicsPropertiesPageFactory {
 		TextField legendTextField = data.createTextField(legendText, this, "");
 		legendTextField.setLabel("Legend text");
 
-		targetClass = org.treez.results.atom.axis.Axis.class;
-		value = "";
+		Class<?> axisClass = org.treez.results.atom.axis.Axis.class;
 
+		String xAxisPath = "";
+		FilterDelegate xAxisFilterDelegate = (atom) -> {
+			Axis axis = (Axis) atom;
+			return axis.data.direction.get().equals(Direction.HORIZONTAL);
+		};
 		data //
-				.createModelPath(xAxis, this, value, targetClass, parent) //
+				.createModelPath(xAxis, this, xAxisPath, axisClass, parent, xAxisFilterDelegate) //
 				.setLabel("X axis");
 
-		targetClass = org.treez.results.atom.axis.Axis.class;
-		value = "";
+		String yAxisPath = "";
+		FilterDelegate yAxisFilterDelegate = (atom) -> {
+			Axis axis = (Axis) atom;
+			return axis.data.direction.get().equals(Direction.VERTICAL);
+		};
 		data //
-				.createModelPath(yAxis, this, value, targetClass, parent) //
+				.createModelPath(yAxis, this, yAxisPath, axisClass, parent, yAxisFilterDelegate) //
 				.setLabel("Y axis");
 
 	}

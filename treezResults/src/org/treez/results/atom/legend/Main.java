@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.treez.core.adaptable.Refreshable;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.EnumComboBox;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -36,11 +36,11 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 
 	private static final int VERTICAL_SPACING_IN_PX = 5;
 
-	public final Attribute<String> positionReference = new Wrap<>();
+	public final Attribute<PositionReference> positionReference = new Wrap<>();
 
-	public final Attribute<String> horizontalPosition = new Wrap<>();
+	public final Attribute<HorizontalPosition> horizontalPosition = new Wrap<>();
 
-	public final Attribute<String> verticalPosition = new Wrap<>();
+	public final Attribute<VerticalPosition> verticalPosition = new Wrap<>();
 
 	public final Attribute<Integer> manualHorizontalPosition = new Wrap<>();
 
@@ -183,9 +183,9 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 	}
 
 	private void setLegendPosition() {
-		PositionReference positionReferenceEnum = positionReferenceBox.getValueAsEnum();
-		HorizontalPosition horizontalPositionEnum = horizontalPositionBox.getValueAsEnum();
-		VerticalPosition verticalPositionEnum = verticalPositionBox.getValueAsEnum();
+		PositionReference positionReferenceEnum = positionReferenceBox.get();
+		HorizontalPosition horizontalPositionEnum = horizontalPositionBox.get();
+		VerticalPosition verticalPositionEnum = verticalPositionBox.get();
 
 		boolean isManualHorizontalPosition = horizontalPositionEnum.isManual();
 		if (isManualHorizontalPosition) {
@@ -426,7 +426,7 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 		Double leftGraphMargin = Length.toPx(graph.data.leftMargin.get());
 		Double topGraphMargin = Length.toPx(graph.data.topMargin.get());
 
-		boolean referencesPage = positionReferenceBox.getValueAsEnum().isPage();
+		boolean referencesPage = positionReferenceBox.get().isPage();
 		if (referencesPage) {
 			int pageX = x + leftGraphMargin.intValue();
 			manualHorizontalPosition.set(pageX);
@@ -607,10 +607,10 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 	}
 
 	private void setNewManualXPosition(Double x) {
-		horizontalPosition.set("manual");
+		horizontalPosition.set(HorizontalPosition.MANUAL);
 		Integer intValue = x.intValue();
 
-		boolean isPageReference = positionReferenceBox.getValueAsEnum().isPage();
+		boolean isPageReference = positionReferenceBox.get().isPage();
 		if (isPageReference) {
 			Double leftGraphMargin = Length.toPx(graph.data.leftMargin.get());
 			intValue += leftGraphMargin.intValue();
@@ -620,10 +620,10 @@ public class Main implements GraphicsPropertiesPageFactory, DragFunction, Refres
 	}
 
 	private void setNewManualYPosition(Double y) {
-		verticalPosition.set("manual");
+		verticalPosition.set(VerticalPosition.MANUAL);
 		Integer intValue = y.intValue();
 
-		boolean isPageReference = positionReferenceBox.getValueAsEnum().isPage();
+		boolean isPageReference = positionReferenceBox.get().isPage();
 		if (isPageReference) {
 			Double topGraphMargin = Length.toPx(graph.data.topMargin.get());
 			intValue += topGraphMargin.intValue();

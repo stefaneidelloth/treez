@@ -1,11 +1,6 @@
 package org.treez.results.atom.axis;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.treez.javafxd3.javafx.EnumValueProvider;
-
-public enum Direction implements EnumValueProvider<Direction> {
+public enum Direction {
 
 	//#region VALUES
 
@@ -34,21 +29,6 @@ public enum Direction implements EnumValueProvider<Direction> {
 	@Override
 	public String toString() {
 		return value;
-	}
-
-	@Override
-	public Direction fromString(final String value) {
-		return valueOf(value.toUpperCase().replace('-', '_'));
-	}
-
-	@Override
-	public List<String> getValues() {
-		List<String> values = new ArrayList<>();
-		for (Direction enumValue : values()) {
-			String stringValue = enumValue.value;
-			values.add(stringValue);
-		}
-		return values;
 	}
 
 	//#end region

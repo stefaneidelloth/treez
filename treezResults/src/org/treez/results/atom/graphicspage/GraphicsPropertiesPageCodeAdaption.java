@@ -6,7 +6,7 @@ import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
-import org.treez.core.atom.attribute.Page;
+import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.base.parent.AttributeParentCodeAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 

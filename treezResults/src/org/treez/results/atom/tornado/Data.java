@@ -3,10 +3,10 @@ package org.treez.results.atom.tornado;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.EnumComboBox;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -26,7 +26,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	//#region GENERAL
 
-	public final Attribute<String> dataMode = new Wrap<>();
+	public final Attribute<DataMode> dataMode = new Wrap<>();
 
 	public final Attribute<String> tablePath = new Wrap<>();
 
@@ -66,7 +66,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> outputAxis = new Wrap<>();
 
-	public final Attribute<String> sortingMode = new Wrap<>();
+	public final Attribute<SortingMode> sortingMode = new Wrap<>();
 
 	//#end region
 

@@ -1,6 +1,6 @@
 package org.treez.core.atom.graphics;
 
-import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;

@@ -1,11 +1,6 @@
 package org.treez.results.atom.tornado;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.treez.javafxd3.javafx.EnumValueProvider;
-
-public enum DataMode implements EnumValueProvider<DataMode> {
+public enum DataMode {
 
 	//#region VALUES
 
@@ -33,21 +28,6 @@ public enum DataMode implements EnumValueProvider<DataMode> {
 	@Override
 	public String toString() {
 		return value;
-	}
-
-	@Override
-	public DataMode fromString(final String value) {
-		return valueOf(value.toUpperCase().replace("-", "_"));
-	}
-
-	@Override
-	public List<String> getValues() {
-		List<String> values = new ArrayList<>();
-		for (DataMode enumValue : values()) {
-			String stringValue = enumValue.value;
-			values.add(stringValue);
-		}
-		return values;
 	}
 
 	//#end region

@@ -1,14 +1,9 @@
 package org.treez.results.atom.xy;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.treez.javafxd3.javafx.EnumValueProvider;
-
 /**
  * Interpolation mode as used in D3.js
  */
-public enum InterpolationMode implements EnumValueProvider<InterpolationMode> {
+public enum InterpolationMode {
 
 	//#region VALUES
 
@@ -89,21 +84,6 @@ public enum InterpolationMode implements EnumValueProvider<InterpolationMode> {
 
 	public static InterpolationMode fromValue(final String value) {
 		return valueOf(value.toUpperCase().replace('-', '_'));
-	}
-
-	@Override
-	public InterpolationMode fromString(final String value) {
-		return fromValue(value);
-	}
-
-	@Override
-	public List<String> getValues() {
-		List<String> values = new ArrayList<>();
-		for (InterpolationMode interpolationMode : values()) {
-			String stringValue = interpolationMode.value;
-			values.add(stringValue);
-		}
-		return values;
 	}
 
 	@Override

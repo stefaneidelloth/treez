@@ -6,7 +6,7 @@ import java.awt.geom.AffineTransform;
 
 import org.apache.log4j.Logger;
 import org.treez.core.atom.adjustable.AdjustableAtom;
-import org.treez.core.atom.attribute.LineStyleValue;
+import org.treez.core.atom.attribute.comboBox.lineStyle.LineStyleValue;
 import org.treez.core.atom.graphics.length.Length;
 import org.treez.core.attribute.Attribute;
 import org.treez.javafxd3.d3.core.Selection;

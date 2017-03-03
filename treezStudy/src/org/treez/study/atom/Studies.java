@@ -6,8 +6,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
@@ -41,7 +41,7 @@ public class Studies extends AdjustableAtom {
 	 */
 	public void createStudiesModel() {
 		AttributeRoot root = new AttributeRoot("root");
-		org.treez.core.atom.attribute.Page dataPage = root.createPage("");
+		org.treez.core.atom.attribute.attributeContainer.Page dataPage = root.createPage("");
 		String relativeHelpContextId = "studies";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 		Section studies = dataPage.createSection("studies", absoluteHelpContextId);

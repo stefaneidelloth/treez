@@ -2,10 +2,10 @@ package org.treez.results.atom.xy;
 
 import java.util.List;
 
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.ColorChooser;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.color.ColorChooser;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -118,9 +118,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 		QuantitativeScale<?> xScale = xy.getXScale();
 		QuantitativeScale<?> yScale = xy.getYScale();
 
-		String modeString = xy.line.interpolation.get();
-		org.treez.javafxd3.d3.svg.InterpolationMode mode = org.treez.javafxd3.d3.svg.InterpolationMode
-				.fromValue(modeString);
+		org.treez.javafxd3.d3.svg.InterpolationMode mode = xy.line.interpolation.get();
 
 		plotAboveAreaWithD3(d3, parentName, xySelection, xyDataString, xScale, yScale, mode);
 		plotBelowAreaWithD3(d3, parentName, xySelection, xyDataString, xScale, yScale, mode);

@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.ModelPathSelectionType;
-import org.treez.core.atom.attribute.Page;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.QuantityVariableField;
 import org.treez.core.atom.variablelist.QuantityVariableListField;

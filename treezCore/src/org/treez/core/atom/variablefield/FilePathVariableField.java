@@ -5,8 +5,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.FilePath;
 import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
+import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
 
 public class FilePathVariableField extends FilePath implements VariableField<FilePathVariableField, String> {

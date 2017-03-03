@@ -7,12 +7,12 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.adjustable.AdjustableAtomCodeAdaption;
-import org.treez.core.atom.attribute.AttributeRoot;
-import org.treez.core.atom.attribute.EnumComboBox;
-import org.treez.core.atom.attribute.Page;
-import org.treez.core.atom.attribute.Section;
-import org.treez.core.atom.attribute.TextField;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.data.table.TableSourceType;
@@ -24,7 +24,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 
 	//#region ATTRIBUTES
 
-	public final Attribute<String> sourceType = new Wrap<>();
+	public final Attribute<TableSourceType> sourceType = new Wrap<>();
 
 	public final Attribute<String> filePath = new Wrap<>();
 
@@ -65,7 +65,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 	 */
 	public TableSource(org.treez.core.data.table.TableSource tableSource) {
 		this("TableSource");
-		sourceType.set(tableSource.getSourceType().toString());
+		sourceType.set(tableSource.getSourceType());
 		filePath.set(tableSource.getSourceFilePath());
 		columnSeparator.set(tableSource.getColumnSeparator());
 		host.set(tableSource.getHost());
@@ -298,16 +298,11 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 
 	@Override
 	public TableSourceType getSourceType() {
-		Wrap<String> sourceTypeWrap = (Wrap<String>) sourceType;
-		EnumComboBox<TableSourceType> combo = (EnumComboBox<TableSourceType>) sourceTypeWrap.getAttribute();
-		TableSourceType type = combo.getValueAsEnum();
-		return type;
+		return sourceType.get();
 	}
 
 	public void setSourceType(TableSourceType sourceTypeEnum) {
-		Wrap<String> sourceTypeWrap = (Wrap<String>) sourceType;
-		EnumComboBox<TableSourceType> combo = (EnumComboBox<TableSourceType>) sourceTypeWrap.getAttribute();
-		combo.set(sourceTypeEnum.toString());
+		sourceType.set(sourceTypeEnum);
 	}
 
 	@Override

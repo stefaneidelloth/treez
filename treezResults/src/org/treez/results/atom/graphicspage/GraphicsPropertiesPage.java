@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.atom.attribute.AttributeRoot;
+import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.scripting.ScriptType;

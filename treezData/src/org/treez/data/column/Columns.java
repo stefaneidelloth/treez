@@ -13,11 +13,8 @@ import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.adjustable.AdjustableAtom;
-import org.treez.core.atom.attribute.ColumnTypeComboBox;
 import org.treez.core.atom.attribute.base.EmptyControlAdaption;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.attribute.Attribute;
-import org.treez.core.attribute.Wrap;
 import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -171,11 +168,7 @@ public class Columns extends AdjustableAtom {
 	 * @return
 	 */
 	public ColumnType getColumnType(String header) {
-		Attribute<String> currentColumnType = getColumn(header).columnType;
-		Wrap<String> columnTypeWrapper = (Wrap<String>) currentColumnType;
-		ColumnTypeComboBox combo = (ColumnTypeComboBox) columnTypeWrapper.getAttribute();
-		ColumnType columnType = combo.getType();
-		return columnType;
+		return getColumn(header).columnType.get();
 	}
 
 	//#end region
@@ -272,19 +265,6 @@ public class Columns extends AdjustableAtom {
 	 */
 	public Column createColumn(String header) {
 		Column column = new Column(header);
-		addChild(column);
-		return column;
-
-	}
-
-	/**
-	 * Creates a new column with given header and type
-	 *
-	 * @param header
-	 * @param type
-	 */
-	public Column createColumn(String header, String type) {
-		Column column = new Column(header, type);
 		addChild(column);
 		return column;
 

@@ -54,7 +54,7 @@ public class Axis extends GraphicsPropertiesPage {
 
 	public Axis(String name, Direction direction) {
 		this(name);
-		data.direction.set(direction.toString());
+		data.direction.set(direction);
 	}
 
 	//#end region
@@ -179,7 +179,7 @@ public class Axis extends GraphicsPropertiesPage {
 	//#region ACCESSORS
 
 	private AxisMode getAxisMode() {
-		return AxisMode.from(data.mode.get());
+		return data.mode.get();
 	}
 
 	public Scale<?> getScale() {
@@ -222,8 +222,8 @@ public class Axis extends GraphicsPropertiesPage {
 	}
 
 	public boolean isHorizontal() {
-		String direction = data.direction.get();
-		return direction.equals(Direction.HORIZONTAL.toString());
+		Direction direction = data.direction.get();
+		return direction.equals(Direction.HORIZONTAL);
 	}
 
 	public Double[] getQuantitativeLimits() {
