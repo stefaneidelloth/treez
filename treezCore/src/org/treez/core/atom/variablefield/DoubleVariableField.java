@@ -134,8 +134,10 @@ public class DoubleVariableField extends AbstractVariableField<DoubleVariableFie
 
 	@Override
 	protected void setAttributeValueWithString(String valueString) {
-		if (valueString == null) {
+		if (valueString == null || valueString.isEmpty()) {
 			attributeValue = null;
+		} else if (valueString.equals("-")) {
+			attributeValue = 0.0;
 		} else {
 			attributeValue = Double.parseDouble(valueString);
 		}

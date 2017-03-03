@@ -206,20 +206,20 @@ public class Data implements GraphicsPropertiesPageFactory {
 		for (int rowIndex = 0; rowIndex < dataSize; rowIndex++) {
 
 			String inputLeftString = inputLeftData.get(rowIndex).toString();
-			Double inputLeft = Double.parseDouble(inputLeftString);
+			Double inputLeftValue = Double.parseDouble(inputLeftString);
 
 			String outputBaseString = outputBaseData.get(rowIndex).toString();
-			Double outputBase = Double.parseDouble(outputBaseString);
+			Double outputBaseValue = Double.parseDouble(outputBaseString);
 
 			String outputLeftString = outputLeftData.get(rowIndex).toString();
-			Double outputLeft = Double.parseDouble(outputLeftString);
+			Double outputLeftValue = Double.parseDouble(outputLeftString);
 
-			Double difference = outputBase - outputLeft;
+			Double difference = outputBaseValue - outputLeftValue;
 
-			Double position = outputLeft;
+			Double position = outputLeftValue;
 			Double size = difference;
 			if (difference < 0) {
-				position = outputBase;
+				position = outputBaseValue;
 				size = -difference;
 			}
 
@@ -231,7 +231,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 			}
 
 			String rowString = "{key:" + inputValue + //
-					", input:" + inputLeft + //
+					", input:" + inputLeftValue + //
 					", value:" + position + //
 					", size:" + size + //
 
@@ -255,19 +255,19 @@ public class Data implements GraphicsPropertiesPageFactory {
 		for (int rowIndex = 0; rowIndex < dataSize; rowIndex++) {
 
 			String inputRightString = inputRightData.get(rowIndex).toString();
-			Double inputRight = Double.parseDouble(inputRightString);
+			Double inputRightValue = Double.parseDouble(inputRightString);
 
 			String outputBaseString = outputBaseData.get(rowIndex).toString();
-			Double outputBase = Double.parseDouble(outputBaseString);
+			Double outputBaseValue = Double.parseDouble(outputBaseString);
 
 			String outputRightString = outputRightData.get(rowIndex).toString();
-			Double outputRight = Double.parseDouble(outputRightString);
+			Double outputRightValue = Double.parseDouble(outputRightString);
 
-			Double difference = outputRight - outputBase;
-			Double position = outputBase;
+			Double difference = outputRightValue - outputBaseValue;
+			Double position = outputBaseValue;
 			Double size = difference;
 			if (difference < 0) {
-				position = outputRight;
+				position = outputRightValue;
 				size = -difference;
 			}
 
@@ -279,7 +279,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 			}
 
 			String rowString = "{key:" + key + //
-					", input:" + inputRight + //
+					", input:" + inputRightValue + //
 					",value:" + position + //
 					",size:" + size + //
 					"}";
@@ -375,20 +375,20 @@ public class Data implements GraphicsPropertiesPageFactory {
 	//#region ACCESSORS
 
 	public Scale<?> getInputScale() {
-		Axis inputAxis = getInputAxis();
-		if (inputAxis == null) {
+		Axis inputAxisAtom = getInputAxis();
+		if (inputAxisAtom == null) {
 			return null;
 		}
-		Scale<?> scale = inputAxis.getScale();
+		Scale<?> scale = inputAxisAtom.getScale();
 		return scale;
 	}
 
 	public Scale<?> getOutputScale() {
-		Axis outputAxis = getOutputAxis();
-		if (outputAxis == null) {
+		Axis outputAxisAtom = getOutputAxis();
+		if (outputAxisAtom == null) {
 			return null;
 		}
-		Scale<?> scale = outputAxis.getScale();
+		Scale<?> scale = outputAxisAtom.getScale();
 		return scale;
 	}
 

@@ -7,7 +7,7 @@ import org.treez.results.atom.data.Data;
 import org.treez.results.atom.graph.Graph;
 import org.treez.results.atom.page.Page;
 import org.treez.results.atom.results.Results;
-import org.treez.results.atom.xyseries.XySeries;
+import org.treez.results.atom.xySeries.XySeries;
 import org.treez.views.tree.rootAtom.Root;
 
 public class XySeriesDemo extends ModelProvider {

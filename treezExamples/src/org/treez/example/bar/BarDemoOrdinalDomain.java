@@ -49,11 +49,13 @@ public class BarDemoOrdinalDomain extends ModelProvider {
 		yAxis.data.direction.set(Direction.VERTICAL);
 
 		Bar bar = graph.createBar("bar");
-		bar.data.xAxis.set("root.results.page.graph.category");
-		bar.data.yAxis.set("root.results.page.graph.y");
+		bar.data.horizontalAxis.set("root.results.page.graph.category");
+		bar.data.verticalAxis.set("root.results.page.graph.y");
 
 		bar.data.barPositions.set("root.results.data.table.columns.category");
 		bar.data.barLengths.set("root.results.data.table.columns.y");
+
+		bar.fill.color.set("#00ff00");
 
 		//#end region
 

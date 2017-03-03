@@ -40,7 +40,7 @@ public class AxisScaleInversedSizeDataFunction implements DataFunction<Double> {
 		Double scaledRightValueInPx = scale.applyForDouble(""+ (value+size));	
 		Double scaledLeftValueInPx = scale.applyForDouble("" + value);	
 		Double sizeInPx = scaledRightValueInPx-scaledLeftValueInPx;			
-		return - sizeInPx;		
+		return -sizeInPx;		
 	}
 	
 	//#end region

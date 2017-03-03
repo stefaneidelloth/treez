@@ -1,4 +1,4 @@
-package org.treez.results.atom.xyseries;
+package org.treez.results.atom.xySeries;
 
 import java.util.List;
 
@@ -125,8 +125,8 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 		if (sourceIsSpecified) {
 			Table foundSourceTable = this.getChildFromRoot(sourceTablePath);
 
-			Axis domainAxis = getOrCreateDomainAxis(foundSourceTable);
-			Axis rangeAxis = getOrCreateRangeAxis(foundSourceTable);
+			Axis domainAxis = updateDomainAxis(foundSourceTable);
+			Axis rangeAxis = updateRangeAxis(foundSourceTable);
 			removeAllChildren();
 			createNewXyChildren(sourceTablePath, domainAxis, rangeAxis);
 			createLegendForParentGraphIfNotExists();
@@ -181,22 +181,23 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 		}
 	}
 
-	private Axis getOrCreateDomainAxis(Table sourceTable) {
+	private Axis updateDomainAxis(Table sourceTable) {
 		List<Axis> axisList = getAllAxisFromParentGraph();
+
+		Axis domainAxis;
 		if (axisList.size() > 0) {
-			Axis domainAxis = axisList.get(0);
-			return domainAxis;
-		} else {
-			Graph graph = (Graph) this.getParentAtom();
-			Axis domainAxis = graph.createAxis("xAxis");
+			domainAxis = axisList.get(0);
 			double[] domainAxisLimits = getDomainLimits(sourceTable);
 			domainAxis.data.min.set(domainAxisLimits[0]);
 			domainAxis.data.max.set(domainAxisLimits[1]);
-
-			domainAxis.data.label.set(domainLabel.get());
-
-			return domainAxis;
+		} else {
+			Graph graph = (Graph) this.getParentAtom();
+			domainAxis = graph.createAxis("xAxis");
 		}
+
+		domainAxis.data.label.set(domainLabel.get());
+
+		return domainAxis;
 	}
 
 	private static double[] getDomainLimits(Table sourceTable) {
@@ -236,22 +237,24 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 		return limits;
 	}
 
-	private Axis getOrCreateRangeAxis(Table sourceTable) {
+	private Axis updateRangeAxis(Table sourceTable) {
 		List<Axis> axisList = getAllAxisFromParentGraph();
+		Axis rangeAxis;
 		if (axisList.size() > 1) {
-			Axis rangeAxis = axisList.get(1);
-			return rangeAxis;
+			rangeAxis = axisList.get(1);
+
 		} else {
 			Graph graph = (Graph) this.getParentAtom();
-			Axis rangeAxis = graph.createAxis("yAxis");
+			rangeAxis = graph.createAxis("yAxis");
+
 			rangeAxis.data.direction.set(Direction.VERTICAL);
 			double[] rangeAxisLimits = getRangeLimits(sourceTable);
 			rangeAxis.data.min.set(rangeAxisLimits[0]);
 			rangeAxis.data.max.set(rangeAxisLimits[1]);
-
-			rangeAxis.data.label.set(rangeLabel.get());
-			return rangeAxis;
 		}
+
+		rangeAxis.data.label.set(rangeLabel.get());
+		return rangeAxis;
 	}
 
 	private static double[] getRangeLimits(Table sourceTable) {

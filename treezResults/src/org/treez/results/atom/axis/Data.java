@@ -116,11 +116,11 @@ public class Data implements GraphicsPropertiesPageFactory {
 		domain.createTextField(maxTime, this, "1") //
 				.setLabel("Max time") //
 				.setEnabled(false);
-		
+
 		domain.createTextField(timeFormat, this, "%a %d") //
 				.setLabel("Time format") //
 				.setEnabled(false);
-		
+
 		domain.createTextField(timeZone, this, "%a %d") //
 				.setLabel("Time zone") //
 				.setEnabled(false);
@@ -303,7 +303,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 				.axis() //
 				.scale(axisAtom.getScale()) //
 				.outerTickSize(0.0) //
-				.ticks(axisAtom.getSize())
+				.ticks(axisAtom.getNumberOfValues())
 				.tickPadding(tickPadding);
 
 		return axis;
@@ -378,7 +378,7 @@ public class Data implements GraphicsPropertiesPageFactory {
 	//#region ACCESSORS
 
 	public boolean isHorizontal() {
-		boolean isHorizontal = direction.get().equals("" + Direction.HORIZONTAL);
+		boolean isHorizontal = direction.get().isHorizontal();
 		return isHorizontal;
 	}
 

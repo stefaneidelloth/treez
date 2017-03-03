@@ -75,6 +75,8 @@ public class IntegerVariableField extends AbstractVariableField<IntegerVariableF
 	protected void setAttributeValueWithString(String valueString) {
 		if (valueString == null) {
 			attributeValue = null;
+		} else if (valueString.equals("-")) {
+			attributeValue = 0;
 		} else {
 			attributeValue = Integer.parseInt(valueString);
 		}

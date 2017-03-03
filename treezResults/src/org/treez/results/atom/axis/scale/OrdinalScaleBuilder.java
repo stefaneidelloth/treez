@@ -63,7 +63,7 @@ public class OrdinalScaleBuilder {
 	}
 
 	public void includeDomainValuesForAutoScale(List<String> ordinalValues) {
-		ordinalValues.addAll(ordinalValues);
+		this.ordinalValues.addAll(ordinalValues);
 		updateDomain();
 	}
 

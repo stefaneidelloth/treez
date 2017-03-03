@@ -31,5 +31,13 @@ public enum Direction {
 		return value;
 	}
 
+	public boolean isVertical() {
+		return this.equals(VERTICAL);
+	}
+
+	public boolean isHorizontal() {
+		return this.equals(HORIZONTAL);
+	}
+
 	//#end region
 }

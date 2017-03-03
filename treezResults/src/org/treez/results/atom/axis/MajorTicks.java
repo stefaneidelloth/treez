@@ -97,7 +97,7 @@ public class MajorTicks implements GraphicsPropertiesPageFactory {
 		number.addModificationConsumer("replotAxis", () -> axis.updatePlotWithD3(d3));
 
 		length.addModificationConsumerAndRun("length", () -> {
-			boolean isHorizontal = axis.data.direction.get().equals("horizontal");
+			boolean isHorizontal = axis.data.direction.get().isHorizontal();
 			if (isHorizontal) {
 				primaryMajorTickLines.attr("y2", "-" + length.get());
 				secondaryMajorTickLines.attr("y2", "" + length.get());

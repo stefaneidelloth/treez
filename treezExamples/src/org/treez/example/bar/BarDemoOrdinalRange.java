@@ -7,6 +7,7 @@ import org.treez.data.column.Columns;
 import org.treez.data.table.nebula.Table;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.axis.AxisMode;
+import org.treez.results.atom.axis.BorderMode;
 import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.bar.Bar;
 import org.treez.results.atom.data.Data;
@@ -44,17 +45,21 @@ public class BarDemoOrdinalRange extends ModelProvider {
 		Graph graph = page.createGraph("graph");
 
 		Axis xAxis = graph.createAxis("x");
-		xAxis.data.mode.set(AxisMode.ORDINAL);
+		xAxis.data.borderMin.set(BorderMode.TWENTY_FIVE);
+		xAxis.data.borderMax.set(BorderMode.TWENTY_FIVE);
 
 		Axis categoryAxis = graph.createAxis("category");
 		categoryAxis.data.direction.set(Direction.VERTICAL);
+		categoryAxis.data.mode.set(AxisMode.ORDINAL);
 
 		Bar bar = graph.createBar("bar");
-		bar.data.xAxis.set("root.results.page.graph.x");
-		bar.data.yAxis.set("root.results.page.graph.category");
+		bar.data.horizontalAxis.set("root.results.page.graph.x");
+		bar.data.verticalAxis.set("root.results.page.graph.category");
 
 		bar.data.barPositions.set("root.results.data.table.columns.x");
 		bar.data.barLengths.set("root.results.data.table.columns.category");
+
+		bar.fill.color.set("#00ff00");
 
 		//#end region
 

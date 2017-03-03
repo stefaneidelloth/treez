@@ -84,7 +84,7 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 		}
 
 		Scale<?> scale = axis.getScale();
-		boolean isHorizontal = axis.data.direction.get().equals("horizontal");
+		boolean isHorizontal = axis.data.direction.get().isHorizontal();
 		boolean isLog = axis.data.log.get();
 
 		PrimaryAndSecondarySelection minorTickLineSelections;
@@ -97,7 +97,7 @@ public class MinorTicks implements GraphicsPropertiesPageFactory {
 		//bind tick properties
 		length.addModificationConsumerAndRun("length", () -> {
 			Axis parentAxis = (Axis) parent;
-			boolean axisIsHorizontal = parentAxis.data.direction.get().equals("horizontal");
+			boolean axisIsHorizontal = parentAxis.data.direction.get().isHorizontal();
 			if (axisIsHorizontal) {
 				minorTickLineSelections.getPrimary().attr("y2", "-" + length.get());
 				minorTickLineSelections.getSecondary().attr("y2", length.get());

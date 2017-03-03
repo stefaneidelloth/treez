@@ -21,7 +21,7 @@ import org.treez.results.atom.page.Page;
 import org.treez.results.atom.probe.SweepProbe;
 import org.treez.results.atom.results.Results;
 import org.treez.results.atom.xy.Xy;
-import org.treez.results.atom.xyseries.XySeries;
+import org.treez.results.atom.xySeries.XySeries;
 import org.treez.study.atom.Studies;
 import org.treez.study.atom.range.IntegerVariableRange;
 import org.treez.study.atom.sweep.Sweep;

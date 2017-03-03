@@ -44,18 +44,20 @@ public class BarDemoOrdinalRangeHorizontalBar extends ModelProvider {
 		Graph graph = page.createGraph("graph");
 
 		Axis xAxis = graph.createAxis("x");
-		xAxis.data.mode.set(AxisMode.ORDINAL);
 
 		Axis categoryAxis = graph.createAxis("category");
+		categoryAxis.data.mode.set(AxisMode.ORDINAL);
 		categoryAxis.data.direction.set(Direction.VERTICAL);
 
 		Bar bar = graph.createBar("bar");
 		bar.data.barDirection.set(Direction.HORIZONTAL);
-		bar.data.xAxis.set("root.results.page.graph.x");
-		bar.data.yAxis.set("root.results.page.graph.category");
+		bar.data.horizontalAxis.set("root.results.page.graph.x");
+		bar.data.verticalAxis.set("root.results.page.graph.category");
 
 		bar.data.barPositions.set("root.results.data.table.columns.x");
 		bar.data.barLengths.set("root.results.data.table.columns.category");
+
+		bar.fill.color.set("#00ff00");
 
 		//#end region
 

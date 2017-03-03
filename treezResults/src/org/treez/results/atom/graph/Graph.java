@@ -17,13 +17,13 @@ import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.bar.Bar;
 import org.treez.results.atom.contour.Contour;
-import org.treez.results.atom.graphicspage.Background;
-import org.treez.results.atom.graphicspage.Border;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicsPage.Background;
+import org.treez.results.atom.graphicsPage.Border;
+import org.treez.results.atom.graphicsPage.GraphicsPropertiesPage;
 import org.treez.results.atom.legend.Legend;
 import org.treez.results.atom.tornado.Tornado;
 import org.treez.results.atom.xy.Xy;
-import org.treez.results.atom.xyseries.XySeries;
+import org.treez.results.atom.xySeries.XySeries;
 
 /**
  * Represents a graph on a page. A graph may contain several xy plots

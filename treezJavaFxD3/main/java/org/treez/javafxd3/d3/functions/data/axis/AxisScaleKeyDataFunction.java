@@ -1,9 +1,9 @@
 package org.treez.javafxd3.d3.functions.data.axis;
 
-import org.treez.javafxd3.d3.functions.DataFunction;
-import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.JsObject;
+import org.treez.javafxd3.d3.functions.DataFunction;
+import org.treez.javafxd3.d3.scales.Scale;
 
 /**
  *  A datum function that extracts the key value from a data object
@@ -35,8 +35,10 @@ public class AxisScaleKeyDataFunction implements DataFunction<Double> {
 	@Override
 	public Double apply(Object context, Object datum, int index) {		
 		JsObject jsObject = (JsObject) engine.toJsObjectIfNotSimpleType(datum);			
-		Object firstValueObj = jsObject.eval("this.key");			
-		Double scaledValue = scale.applyForDouble(firstValueObj.toString());		
+		Object valueObject = jsObject.eval("this.key");	
+			
+	    Double scaledValue = scale.applyForDouble(valueObject.toString());				
+			
 		return scaledValue;			
 	}
 	

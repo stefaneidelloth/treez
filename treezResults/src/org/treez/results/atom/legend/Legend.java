@@ -11,9 +11,9 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.results.Activator;
-import org.treez.results.atom.graphicspage.Background;
-import org.treez.results.atom.graphicspage.Border;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicsPage.Background;
+import org.treez.results.atom.graphicsPage.Border;
+import org.treez.results.atom.graphicsPage.GraphicsPropertiesPage;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Legend extends GraphicsPropertiesPage {

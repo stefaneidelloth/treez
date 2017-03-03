@@ -1,9 +1,9 @@
 package org.treez.javafxd3.d3.functions.data.axis;
 
-import org.treez.javafxd3.d3.functions.DataFunction;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.JsObject;
+import org.treez.javafxd3.d3.functions.DataFunction;
+import org.treez.javafxd3.d3.scales.Scale;
 
 
 public class AxisScaleInversedSecondDataFunction implements DataFunction<Double> {
@@ -12,7 +12,7 @@ public class AxisScaleInversedSecondDataFunction implements DataFunction<Double>
 	
 	private JsEngine engine;
 	
-	private QuantitativeScale<?> scale;	
+	private Scale<?> scale;	
 	
 	private double maxValue;
 	
@@ -23,7 +23,7 @@ public class AxisScaleInversedSecondDataFunction implements DataFunction<Double>
 	/**
 	 * @param engine
 	 */
-	public AxisScaleInversedSecondDataFunction(JsEngine engine, QuantitativeScale<?> scale, double maxValue){
+	public AxisScaleInversedSecondDataFunction(JsEngine engine, Scale<?> scale, double maxValue){
 		this.engine = engine;
 		this.scale = scale;		
 		this.maxValue = maxValue;
@@ -38,10 +38,10 @@ public class AxisScaleInversedSecondDataFunction implements DataFunction<Double>
 		
 		JsObject jsObject = (JsObject) engine.toJsObjectIfNotSimpleType(datum);	
 		
-		Object secondValueObj = jsObject.eval("this[1]");	
-		Double secondValue = Double.parseDouble(secondValueObj.toString());		
+		Object secondValue = jsObject.eval("this[1]");	
+				
+		Double scaledValue = scale.applyForDouble(secondValue.toString());					
 		
-		Double scaledValue = scale.apply(secondValue).asDouble();
 		double inversedValue = maxValue-scaledValue;
 		return inversedValue;			
 	}

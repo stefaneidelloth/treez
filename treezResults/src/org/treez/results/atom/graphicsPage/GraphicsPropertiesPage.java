@@ -1,4 +1,4 @@
-package org.treez.results.atom.graphicspage;
+package org.treez.results.atom.graphicsPage;
 
 import java.util.ArrayList;
 import java.util.List;

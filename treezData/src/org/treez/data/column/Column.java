@@ -248,6 +248,18 @@ public class Column extends AdjustableAtom {
 		return values;
 	}
 
+	public List<String> getStringValues() {
+		List<Object> valueObjects = getValues();
+		return getStringValues(valueObjects);
+	}
+
+	private static List<String> getStringValues(List<Object> valueObjects) {
+		List<String> values = valueObjects.stream().map(element -> {
+			return element.toString();
+		}).collect(Collectors.toList());
+		return values;
+	}
+
 	/**
 	 * Returns the table this column belongs to. If the table cannot be found an exception is thrown.
 	 *
@@ -278,6 +290,10 @@ public class Column extends AdjustableAtom {
 
 	public void setColumnType(ColumnType columnType) {
 		this.columnType.set(columnType);
+	}
+
+	public boolean isNumeric() {
+		return getColumnType().isNumeric();
 	}
 
 	//#end region

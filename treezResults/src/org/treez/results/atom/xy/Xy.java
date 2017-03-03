@@ -17,7 +17,7 @@ import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicsPage.GraphicsPropertiesPage;
 import org.treez.results.atom.legend.LegendContributor;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")

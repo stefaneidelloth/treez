@@ -185,8 +185,8 @@ public class Page extends AbstractAttributeContainerAtom<Page> {
 			if (isSection) {
 
 				//get section atom
-				org.treez.core.atom.attribute.attributeContainer.section.Section section = (org.treez.core.atom.attribute.attributeContainer.section.Section) sectionNode
-						.getAdaptable();
+				org.treez.core.atom.attribute.attributeContainer.section.Section section = //
+						(org.treez.core.atom.attribute.attributeContainer.section.Section) sectionNode.getAdaptable();
 
 				//create section control
 				section.createAtomControl(parent, treeViewerRefreshable);

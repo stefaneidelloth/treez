@@ -13,11 +13,11 @@ import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graph.Graph;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicsPage.GraphicsPropertiesPage;
 import org.treez.results.atom.legend.LegendContributor;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -114,25 +114,142 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 	}
 
 	private void contributeDataForAutoScale(D3 d3) {
-		List<Double> xDataValues = getPositionDataAsDoubles();
-		Axis xAxis = getXAxis();
-		Double[] oldXLimits = xAxis.getQuantitativeLimits();
-		xAxis.includeDataForAutoScale(xDataValues);
-		Double[] xLimits = xAxis.getQuantitativeLimits();
-		boolean xScaleChanged = !Arrays.equals(xLimits, oldXLimits);
 
-		List<Double> yDataValues = getLengthDataAsDoubles();
-		Axis yAxis = getYAxis();
-		Double[] oldYLimits = yAxis.getQuantitativeLimits();
-		yAxis.includeDataForAutoScale(yDataValues);
-		Double[] yLimits = yAxis.getQuantitativeLimits();
-		boolean yScaleChanged = !Arrays.equals(yLimits, oldYLimits);
+		boolean horizontalScaleChanged = false;
+		boolean verticalScaleChanged = false;
 
-		if (xScaleChanged || yScaleChanged) {
+		boolean isVerticalBar = data.barDirection.get().isVertical();
+		if (isVerticalBar) {
+			horizontalScaleChanged = contributePositionValuesToHorizontalAxis();
+			verticalScaleChanged = contributeLengthValuesToVerticalAxis();
+		} else {
+			horizontalScaleChanged = contributeLengthValuesToHorizontalAxis();
+			verticalScaleChanged = contributePositionValuesToVerticalAxis();
+		}
+
+		if (horizontalScaleChanged || verticalScaleChanged) {
 			Graph graph = getGraph();
 			graph.updatePlotForChangedScales(d3);
 		}
 
+	}
+
+	private boolean contributePositionValuesToHorizontalAxis() {
+
+		Axis horizontalAxis = getHorizontalAxis();
+		boolean horizontalAxisIsQuantitative = horizontalAxis.isQuantitative();
+		if (horizontalAxisIsQuantitative) {
+
+			List<Double> positionValues = getQuantitativePositions();
+
+			Double[] oldHorizontalLimits = horizontalAxis.getQuantitativeLimits();
+			horizontalAxis.includeDataForAutoScale(positionValues);
+			Double[] horizontalLimits = horizontalAxis.getQuantitativeLimits();
+
+			boolean horizontalScaleChanged = !Arrays.equals(horizontalLimits, oldHorizontalLimits);
+			return horizontalScaleChanged;
+
+		} else {
+
+			List<String> positionValues = getOrdinalPositions();
+
+			int oldNumberOfValues = horizontalAxis.getNumberOfValues();
+			horizontalAxis.includeOrdinalValuesForAutoScale(positionValues);
+			int numberOfValues = horizontalAxis.getNumberOfValues();
+
+			boolean horizontalScaleChanged = numberOfValues != oldNumberOfValues;
+			return horizontalScaleChanged;
+
+		}
+
+	}
+
+	private boolean contributeLengthValuesToVerticalAxis() {
+
+		Axis verticalAxis = getVerticalAxis();
+		boolean verticalAxisIsQuantitative = verticalAxis.isQuantitative();
+		if (verticalAxisIsQuantitative) {
+
+			List<Double> lengthValues = getQuantitativeLengths();
+
+			Double[] oldVerticalLimits = verticalAxis.getQuantitativeLimits();
+			verticalAxis.includeDataForAutoScale(lengthValues);
+			Double[] verticalLimits = verticalAxis.getQuantitativeLimits();
+
+			boolean verticalScaleChanged = !Arrays.equals(verticalLimits, oldVerticalLimits);
+			return verticalScaleChanged;
+
+		} else {
+
+			List<String> lengthValues = getOrdinalLengths();
+
+			int oldNumberOfValues = verticalAxis.getNumberOfValues();
+			verticalAxis.includeOrdinalValuesForAutoScale(lengthValues);
+			int numberOfValues = verticalAxis.getNumberOfValues();
+
+			boolean verticalScaleChanged = numberOfValues != oldNumberOfValues;
+			return verticalScaleChanged;
+
+		}
+
+	}
+
+	private boolean contributePositionValuesToVerticalAxis() {
+
+		Axis verticalAxis = getVerticalAxis();
+		boolean verticalAxisIsQuantitative = verticalAxis.isQuantitative();
+		if (verticalAxisIsQuantitative) {
+
+			List<Double> positionValues = getQuantitativePositions();
+
+			Double[] oldVerticalLimits = verticalAxis.getQuantitativeLimits();
+			verticalAxis.includeDataForAutoScale(positionValues);
+			Double[] verticalLimits = verticalAxis.getQuantitativeLimits();
+
+			boolean verticalScaleChanged = !Arrays.equals(verticalLimits, oldVerticalLimits);
+			return verticalScaleChanged;
+
+		} else {
+
+			List<String> positionValues = getOrdinalPositions();
+
+			int oldNumberOfValues = verticalAxis.getNumberOfValues();
+			verticalAxis.includeOrdinalValuesForAutoScale(positionValues);
+			int numberOfValues = verticalAxis.getNumberOfValues();
+
+			boolean verticalScaleChanged = numberOfValues != oldNumberOfValues;
+			return verticalScaleChanged;
+
+		}
+
+	}
+
+	private boolean contributeLengthValuesToHorizontalAxis() {
+
+		Axis horizontalAxis = getHorizontalAxis();
+		boolean horizontalAxisIsQuantitative = horizontalAxis.isQuantitative();
+		if (horizontalAxisIsQuantitative) {
+
+			List<Double> lengthValues = getQuantitativeLengths();
+
+			Double[] oldHorizontalLimits = horizontalAxis.getQuantitativeLimits();
+			horizontalAxis.includeDataForAutoScale(lengthValues);
+			Double[] horizontalLimits = horizontalAxis.getQuantitativeLimits();
+
+			boolean horizontalScaleChanged = !Arrays.equals(horizontalLimits, oldHorizontalLimits);
+			return horizontalScaleChanged;
+
+		} else {
+
+			List<String> lengthValues = getOrdinalLengths();
+
+			int oldNumberOfValues = horizontalAxis.getNumberOfValues();
+			horizontalAxis.includeOrdinalValuesForAutoScale(lengthValues);
+			int numberOfValues = horizontalAxis.getNumberOfValues();
+
+			boolean horizontalScaleChanged = numberOfValues != oldNumberOfValues;
+			return horizontalScaleChanged;
+		}
 	}
 
 	private Graph getGraph() {
@@ -185,7 +302,7 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 		return symbolSelection;
 	}
 
-	public String getBarDataString() {
+	public String getBarDataString(boolean positionAxisIsOrdinal, boolean lengthAxisIsOrdinal) {
 
 		List<Object> lengthDataValues = getLengthData();
 		List<Object> positionDataValues = getPositionData();
@@ -199,13 +316,40 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 			throw new IllegalStateException(message);
 		}
 
+		if (lengthSize == 0) {
+			return "[]";
+		}
+
+		Object firstPosition = positionDataValues.get(0);
+		boolean positionsAreOrdinal = firstPosition instanceof String;
+
+		Object firstLength = lengthDataValues.get(0);
+		boolean lengthsAreOrdinal = firstLength instanceof String;
+
 		List<String> rowList = new java.util.ArrayList<>();
 		for (int rowIndex = 0; rowIndex < lengthSize; rowIndex++) {
-			Object lengthDatum = lengthDataValues.get(rowIndex);
-			Double length = Double.parseDouble(lengthDatum.toString());
 
 			Object positionDatum = positionDataValues.get(rowIndex);
-			Double position = Double.parseDouble(positionDatum.toString());
+			String position = positionDatum.toString();
+			if (positionsAreOrdinal) {
+				if (positionAxisIsOrdinal) {
+					position = "'" + position + "'";
+				} else {
+					position = "" + (positionDataValues.indexOf(positionDatum) + 1);
+				}
+
+			}
+
+			Object lengthDatum = lengthDataValues.get(rowIndex);
+			String length = lengthDatum.toString();
+			if (lengthsAreOrdinal) {
+				if (lengthAxisIsOrdinal) {
+					length = "'" + length + "'";
+				} else {
+					length = "" + (lengthDataValues.indexOf(lengthDatum) + 1);
+				}
+
+			}
 
 			String rowString = "[" + position + "," + length + "]";
 			rowList.add(rowString);
@@ -214,7 +358,7 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 		return dataString;
 	}
 
-	public int getPositionSize() {
+	public int getNumberOfPositionValues() {
 		List<Object> positionDataValues = getPositionData();
 		return positionDataValues.size();
 	}
@@ -227,6 +371,13 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 		int positionSize = positionDataValues.size();
 
 		if (positionSize > 1) {
+
+			Object firstPosition = positionDataValues.get(0);
+			boolean isOrdinal = firstPosition instanceof String;
+			if (isOrdinal) {
+				return 1;
+			}
+
 			for (int positionIndex = 1; positionIndex < positionSize; positionIndex++) {
 				Object leftPositionObj = positionDataValues.get(positionIndex - 1);
 				Double leftPosition = Double.parseDouble(leftPositionObj.toString());
@@ -246,40 +397,39 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 
 	}
 
-	public QuantitativeScale<?> getXScale() {
-		Axis xAxisAtom = getXAxis();
-		if (xAxisAtom == null) {
+	public Scale<?> getHorizontalScale() {
+		Axis horizontalAxisAtom = getHorizontalAxis();
+		if (horizontalAxisAtom == null) {
 			return null;
 		}
-		QuantitativeScale<?> scale = (QuantitativeScale<?>) xAxisAtom.getScale();
-		return scale;
+		return horizontalAxisAtom.getScale();
 	}
 
-	public QuantitativeScale<?> getYScale() {
-		Axis yAxisAtom = getYAxis();
-		if (yAxisAtom == null) {
+	public Scale<?> getVerticalScale() {
+		Axis verticalAxisAtom = getVerticalAxis();
+		if (verticalAxisAtom == null) {
 			return null;
 		}
-		QuantitativeScale<?> scale = (QuantitativeScale<?>) yAxisAtom.getScale();
-		return scale;
+		return verticalAxisAtom.getScale();
+
 	}
 
-	private Axis getXAxis() {
-		String xAxisPath = data.xAxis.get();
-		if (xAxisPath == null || xAxisPath.isEmpty()) {
+	public Axis getHorizontalAxis() {
+		String horizontalAxisPath = data.horizontalAxis.get();
+		if (horizontalAxisPath == null || horizontalAxisPath.isEmpty()) {
 			return null;
 		}
-		Axis xAxisAtom = getChildFromRoot(xAxisPath);
-		return xAxisAtom;
+		Axis horizontalAxisAtom = getChildFromRoot(horizontalAxisPath);
+		return horizontalAxisAtom;
 	}
 
-	private Axis getYAxis() {
-		String yAxisPath = data.yAxis.get();
-		if (yAxisPath == null || yAxisPath.isEmpty()) {
+	public Axis getVerticalAxis() {
+		String verticalAxisPath = data.verticalAxis.get();
+		if (verticalAxisPath == null || verticalAxisPath.isEmpty()) {
 			return null;
 		}
-		Axis yAxisAtom = getChildFromRoot(yAxisPath);
-		return yAxisAtom;
+		Axis verticalAxisAtom = getChildFromRoot(verticalAxisPath);
+		return verticalAxisAtom;
 	}
 
 	private List<Object> getLengthData() {
@@ -289,16 +439,6 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 		}
 		org.treez.data.column.Column lengthDataColumn = getChildFromRoot(lengthDataPath);
 		List<Object> lengthDataValues = lengthDataColumn.getValues();
-		return lengthDataValues;
-	}
-
-	private List<Double> getLengthDataAsDoubles() {
-		String lengthDataPath = data.barLengths.get();
-		if (lengthDataPath.isEmpty()) {
-			return new ArrayList<>();
-		}
-		org.treez.data.column.Column lengthDataColumn = getChildFromRoot(lengthDataPath);
-		List<Double> lengthDataValues = lengthDataColumn.getDoubleValues();
 		return lengthDataValues;
 	}
 
@@ -312,14 +452,71 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 		return positionDataValues;
 	}
 
-	private List<Double> getPositionDataAsDoubles() {
+	private List<Double> getQuantitativePositions() {
 		String positionDataPath = data.barPositions.get();
 		if (positionDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}
 		org.treez.data.column.Column positionDataColumn = getChildFromRoot(positionDataPath);
-		List<Double> positionDataValues = positionDataColumn.getDoubleValues();
+
+		boolean isNumericColumn = positionDataColumn.isNumeric();
+		if (isNumericColumn) {
+			List<Double> positionValues = positionDataColumn.getDoubleValues();
+			return positionValues;
+		} else {
+			List<String> ordinalPositionValues = positionDataColumn.getStringValues();
+			List<Double> positionValues = new ArrayList<>();
+
+			for (Double position = 1.0; position <= ordinalPositionValues.size(); position++) {
+				positionValues.add(position);
+			}
+			return positionValues;
+		}
+
+	}
+
+	private List<String> getOrdinalPositions() {
+		String positionDataPath = data.barPositions.get();
+		if (positionDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+		org.treez.data.column.Column positionDataColumn = getChildFromRoot(positionDataPath);
+		List<String> positionDataValues = positionDataColumn.getStringValues();
 		return positionDataValues;
+	}
+
+	private List<Double> getQuantitativeLengths() {
+		String lengthDataPath = data.barLengths.get();
+		if (lengthDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		org.treez.data.column.Column lengthDataColumn = getChildFromRoot(lengthDataPath);
+
+		boolean isNumericColumn = lengthDataColumn.isNumeric();
+		if (isNumericColumn) {
+			List<Double> lengthValues = lengthDataColumn.getDoubleValues();
+			return lengthValues;
+		} else {
+			List<String> ordinalLengthValues = lengthDataColumn.getStringValues();
+			List<Double> lengthValues = new ArrayList<>();
+
+			for (Double position = 1.0; position <= ordinalLengthValues.size(); position++) {
+				lengthValues.add(position);
+			}
+			return lengthValues;
+		}
+
+	}
+
+	private List<String> getOrdinalLengths() {
+		String lengthDataPath = data.barLengths.get();
+		if (lengthDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+		org.treez.data.column.Column lengthDataColumn = getChildFromRoot(lengthDataPath);
+		List<String> lengthDataValues = lengthDataColumn.getStringValues();
+		return lengthDataValues;
 	}
 
 	//#end region

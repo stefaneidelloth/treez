@@ -37,8 +37,8 @@ public class BarExample extends ModelProvider {
 		Page page = results0.createPage("page");
 		Graph graph = page.createGraph("graph");
 		Bar bar = graph.createBar("bar");
-		bar.data.xAxis.set("root.results.page.graph.xAxis");
-		bar.data.yAxis.set("root.results.page.graph.yAxis");
+		bar.data.horizontalAxis.set("root.results.page.graph.xAxis");
+		bar.data.verticalAxis.set("root.results.page.graph.yAxis");
 
 		bar.data.barLengths.set("root.results.data.table.columns.x");
 		bar.data.barPositions.set("root.results.data.table.columns.y1");

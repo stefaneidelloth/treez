@@ -8,7 +8,9 @@ public enum BorderMode {
 	TWO("2%", 0.02), //
 	FIVE("5%", 0.05), //
 	TEN("10%", 0.1), //
-	FIVETEEN("15%", 0.15); //
+	FIVETEEN("15%", 0.15),
+	TWENTY("20%", 0.2),
+	TWENTY_FIVE("25%", 0.25); //
 
 	//#end region
 

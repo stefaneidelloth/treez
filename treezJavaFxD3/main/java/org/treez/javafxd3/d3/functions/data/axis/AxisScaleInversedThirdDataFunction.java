@@ -10,7 +10,7 @@ public class AxisScaleInversedThirdDataFunction implements DataFunction<Double> 
 	
 	//#region ATTRIBUTES
 	
-	JsEngine engine;
+	private JsEngine engine;
 	
 	private QuantitativeScale<?> scale;	
 	
@@ -38,8 +38,8 @@ public class AxisScaleInversedThirdDataFunction implements DataFunction<Double> 
 		
 		JsObject jsObject = (JsObject) engine.toJsObjectIfNotSimpleType(datum);	
 		
-		Object secondValueObj = jsObject.eval("this[2]");	
-		Double secondValue = Double.parseDouble(secondValueObj.toString());		
+		Object thirdValue = jsObject.eval("this[2]");	
+		Double secondValue = Double.parseDouble(thirdValue.toString());		
 		
 		Double scaledValue = scale.apply(secondValue).asDouble();
 		double inversedValue = maxValue-scaledValue;

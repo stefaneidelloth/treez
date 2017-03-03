@@ -14,9 +14,10 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
-import org.treez.javafxd3.d3.functions.data.axis.AxisScaleInversedFirstDataFunction;
+import org.treez.javafxd3.d3.functions.data.axis.AxisScaleInversedSecondDataFunction;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.scales.Scale;
+import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.graph.Graph;
 
@@ -138,14 +139,16 @@ public class Fill implements GraphicsPropertiesPageFactory {
 		double graphHeight = Length.toPx(graph.data.height.get());
 		double graphWidth = Length.toPx(graph.data.width.get());
 
-		String dataString = bar.getBarDataString();
-		QuantitativeScale<?> xScale = bar.getXScale();
-		QuantitativeScale<?> yScale = bar.getYScale();
+		Axis horizontalAxis = bar.getHorizontalAxis();
+		boolean horizontalAxisIsOrdinal = horizontalAxis.isOrdinal();
+		Scale<?> horizontalScale = bar.getHorizontalScale();
+
+		Axis verticalAxis = bar.getVerticalAxis();
+		boolean verticalAxisIsOrdinal = verticalAxis.isOrdinal();
+		Scale<?> verticalScale = bar.getVerticalScale();
 
 		Direction direction = bar.data.barDirection.get();
-		boolean isVertical = direction.equals(Direction.VERTICAL);
-
-		int positionSize = bar.getPositionSize();
+		boolean isVertical = direction.isVertical();
 
 		Double barFillRatio = bar.data.barFillRatio.get();
 		if (barFillRatio == null) {
@@ -154,30 +157,37 @@ public class Fill implements GraphicsPropertiesPageFactory {
 
 		JsEngine engine = rectsSelection.getJsEngine();
 
+		int numberOfPositionValues = bar.getNumberOfPositionValues();
+
 		if (isVertical) {
-			double barWidth = determineBarWidth(bar, graphWidth, xScale, positionSize, barFillRatio);
+
+			double barWidth = determineBarWidth(bar, graphWidth, horizontalAxis, numberOfPositionValues, barFillRatio);
+
+			String dataString = bar.getBarDataString(horizontalAxisIsOrdinal, verticalAxisIsOrdinal);
 
 			rectsSelection.selectAll("rect") //
 					.data(dataString) //
 					.enter() //
 					.append("rect")
-					.attr("x", new AxisScaleFirstDataFunction(engine, xScale))
-					.attr("y", new AxisScaleSecondDataFunction(engine, yScale))
+					.attr("x", new AxisScaleFirstDataFunction(engine, horizontalScale))
+					.attr("y", new AxisScaleSecondDataFunction(engine, verticalScale))
 					.attr("width", barWidth)
 					.attr("transform", "translate(-" + barWidth / 2 + ",0)")
-					.attr("height", new AxisScaleInversedFirstDataFunction(engine, yScale, graphHeight));
+					.attr("height", new AxisScaleInversedSecondDataFunction(engine, verticalScale, graphHeight));
 		} else {
-			double barHeight = determineBarHeight(bar, graphHeight, yScale, positionSize, barFillRatio);
+			double barHeight = determineBarHeight(bar, graphHeight, verticalAxis, numberOfPositionValues, barFillRatio);
+
+			String dataString = bar.getBarDataString(verticalAxisIsOrdinal, horizontalAxisIsOrdinal);
 
 			rectsSelection.selectAll("rect") //
 					.data(dataString) //
 					.enter() //
 					.append("rect")
 					.attr("x", 0)
-					.attr("y", new AxisScaleFirstDataFunction(engine, yScale))
+					.attr("y", new AxisScaleFirstDataFunction(engine, verticalScale))
 					.attr("height", barHeight)
 					.attr("transform", "translate(0,-" + barHeight / 2 + ")")
-					.attr("width", new AxisScaleSecondDataFunction(engine, xScale));
+					.attr("width", new AxisScaleSecondDataFunction(engine, horizontalScale));
 		}
 
 		//bind attributes
@@ -190,14 +200,26 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	private static double determineBarWidth(
 			Bar bar,
 			double graphWidth,
-			QuantitativeScale<?> xScale,
-			int positionSize,
+			Axis horizontalAxis,
+			int numberOfPositionValues,
 			double barFillRatio) {
 
 		double defaultBarWidth;
-		if (positionSize > 1) {
-			double smallestPositionDistance = bar.getSmallestPositionDistance();
-			defaultBarWidth = xScale.apply(smallestPositionDistance).asDouble();
+		if (numberOfPositionValues > 1) {
+
+			boolean horizontalAxisIsOrdinal = horizontalAxis.isOrdinal();
+			if (horizontalAxisIsOrdinal) {
+				defaultBarWidth = graphWidth / numberOfPositionValues;
+			} else {
+				double smallestPositionDistance = bar.getSmallestPositionDistance();
+				Scale<?> horizontalScale = horizontalAxis.getScale();
+				Double[] limits = horizontalAxis.getQuantitativeLimits();
+				Double minValue = limits[0];
+				Double offset = horizontalScale.apply(minValue).asDouble();
+				Double scaledWidth = horizontalScale.apply(minValue + smallestPositionDistance).asDouble();
+				defaultBarWidth = scaledWidth - offset;
+			}
+
 		} else {
 			defaultBarWidth = graphWidth / GRAPHICS_TO_BAR_RATIO_FOR_SINGLE_BAR;
 		}
@@ -208,14 +230,25 @@ public class Fill implements GraphicsPropertiesPageFactory {
 	private static double determineBarHeight(
 			Bar bar,
 			double graphHeight,
-			QuantitativeScale<?> yScale,
-			int positionSize,
+			Axis verticalAxis,
+			int numberOfPositionValues,
 			double barFillRatio) {
 
 		double defaultBarHeight;
-		if (positionSize > 1) {
-			double smallestPositionDistance = bar.getSmallestPositionDistance();
-			defaultBarHeight = graphHeight - yScale.apply(smallestPositionDistance).asDouble();
+		if (numberOfPositionValues > 1) {
+
+			boolean verticalAxisIsOrdinal = verticalAxis.isOrdinal();
+			if (verticalAxisIsOrdinal) {
+				defaultBarHeight = graphHeight / numberOfPositionValues;
+			} else {
+				double smallestPositionDistance = bar.getSmallestPositionDistance();
+				Scale<?> verticalScale = verticalAxis.getScale();
+				Double minValue = verticalAxis.getQuantitativeLimits()[0];
+				Double offset = graphHeight - verticalScale.apply(minValue).asDouble();
+				Double scaledHeight = graphHeight - verticalScale.apply(minValue + smallestPositionDistance).asDouble();
+				defaultBarHeight = scaledHeight - offset;
+			}
+
 		} else {
 			defaultBarHeight = graphHeight / GRAPHICS_TO_BAR_RATIO_FOR_SINGLE_BAR;
 		}

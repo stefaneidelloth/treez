@@ -1,4 +1,4 @@
-package org.treez.results.atom.graphicspage;
+package org.treez.results.atom.graphicsPage;
 
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.attributeContainer.Page;

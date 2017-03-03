@@ -31,11 +31,9 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 	public final Attribute<String> legendText = new Wrap<>();
 
-	//public final Attribute<String> labels = new Wrap<>();
+	public final Attribute<String> horizontalAxis = new Wrap<>();
 
-	public final Attribute<String> xAxis = new Wrap<>();
-
-	public final Attribute<String> yAxis = new Wrap<>();
+	public final Attribute<String> verticalAxis = new Wrap<>();
 
 	//#end region
 
@@ -69,23 +67,24 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		Class<?> axisClass = org.treez.results.atom.axis.Axis.class;
 
-		String xAxisPath = "";
-		FilterDelegate xAxisFilterDelegate = (atom) -> {
+		String horizontalAxisPath = "";
+		FilterDelegate horizontalAxisFilterDelegat = (atom) -> {
 			Axis axis = (Axis) atom;
-			return axis.data.direction.get().equals(Direction.HORIZONTAL);
+			return axis.data.direction.get().isHorizontal();
 		};
 		data //
-				.createModelPath(xAxis, this, xAxisPath, axisClass, parent, xAxisFilterDelegate) //
-				.setLabel("X axis");
+				.createModelPath(horizontalAxis, this, horizontalAxisPath, axisClass, parent,
+						horizontalAxisFilterDelegat) //
+				.setLabel("Horizontal axis");
 
-		String yAxisPath = "";
-		FilterDelegate yAxisFilterDelegate = (atom) -> {
+		String verticalAxisPath = "";
+		FilterDelegate verticalAxisFilterDelegate = (atom) -> {
 			Axis axis = (Axis) atom;
-			return axis.data.direction.get().equals(Direction.VERTICAL);
+			return axis.data.direction.get().isVertical();
 		};
 		data //
-				.createModelPath(yAxis, this, yAxisPath, axisClass, parent, yAxisFilterDelegate) //
-				.setLabel("Y axis");
+				.createModelPath(verticalAxis, this, verticalAxisPath, axisClass, parent, verticalAxisFilterDelegate) //
+				.setLabel("Vertical axis");
 
 	}
 
@@ -103,10 +102,8 @@ public class Data implements GraphicsPropertiesPageFactory {
 
 		barFillRatio.addModificationConsumer("replot", dataChangedConsumer);
 
-		//legendText.addModificationConsumer("replot", dataChangedConsumer);
-
-		xAxis.addModificationConsumer("replot", dataChangedConsumer);
-		yAxis.addModificationConsumer("replot", dataChangedConsumer);
+		horizontalAxis.addModificationConsumer("replot", dataChangedConsumer);
+		verticalAxis.addModificationConsumer("replot", dataChangedConsumer);
 
 		return xySelection;
 	}

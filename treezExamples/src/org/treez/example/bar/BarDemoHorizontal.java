@@ -6,6 +6,7 @@ import org.treez.data.column.Column;
 import org.treez.data.column.Columns;
 import org.treez.data.table.nebula.Table;
 import org.treez.results.atom.axis.Axis;
+import org.treez.results.atom.axis.BorderMode;
 import org.treez.results.atom.axis.Direction;
 import org.treez.results.atom.bar.Bar;
 import org.treez.results.atom.data.Data;
@@ -45,14 +46,18 @@ public class BarDemoHorizontal extends ModelProvider {
 
 		Axis yAxis = graph.createAxis("y");
 		yAxis.data.direction.set(Direction.VERTICAL);
+		yAxis.data.borderMin.set(BorderMode.TWENTY_FIVE);
+		yAxis.data.borderMax.set(BorderMode.TWENTY_FIVE);
 
 		Bar bar = graph.createBar("bar");
 		bar.data.barDirection.set(Direction.HORIZONTAL);
-		bar.data.xAxis.set("root.results.page.graph.x");
-		bar.data.yAxis.set("root.results.page.graph.y");
+		bar.data.horizontalAxis.set("root.results.page.graph.x");
+		bar.data.verticalAxis.set("root.results.page.graph.y");
 
 		bar.data.barPositions.set("root.results.data.table.columns.x");
 		bar.data.barLengths.set("root.results.data.table.columns.y");
+
+		bar.fill.color.set("#00ff00");
 
 		//#end region
 

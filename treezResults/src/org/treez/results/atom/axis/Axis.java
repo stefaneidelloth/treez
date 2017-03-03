@@ -15,7 +15,7 @@ import org.treez.javafxd3.d3.scales.Scales;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.scale.OrdinalScaleBuilder;
 import org.treez.results.atom.axis.scale.QuantitativeScaleBuilder;
-import org.treez.results.atom.graphicspage.GraphicsPropertiesPage;
+import org.treez.results.atom.graphicsPage.GraphicsPropertiesPage;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Axis extends GraphicsPropertiesPage {
@@ -197,7 +197,7 @@ public class Axis extends GraphicsPropertiesPage {
 		}
 	}
 
-	public int getSize() {
+	public int getNumberOfValues() {
 		AxisMode axisMode = getAxisMode();
 		switch (axisMode) {
 		case QUANTITATIVE:
@@ -223,17 +223,30 @@ public class Axis extends GraphicsPropertiesPage {
 
 	public boolean isHorizontal() {
 		Direction direction = data.direction.get();
-		return direction.equals(Direction.HORIZONTAL);
+		return direction.isHorizontal();
 	}
 
 	public Double[] getQuantitativeLimits() {
-		Double min = quantitativeScaleBuilder.getAutoMinValue();
-		Double max = quantitativeScaleBuilder.getAutoMaxValue();
-		return new Double[] { min, max };
-	}
 
-	public int getNumberOfValues() {
-		return ordinalScaleBuilder.getNumberOfValues();
+		if (isQuantitative()) {
+			Double min = data.min.get();
+			boolean isAutoMin = data.autoMin.get();
+			if (isAutoMin) {
+				min = quantitativeScaleBuilder.getAutoMinValue();
+			}
+
+			Double max = data.max.get();
+			boolean isAutoMax = data.autoMax.get();
+			if (isAutoMax) {
+				max = quantitativeScaleBuilder.getAutoMaxValue();
+			}
+
+			return new Double[] { min, max };
+		} else {
+			Double numberOfValues = 0.0 + getNumberOfValues();
+			return new Double[] { 1.0, numberOfValues };
+		}
+
 	}
 
 	//#end region

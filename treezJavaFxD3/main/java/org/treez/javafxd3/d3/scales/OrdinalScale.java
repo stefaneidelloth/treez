@@ -1,9 +1,12 @@
 package org.treez.javafxd3.d3.scales;
 
+import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.arrays.Array;
 
 import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.JsObject;
+import org.treez.javafxd3.d3.core.Value;
+import org.treez.javafxd3.d3.interpolators.Interpolator;
 
 /**
  * Ordinal {@link Scales} have a discrete domain, such as a set of names or
@@ -61,6 +64,7 @@ public class OrdinalScale extends Scale<OrdinalScale> {
 	//#end region
 
 	//#region METHODS
+	  
 
 	// ============ rangePoints ============
 	/**

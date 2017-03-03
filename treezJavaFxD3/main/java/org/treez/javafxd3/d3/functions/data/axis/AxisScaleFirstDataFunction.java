@@ -1,9 +1,9 @@
 package org.treez.javafxd3.d3.functions.data.axis;
 
-import org.treez.javafxd3.d3.functions.DataFunction;
-import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.JsObject;
+import org.treez.javafxd3.d3.functions.DataFunction;
+import org.treez.javafxd3.d3.scales.Scale;
 
 /**
  *  A datum function that extracts the first value from a data array
@@ -22,11 +22,9 @@ public class AxisScaleFirstDataFunction implements DataFunction<Double> {
 	
 	//#region CONSTRUCTORS
 	
-	/**
-	 * @param engine
-	 */
-	public AxisScaleFirstDataFunction(JsEngine engine,Scale<?> scale){
-		this.engine = engine;
+
+	public AxisScaleFirstDataFunction(JsEngine engine, Scale<?> scale){
+		this.engine = engine; 
 		this.scale = scale;		
 	}
 	
@@ -38,9 +36,10 @@ public class AxisScaleFirstDataFunction implements DataFunction<Double> {
 	public Double apply(Object context, Object datum, int index) {
 		
 		JsObject jsObject = (JsObject) engine.toJsObjectIfNotSimpleType(datum);			
-		Object firstValueObj = jsObject.eval("this[0]");			
-		Double scaledValue = scale.applyForDouble(firstValueObj.toString());		
-		return scaledValue;			
+		Object firstValueObj = jsObject.eval("this[0]");		
+		Double scaledValue = scale.applyForDouble(firstValueObj.toString());
+		return scaledValue;
+				
 	}
 	
 	//#end region

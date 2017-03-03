@@ -65,6 +65,10 @@ public enum ColumnType {
 		return associatedClass;
 	}
 
+	public boolean isNumeric() {
+		return !this.equals(STRING);
+	}
+
 	//#end region
 
 }
