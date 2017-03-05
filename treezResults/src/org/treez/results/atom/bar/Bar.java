@@ -309,12 +309,7 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 
 		int lengthSize = lengthDataValues.size();
 		int positionSize = positionDataValues.size();
-		boolean sizesAreOk = lengthSize == positionSize;
-		if (!sizesAreOk) {
-			String message = "The length and position data has to be of equal size but size of length data is "
-					+ lengthSize + " and size of position data is " + positionSize;
-			throw new IllegalStateException(message);
-		}
+		assertEqualSizes(lengthSize, positionSize);
 
 		if (lengthSize == 0) {
 			return "[]";
@@ -356,6 +351,15 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 		}
 		String dataString = "[" + String.join(",", rowList) + "]";
 		return dataString;
+	}
+
+	private void assertEqualSizes(int lengthSize, int positionSize) {
+		boolean sizesAreOk = lengthSize == positionSize;
+		if (!sizesAreOk) {
+			String message = "The length and position data has to be of equal size but size of length data is "
+					+ lengthSize + " and size of position data is " + positionSize;
+			throw new IllegalStateException(message);
+		}
 	}
 
 	public int getNumberOfPositionValues() {

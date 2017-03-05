@@ -5,7 +5,6 @@ import java.util.List;
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
-import org.treez.core.atom.attribute.color.ColorChooser;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -16,7 +15,7 @@ import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.scales.Scale;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Area implements GraphicsPropertiesPageFactory {
@@ -92,7 +91,7 @@ public class Area implements GraphicsPropertiesPageFactory {
 
 		Section fillBelow = fillPage.createSection("fillBelow", "Fill below");
 
-		ColorChooser belowColorChooser = fillBelow.createColorChooser(belowColor, this, "black").setLabel("Color");
+		fillBelow.createColorChooser(belowColor, this, "black").setLabel("Color");
 
 		//fillBelow.createFillStyle(belowFillStyle, "style", "Style");
 
@@ -111,12 +110,12 @@ public class Area implements GraphicsPropertiesPageFactory {
 		Xy xy = (Xy) parent;
 		String parentName = xy.getName();
 
-		List<Double> xData = xy.getXDataAsDoubles();
-		List<Double> yData = xy.getYDataAsDoubles();
+		List<Object> xData = xy.getXValues();
+		List<Object> yData = xy.getYValues();
 
 		String xyDataString = xy.createXyDataString(xData, yData);
-		QuantitativeScale<?> xScale = xy.getXScale();
-		QuantitativeScale<?> yScale = xy.getYScale();
+		Scale<?> xScale = xy.getXScale();
+		Scale<?> yScale = xy.getYScale();
 
 		org.treez.javafxd3.d3.svg.InterpolationMode mode = xy.line.interpolation.get();
 
@@ -131,8 +130,8 @@ public class Area implements GraphicsPropertiesPageFactory {
 			String parentName,
 			Selection xySelection,
 			String xyDataString,
-			QuantitativeScale<?> xScale,
-			QuantitativeScale<?> yScale,
+			Scale<?> xScale,
+			Scale<?> yScale,
 			org.treez.javafxd3.d3.svg.InterpolationMode mode) {
 
 		String id = "area-above_" + parentName;
@@ -170,8 +169,8 @@ public class Area implements GraphicsPropertiesPageFactory {
 			String parentName,
 			Selection xySelection,
 			String xyDataString,
-			QuantitativeScale<?> xScale,
-			QuantitativeScale<?> yScale,
+			Scale<?> xScale,
+			Scale<?> yScale,
 			org.treez.javafxd3.d3.svg.InterpolationMode mode) {
 
 		String id = "area-below_" + parentName;

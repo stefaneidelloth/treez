@@ -1,9 +1,9 @@
 package org.treez.javafxd3.d3.functions.data.axis;
 
-import org.treez.javafxd3.d3.functions.DataFunction;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.JsObject;
+import org.treez.javafxd3.d3.functions.DataFunction;
+import org.treez.javafxd3.d3.scales.Scale;
 
 /**
  * A datum function that extracts an xy pair, scales the data with the
@@ -16,15 +16,15 @@ public class AxisTransformPointDataFunction implements DataFunction<String> {
 	
 	private JsEngine engine;
 	
-	private QuantitativeScale<?> xScale;
+	private Scale<?> xScale;
 	
-	private QuantitativeScale<?> yScale;
+	private Scale<?> yScale;
 	
 	//#end region
 	
 	//#region CONSTRUCTORS	
 
-	public AxisTransformPointDataFunction(JsEngine engine, QuantitativeScale<?> xScale, QuantitativeScale<?> yScale){
+	public AxisTransformPointDataFunction(JsEngine engine, Scale<?> xScale, Scale<?> yScale){
 		this.engine = engine;
 		this.xScale = xScale;
 		this.yScale = yScale;
@@ -39,14 +39,12 @@ public class AxisTransformPointDataFunction implements DataFunction<String> {
 		
 		JsObject jsObject = (JsObject) engine.toJsObjectIfNotSimpleType(datum);	
 		
-		Object xValueObj = jsObject.eval("this[0]");	
-		Double x = Double.parseDouble(xValueObj.toString());	
+		String x = jsObject.eval("this[0]").toString();			
+		String y = jsObject.eval("this[1]").toString();	
 		
-		Object yValueObj = jsObject.eval("this[1]");	
-		Double y = Double.parseDouble(yValueObj.toString());
 		
-		Double scaledX = xScale.apply(x).asDouble();
-		Double scaledY = yScale.apply(y).asDouble();
+		Double scaledX = xScale.applyForDouble(x);
+		Double scaledY = yScale.applyForDouble(y);
 		
 		String transformString = "translate("+scaledX+","+scaledY+")";
 		return transformString;		

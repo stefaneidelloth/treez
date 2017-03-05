@@ -13,7 +13,7 @@ import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.results.Activator;
 import org.treez.results.atom.axis.Axis;
 import org.treez.results.atom.graph.Graph;
@@ -126,25 +126,58 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 	}
 
 	private void contributeDataForAutoScale(D3 d3) {
-		List<Double> xDataValues = getXDataAsDoubles();
-		Axis xAxis = getXAxis();
-		Double[] oldXLimits = xAxis.getQuantitativeLimits();
-		xAxis.includeDataForAutoScale(xDataValues);
-		Double[] xLimits = xAxis.getQuantitativeLimits();
-		boolean xScaleChanged = !Arrays.equals(xLimits, oldXLimits);
 
-		List<Double> yDataValues = getYDataAsDoubles();
-		Axis yAxis = getYAxis();
-		Double[] oldYLimits = yAxis.getQuantitativeLimits();
-		yAxis.includeDataForAutoScale(yDataValues);
-		Double[] yLimits = yAxis.getQuantitativeLimits();
-		boolean yScaleChanged = !Arrays.equals(yLimits, oldYLimits);
-
+		boolean xScaleChanged = contributeDataForXAxis();
+		boolean yScaleChanged = contributeDataForYAxis();
 		if (xScaleChanged || yScaleChanged) {
 			Graph graph = getGraph();
 			graph.updatePlotForChangedScales(d3);
 		}
+	}
 
+	private boolean contributeDataForXAxis() {
+		boolean xScaleChanged = false;
+		Axis xAxis = getXAxis();
+		boolean xAxisIsOrdinal = xAxis.isOrdinal();
+		if (xAxisIsOrdinal) {
+
+			int oldNumberOfXValues = xAxis.getNumberOfValues();
+			List<String> ordinalXValues = getOrdinalXValues();
+			xAxis.includeOrdinalValuesForAutoScale(ordinalXValues);
+			int numberOfXValues = xAxis.getNumberOfValues();
+			xScaleChanged = numberOfXValues != oldNumberOfXValues;
+
+		} else {
+			List<Double> xDataValues = getQuantitativeXValues();
+
+			Double[] oldXLimits = xAxis.getQuantitativeLimits();
+			xAxis.includeDataForAutoScale(xDataValues);
+			Double[] xLimits = xAxis.getQuantitativeLimits();
+			xScaleChanged = !Arrays.equals(xLimits, oldXLimits);
+		}
+		return xScaleChanged;
+	}
+
+	private boolean contributeDataForYAxis() {
+		boolean yScaleChanged = false;
+		Axis yAxis = getYAxis();
+		boolean yAxisIsOrdinal = yAxis.isOrdinal();
+		if (yAxisIsOrdinal) {
+			int oldNumberOfYValues = yAxis.getNumberOfValues();
+			List<String> ordinalYValues = getOrdinalYValues();
+			yAxis.includeOrdinalValuesForAutoScale(ordinalYValues);
+			int numberOfYValues = yAxis.getNumberOfValues();
+			yScaleChanged = numberOfYValues != oldNumberOfYValues;
+
+		} else {
+			List<Double> yDataValues = getQuantitativeYValues();
+
+			Double[] oldYLimits = yAxis.getQuantitativeLimits();
+			yAxis.includeDataForAutoScale(yDataValues);
+			Double[] yLimits = yAxis.getQuantitativeLimits();
+			yScaleChanged = !Arrays.equals(yLimits, oldYLimits);
+		}
+		return yScaleChanged;
 	}
 
 	private Graph getGraph() {
@@ -191,7 +224,7 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return symbolSelection;
 	}
 
-	public String createXyDataString(List<Double> xDataValues, List<Double> yDataValues) {
+	public String createXyDataString(List<Object> xDataValues, List<Object> yDataValues) {
 
 		int xLength = xDataValues.size();
 		int yLength = yDataValues.size();
@@ -202,10 +235,44 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 			throw new IllegalStateException(message);
 		}
 
+		if (xLength == 0) {
+			return "[]";
+		}
+
+		Object firstXObject = xDataValues.get(0);
+		boolean xIsOrdinal = firstXObject instanceof String;
+
+		boolean xAxisIsOrdinal = getXAxis().isOrdinal();
+
+		Object firstYObject = yDataValues.get(0);
+		boolean yIsOrdinal = firstYObject instanceof String;
+
+		boolean yAxisIsOrdinal = getYAxis().isOrdinal();
+
 		List<String> rowList = new java.util.ArrayList<>();
 		for (int rowIndex = 0; rowIndex < xLength; rowIndex++) {
-			Double x = xDataValues.get(rowIndex);
-			Double y = yDataValues.get(rowIndex);
+
+			Object xObj = xDataValues.get(rowIndex);
+			String x = xObj.toString();
+			if (xIsOrdinal) {
+				if (xAxisIsOrdinal) {
+					x = "'" + x + "'";
+				} else {
+					x = "" + (xDataValues.indexOf(xObj) + 1);
+				}
+
+			}
+
+			Object yObj = yDataValues.get(rowIndex);
+			String y = yObj.toString();
+			if (yIsOrdinal) {
+				if (yAxisIsOrdinal) {
+					y = "'" + y + "'";
+				} else {
+					y = "" + (yDataValues.indexOf(xObj) + 1);
+				}
+			}
+
 			String rowString = "[" + x + "," + y + "]";
 			rowList.add(rowString);
 		}
@@ -213,16 +280,14 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return xyDataString;
 	}
 
-	public QuantitativeScale<?> getXScale() {
+	public Scale<?> getXScale() {
 		Axis xAxisAtom = getXAxis();
-		QuantitativeScale<?> scale = (QuantitativeScale<?>) xAxisAtom.getScale();
-		return scale;
+		return xAxisAtom.getScale();
 	}
 
-	public QuantitativeScale<?> getYScale() {
+	public Scale<?> getYScale() {
 		Axis yAxisAtom = getYAxis();
-		QuantitativeScale<?> scale = (QuantitativeScale<?>) yAxisAtom.getScale();
-		return scale;
+		return yAxisAtom.getScale();
 	}
 
 	public Axis getXAxis() {
@@ -243,23 +308,86 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		return yAxisAtom;
 	}
 
-	public List<Double> getXDataAsDoubles() {
+	public List<Object> getXValues() {
 		String xDataPath = data.xData.get();
 		if (xDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}
 		org.treez.data.column.Column xDataColumn = getChildFromRoot(xDataPath);
-		List<Double> xDataValues = xDataColumn.getDoubleValues();
-		return xDataValues;
+		return xDataColumn.getValues();
 	}
 
-	public List<Double> getYDataAsDoubles() {
+	public List<Object> getYValues() {
 		String yDataPath = data.yData.get();
 		if (yDataPath.isEmpty()) {
 			return new ArrayList<>();
 		}
 		org.treez.data.column.Column yDataColumn = getChildFromRoot(yDataPath);
-		List<Double> yDataValues = yDataColumn.getDoubleValues();
+		return yDataColumn.getValues();
+
+	}
+
+	public List<Double> getQuantitativeXValues() {
+		String xDataPath = data.xData.get();
+		if (xDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+		org.treez.data.column.Column xDataColumn = getChildFromRoot(xDataPath);
+		boolean isQuantitative = xDataColumn.isNumeric();
+		if (isQuantitative) {
+			List<Double> xDataValues = xDataColumn.getDoubleValues();
+			return xDataValues;
+		} else {
+			List<String> ordinalValues = xDataColumn.getStringValues();
+			List<Double> xValues = new ArrayList<>();
+
+			for (Double x = 1.0; x <= ordinalValues.size(); x++) {
+				xValues.add(x);
+			}
+			return xValues;
+		}
+
+	}
+
+	public List<Double> getQuantitativeYValues() {
+		String yDataPath = data.yData.get();
+		if (yDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+		org.treez.data.column.Column yDataColumn = getChildFromRoot(yDataPath);
+		boolean isQuantitative = yDataColumn.isNumeric();
+		if (isQuantitative) {
+			List<Double> yDataValues = yDataColumn.getDoubleValues();
+			return yDataValues;
+		} else {
+			List<String> ordinalValues = yDataColumn.getStringValues();
+			List<Double> yValues = new ArrayList<>();
+
+			for (Double y = 1.0; y <= ordinalValues.size(); y++) {
+				yValues.add(y);
+			}
+			return yValues;
+		}
+	}
+
+	private List<String> getOrdinalXValues() {
+		String xDataPath = data.xData.get();
+		if (xDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+		org.treez.data.column.Column xDataColumn = getChildFromRoot(xDataPath);
+		List<String> xDataValues = xDataColumn.getStringValues();
+		return xDataValues;
+
+	}
+
+	private List<String> getOrdinalYValues() {
+		String yDataPath = data.yData.get();
+		if (yDataPath.isEmpty()) {
+			return new ArrayList<>();
+		}
+		org.treez.data.column.Column yDataColumn = getChildFromRoot(yDataPath);
+		List<String> yDataValues = yDataColumn.getStringValues();
 		return yDataValues;
 	}
 

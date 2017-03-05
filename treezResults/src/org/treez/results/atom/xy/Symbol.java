@@ -18,7 +18,7 @@ import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.data.axis.AxisTransformPointDataFunction;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.scales.Scale;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.results.atom.graph.Graph;
 
@@ -173,7 +173,7 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 		return xySelection;
 	}
 
-	private Graph getGraph(AbstractGraphicsAtom parent) {
+	private static Graph getGraph(AbstractGraphicsAtom parent) {
 		AbstractAtom<?> grandParent = parent.getParentAtom();
 		Graph graph;
 		boolean isGraph = Graph.class.isAssignableFrom(grandParent.getClass());
@@ -216,12 +216,13 @@ public class Symbol implements GraphicsPropertiesPageFactory {
 
 		//create symbols
 		Xy xy = (Xy) parent;
-		List<Double> xData = xy.getXDataAsDoubles();
-		List<Double> yData = xy.getYDataAsDoubles();
+
+		Scale<?> xScale = xy.getXScale();
+		Scale<?> yScale = xy.getYScale();
+		List<Object> xData = xy.getXValues();
+		List<Object> yData = xy.getYValues();
 
 		String xyDataString = xy.createXyDataString(xData, yData);
-		QuantitativeScale<?> xScale = xy.getXScale();
-		QuantitativeScale<?> yScale = xy.getYScale();
 
 		JsEngine engine = symbolsSelection.getJsEngine();
 

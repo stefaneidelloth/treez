@@ -1,6 +1,6 @@
 package org.treez.results.atom.axis.scale;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +13,7 @@ public class OrdinalScaleBuilder {
 
 	private OrdinalScale scale;
 
-	private Set<String> ordinalValues = new HashSet<>();
+	private Set<String> ordinalValues = new LinkedHashSet<>();
 
 	//#end region
 

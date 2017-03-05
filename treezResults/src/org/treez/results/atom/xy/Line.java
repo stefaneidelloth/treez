@@ -15,7 +15,7 @@ import org.treez.javafxd3.d3.core.JsEngine;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleFirstDataFunction;
 import org.treez.javafxd3.d3.functions.data.axis.AxisScaleSecondDataFunction;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.scales.Scale;
 
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Line implements GraphicsPropertiesPageFactory {
@@ -87,8 +87,8 @@ public class Line implements GraphicsPropertiesPageFactory {
 		org.treez.javafxd3.d3.svg.InterpolationMode mode = interpolation.get();
 
 		//line path generator
-		QuantitativeScale<?> xScale = xy.getXScale();
-		QuantitativeScale<?> yScale = xy.getYScale();
+		Scale<?> xScale = xy.getXScale();
+		Scale<?> yScale = xy.getYScale();
 
 		JsEngine engine = xySelection.getJsEngine();
 
@@ -100,8 +100,8 @@ public class Line implements GraphicsPropertiesPageFactory {
 				.interpolate(mode);
 
 		//plot new lines
-		List<Double> xDataValues = xy.getXDataAsDoubles();
-		List<Double> yDataValues = xy.getYDataAsDoubles();
+		List<Object> xDataValues = xy.getXValues();
+		List<Object> yDataValues = xy.getYValues();
 		String xyDataString = xy.createXyDataString(xDataValues, yDataValues);
 
 		Selection lines = linesSelection //
