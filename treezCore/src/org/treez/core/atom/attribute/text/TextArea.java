@@ -124,6 +124,7 @@ public class TextArea extends AbstractStringAttributeAtom<TextArea> {
 
 		textArea = toolkit.createText(textContainer, get(), SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		textArea.setEnabled(isEnabled());
+		textArea.setVisible(isVisible());
 		textArea.setToolTipText(tooltip);
 
 		GridData areaData = new GridData();

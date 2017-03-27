@@ -190,6 +190,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom<DirectoryPath> {
 		//text field
 		textField = toolkit.createText(subContainer, get());
 		textField.setEnabled(isEnabled());
+		textField.setVisible(isVisible());
 		textField.setLayoutData(textFieldFillHorizontal);
 		textField.setBackground(backgroundColor);
 
@@ -228,6 +229,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom<DirectoryPath> {
 	private void createDirectorySelectionButton(FormToolkit toolkit) {
 		selectButton = toolkit.createLabel(subContainer, "", SWT.NONE);
 		selectButton.setEnabled(isEnabled());
+		selectButton.setVisible(isVisible());
 		Image browseImage = Activator.getImage("browse.png");
 		selectButton.setImage(browseImage);
 		selectButton.setToolTipText("Select directory");
@@ -256,6 +258,7 @@ public class DirectoryPath extends AbstractStringAttributeAtom<DirectoryPath> {
 	private void createDirectoryOpenButton(FormToolkit toolkit) {
 		openButton = toolkit.createLabel(subContainer, "", SWT.NONE);
 		openButton.setEnabled(isEnabled());
+		openButton.setVisible(isVisible());
 		Image runImage = Activator.getImage("run_triangle.png");
 		openButton.setImage(runImage);
 		openButton.setToolTipText("Open directory");

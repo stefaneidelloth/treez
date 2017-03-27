@@ -124,6 +124,7 @@ public class ColorChooser extends AbstractStringAttributeAtom<ColorChooser> {
 
 		//create container control for label and text field
 		Composite container = createContainer(parent, toolkit, fillHorizontal);
+		container.setVisible(isVisible());
 
 		//label
 		createLabel(toolkit, container);
@@ -142,7 +143,6 @@ public class ColorChooser extends AbstractStringAttributeAtom<ColorChooser> {
 		//combo box value
 		//chooser-------------------------------------------------
 		colorCombo = new ImageCombo(container, SWT.DEFAULT);
-
 		colorCombo.setEnabled(isEnabled());
 		colorCombo.setEditable(false);
 
@@ -292,7 +292,7 @@ public class ColorChooser extends AbstractStringAttributeAtom<ColorChooser> {
 				String data = event.data.toString();
 				consumer.accept(data);
 			}
-	
+
 		});
 	}
 	*/
@@ -388,7 +388,7 @@ public class ColorChooser extends AbstractStringAttributeAtom<ColorChooser> {
 	}
 
 	@Override
-	public void set(String value) {
+	public ColorChooser set(String value) {
 		boolean isHexColor = value.substring(0, 1).equals("#");
 		if (isHexColor) {
 			super.set(value);
@@ -401,6 +401,7 @@ public class ColorChooser extends AbstractStringAttributeAtom<ColorChooser> {
 				throw new IllegalArgumentException("The string '" + value + "' could not be interpreted as color.");
 			}
 		}
+		return getThis();
 	}
 
 	@Override

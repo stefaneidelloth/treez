@@ -59,5 +59,25 @@ public abstract class AbstractAttributeContainerAtom<A extends AbstractAttribute
 		return getThis();
 	}
 
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@Override
+	public A setEnabled(boolean enable) {
+		throw new IllegalStateException("not yet implemented");
+	}
+
+	@Override
+	public boolean isVisible() {
+		return true;
+	}
+
+	@Override
+	public A setVisible(boolean enable) {
+		throw new IllegalStateException("not yet implemented");
+	}
+
 	//#end region
 }

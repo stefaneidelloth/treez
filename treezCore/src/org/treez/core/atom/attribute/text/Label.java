@@ -81,6 +81,7 @@ public class Label extends AbstractStringAttributeAtom<Label> {
 
 		//set the enabled states of the controls
 		setEnabled(isEnabled());
+		setVisible(isVisible());
 
 		return this;
 	}

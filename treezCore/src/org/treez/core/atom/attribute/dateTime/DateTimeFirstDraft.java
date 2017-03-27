@@ -156,6 +156,7 @@ public class DateTimeFirstDraft extends AbstractZonedDateTimeAttributeAtom<DateT
 	private void createCheckBox(FormToolkit toolkit) {
 		valueCheckBox = toolkit.createButton(contentContainer, "", SWT.CHECK);
 		valueCheckBox.setEnabled(isEnabled());
+		valueCheckBox.setVisible(isVisible());
 		//valueCheckBox.setSelection(get());
 		valueCheckBox.setToolTipText(tooltip);
 		valueCheckBox.setBackground(backgroundColor);

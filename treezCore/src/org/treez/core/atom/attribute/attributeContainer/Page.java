@@ -259,16 +259,6 @@ public class Page extends AbstractAttributeContainerAtom<Page> {
 		return getThis();
 	}
 
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	@Override
-	public Page setEnabled(boolean enable) {
-		throw new IllegalStateException("not yet implemented");
-	}
-
 	//#end region
 
 }

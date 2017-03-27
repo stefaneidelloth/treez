@@ -95,16 +95,6 @@ public class ComboBoxEnableTarget extends AbstractAttributeContainerAtom<ComboBo
 		return getThis();
 	}
 
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	@Override
-	public ComboBoxEnableTarget setEnabled(boolean enable) {
-		throw new IllegalStateException("not yet implemented");
-	}
-
 	//#end region
 
 }

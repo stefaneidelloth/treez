@@ -49,7 +49,7 @@ public abstract class AbstractVariableListField<A extends AbstractVariableListFi
 	public abstract List<T> get();
 
 	@Override
-	public abstract void set(List<T> valueList);
+	public abstract A set(List<T> valueList);
 
 	public abstract A setLabel(String newLabel);
 

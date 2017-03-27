@@ -125,6 +125,7 @@ public class TextField extends AbstractStringAttributeAtom<TextField> {
 		String value = get();
 		textField = toolkit.createText(contentContainer, value);
 		textField.setEnabled(isEnabled());
+		textField.setVisible(isVisible());
 		textField.setToolTipText(tooltip);
 
 		//create grid data to use all horizontal space
@@ -382,10 +383,13 @@ public class TextField extends AbstractStringAttributeAtom<TextField> {
 		return getThis();
 	}
 
-	public void setVisible(boolean visible) {
+	@Override
+	public TextField setVisible(boolean visible) {
+		super.setVisible(visible);
 		if (isAvailable(contentContainer)) {
 			contentContainer.setVisible(visible);
 		}
+		return getThis();
 
 	}
 

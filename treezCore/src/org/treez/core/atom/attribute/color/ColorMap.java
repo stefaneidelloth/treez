@@ -123,6 +123,7 @@ public class ColorMap extends AbstractStringAttributeAtom<ColorMap> {
 
 		//create container control for labels and line style
 		Composite container = createContainer(parent, toolkit, fillHorizontal);
+		container.setVisible(isVisible());
 
 		//label
 		String currentLabel = getLabel();
@@ -240,8 +241,9 @@ public class ColorMap extends AbstractStringAttributeAtom<ColorMap> {
 	 * @param value
 	 */
 	@Override
-	public void set(String value) {
+	public ColorMap set(String value) {
 		super.set(value);
+		return getThis();
 	}
 
 	/**

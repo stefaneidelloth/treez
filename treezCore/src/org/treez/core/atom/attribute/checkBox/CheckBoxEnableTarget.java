@@ -96,17 +96,6 @@ public class CheckBoxEnableTarget extends AbstractAttributeContainerAtom<CheckBo
 		this.value = value;
 	}
 
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	@Override
-	public CheckBoxEnableTarget setEnabled(boolean enable) {
-		throw new IllegalStateException("not yet implemented");
-		//return getThis();
-	}
-
 	//#end region
 
 }

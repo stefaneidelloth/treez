@@ -117,6 +117,7 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 		//create content composite for label and check box
 		contentContainer = toolkit.createComposite(parent);
 		contentContainer.setBackground(backgroundColor);
+		contentContainer.setVisible(isVisible());
 
 		//check label length
 		boolean useExtraCheckBoxLine = label.length() > CHARACTER_LENGTH_LIMIT;
@@ -286,10 +287,13 @@ public class CheckBox extends AbstractBooleanAttributeAtom<CheckBox> {
 		return getThis();
 	}
 
-	public void setVisible(boolean visible) {
+	@Override
+	public CheckBox setVisible(boolean visible) {
+		super.setVisible(visible);
 		if (isAvailable(contentContainer)) {
 			contentContainer.setVisible(visible);
 		}
+		return getThis();
 	}
 
 	//#end region

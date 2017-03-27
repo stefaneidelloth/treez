@@ -41,9 +41,10 @@ public class Wrap<T> implements AttributeWrapper<T> {
 	}
 
 	@Override
-	public void set(T value) {
+	public Wrap<T> set(T value) {
 		Objects.requireNonNull(wrappedAttribute, "Wrapped attribute must be set before calling this method.");
 		wrappedAttribute.set(value);
+		return this;
 	}
 
 	@Override

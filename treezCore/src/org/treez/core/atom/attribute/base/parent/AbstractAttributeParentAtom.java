@@ -66,6 +66,10 @@ public abstract class AbstractAttributeParentAtom<A extends AbstractAttributePar
 	 */
 	public abstract A setEnabled(boolean enable);
 
+	public abstract boolean isVisible();
+
+	public abstract A setVisible(boolean enable);
+
 	/**
 	 * Tries to find the the child AttributeAtom for the given model path and returns it. If the given model path is
 	 * wrong an IllegalArgumentException is thrown.

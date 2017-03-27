@@ -110,6 +110,7 @@ public class LineStyle extends AbstractStringAttributeAtom<LineStyle> {
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
 		Composite container = createContainer(parent, toolkit);
+		container.setVisible(isVisible());
 
 		//label
 		String currentLabel = getLabel();
@@ -239,8 +240,9 @@ public class LineStyle extends AbstractStringAttributeAtom<LineStyle> {
 	}
 
 	@Override
-	public void set(String style) {
+	public LineStyle set(String style) {
 		super.set(style);
+		return getThis();
 	}
 
 	/**

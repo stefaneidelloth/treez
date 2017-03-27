@@ -110,6 +110,7 @@ public class ErrorBarStyle extends AbstractStringAttributeAtom<ErrorBarStyle> {
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
 		Composite container = createContainer(parent, toolkit);
+		container.setVisible(isVisible());
 
 		//label
 		String currentLabel = getLabel();

@@ -106,6 +106,7 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 		//create content composite for label and combo box
 		contentContainer = toolkit.createComposite(parent);
 		contentContainer.setBackground(backgroundColor);
+		contentContainer.setVisible(isVisible());
 
 		//check label length
 		boolean useExtraComboBoxLine = label.length() > CHARACTER_LENGTH_LIMIT;
@@ -259,7 +260,7 @@ public abstract class AbstractComboBox<A extends AbstractComboBox<A>> extends Ab
 	 * This method is outsourced to be able to add custom validation for implementing classes.
 	 */
 	@Override
-	public abstract void set(String value);
+	public abstract A set(String value);
 
 	/**
 	 * Set the value of the super attribute atom

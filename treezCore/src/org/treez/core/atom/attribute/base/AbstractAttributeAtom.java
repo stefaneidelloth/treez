@@ -70,10 +70,9 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	 */
 	private boolean modifyListenersEnabled = true;
 
-	/**
-	 * The enabled state.
-	 */
 	private boolean isEnabled = true;
+
+	private boolean isVisible = true;
 
 	private ExpressionHelper<T> javaFxListenerHelper;
 
@@ -364,11 +363,6 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 
 	//#region ENABLED
 
-	/**
-	 * Returns true if this attribute atom is enabled
-	 *
-	 * @return
-	 */
 	@Override
 	public boolean isEnabled() {
 		return isEnabled;
@@ -377,6 +371,21 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	@Override
 	public A setEnabled(boolean state) {
 		isEnabled = state;
+		return getThis();
+	}
+
+	//#end region
+
+	//#region VISIBLE
+
+	@Override
+	public boolean isVisible() {
+		return isVisible;
+	}
+
+	@Override
+	public A setVisible(boolean state) {
+		isVisible = state;
 		return getThis();
 	}
 
@@ -407,13 +416,14 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	}
 
 	@Override
-	public void set(T value) {
+	public A set(T value) {
 		if (value != attributeValue) {
 			attributeValue = value;
 			setInitialized();
 			this.runUiJobBlocking(() -> refreshAttributeAtomControl());
 			triggerListeners();
 		}
+		return getThis();
 	}
 
 	//#end region

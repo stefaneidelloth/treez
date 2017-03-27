@@ -170,6 +170,7 @@ public class FilePath extends AbstractStringAttributeAtom<FilePath> {
 			//open button
 			openButton = toolkit.createLabel(subContainer, "", SWT.NONE);
 			openButton.setEnabled(isEnabled());
+			openButton.setVisible(isVisible());
 			Image runImage = Activator.getImage("run_triangle.png");
 			openButton.setImage(runImage);
 			openButton.setToolTipText("Open/Run");
@@ -221,6 +222,7 @@ public class FilePath extends AbstractStringAttributeAtom<FilePath> {
 		//text field
 		textField = toolkit.createText(subContainer, get());
 		textField.setEnabled(isEnabled());
+		textField.setVisible(isVisible());
 		textField.setLayoutData(textFieldFillHorizontal);
 		textField.setBackground(backgroundColor);
 
@@ -268,6 +270,7 @@ public class FilePath extends AbstractStringAttributeAtom<FilePath> {
 	private void createSelectionButton(FormToolkit toolkit) {
 		selectButton = toolkit.createLabel(subContainer, "", SWT.PUSH);
 		selectButton.setEnabled(isEnabled());
+		selectButton.setVisible(isVisible());
 		Image browseImage = Activator.getImage("browse.png");
 		selectButton.setImage(browseImage);
 		selectButton.setToolTipText("Select file path");

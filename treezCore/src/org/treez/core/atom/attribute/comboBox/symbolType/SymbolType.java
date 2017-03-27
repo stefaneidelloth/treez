@@ -109,6 +109,7 @@ public class SymbolType extends AbstractStringAttributeAtom<SymbolType> {
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
 		Composite container = createContainer(parent, toolkit);
+		container.setVisible(isVisible());
 
 		//label
 		String currentLabel = getLabel();
@@ -129,6 +130,7 @@ public class SymbolType extends AbstractStringAttributeAtom<SymbolType> {
 		//combo box
 		styleCombo = new ImageCombo(container, SWT.DEFAULT);
 		styleCombo.setEnabled(isEnabled());
+		styleCombo.setVisible(isVisible());
 		styleCombo.setEditable(false);
 
 		//set predefined styles
@@ -240,8 +242,9 @@ public class SymbolType extends AbstractStringAttributeAtom<SymbolType> {
 	}
 
 	@Override
-	public void set(String style) {
+	public SymbolType set(String style) {
 		super.set(style);
+		return getThis();
 	}
 
 	/**

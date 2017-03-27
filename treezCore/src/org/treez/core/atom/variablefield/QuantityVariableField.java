@@ -342,7 +342,7 @@ public class QuantityVariableField extends AbstractVariableField<QuantityVariabl
 	}
 
 	@Override
-	public void set(Quantity quantity) {
+	public QuantityVariableField set(Quantity quantity) {
 		super.set(quantity);
 		disableModificationListeners();
 		if (quantity == null) {
@@ -354,6 +354,7 @@ public class QuantityVariableField extends AbstractVariableField<QuantityVariabl
 		}
 		enableModificationListeners();
 		triggerListeners();
+		return getThis();
 	}
 
 	//#end region

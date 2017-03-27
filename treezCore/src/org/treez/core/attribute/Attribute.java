@@ -15,7 +15,7 @@ public interface Attribute<T> extends ObservableValue<T> {
 	/**
 	 * Sets the attribute value
 	 */
-	void set(T value);
+	Attribute<T> set(T value);
 
 	/**
 	 * Returns the attribute value as String

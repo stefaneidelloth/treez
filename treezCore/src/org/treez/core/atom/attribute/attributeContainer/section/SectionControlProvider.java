@@ -251,6 +251,12 @@ public class SectionControlProvider {
 		}
 	}
 
+	public void setVisible(boolean visible) {
+		if (isAvailable(sectionComposite)) {
+			sectionComposite.setVisible(visible);
+		}
+	}
+
 	//#end region
 
 }

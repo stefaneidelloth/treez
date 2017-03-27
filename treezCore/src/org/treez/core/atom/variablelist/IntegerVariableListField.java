@@ -128,6 +128,7 @@ public class IntegerVariableListField extends AbstractVariableListField<IntegerV
 		valueField = toolkit.createText(container, getValueString());
 		valueField.setToolTipText(tooltip);
 		valueField.setEnabled(isEnabled());
+		valueField.setVisible(isVisible());
 		GridData valueFillHorizontal = new GridData();
 		valueFillHorizontal.grabExcessHorizontalSpace = true;
 		valueFillHorizontal.horizontalAlignment = GridData.FILL;
@@ -262,7 +263,7 @@ public class IntegerVariableListField extends AbstractVariableListField<IntegerV
 	}
 
 	@Override
-	public void set(List<Integer> valueList) {
+	public IntegerVariableListField set(List<Integer> valueList) {
 		disableModificationListeners();
 		if (valueList.isEmpty()) {
 			setValueString("");
@@ -272,6 +273,7 @@ public class IntegerVariableListField extends AbstractVariableListField<IntegerV
 		}
 		enableModificationListeners();
 		triggerListeners();
+		return getThis();
 	}
 
 	//#end region

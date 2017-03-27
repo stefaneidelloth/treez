@@ -92,16 +92,6 @@ public class Spacer extends AbstractAttributeContainerAtom<Spacer> {
 		return getThis();
 	}
 
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	@Override
-	public Spacer setEnabled(boolean enable) {
-		throw new IllegalStateException("not yet implemented");
-	}
-
 	//#end region
 
 }

@@ -219,6 +219,16 @@ public class SectionAction extends AbstractAttributeContainerAtom<SectionAction>
 		throw new IllegalStateException("not yet implemented");
 	}
 
+	@Override
+	public boolean isVisible() {
+		return true;
+	}
+
+	@Override
+	public SectionAction setVisible(boolean visible) {
+		throw new IllegalStateException("not yet implemented");
+	}
+
 	//#end region
 
 }

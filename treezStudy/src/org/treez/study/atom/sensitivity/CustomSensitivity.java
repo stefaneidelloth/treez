@@ -46,12 +46,12 @@ import org.treez.study.atom.picking.PickingModelInputGenerator;
 import org.treez.study.atom.picking.Sample;
 
 /**
- * Represents a sensitivity parameter variation
+ * Represents a sensitivity parameter variation where the varied values can be specified differently for each variables
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class Sensitivity extends AbstractParameterVariation {
+public class CustomSensitivity extends AbstractParameterVariation {
 
-	private static final Logger LOG = Logger.getLogger(Sensitivity.class);
+	private static final Logger LOG = Logger.getLogger(CustomSensitivity.class);
 
 	//#region ATTRIBUTES
 
@@ -104,6 +104,8 @@ public class Sensitivity extends AbstractParameterVariation {
 
 	private CheckBox autoMirrorCheckBox;
 
+	private CheckBox generalizedVariationCheckBox;
+
 	private IntegerVariableField rangeSizeField;
 
 	private DoubleVariableField rangeStepSizeField;
@@ -114,7 +116,7 @@ public class Sensitivity extends AbstractParameterVariation {
 
 	//#region CONSTRUCTORS
 
-	public Sensitivity(String name) {
+	public CustomSensitivity(String name) {
 		super(name);
 		createSensitivityModel();
 	}
@@ -172,14 +174,18 @@ public class Sensitivity extends AbstractParameterVariation {
 				.createEnumComboBox(relationType, this, RelationType.PERCENTAGE) //
 				.setLabel("Relation type");
 
-		autoMirrorCheckBox = sensitivitySection
-				.createCheckBox(autoMirror, this, false) //
-				.setLabel("Mirror sample values");
-
 		usesRangesCheckBox = sensitivitySection
 				.createCheckBox(usesRanges, this, true) //
 				.setLabel("Use ranges") //
 				.addModificationConsumer("usesRangesChanged", () -> usesRangesChanged());
+
+		autoMirrorCheckBox = sensitivitySection
+				.createCheckBox(autoMirror, this, false) //
+				.setLabel("Mirror sample values");
+
+		generalizedVariationCheckBox = sensitivitySection
+				.createCheckBox(generalizedVariation, this, true) //
+				.setLabel("Use same variation for all variables");
 
 		Section valuesSection = dataPage.createSection("values", absoluteHelpContextId);
 
@@ -195,12 +201,9 @@ public class Sensitivity extends AbstractParameterVariation {
 				.createDoubleVariableListField(individualValues, this, "Sample values") //
 				.set(Arrays.asList(new Double[] { -10.0, 10.0 }));
 
-		sensitivityTypeChanged();
-		usesRangesChanged();
-
 		//variable list
 		Section variableSection = dataPage.createSection("variables", absoluteHelpContextId);
-		variableList = variableSection.createVariableList(variables, this, "Sensitivity variables");
+		variableList = variableSection.createVariableList(variables, this, "Picking variables");
 
 		//add listener to update variable list for new source model path and do initial update
 		modelPath.addModificationConsumer("updateVariableList", () -> updateAvailableVariablesForVariableList());
@@ -299,27 +302,27 @@ public class Sensitivity extends AbstractParameterVariation {
 		/*
 		Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
 		this.treeViewRefreshable = refreshable;
-
+		
 		String startMessage = "Executing picking '" + getName() + "'";
 		LOG.info(startMessage);
-
+		
 		//create ModelInput generator
 		PickingModelInputGenerator inputGenerator = new PickingModelInputGenerator(this);
-
+		
 		//get samples
 		List<Sample> samples = inputGenerator.getEnabledSamples();
 		int numberOfSamples = samples.size();
 		LOG.info("Number of samples: " + numberOfSamples);
-
+		
 		boolean isTimeDependentPicking = this.isTimeDependent.get();
 		if (isTimeDependentPicking) {
 			int numberOfTimeSteps = inputGenerator.getNumberOfTimeSteps();
 			LOG.info("Number of time steps: " + numberOfTimeSteps);
 		}
-
+		
 		if (numberOfSamples > 0) {
 			Sample firstSample = samples.get(0);
-
+		
 			//check if the picking variables reference enabled variables
 			boolean allReferencedVariablesAreActive = checkIfAllReferencedVariablesAreActive(firstSample);
 			if (allReferencedVariablesAreActive) {

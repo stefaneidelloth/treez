@@ -128,6 +128,7 @@ public class DoubleVariableListField extends AbstractVariableListField<DoubleVar
 		valueField = toolkit.createText(container, getValueString());
 		valueField.setToolTipText(tooltip);
 		valueField.setEnabled(isEnabled());
+		valueField.setVisible(isVisible());
 		GridData valueFillHorizontal = new GridData();
 		valueFillHorizontal.grabExcessHorizontalSpace = true;
 		valueFillHorizontal.horizontalAlignment = GridData.FILL;
@@ -262,7 +263,7 @@ public class DoubleVariableListField extends AbstractVariableListField<DoubleVar
 	}
 
 	@Override
-	public void set(List<Double> valueList) {
+	public DoubleVariableListField set(List<Double> valueList) {
 		disableModificationListeners();
 		if (valueList.isEmpty()) {
 			setValueString("");
@@ -272,6 +273,7 @@ public class DoubleVariableListField extends AbstractVariableListField<DoubleVar
 		}
 		enableModificationListeners();
 		triggerListeners();
+		return getThis();
 	}
 
 	//#end region

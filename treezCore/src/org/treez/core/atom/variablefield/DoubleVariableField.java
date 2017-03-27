@@ -173,7 +173,7 @@ public class DoubleVariableField extends AbstractVariableField<DoubleVariableFie
 	}
 
 	@Override
-	public void set(Double value) {
+	public DoubleVariableField set(Double value) {
 
 		disableModificationListeners();
 		if (value == null) {
@@ -184,6 +184,7 @@ public class DoubleVariableField extends AbstractVariableField<DoubleVariableFie
 		enableModificationListeners();
 
 		triggerListeners();
+		return getThis();
 	}
 
 	//#end region

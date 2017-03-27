@@ -429,6 +429,7 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 		//initialize combo box
 		if (isAvailable(combo)) {
 			combo.setEnabled(isEnabled());
+			combo.setVisible(isVisible());
 			combo.setItems(availableTargetPathsArray);
 			tryToSelectCurrentValue(availableTargetPaths);
 			refereshAttributeControlValues();
@@ -587,6 +588,7 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 		}
 
 		textField.setEnabled(isEnabled());
+		textField.setVisible(isVisible());
 
 		//create button if it does not yet exist
 		if (!isAvailable(button)) {
@@ -612,6 +614,7 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 		}
 
 		button.setEnabled(isEnabled());
+		button.setVisible(isVisible());
 
 	}
 
@@ -739,13 +742,14 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 	}
 
 	@Override
-	public void set(String value) {
+	public ModelPath set(String value) {
 		if (value != attributeValue) {
 			attributeValue = value;
 			setInitialized();
 			refreshAttributeAtomControl();
 			triggerListeners();
 		}
+		return getThis();
 	}
 
 	/**

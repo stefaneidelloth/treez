@@ -35,7 +35,7 @@ public class ComboBox extends AbstractComboBox<ComboBox> {
 	//#region ACCESSORS
 
 	@Override
-	public void set(String value) {
+	public ComboBox set(String value) {
 		boolean valueAllowed = items.contains(value);
 		if (valueAllowed) {
 			super.setValue(value);
@@ -43,6 +43,7 @@ public class ComboBox extends AbstractComboBox<ComboBox> {
 			String message = "The value '" + value + "' is not allowed since it is not contained in the items " + items;
 			throw new IllegalArgumentException(message);
 		}
+		return getThis();
 	}
 
 	//#end region

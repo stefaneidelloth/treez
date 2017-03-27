@@ -115,6 +115,7 @@ public class FillStyle extends AbstractStringAttributeAtom<FillStyle> {
 		FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
 		Composite container = createContainer(parent, toolkit);
+		container.setVisible(isVisible());
 
 		//label
 		String currentLabel = getLabel();
@@ -239,8 +240,9 @@ public class FillStyle extends AbstractStringAttributeAtom<FillStyle> {
 	}
 
 	@Override
-	public void set(String style) {
+	public FillStyle set(String style) {
 		super.set(style);
+		return getThis();
 	}
 
 	/**

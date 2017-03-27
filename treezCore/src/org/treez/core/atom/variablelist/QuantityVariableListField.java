@@ -169,6 +169,7 @@ public class QuantityVariableListField extends AbstractVariableListField<Quantit
 	private void createUnitTextField(FormToolkit toolkit, Composite container) {
 		unitField = toolkit.createText(container, getUnitString());
 		unitField.setEnabled(isEnabled());
+		unitField.setVisible(isVisible());
 		ModifyListener unitModifyListener = (event) -> updateUnit(event);
 		unitField.addModifyListener(unitModifyListener);
 	}
@@ -206,6 +207,7 @@ public class QuantityVariableListField extends AbstractVariableListField<Quantit
 		valueField = toolkit.createText(container, getValueString());
 		valueField.setToolTipText(tooltip);
 		valueField.setEnabled(isEnabled());
+		valueField.setVisible(isVisible());
 		GridData valueFillHorizontal = new GridData();
 		valueFillHorizontal.grabExcessHorizontalSpace = true;
 		valueFillHorizontal.horizontalAlignment = GridData.FILL;
@@ -376,7 +378,7 @@ public class QuantityVariableListField extends AbstractVariableListField<Quantit
 	}
 
 	@Override
-	public void set(List<Quantity> valueList) {
+	public QuantityVariableListField set(List<Quantity> valueList) {
 		disableModificationListeners();
 		if (valueList.isEmpty()) {
 			setValueString("");
@@ -390,6 +392,7 @@ public class QuantityVariableListField extends AbstractVariableListField<Quantit
 		}
 		enableModificationListeners();
 		triggerListeners();
+		return getThis();
 	}
 
 	/**

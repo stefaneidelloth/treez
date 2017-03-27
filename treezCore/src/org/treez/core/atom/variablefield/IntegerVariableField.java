@@ -260,7 +260,7 @@ public class IntegerVariableField extends AbstractVariableField<IntegerVariableF
 	}
 
 	@Override
-	public void set(Integer value) {
+	public IntegerVariableField set(Integer value) {
 		disableModificationListeners();
 		if (value == null) {
 			setValueString("");
@@ -269,6 +269,7 @@ public class IntegerVariableField extends AbstractVariableField<IntegerVariableF
 		}
 		enableModificationListeners();
 		triggerListeners();
+		return getThis();
 	}
 
 	//#end region

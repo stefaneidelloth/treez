@@ -109,6 +109,7 @@ public class Font extends AbstractStringAttributeAtom<Font> {
 
 		//create content composite for label and check box
 		contentContainer = toolkit.createComposite(parent);
+		contentContainer.setVisible(isVisible());
 
 		//create container layout
 		boolean useExtraComboBoxLine = label.length() > CHARACTER_LENGTH_LIMIT;
@@ -231,8 +232,9 @@ public class Font extends AbstractStringAttributeAtom<Font> {
 	}
 
 	@Override
-	public void set(String font) {
+	public Font set(String font) {
 		super.set(font);
+		return getThis();
 	}
 
 	//#end region

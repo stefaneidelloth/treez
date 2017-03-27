@@ -216,6 +216,7 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom<FileOrDirec
 		//text field
 		textField = toolkit.createText(subContainer, get());
 		textField.setEnabled(isEnabled());
+		textField.setVisible(isVisible());
 		textField.setLayoutData(textFieldFillHorizontal);
 		//initialize value
 		refreshAttributeAtomControl();
@@ -267,6 +268,7 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom<FileOrDirec
 	private void createBrowseFileButton(FormToolkit toolkit, Composite subContainer) {
 		Label browseFileButton = toolkit.createLabel(subContainer, "", SWT.PUSH);
 		browseFileButton.setEnabled(isEnabled());
+		browseFileButton.setVisible(isVisible());
 		Image browseImage = Activator.getImage("browse.png");
 		browseFileButton.setImage(browseImage);
 		browseFileButton.setToolTipText("Select file path");
@@ -301,6 +303,7 @@ public class FileOrDirectoryPath extends AbstractStringAttributeAtom<FileOrDirec
 	private void createBrowseDirectoryButton(FormToolkit toolkit, Composite subContainer) {
 		Label browseDirectoryButton = toolkit.createLabel(subContainer, "", SWT.PUSH);
 		browseDirectoryButton.setEnabled(isEnabled());
+		browseDirectoryButton.setVisible(isVisible());
 		Image browseFolderImage = Activator.getImage("browseDirectory.png");
 		browseDirectoryButton.setImage(browseFolderImage);
 		browseDirectoryButton.setToolTipText("Select directory path");

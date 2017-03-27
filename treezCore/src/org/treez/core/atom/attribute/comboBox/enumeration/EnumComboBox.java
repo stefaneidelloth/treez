@@ -109,6 +109,7 @@ public class EnumComboBox<E extends Enum<E>> extends AbstractEnumAttributeAtom<E
 
 		//create content composite for label and check box
 		contentContainer = toolkit.createComposite(parent);
+		contentContainer.setVisible(isVisible());
 
 		//check label length
 		boolean useExtraComboBoxLine = label.length() > CHARACTER_LENGTH_LIMIT;
@@ -268,8 +269,9 @@ public class EnumComboBox<E extends Enum<E>> extends AbstractEnumAttributeAtom<E
 	}
 
 	@Override
-	public void set(E value) {
+	public EnumComboBox<E> set(E value) {
 		super.set(value);
+		return getThis();
 	}
 
 	@Override
@@ -288,6 +290,15 @@ public class EnumComboBox<E extends Enum<E>> extends AbstractEnumAttributeAtom<E
 	@Override
 	public EnumComboBox<E> setBackgroundColor(org.eclipse.swt.graphics.Color backgroundColor) {
 		throw new IllegalStateException("Not yet implemented");
+	}
+
+	@Override
+	public EnumComboBox<E> setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (isAvailable(contentContainer)) {
+			contentContainer.setVisible(visible);
+		}
+		return getThis();
 	}
 
 	//#end region
