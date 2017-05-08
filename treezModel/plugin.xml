@@ -41,6 +41,6 @@
      <contexts
            file="help/TreezModelDynamicHelpContexts.xml">
      </contexts>    
-  </extension>   
+  </extension>
 
 </plugin>

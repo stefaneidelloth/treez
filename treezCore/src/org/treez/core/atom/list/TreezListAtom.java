@@ -1,7 +1,9 @@
 package org.treez.core.atom.list;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -11,6 +13,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.AbstractControlAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.copy.CopyHelper;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.data.cell.CellEditorFactory;
 import org.treez.core.data.cell.TreezTableJFaceLabelProvider;
 import org.treez.core.data.column.ColumnType;
@@ -26,20 +29,11 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 
 	//#region ATTRIBUTES
 
-	/**
-	 * The header of the single column
-	 */
-	private String header = "value_header";
+	private String valueHeader = "Value";
 
-	/**
-	 * Specifies if the header should be shown
-	 */
-	private boolean showHeader = true;
+	private boolean showHeaders = true;
 
-	/**
-	 * The Column type of the single column
-	 */
-	private ColumnType columnType = ColumnType.STRING;
+	private ColumnType valueColumnType = ColumnType.STRING;
 
 	/**
 	 * If this flag is true, and the column type of the treezList is ColumnType.TEXT, an additional button will be shown
@@ -68,6 +62,17 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	 * The control adaption
 	 */
 	private TreezListAtomControlAdaption listControlAdaption;
+
+	private boolean hasInfoColumn = false;
+
+	/**
+	 * The header of the info column
+	 */
+	private String infoHeader = "Info";
+
+	private Map<Object, String> infoMap = new HashMap<>();
+
+	private Map<String, Consumer> modificationConsumers = new HashMap<>();
 
 	//#end region
 
@@ -135,16 +140,14 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	}
 
 	/**
-	 * Returns all row entries of the list as a single String, separated by the given row separator
-	 *
-	 * @return
+	 * Returns all value entries of the list as a single String, separated by the given row separator
 	 */
 	public String getData(String rowSeparator) {
 
 		List<String> stringEntries = new ArrayList<>();
 		if (rows != null) {
 			for (Row row : rows) {
-				String entry = row.getEntryAsString(header);
+				String entry = row.getEntryAsString(valueHeader);
 				stringEntries.add(entry);
 			}
 		}
@@ -180,7 +183,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 		Row row = new Row(this);
 
 		//fill row with entry
-		ColumnType columnTypeForHeader = getColumnType(header);
+		ColumnType columnTypeForHeader = getColumnType(valueHeader);
 		Class<?> associatedClass = columnTypeForHeader.getAssociatedClass();
 
 		Object formattedValue;
@@ -193,7 +196,10 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 			throw new IllegalArgumentException(message);
 		}
 
-		row.setEntry(header, formattedValue);
+		row.setEntry(valueHeader, formattedValue);
+
+		String info = infoMap.get(formattedValue);
+		row.setEntry(infoHeader, info);
 
 		//LOG.debug("new row:" + row);
 
@@ -229,10 +235,11 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 		if (hasAvailableItems) {
 			//use first available item as default entry
 			String firstItem = this.getAvailableStringItems().get(0);
-			emptyRow.setEntry(header, firstItem);
+			emptyRow.setEntry(valueHeader, firstItem);
+			emptyRow.setEntry(infoHeader, infoMap.get(firstItem));
 		} else {
 			//use null as default entry
-			emptyRow.setEntry(header, null);
+			emptyRow.setEntry(valueHeader, null);
 		}
 
 		rows.add(emptyRow);
@@ -246,7 +253,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	 * @return
 	 */
 	public boolean checkHeader(String expectedHeader) {
-		return header.equals(expectedHeader);
+		return valueHeader.equals(expectedHeader);
 	}
 
 	@Override
@@ -283,6 +290,37 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 		return getThis();
 	}
 
+	public TreezListAtom setItemInfo(Object itemValue, String info) {
+
+		infoMap.put(itemValue, info);
+		//updateInfoColumnAndInformListeners();
+		return getThis();
+	}
+
+	public void updateInfoColumnAndInformListeners() {
+		for (Row row : rows) {
+			Object value = row.getEntry(valueHeader);
+			String info = infoMap.get(value);
+			row.setEntry(infoHeader, info);
+		}
+		if (listControlAdaption != null) {
+			listControlAdaption.refresh();
+		}
+
+		triggerModificationConsumers();
+
+	}
+
+	public void addModificationConsumer(String key, Consumer consumer) {
+		modificationConsumers.put(key, consumer);
+	}
+
+	public void triggerModificationConsumers() {
+		for (Consumer consumer : modificationConsumers.values()) {
+			consumer.consume();
+		}
+	}
+
 	/**
 	 * Sets all rows with the given object array
 	 *
@@ -290,7 +328,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	 */
 	public TreezListAtom setRows(Object[] data) {
 
-		Class<?> associatedClass = getColumnType(header).getAssociatedClass();
+		Class<?> associatedClass = getColumnType(valueHeader).getAssociatedClass();
 
 		int size = data.length;
 		for (int rowIndex = 0; rowIndex < size; rowIndex++) {
@@ -309,7 +347,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 			}
 
 			//set value
-			currentRow.setEntry(header, value);
+			currentRow.setEntry(valueHeader, value);
 		}
 
 		refreshControlAdaption();
@@ -320,44 +358,41 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 
 	//#region HEADER
 
-	/**
-	 * Returns the header
-	 *
-	 * @return
-	 */
-	public String getHeader() {
-		return header;
+	public String getValueHeader() {
+		return valueHeader;
 	}
 
-	/**
-	 * Sets the header
-	 *
-	 * @param header
-	 */
+	public String getInfoHeader() {
+		return infoHeader;
+	}
+
 	public TreezListAtom setHeader(String header) {
-		this.header = header;
+		this.valueHeader = header;
 		return getThis();
 	}
 
-	/**
-	 * Dummy implementation to fulfill interface
-	 *
-	 * @return the headers
-	 */
+	public TreezListAtom setInfoHeader(String header) {
+		this.infoHeader = header;
+		return getThis();
+	}
+
 	@Override
 	public List<String> getHeaders() {
 		List<String> headers = new ArrayList<>();
-		headers.add(header);
+		headers.add(valueHeader);
+		if (hasInfoColumn) {
+			headers.add(infoHeader);
+		}
 		return headers;
 	}
 
 	/**
 	 * Sets the visibility of the column header
 	 *
-	 * @param headerIsVisible
+	 * @param headersAreVisible
 	 */
-	public TreezListAtom setShowHeader(boolean headerIsVisible) {
-		this.showHeader = headerIsVisible;
+	public TreezListAtom setShowHeaders(boolean headersAreVisible) {
+		this.showHeaders = headersAreVisible;
 		return getThis();
 	}
 
@@ -366,8 +401,8 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	 *
 	 * @return
 	 */
-	public boolean getShowHeader() {
-		return showHeader;
+	public boolean getShowHeaders() {
+		return showHeaders;
 	}
 
 	//#end region
@@ -380,7 +415,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	 * @return
 	 */
 	public ColumnType getColumnType() {
-		return columnType;
+		return valueColumnType;
 	}
 
 	/**
@@ -389,7 +424,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	 * @param columnType
 	 */
 	public TreezListAtom setColumnType(ColumnType columnType) {
-		this.columnType = columnType;
+		this.valueColumnType = columnType;
 		return getThis();
 	}
 
@@ -400,7 +435,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	 */
 	@Override
 	public ColumnType getColumnType(String header) {
-		return columnType;
+		return valueColumnType;
 	}
 
 	@Override
@@ -432,12 +467,12 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 	 * @return
 	 */
 	public TreezTableJFaceLabelProvider getLabelProvider() {
-		return new TreezTableJFaceLabelProvider(header, columnType);
+		return new TreezTableJFaceLabelProvider(valueHeader, valueColumnType, infoHeader);
 	}
 
 	@Override
 	public CellLabelProvider getLabelProvider(String header, ColumnType columnType) {
-		CellLabelProvider labelProvider = new TreezTableJFaceLabelProvider(header, columnType);
+		CellLabelProvider labelProvider = new TreezTableJFaceLabelProvider(header, columnType, infoHeader);
 		return labelProvider;
 	}
 
@@ -458,7 +493,7 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 
 	@Override
 	public Boolean isEditable(String header) {
-		return true;
+		return header.equals(valueHeader);
 	}
 
 	//#region ROW SEPARATOR
@@ -579,6 +614,18 @@ public class TreezListAtom extends AbstractTreezTable<TreezListAtom> {
 
 	@Override
 	public void reload() {}
+
+	//#end region
+
+	//#region Info Column
+
+	public boolean hasInfoColumn() {
+		return hasInfoColumn;
+	}
+
+	public void enableInfoColumn() {
+		hasInfoColumn = true;
+	}
 
 	//#end region
 

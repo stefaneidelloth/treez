@@ -80,7 +80,7 @@ public class StringItemList extends AbstractAttributeAtom<StringItemList, List<S
 		treezList = new TreezListAtom("treezList");
 		treezList.setColumnType(ColumnType.STRING);
 		treezList.setAvailableStringItems(availableItems);
-		treezList.setShowHeader(false);
+		treezList.setShowHeaders(false);
 		treezList.setFirstRowAutoCreation(false);
 	}
 
@@ -165,7 +165,7 @@ public class StringItemList extends AbstractAttributeAtom<StringItemList, List<S
 			List<Row> rows = new ArrayList<>();
 			for (String value : values) {
 				Row newRow = new Row(treezList);
-				newRow.setEntry(treezList.getHeader(), value);
+				newRow.setEntry(treezList.getValueHeader(), value);
 				rows.add(newRow);
 			}
 			treezList.setRows(rows);

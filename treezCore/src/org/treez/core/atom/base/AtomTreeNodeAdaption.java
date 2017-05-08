@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
@@ -92,6 +95,9 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 	@Override
 	public void fillContextMenu(TreeViewerRefreshable treeViewerRefreshable, IMenuManager manager) {
 		List<Object> items = atomAdaptable.createContextMenuActions(treeViewerRefreshable);
+
+		extendMenuItemsWithExtensionPoints(items, treeViewerRefreshable);
+
 		for (Object item : items) {
 
 			//try to add item as IAction
@@ -126,6 +132,31 @@ public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
 			}
 
+		}
+
+	}
+
+	protected void extendMenuItemsWithExtensionPoints(List<Object> items, TreeViewerRefreshable treeViewerRefreshable) {
+		IConfigurationElement[] configurationElements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.treez.extensionPoint.atomContextMenu");
+
+		for (IConfigurationElement configurationElement : configurationElements) {
+
+			String extendedClassName = configurationElement.getAttribute("extendedClass");
+
+			boolean extendsContextMenuOfThisAtom = atomAdaptable.getClass().getName().equals(extendedClassName);
+			if (extendsContextMenuOfThisAtom) {
+				Object contributor;
+				try {
+					contributor = configurationElement.createExecutableExtension("extendingClass");
+					if (contributor instanceof ContextMenuExtender) {
+						ContextMenuExtender menuContributor = (ContextMenuExtender) contributor;
+						menuContributor.extendContextMenu(items, atomAdaptable, treeViewerRefreshable);
+					}
+				} catch (CoreException e) {
+					throw new IllegalStateException("Could not evaluate extension point", e);
+				}
+			}
 		}
 	}
 

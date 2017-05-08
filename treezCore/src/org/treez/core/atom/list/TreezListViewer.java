@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.data.cell.EditingProvider;
 import org.treez.core.data.cell.TreezComboBoxCellEditor;
 import org.treez.core.data.cell.TreezStringCellEditor;
@@ -59,10 +60,9 @@ public class TreezListViewer extends Composite {
 	 */
 	private TableViewer tableViewer;
 
-	/**
-	 * The table viewer column
-	 */
-	private TableViewerColumn tableViewerColumn;
+	private TableViewerColumn viewerValueColumn;
+
+	private TableViewerColumn viewerInfoColumn;
 
 	/**
 	 * The table
@@ -74,10 +74,9 @@ public class TreezListViewer extends Composite {
 	 */
 	private TableColumnLayout columnLayout;
 
-	/**
-	 * The single table column
-	 */
-	private TableColumn tableColumn;
+	private TableColumn tableValueColumn;
+
+	private TableColumn tableInfoColumn;
 
 	/**
 	 * The label provider for the rows
@@ -124,8 +123,7 @@ public class TreezListViewer extends Composite {
 		tableViewerContainer.setLayout(columnLayout);
 
 		//set layout data
-		final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 1);
+		final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		layoutData.minimumHeight = 100;
 
 		tableViewerContainer.setLayoutData(layoutData);
@@ -140,18 +138,13 @@ public class TreezListViewer extends Composite {
 
 	private void createTableViewer(Composite tableViewerContainer) {
 
-		tableViewer = new TableViewer(tableViewerContainer,
-				SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewer = new TableViewer(tableViewerContainer, SWT.BORDER | SWT.FULL_SELECTION);
 
-		//create column
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		tableColumn = tableViewerColumn.getColumn();
-		columnLayout.setColumnData(tableColumn, new ColumnWeightData(1, false));
-		tableColumn.setResizable(false);
+		createValueColumn();
 
-		//set column header
-		String columnHeader = treezList.getHeader();
-		tableColumn.setText(columnHeader);
+		if (treezList.hasInfoColumn()) {
+			createInfoColumn();
+		}
 
 		//set label provider
 		labelProvider = treezList.getLabelProvider();
@@ -171,26 +164,54 @@ public class TreezListViewer extends Composite {
 		table = tableViewer.getTable();
 		configureTableViewerTable(table);
 
-		//create cell editor
-		createCellEditor();
+		//create cell editor for value column
+		createValueCellEditor();
 
 	}
 
-	private void createCellEditor() {
+	private void createValueColumn() {
+		//create value column
+		viewerValueColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		tableValueColumn = viewerValueColumn.getColumn();
+		columnLayout.setColumnData(tableValueColumn, new ColumnWeightData(1, false));
+		tableValueColumn.setResizable(treezList.hasInfoColumn());
+
+		//set column header
+		String valueColumnHeader = treezList.getValueHeader();
+		tableValueColumn.setText(valueColumnHeader);
+
+	}
+
+	private void createInfoColumn() {
+		//create value column
+		viewerInfoColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		tableInfoColumn = viewerInfoColumn.getColumn();
+		columnLayout.setColumnData(tableInfoColumn, new ColumnWeightData(1, false));
+		tableInfoColumn.setResizable(true);
+
+		//set column header
+		String infoColumnHeader = treezList.getInfoHeader();
+		tableInfoColumn.setText(infoColumnHeader);
+
+	}
+
+	private void createValueCellEditor() {
+
+		Consumer changedConsumer = () -> treezList.updateInfoColumnAndInformListeners();
+
 		List<String> availableItems = treezList.getAvailableStringItems();
 		boolean hasAvailableItems = treezList.hasAvailableItems();
 		if (hasAvailableItems) {
 			//use a combo box cell editor
-			cellEditor = new TreezComboBoxCellEditor(table, availableItems);
+			cellEditor = new TreezComboBoxCellEditor(table, availableItems, changedConsumer);
 		} else {
 			//use a text cell editor that is able to validate file paths
-			cellEditor = new TreezStringCellEditor(table);
+			cellEditor = new TreezStringCellEditor(table, changedConsumer);
 		}
 
-		String header = treezList.getHeader();
-		EditingSupport editingSupport = new EditingProvider(tableViewer,
-				treezList, header, cellEditor);
-		tableViewerColumn.setEditingSupport(editingSupport);
+		String header = treezList.getValueHeader();
+		EditingSupport editingSupport = new EditingProvider(tableViewer, treezList, header, cellEditor);
+		viewerValueColumn.setEditingSupport(editingSupport);
 	}
 
 	/**
@@ -229,6 +250,7 @@ public class TreezListViewer extends Composite {
 		//resize the row height using a MeasureItem listener
 		final int rowHeight = 23;
 		table.addListener(SWT.MeasureItem, new Listener() {
+
 			@Override
 			public void handleEvent(Event event) {
 				event.height = rowHeight;
@@ -246,7 +268,7 @@ public class TreezListViewer extends Composite {
 		List<Integer> selectedRowIndices = getSelectedRowIndices();
 
 		//get headers
-		String header = treezList.getHeader();
+		String header = treezList.getValueHeader();
 
 		//collect data
 		String copyString = "";
@@ -261,7 +283,7 @@ public class TreezListViewer extends Composite {
 		//copy data to clip board
 		Clipboard cb = new Clipboard(Display.getCurrent());
 		TextTransfer textTransfer = TextTransfer.getInstance();
-		cb.setContents(new Object[]{copyString}, new Transfer[]{textTransfer});
+		cb.setContents(new Object[] { copyString }, new Transfer[] { textTransfer });
 
 		LOG.debug(copyString);
 	}
@@ -287,7 +309,7 @@ public class TreezListViewer extends Composite {
 		}
 
 		//get headers
-		String header = treezList.getHeader();
+		String header = treezList.getValueHeader();
 
 		//split text and paste data as new rows
 		String[] entries = text.split(ROW_SEPARATOR);
@@ -347,8 +369,7 @@ public class TreezListViewer extends Composite {
 	}
 
 	/**
-	 * Adds a new row by duplicating a row with given row index and inserting it
-	 * at the next position
+	 * Adds a new row by duplicating a row with given row index and inserting it at the next position
 	 *
 	 * @param rowIndex
 	 */
@@ -365,6 +386,8 @@ public class TreezListViewer extends Composite {
 		} else {
 			addEmptyRow();
 		}
+
+		treezList.triggerModificationConsumers();
 	}
 
 	/**
@@ -418,7 +441,7 @@ public class TreezListViewer extends Composite {
 	 */
 	public void editRowWidthFilePathChooser(int rowIndex) {
 		if (rowIndex >= 0) {
-			String header = treezList.getHeader();
+			String header = treezList.getValueHeader();
 			Row row = treezList.getRows().get(rowIndex);
 			String oldValue = row.getEntryAsString(header);
 			String filePath = selectFilePath(oldValue);
@@ -431,14 +454,12 @@ public class TreezListViewer extends Composite {
 	}
 
 	/**
-	 * Allows the user to select a file path. Returns null if no file path is
-	 * selected.
+	 * Allows the user to select a file path. Returns null if no file path is selected.
 	 *
 	 * @return
 	 */
 	private String selectFilePath(String defaultValue) {
-		FileDialog fileDialog = new FileDialog(
-				Display.getCurrent().getActiveShell(), SWT.SINGLE);
+		FileDialog fileDialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SINGLE);
 
 		if (defaultValue != null && !defaultValue.isEmpty()) {
 			fileDialog.setFilterPath(defaultValue);
@@ -463,7 +484,7 @@ public class TreezListViewer extends Composite {
 	 */
 	public void editRowWithDirectoryPathChooser(int rowIndex) {
 		if (rowIndex >= 0) {
-			String header = treezList.getHeader();
+			String header = treezList.getValueHeader();
 			Row row = treezList.getRows().get(rowIndex);
 			String oldValue = row.getEntryAsString(header);
 			String directoryPath = selectDirectoryPath(oldValue);
@@ -476,15 +497,13 @@ public class TreezListViewer extends Composite {
 	}
 
 	/**
-	 * Allows the user to select a directory path. Returns null if no directory
-	 * is selected.
+	 * Allows the user to select a directory path. Returns null if no directory is selected.
 	 *
 	 * @return
 	 */
 	private String selectDirectoryPath(String defaultValue) {
 
-		DirectoryDialog directoryDialog = new DirectoryDialog(
-				Display.getCurrent().getActiveShell(), SWT.SINGLE);
+		DirectoryDialog directoryDialog = new DirectoryDialog(Display.getCurrent().getActiveShell(), SWT.SINGLE);
 
 		if (defaultValue != null && !defaultValue.isEmpty()) {
 			directoryDialog.setFilterPath(defaultValue);
@@ -557,7 +576,7 @@ public class TreezListViewer extends Composite {
 	 */
 	public void refresh() {
 		//re-create cell editor (available items may have changed)
-		createCellEditor();
+		createValueCellEditor();
 
 		//refresh table viewer
 		tableViewer.refresh(true);

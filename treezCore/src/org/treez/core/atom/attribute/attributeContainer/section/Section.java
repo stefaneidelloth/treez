@@ -44,6 +44,7 @@ import org.treez.core.atom.variablelist.DoubleVariableListField;
 import org.treez.core.atom.variablelist.IntegerVariableListField;
 import org.treez.core.atom.variablelist.QuantityVariableListField;
 import org.treez.core.atom.variablelist.VariableList;
+import org.treez.core.atom.variablelist.VariableListWithInfo;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.path.FilterDelegate;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -740,6 +741,20 @@ public class Section extends AbstractAttributeContainerAtom<Section> {
 		addChild(variableList);
 		variableList.wrap(wrap);
 		return variableList;
+	}
+
+	public VariableListWithInfo createVariableListWithInfo(
+			Attribute<List<VariableField<?, ?>>> wrap,
+			Object attributeParent,
+			String label) {
+
+		String attributeName = getFieldName(wrap, attributeParent);
+		VariableListWithInfo variableList = new VariableListWithInfo(attributeName, null);
+		variableList.setLabel(label);
+		addChild(variableList);
+		variableList.wrap(wrap);
+		return variableList;
+
 	}
 
 	//#end region

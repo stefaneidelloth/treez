@@ -73,7 +73,7 @@ public class TreezListAtomControlAdaption extends AbstractControlAdaption {
 
 		//create table viewer
 		listViewer = new TreezListViewer(parent, treezList);
-		listViewer.setShowHeader(treezList.getShowHeader());
+		listViewer.setShowHeader(treezList.getShowHeaders());
 
 		//enable file path validation if the file path validation check box
 		//should be shown (its default state is enabled)

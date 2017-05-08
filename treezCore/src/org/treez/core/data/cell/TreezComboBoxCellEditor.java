@@ -18,10 +18,11 @@ import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.treez.core.attribute.Consumer;
 
 /**
- * A combo box cell editor for cells that contain Strings. It can handle null
- * values. (The behavior of the call might also depend on the label provider.)
+ * A combo box cell editor for cells that contain Strings. It can handle null values. (The behavior of the call might
+ * also depend on the label provider.)
  */
 public class TreezComboBoxCellEditor extends CellEditor {
 
@@ -33,14 +34,16 @@ public class TreezComboBoxCellEditor extends CellEditor {
 
 	private Combo comboBox;
 
+	private Consumer changeConsumer;
+
 	//#end region
 
 	//#region CONSTRUCTORS
 
-	public TreezComboBoxCellEditor(Composite parent,
-			List<String> availableItems) {
+	public TreezComboBoxCellEditor(Composite parent, List<String> availableItems, Consumer changeConsumer) {
 		super(parent);
 		setItems(availableItems);
+		this.changeConsumer = changeConsumer;
 	}
 
 	//#end region
@@ -62,15 +65,13 @@ public class TreezComboBoxCellEditor extends CellEditor {
 
 		boolean isString = value instanceof String;
 		if (!isString) {
-			String message = "The value class must be String but is "
-					+ value.getClass().getSimpleName();
+			String message = "The value class must be String but is " + value.getClass().getSimpleName();
 			throw new IllegalArgumentException(message);
 		}
 
 		boolean itemIsAllowed = items.contains(value);
 		if (!itemIsAllowed) {
-			String message = "The value '" + value
-					+ "' is not contained in the list of allowed items.";
+			String message = "The value '" + value + "' is not contained in the list of allowed items.";
 			throw new IllegalArgumentException(message);
 		}
 
@@ -95,6 +96,7 @@ public class TreezComboBoxCellEditor extends CellEditor {
 		comboBox = new Combo(parent, SWT.READ_ONLY);
 		populateComboBoxItems();
 		comboBox.addKeyListener(new KeyAdapter() {
+
 			@Override
 			public void keyPressed(KeyEvent e) {
 				keyReleaseOccured(e);
@@ -102,6 +104,7 @@ public class TreezComboBoxCellEditor extends CellEditor {
 		});
 
 		comboBox.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent event) {
 				applyEditorValueAndDeactivate();
@@ -116,16 +119,17 @@ public class TreezComboBoxCellEditor extends CellEditor {
 		});
 
 		comboBox.addTraverseListener(new TraverseListener() {
+
 			@Override
 			public void keyTraversed(TraverseEvent e) {
-				if (e.detail == SWT.TRAVERSE_ESCAPE
-						|| e.detail == SWT.TRAVERSE_RETURN) {
+				if (e.detail == SWT.TRAVERSE_ESCAPE || e.detail == SWT.TRAVERSE_RETURN) {
 					e.doit = false;
 				}
 			}
 		});
 
 		comboBox.addFocusListener(new FocusAdapter() {
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				TreezComboBoxCellEditor.this.focusLost();
@@ -166,19 +170,20 @@ public class TreezComboBoxCellEditor extends CellEditor {
 		fireApplyEditorValue();
 		deactivate();
 
+		if (changeConsumer != null) {
+			changeConsumer.consume();
+		}
+
 	}
 
 	private void setErrorMessage(int itemIndex) {
-		boolean itemIsAvailable = items.size() > 0 && itemIndex >= 0
-				&& itemIndex < items.size();
+		boolean itemIsAvailable = items.size() > 0 && itemIndex >= 0 && itemIndex < items.size();
 		if (itemIsAvailable) {
 			//use item
-			setErrorMessage(MessageFormat.format(getErrorMessage(),
-					new Object[]{items.get(itemIndex)}));
+			setErrorMessage(MessageFormat.format(getErrorMessage(), new Object[] { items.get(itemIndex) }));
 		} else {
 			//use text value
-			setErrorMessage(MessageFormat.format(getErrorMessage(),
-					new Object[]{comboBox.getText()}));
+			setErrorMessage(MessageFormat.format(getErrorMessage(), new Object[] { comboBox.getText() }));
 		}
 	}
 

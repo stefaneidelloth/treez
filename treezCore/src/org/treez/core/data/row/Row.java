@@ -14,7 +14,7 @@ public class Row implements Copiable<Row> {
 
 	//#region ATTRIBUTES
 
-	private final String NULL_STRING = "(Null)";
+	private final String NULL_STRING = "{null}";
 
 	/**
 	 * The table this row belongs to

@@ -38,7 +38,7 @@ public class FilePathList extends StringList {
 	protected void createTreezList() {
 		treezList = new TreezListAtom("treezList");
 		treezList.setColumnType(ColumnType.STRING);
-		treezList.setShowHeader(false);
+		treezList.setShowHeaders(false);
 		treezList.enableFilePathButton();
 	}
 

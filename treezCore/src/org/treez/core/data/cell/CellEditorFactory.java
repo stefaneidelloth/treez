@@ -39,7 +39,7 @@ public final class CellEditorFactory {
 			cellEditor = new TreezDoubleCellEditor(parent);
 			break;
 		case STRING:
-			cellEditor = new TreezStringCellEditor(parent);
+			cellEditor = new TreezStringCellEditor(parent, null);
 			break;
 		//case BOOLEAN:
 		//	cellEditor = new TreezBooleanCellEditor(parent);

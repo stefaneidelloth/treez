@@ -5,18 +5,17 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * A cell editor for cells that contains Booleans. It can handle null values.
- * (The behavior of the call might also depend on the label provider.)
+ * A cell editor for cells that contains Booleans. It can handle null values. (The behavior of the call might also
+ * depend on the label provider.)
  */
 public class TreezDoubleCellEditor extends TreezStringCellEditor {
 
-	private static final Logger LOG = Logger
-			.getLogger(TreezDoubleCellEditor.class);
+	private static final Logger LOG = Logger.getLogger(TreezDoubleCellEditor.class);
 
 	//#region CONSTRUCTORS
 
 	public TreezDoubleCellEditor(Composite parent) {
-		super(parent);
+		super(parent, null);
 	}
 
 	//#end region
@@ -31,8 +30,7 @@ public class TreezDoubleCellEditor extends TreezStringCellEditor {
 	@Override
 	protected void validateValueType(Object value) {
 		String message = "The value must be a Double for this column type but it is '"
-				+ value.getClass().getSimpleName()
-				+ "'. Avoid illegal values or change the column type.";
+				+ value.getClass().getSimpleName() + "'. Avoid illegal values or change the column type.";
 		Assert.isTrue(value instanceof Double, message);
 	}
 

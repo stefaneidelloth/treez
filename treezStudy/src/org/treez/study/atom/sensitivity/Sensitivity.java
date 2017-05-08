@@ -24,11 +24,9 @@ import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.attribute.modelPath.ModelPath;
 import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.variablefield.DoubleVariableField;
-import org.treez.core.atom.variablefield.IntegerVariableField;
 import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.atom.variablelist.DoubleVariableListField;
-import org.treez.core.atom.variablelist.VariableList;
+import org.treez.core.atom.variablelist.VariableListWithInfo;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.treeview.TreeViewerRefreshable;
@@ -66,49 +64,18 @@ public class Sensitivity extends AbstractParameterVariation {
 	 */
 	public final Attribute<RelationType> relationType = new Wrap<>();
 
-	/**
-	 * If true, the variation values for a variable are specified as range (with number of values and step size). If
-	 * false, the variation is specified with individual values.
-	 */
-	public final Attribute<Boolean> usesRanges = new Wrap<>();
+	public final Attribute<List<Double>> values = new Wrap<>();
 
-	public final Attribute<Integer> rangeSize = new Wrap<>();
-
-	public final Attribute<Double> rangeStepSize = new Wrap<>();
-
-	public final Attribute<List<Double>> individualValues = new Wrap<>();
-
-	/**
-	 * If true, the variation values are automatically mirrored around the working point value. If there is for example
-	 * a working point value of {10} and the variation values are specified as 11, 12 ... then we will get the values 8,
-	 * 9, {10}, 11, 12. The values 8, 9 are added by the auto mirror functionality to provide the wanted symmetry.
-	 */
-	public final Attribute<Boolean> autoMirror = new Wrap<>();
-
-	public final Attribute<Boolean> generalizedVariation = new Wrap<>();
-
-	/**
-	 * The variables for which values are varied. The variable types that can be used depends on the type of the
-	 * sensitivity study.
-	 */
 	public final Attribute<List<VariableField<?, ?>>> variables = new Wrap<>();
 
 	/**
 	 * A handle to the variable list (that is wrapped in the Attribute 'variables')
 	 */
-	private VariableList variableList;
+	private VariableListWithInfo variableList;
 
 	private EnumComboBox<RelationType> relationTypeCombo;
 
-	private CheckBox usesRangesCheckBox;
-
-	private CheckBox autoMirrorCheckBox;
-
-	private IntegerVariableField rangeSizeField;
-
-	private DoubleVariableField rangeStepSizeField;
-
-	private DoubleVariableListField individualValuesField;
+	private DoubleVariableListField valuesField;
 
 	//#end region
 
@@ -141,6 +108,54 @@ public class Sensitivity extends AbstractParameterVariation {
 		String relativeHelpContextId = "sensitivity";
 		String absoluteHelpContextId = Activator.getInstance().getAbsoluteHelpContextId(relativeHelpContextId);
 
+		ModelPath modelPath = createSensitivitySection(dataPage, absoluteHelpContextId);
+
+		createValuesSection(dataPage, absoluteHelpContextId);
+
+		sensitivityTypeChanged();
+
+		createVariableListSection(dataPage, absoluteHelpContextId, modelPath);
+
+		createStudyInfoSection(dataPage, absoluteHelpContextId);
+
+		setModel(root);
+	}
+
+	private void createVariableListSection(Page dataPage, String absoluteHelpContextId, ModelPath modelPath) {
+		Section variableSection = dataPage.createSection("variables", absoluteHelpContextId);
+
+		//variable list
+		variableList = variableSection.createVariableListWithInfo(variables, this, "Sensitivity variables");
+		variableList.addModificationConsumer("variableListChanged", () -> updateVariableInfos());
+
+		//add listener to update variable list for new source model path and do initial update
+		modelPath.addModificationConsumer("updateVariableList", () -> updateAvailableVariablesForVariableList());
+	}
+
+	private void updateVariableInfos() {
+		SensitivityValueFactory.updateVariableInfos(variableList, this);
+	}
+
+	private void createStudyInfoSection(Page dataPage, String absoluteHelpContextId) {
+		//study info
+		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
+		studyInfoSection.setLabel("Export study info");
+
+		//export study info check box
+		CheckBox export = studyInfoSection.createCheckBox(exportStudyInfo, this, true);
+		export.setLabel("Export study information");
+
+		//export study info path
+		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
+				"Target file path for study information", "");
+		filePath.setValidatePath(false);
+		filePath.addModificationConsumer("updateEnabledState", () -> {
+			boolean exportSweepInfoEnabled = exportStudyInfo.get();
+			filePath.setEnabled(exportSweepInfoEnabled);
+		});
+	}
+
+	private ModelPath createSensitivitySection(Page dataPage, String absoluteHelpContextId) {
 		Section sensitivitySection = dataPage.createSection("sensitivity", absoluteHelpContextId);
 		sensitivitySection.createSectionAction("action", "Run sensitivity", () -> execute(treeViewRefreshable));
 
@@ -172,76 +187,21 @@ public class Sensitivity extends AbstractParameterVariation {
 				.createEnumComboBox(relationType, this, RelationType.PERCENTAGE) //
 				.setLabel("Relation type");
 
-		autoMirrorCheckBox = sensitivitySection
-				.createCheckBox(autoMirror, this, false) //
-				.setLabel("Mirror sample values");
+		return modelPath;
+	}
 
-		usesRangesCheckBox = sensitivitySection
-				.createCheckBox(usesRanges, this, true) //
-				.setLabel("Use ranges") //
-				.addModificationConsumer("usesRangesChanged", () -> usesRangesChanged());
-
+	private void createValuesSection(Page dataPage, String absoluteHelpContextId) {
 		Section valuesSection = dataPage.createSection("values", absoluteHelpContextId);
 
-		rangeSizeField = valuesSection
-				.createIntegerVariableField(rangeSize, this, 2) //
-				.setLabel("Number of sample values");
-
-		rangeStepSizeField = valuesSection
-				.createDoubleVariableField(rangeStepSize, this, 10.0) //
-				.setLabel("Step size");
-
-		individualValuesField = valuesSection
-				.createDoubleVariableListField(individualValues, this, "Sample values") //
+		valuesField = valuesSection
+				.createDoubleVariableListField(values, this, "Sample values") //
 				.set(Arrays.asList(new Double[] { -10.0, 10.0 }));
-
-		sensitivityTypeChanged();
-		usesRangesChanged();
-
-		//variable list
-		Section variableSection = dataPage.createSection("variables", absoluteHelpContextId);
-		variableList = variableSection.createVariableList(variables, this, "Sensitivity variables");
-
-		//add listener to update variable list for new source model path and do initial update
-		modelPath.addModificationConsumer("updateVariableList", () -> updateAvailableVariablesForVariableList());
-
-		//study info
-		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
-		studyInfoSection.setLabel("Export study info");
-
-		//export study info check box
-		CheckBox export = studyInfoSection.createCheckBox(exportStudyInfo, this, true);
-		export.setLabel("Export study information");
-
-		//export study info path
-		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
-				"Target file path for study information", "");
-		filePath.setValidatePath(false);
-		filePath.addModificationConsumer("updateEnabledState", () -> {
-			boolean exportSweepInfoEnabled = exportStudyInfo.get();
-			filePath.setEnabled(exportSweepInfoEnabled);
-		});
-
-		setModel(root);
 	}
 
 	private void sensitivityTypeChanged() {
 		SensitivityType type = sensitivityType.get();
 		relationTypeCombo.setVisible(type.isRelative());
 
-	}
-
-	private void usesRangesChanged() {
-		Boolean isUsingRanges = usesRanges.get();
-		if (isUsingRanges) {
-			rangeSizeField.setEnabled(true);
-			rangeStepSizeField.setEnabled(true);
-			individualValuesField.setEnabled(false);
-		} else {
-			rangeSizeField.setEnabled(false);
-			rangeStepSizeField.setEnabled(false);
-			individualValuesField.setEnabled(true);
-		}
 	}
 
 	/**

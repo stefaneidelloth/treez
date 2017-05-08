@@ -85,7 +85,7 @@ public class StringList extends AbstractAttributeAtom<StringList, List<String>> 
 	protected void createTreezList() {
 		treezList = new TreezListAtom("treezList");
 		treezList.setColumnType(ColumnType.STRING);
-		treezList.setShowHeader(false);
+		treezList.setShowHeaders(false);
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class StringList extends AbstractAttributeAtom<StringList, List<String>> 
 			List<Row> rows = new ArrayList<>();
 			for (String value : values) {
 				Row newRow = new Row(treezList);
-				newRow.setEntry(treezList.getHeader(), value);
+				newRow.setEntry(treezList.getValueHeader(), value);
 				rows.add(newRow);
 			}
 			treezList.setRows(rows);

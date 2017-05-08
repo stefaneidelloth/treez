@@ -28,9 +28,11 @@ public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider implem
 
 	private static final Color COLOR_ERROR = new Color(Display.getCurrent(), 250, 200, 128);
 
-	private String header;
+	private String valueHeader;
 
-	private ColumnType columnType;
+	private ColumnType valueColumnType;
+
+	private String infoHeader;
 
 	private boolean pathValidationIsEnabled = false;
 
@@ -43,10 +45,11 @@ public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider implem
 
 	//#region CONSTRUCTORS
 
-	public TreezTableJFaceLabelProvider(String header, ColumnType columnType) {
+	public TreezTableJFaceLabelProvider(String valueHeader, ColumnType valueColumnType, String infoHeader) {
 		super();
-		this.header = header;
-		this.columnType = columnType;
+		this.valueHeader = valueHeader;
+		this.valueColumnType = valueColumnType;
+		this.infoHeader = infoHeader;
 	}
 
 	//#end region
@@ -59,14 +62,23 @@ public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider implem
 		//get element
 		Row row = (Row) cell.getElement();
 
-		//set label
-		String label = row.getEntryAsString(header);
-		cell.setText(label);
+		int columnIndex = cell.getColumnIndex();
+		if (columnIndex == 0) {
+			//set label
+			String label = row.getEntryAsString(valueHeader);
+			cell.setText(label);
+			if (valueColumnType == ColumnType.STRING) {
+				TableItem tableItem = (TableItem) cell.getItem();
+				validateTableItem(tableItem);
+			}
+		} else {
+			String label = row.getEntryAsString(infoHeader);
+			if (label.equals(row.getNullString())) {
+				cell.setText("");
+			} else {
+				cell.setText(label);
+			}
 
-		//validate content for string columns (may also set background color)
-		if (columnType == ColumnType.STRING) {
-			TableItem tableItem = (TableItem) cell.getItem();
-			validateTableItem(tableItem);
 		}
 
 	}
@@ -82,7 +94,7 @@ public class TreezTableJFaceLabelProvider extends StyledCellLabelProvider implem
 		Row row = (Row) element;
 
 		//set label
-		String cellText = row.getEntryAsString(header);
+		String cellText = row.getEntryAsString(valueHeader);
 		return cellText;
 	}
 

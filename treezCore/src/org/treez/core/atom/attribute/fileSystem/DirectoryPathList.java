@@ -35,7 +35,7 @@ public class DirectoryPathList extends StringList {
 	protected void createTreezList() {
 		treezList = new TreezListAtom("treezList");
 		treezList.setColumnType(ColumnType.STRING);
-		treezList.setShowHeader(false);
+		treezList.setShowHeaders(false);
 		treezList.enableDirectoryPathButton();
 	}
 

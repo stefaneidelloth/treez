@@ -91,7 +91,7 @@ public class VariableList extends AbstractAttributeAtom<VariableList, List<Varia
 
 		setAvailableVariables(availableVariableFields);
 
-		treezList.setShowHeader(false);
+		treezList.setShowHeaders(false);
 		treezList.setFirstRowAutoCreation(false);
 	}
 
@@ -183,7 +183,7 @@ public class VariableList extends AbstractAttributeAtom<VariableList, List<Varia
 				if (variableField != null) {
 					Row newRow = new Row(treezList);
 					String variableName = variableField.getName();
-					newRow.setEntry(treezList.getHeader(), variableName);
+					newRow.setEntry(treezList.getValueHeader(), variableName);
 					rows.add(newRow);
 				}
 			}

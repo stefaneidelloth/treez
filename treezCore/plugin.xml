@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.treez.extensionPoint.atomContextMenu" name="AtomContextMenuExtensionPoint" schema="schema/org.treez.extensionPoint.atomContextMenu.exsd"/>
 
    <extension
          id="org.treez.core.preferences"

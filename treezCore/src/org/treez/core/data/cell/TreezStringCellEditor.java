@@ -5,20 +5,19 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.treez.core.attribute.Consumer;
 
 /**
- * A cell editor for cells that contain Strings. It can handle null values. (The
- * behavior of the call might also depend on the label provider.)
+ * A cell editor for cells that contain Strings. It can handle null values. (The behavior of the call might also depend
+ * on the label provider.)
  */
 public class TreezStringCellEditor extends TextCellEditor {
 
 	//#region ATTRIBUTES
 
-	protected static final Color TEXT_BACKGROUND_COLOR = new Color(
-			Display.getCurrent(), 255, 255, 255);
+	protected static final Color TEXT_BACKGROUND_COLOR = new Color(Display.getCurrent(), 255, 255, 255);
 
-	protected static final Color TEXT_BACKGROUND_COLOR_ERROR = new Color(
-			Display.getCurrent(), 250, 200, 128);
+	protected static final Color TEXT_BACKGROUND_COLOR_ERROR = new Color(Display.getCurrent(), 250, 200, 128);
 
 	protected boolean valueValidation = false;
 
@@ -26,9 +25,14 @@ public class TreezStringCellEditor extends TextCellEditor {
 
 	//#region CONSTRUCTORS
 
-	public TreezStringCellEditor(Composite parent) {
+	public TreezStringCellEditor(Composite parent, Consumer changedConsumer) {
 		super(parent);
 		text.addModifyListener((event) -> validateValue());
+		text.addModifyListener((event) -> {
+			if (changedConsumer != null) {
+				changedConsumer.consume();
+			}
+		});
 	}
 
 	//#end region
@@ -57,14 +61,12 @@ public class TreezStringCellEditor extends TextCellEditor {
 	 */
 	protected void validateValueType(Object value) {
 		String message = "The value must be a String for this column type but it is '"
-				+ value.getClass().getSimpleName()
-				+ "'. Avoid illegal values or change the column type.";
+				+ value.getClass().getSimpleName() + "'. Avoid illegal values or change the column type.";
 		Assert.isTrue(value instanceof String, message);
 	}
 
 	/**
-	 * If the validation is enabled this method validates the value after it has
-	 * been changed
+	 * If the validation is enabled this method validates the value after it has been changed
 	 */
 	private void validateValue() {
 		if (valueValidation) {
