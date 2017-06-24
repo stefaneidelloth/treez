@@ -1,0 +1,3 @@
+purpose of this file is the existance 
+of the folder. an empty folder would
+not be included by git
