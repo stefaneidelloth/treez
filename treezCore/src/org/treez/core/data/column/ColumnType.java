@@ -24,6 +24,10 @@ public enum ColumnType {
 		this.associatedClass = associatedClass;
 	}
 
+	ColumnType(ColumnType columnTypeToCopy) {
+		this.associatedClass = columnTypeToCopy.associatedClass;
+	}
+
 	//#end region
 
 	//#region METHODS

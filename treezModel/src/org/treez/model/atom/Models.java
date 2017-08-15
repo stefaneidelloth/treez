@@ -34,7 +34,19 @@ public class Models extends AbstractModel {
 		createModelsModel();
 	}
 
+	public Models(Models atomToCopy) {
+		super(atomToCopy);
+		copyTreezAttributes(atomToCopy, this);
+	}
+
+	//#end region
+
 	//#region METHODS
+
+	@Override
+	public Models copy() {
+		return new Models(this);
+	}
 
 	@Override
 	public Models getThis() {

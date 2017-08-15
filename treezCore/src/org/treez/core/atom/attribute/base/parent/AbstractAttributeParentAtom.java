@@ -36,6 +36,9 @@ public abstract class AbstractAttributeParentAtom<A extends AbstractAttributePar
 	//#region METHODS
 
 	@Override
+	public abstract AbstractAttributeParentAtom<A> copy();
+
+	@Override
 	public Image provideImage() {
 		return Activator.getImage(IMAGE_KEY);
 	}

@@ -1,7 +1,11 @@
 package org.treez.core.atom.adjustable;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -17,14 +21,16 @@ import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.atom.uisynchronizing.ResultWrapper;
+import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Wrap;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.ActionSeparator;
 import org.treez.core.treeview.action.TreeViewerAction;
 
 /**
- * An implementation of the AbstractAtom<?> which is defined by an underlying model tree. See the package description for
- * more information.
+ * An implementation of the AbstractAtom<?> which is defined by an underlying model tree. See the package description
+ * for more information.
  */
 public class AdjustableAtom extends AbstractUiSynchronizingAtom<AdjustableAtom> {
 
@@ -56,18 +62,17 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom<AdjustableAtom> 
 
 	/**
 	 * Copy constructor
-	 *
-	 * @param adjustableAtomToCopy
 	 */
-	public AdjustableAtom(AdjustableAtom adjustableAtomToCopy) {
-		super(adjustableAtomToCopy);
-		boolean hasNoModel = (adjustableAtomToCopy.model == null);
+	public AdjustableAtom(AdjustableAtom atomToCopy) {
+		super(atomToCopy);
+		boolean hasNoModel = (atomToCopy.model == null);
 		if (hasNoModel) {
 			model = null;
 		} else {
-			model = adjustableAtomToCopy.model.copy();
+			model = atomToCopy.model.copy();
 		}
-		runnable = adjustableAtomToCopy.runnable;
+		runnable = atomToCopy.runnable;
+
 	}
 
 	//#end region
@@ -80,14 +85,79 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom<AdjustableAtom> 
 	}
 
 	@Override
-	public AbstractAtom<AdjustableAtom> copy() {
+	public AdjustableAtom copy() {
 		return new AdjustableAtom(this);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void copyTreezAttributes(AdjustableAtom source, AdjustableAtom target) {
+
+		Set<Field> fields = getFields(source);
+
+		for (Field field : fields) {
+
+			try {
+				field.setAccessible(true);
+				Object fieldObject = field.get(source);
+				boolean isAttribute = fieldObject instanceof Attribute;
+				if (isAttribute) {
+					Wrap wrapToCopy = (Wrap) fieldObject;
+					AbstractAttributeAtom attributeToCopy = (AbstractAttributeAtom) wrapToCopy.getAttribute();
+
+					Object fieldObjectToSet = target.getFieldValue(field.getName());
+					Wrap wrapToSet = (Wrap) fieldObjectToSet;
+					wrapToSet.setAttribute(attributeToCopy.copy());
+
+				}
+
+			} catch (Exception exception) {
+				String message = "Could not copy attribute value for class '" + getClass().getSimpleName() + "'";
+				throw new IllegalStateException(message, exception);
+			}
+
+		}
+
+	}
+
+	private static Set<Field> getFields(Object object) {
+		Set<Field> fields = new HashSet<>();
+
+		Class<?> clazz = object.getClass();
+
+		Field[] accessibleFields = clazz.getFields();
+		fields.addAll(Arrays.asList(accessibleFields));
+
+		Field[] declaredFields = clazz.getDeclaredFields();
+		fields.addAll(Arrays.asList(declaredFields));
+
+		return fields;
+	}
+
+	private Object getFieldValue(String name) {
+		Set<Field> fields = getFields(this);
+		for (Field field : fields) {
+			if (field.getName().equals(name)) {
+
+				field.setAccessible(true);
+				try {
+					return field.get(this);
+				} catch (Exception e) {
+					String message = "Could not get field value '" + name + "' from class '"
+							+ this.getClass().getSimpleName()
+							+ "'. (One possible cause is a missing copy constructor.)";
+					throw new IllegalStateException(message, e);
+				}
+			}
+		}
+		String message = "Could not get field value '" + name + "' from class '" + this.getClass().getSimpleName()
+				+ "'. (One possible cause is a missing copy constructor.)";
+		throw new IllegalStateException(message);
+	}
+
 	@Override
-	public AbstractControlAdaption createControlAdaption(
-			Composite parent,
-			FocusChangingRefreshable treeViewRefreshable) {
+	public
+			AbstractControlAdaption
+			createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
 
 		//store refreshable tree view
 		this.treeViewRefreshable = treeViewRefreshable;

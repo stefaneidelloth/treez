@@ -1,15 +1,18 @@
 package org.treez.core.treeview.action;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.treeview.TreeViewerRefreshable;
 
 /**
- * Represents an Action for a context menu. It executes the given Runnable and
- * refreshes the given TreeViewerRefreshable, e.g. a TreeViewer.
+ * Represents an Action for a context menu. It executes the given Runnable and refreshes the given
+ * TreeViewerRefreshable, e.g. a TreeViewer.
  */
 public class TreeViewerAction extends Action {
+
+	private static Logger LOG = Logger.getLogger(TreeViewerAction.class);
 
 	//#region ATTRIBUTES
 
@@ -24,8 +27,7 @@ public class TreeViewerAction extends Action {
 
 	//#region CONSTRUCTORS
 
-	public TreeViewerAction(String label, Image image,
-			TreeViewerRefreshable treeViewerRefreshable, Runnable runnable) {
+	public TreeViewerAction(String label, Image image, TreeViewerRefreshable treeViewerRefreshable, Runnable runnable) {
 		this.treeViewerRefreshable = treeViewerRefreshable;
 		this.runnable = runnable;
 		this.setText(label);
@@ -44,8 +46,7 @@ public class TreeViewerAction extends Action {
 	 * @param image
 	 */
 	protected void setImage(Image image) {
-		ImageDescriptor imageDescriptor = ImageDescriptor
-				.createFromImage(image);
+		ImageDescriptor imageDescriptor = ImageDescriptor.createFromImage(image);
 		setImageDescriptor(imageDescriptor);
 	}
 
@@ -55,8 +56,12 @@ public class TreeViewerAction extends Action {
 	@Override
 	public void run() {
 		if (runnable != null) {
-			runnable.run();
-			treeViewerRefreshable.refresh();
+			try {
+				runnable.run();
+				treeViewerRefreshable.refresh();
+			} catch (Exception exception) {
+				LOG.error("Could not execute action " + getText(), exception);
+			}
 		}
 	}
 

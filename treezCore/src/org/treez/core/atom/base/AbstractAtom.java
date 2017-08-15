@@ -110,10 +110,14 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	/**
 	 * Copy Constructor
 	 */
-	public AbstractAtom(AbstractAtom<A> abstractAtomToCopy) {
-		this.name = abstractAtomToCopy.name;
-		this.children = copyAbstractAtoms(abstractAtomToCopy.children);
-		this.expandedNodes = abstractAtomToCopy.expandedNodes;
+	public AbstractAtom(AbstractAtom<A> atomToCopy) {
+		name = atomToCopy.name;
+		children = copyAbstractAtoms(atomToCopy.children);
+		for (AbstractAtom<?> child : children) {
+			child.parentAtom = this;
+		}
+
+		expandedNodes = atomToCopy.expandedNodes;
 		initAttributesWithIsParameterAnnotationValues();
 	}
 
@@ -128,13 +132,7 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	@Override
 	public abstract AbstractAtom<A> copy();
 
-	/**
-	 * Copies the given list of abstract atoms
-	 *
-	 * @param abstractAtomsToCopy
-	 * @return
-	 */
-	public List<AbstractAtom<?>> copyAbstractAtoms(List<AbstractAtom<?>> abstractAtomsToCopy) {
+	private static List<AbstractAtom<?>> copyAbstractAtoms(List<AbstractAtom<?>> abstractAtomsToCopy) {
 		List<AbstractAtom<?>> abstractAtoms = new ArrayList<>(abstractAtomsToCopy.size());
 		for (AbstractAtom<?> abstractAtomToCopy : abstractAtomsToCopy) {
 			AbstractAtom<?> abstractAtom = abstractAtomToCopy.copy();
@@ -545,10 +543,8 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 
 	/**
 	 * Add the given AbstractAtom<?> as a child and removes it from the old parent if an old parent exists.
-	 *
-	 * @param child
 	 */
-	public void addChild(AbstractAtom<?> child) {
+	public synchronized void addChild(AbstractAtom<?> child) {
 		//LOG.debug("add child to " + getName());
 		AbstractAtom<?> oldParent = child.getParentAtom();
 		child.setParentAtom(this);
@@ -871,10 +867,12 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 
 	/**
 	 * Returns the root atom of the tree this atom is included in. Returns null if the parent node of this atom is null.
-	 *
-	 * @return
 	 */
 	public AbstractAtom<?> getRoot() {
+
+		if (getName().equals("root")) {
+			return this;
+		}
 
 		//get parent node
 		TreeNodeAdaption parentNode = this.createTreeNodeAdaption().getParent();
@@ -922,17 +920,15 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	 * @param wrappingAttribute
 	 * @param consumer
 	 */
-	protected <T>
-			AbstractAtom<A>
-			addModificationConsumer(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
+	protected <
+			T> AbstractAtom<A> addModificationConsumer(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
 		wrappedAttribute.addModificationConsumer(key, consumer);
 		return this;
 	}
 
-	protected static <T>
-			void
-			addModificationConsumerStatic(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
+	protected static <
+			T> void addModificationConsumerStatic(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
 		wrappedAttribute.addModificationConsumer(key, consumer);
 	}
@@ -945,9 +941,8 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	 * @param wrappingAttribute
 	 * @param consumer
 	 */
-	protected static <T>
-			void
-			addModificationConsumerAndRun(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
+	protected static <
+			T> void addModificationConsumerAndRun(String key, Attribute<T> wrappingAttribute, Consumer consumer) {
 		Attribute<T> wrappedAttribute = getWrappedAttribute(wrappingAttribute);
 		wrappedAttribute.addModificationConsumerAndRun(key, consumer);
 	}

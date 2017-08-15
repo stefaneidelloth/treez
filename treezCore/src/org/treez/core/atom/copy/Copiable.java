@@ -7,8 +7,6 @@ public interface Copiable<T> {
 
 	/**
 	 * Deeply copies the Copiable
-	 *
-	 * @return
 	 */
 	T copy();
 

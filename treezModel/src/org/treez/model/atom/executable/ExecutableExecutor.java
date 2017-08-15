@@ -10,10 +10,8 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 
-/**
- * Helper class that actually executes the executable
- */
 public class ExecutableExecutor {
 
 	private static final Logger LOG = Logger.getLogger(ExecutableExecutor.class);
@@ -85,14 +83,20 @@ public class ExecutableExecutor {
 
 			@Override
 			public void onProcessComplete(int exitValue) {
-				postProcessCompletedProcess(exitValue);
+				AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+					postProcessCompletedProcess(exitValue);
+				});
+
 				executionIsFinished = true;
 
 			}
 
 			@Override
 			public void onProcessFailed(ExecuteException exception) {
-				postProcessFailedProcess(exception);
+				AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+					postProcessFailedProcess(exception);
+				});
+
 				executionIsFinished = true;
 
 			}
@@ -119,19 +123,12 @@ public class ExecutableExecutor {
 			DefaultExecutor executor,
 			ExecuteWatchdog watchdog,
 			ExecuteResultHandler executionResultHandler) {
-		Runnable executionRunnable = () -> {
-			try {
-				executor.execute(cmdLine, executionResultHandler);
-			} catch (Exception exception) {
-				String message = "Could not execut command " + command;
-				LOG.error(message, exception);
-				exceptionMessage = exception.getMessage();
-			}
-		};
 
-		Thread executionThread = new Thread(executionRunnable);
-		executionThread.setName("Executable: ExecutionThread");
-		executionThread.start();
+		try {
+			executor.execute(cmdLine, executionResultHandler);
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not run command", e);
+		}
 
 		//wait for process to finish
 		waitForExecutionToBeFinished(command, watchdog);
@@ -206,7 +203,7 @@ public class ExecutableExecutor {
 		String statusMessage = "Process execution failed:";
 		issueMessage = statusMessage;
 		LOG.error(statusMessage, exception);
-		executable.runUiJobNonBlocking(() -> executable.executionStatusInfo.set(statusMessage));
+		AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> executable.executionStatusInfo.set(statusMessage));
 	}
 
 	private static void closeStreams(LoggingOutputStream out, LoggingOutputStream err) {

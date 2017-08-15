@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
+import org.treez.core.console.TreezMonitor;
 import org.treez.data.output.OutputAtom;
 import org.treez.model.input.ModelInput;
 import org.treez.model.interfaces.Model;
@@ -49,15 +52,29 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 		super(name);
 	}
 
+	/**
+	 * Copy constructor
+	 */
+	public AbstractModel(AbstractModel atomToCopy) {
+		super(atomToCopy);
+		isManualModel = atomToCopy.isManualModel;
+		studyId = atomToCopy.studyId;
+		studyDescription = atomToCopy.studyDescription;
+		jobId = atomToCopy.jobId;
+	}
+
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public abstract AbstractModel copy();
 
 	/**
 	 * Remotely runs the model with the given ModelInput
 	 */
 	@Override
-	public ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+	public ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, TreezMonitor monitor) {
 
 		//assign the model input to variable values (also assigns model input for sub models)
 		assignModelInput(modelInput);
@@ -70,8 +87,6 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 
 	/**
 	 * Assigns the given ModelInput to the corresponding variables of this model (and its sub models)
-	 *
-	 * @param modelInput
 	 */
 	protected void assignModelInput(ModelInput modelInput) {
 
@@ -91,7 +106,7 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 			this.setJobId(jobIndex);
 
 			//set variable values
-			this.runUiJobBlocking(() -> {
+			AbstractUiSynchronizingAtom.runUiJobBlocking(() -> {
 				List<String> allVariableModelPaths = modelInput.getAllVariableModelPaths();
 				for (String variableModelPath : allVariableModelPaths) {
 					Object quantityToAssign = modelInput.getVariableValue(variableModelPath);
@@ -116,13 +131,20 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 		runNonUiJob("AbstractModel: execute", (monitor) -> runModel(refreshable, monitor));
 	}
 
+	private ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+
+		SubMonitor subMonitor = SubMonitor.convert(monitor);
+		TreezMonitor treezMonitor = new TreezMonitor("Treez console", subMonitor);
+		return runModel(refreshable, treezMonitor);
+	}
+
 	/**
 	 * Remotely runs the model with the current model state. Should be overridden by models that have no sub models.
 	 *
 	 * @return
 	 */
 	@Override
-	public ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, TreezMonitor monitor) {
 
 		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
@@ -194,7 +216,7 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	protected ModelOutput runChildModel(
 			Class<?> wantedClass,
 			FocusChangingRefreshable refreshable,
-			IProgressMonitor monitor) {
+			TreezMonitor monitor) {
 		for (AbstractAtom<?> child : children) {
 			Class<?> currentClass = child.getClass();
 			boolean hasWantedClass = currentClass.equals(wantedClass);

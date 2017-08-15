@@ -3,7 +3,7 @@ package org.treez.study.atom.probability;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -132,7 +132,7 @@ public class Probability extends AbstractParameterVariation {
 	}
 
 	@Override
-	public void runStudy(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+	public void runStudy(FocusChangingRefreshable refreshable, SubMonitor monitor) {
 		//not yet implemented
 	}
 

@@ -26,15 +26,12 @@ import org.treez.core.scripting.java.file.CompiledJavaFileContainer;
 import org.treez.core.scripting.java.file.JavaFileToBeCompiledInMemory;
 
 /**
- * File manger for in memory compilation. Serves as factory for the
- * BundleClassLoader and its child MemoryClassLoader. First the Memory
+ * File manger for in memory compilation. Serves as factory for the BundleClassLoader and its child MemoryClassLoader.
+ * First the Memory
  */
-public class InMemoryClassFileManager
-		extends
-			ForwardingJavaFileManager<JavaFileManager> {
+public class InMemoryClassFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
-	private static final Logger LOG = Logger
-			.getLogger(InMemoryClassFileManager.class);
+	private static final Logger LOG = Logger.getLogger(InMemoryClassFileManager.class);
 
 	//#region ATTRIBUTES
 
@@ -57,13 +54,10 @@ public class InMemoryClassFileManager
 
 	/**
 	 * Will initialize the manager with the specified standard java file manager
-	 *
-	 * @param javaCode
-	 * @param standardManager
-	 * @param parentClassLoader
 	 */
 
-	public InMemoryClassFileManager(String javaCode,
+	public InMemoryClassFileManager(
+			String javaCode,
 			StandardJavaFileManager standardManager,
 			ClassLoader parentClassLoader) {
 		super(standardManager);
@@ -76,54 +70,44 @@ public class InMemoryClassFileManager
 	//#region METHODS
 
 	/**
-	 * Returns an in memory class loader that is able to provide the compiled
-	 * class. (The argument "location" is not used by this in memory
-	 * implementation.)
+	 * Returns an in memory class loader that is able to provide the compiled class. (The argument "location" is not
+	 * used by this in memory implementation.)
 	 */
 	@Override
 	public ClassLoader getClassLoader(Location location) {
-		Objects.requireNonNull(javaFileToBeCompiled,
-				"javaFileObject must not be null.");
+		Objects.requireNonNull(javaFileToBeCompiled, "javaFileObject must not be null.");
 
 		//Create a class loader that loads classes from other Eclipse plugins.
 		//This will be used as parent class loader for the in memory
 		//class loader.
 		Set<String> bundleIds = javaFileToBeCompiled.getBundleIds();
-		BundleClassLoader bundleLoader = new BundleClassLoader(
-				parentClassLoader, bundleIds);
+		BundleClassLoader bundleLoader = new BundleClassLoader(parentClassLoader, bundleIds);
 
 		if (compiledJavaFileContainer == null) {
 			return null;
 		}
 
 		//create a class loader that loads the compiled class
-		ClassLoader memoryLoader = new InMemoryClassLoader(bundleLoader,
-				compiledJavaFileContainer);
+		ClassLoader memoryLoader = new InMemoryClassLoader(bundleLoader, compiledJavaFileContainer);
 
 		return memoryLoader;
 
 	}
 
 	/**
-	 * Gives the compiler an CompiledJavaFileContainer so that the compiler can
-	 * write the compiled byte code into it. (The arguments "location" and
-	 * "sibling" are not used here.)
+	 * Gives the compiler an CompiledJavaFileContainer so that the compiler can write the compiled byte code into it.
+	 * (The arguments "location" and "sibling" are not used here.)
 	 */
 	@Override
-	public JavaFileObject getJavaFileForOutput(Location location,
-			String className, Kind kind, FileObject sibling)
+	public JavaFileObject getJavaFileForOutput(Location location, String className, Kind kind, FileObject sibling)
 			throws IOException {
 
-		compiledJavaFileContainer = new CompiledJavaFileContainer(className,
-				kind);
+		compiledJavaFileContainer = new CompiledJavaFileContainer(className, kind);
 		return compiledJavaFileContainer;
 	}
 
 	/**
-	 * Returns compilation options for a compilation task: include the class
-	 * path
-	 *
-	 * @return
+	 * Returns compilation options for a compilation task: include the class path
 	 */
 	public List<String> getCompileOptions() {
 		List<String> options = new ArrayList<String>();
@@ -133,10 +117,7 @@ public class InMemoryClassFileManager
 	}
 
 	/**
-	 * Returns a list that contains the JavaFileObject for a compilation task:
-	 * include our InMemoryJavaFileObject
-	 *
-	 * @return
+	 * Returns a list that contains the JavaFileObject for a compilation task: include our InMemoryJavaFileObject
 	 */
 	public List<JavaFileObject> getJavaFileObjects() {
 		//create a "list of java file objects" to be dynamically compiled in
@@ -148,16 +129,12 @@ public class InMemoryClassFileManager
 	}
 
 	/**
-	 * Retrieves the class path from the given fileManger There are different
-	 * possibilities how this JavaScripting is executed and these possibilities
-	 * might be associated with different class loading mechanisms. Launching
-	 * with a run configuration or as JUnit test uses a so called
-	 * AppClassLoader. In those cases the class path can simply be taken from
-	 * the system property of the JVM. If this JavaScripting is executed in an
-	 * Eclipse plugin, an EquinoxClassLoader is used and the class path from the
-	 * JVM has to be extended using information from that class loader.
-	 *
-	 * @return
+	 * Retrieves the class path from the given fileManger There are different possibilities how this JavaScripting is
+	 * executed and these possibilities might be associated with different class loading mechanisms. Launching with a
+	 * run configuration or as JUnit test uses a so called AppClassLoader. In those cases the class path can simply be
+	 * taken from the system property of the JVM. If this JavaScripting is executed in an Eclipse plugin, an
+	 * EquinoxClassLoader is used and the class path from the JVM has to be extended using information from that class
+	 * loader.
 	 */
 	private String getClassPath() {
 
@@ -168,31 +145,30 @@ public class InMemoryClassFileManager
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		String classLoaderType = classLoader.getClass().getSimpleName();
 		switch (classLoaderType) {
-			case "AppClassLoader" :
-				//LOG.debug("Using AppClassLoader");
+		case "AppClassLoader":
+			//LOG.debug("Using AppClassLoader");
+			//nothing to do here
+			break;
+		case "EquinoxClassLoader":
+			//LOG.debug("Using EquinoxClassLoader");
+			Set<String> bundleIds = javaFileToBeCompiled.getBundleIds();
+			bundleIds = extendBundleIdsWithDependencies(bundleIds);
+
+			classPath = extendClassPathWithBundleIds(classPath, bundleIds);
+			break;
+
+		default:
+
+			//close file manager
+			try {
+				fileManager.close();
+			} catch (IOException exception) {
 				//nothing to do here
-				break;
-			case "EquinoxClassLoader" :
-				//LOG.debug("Using EquinoxClassLoader");
-				Set<String> bundleIds = javaFileToBeCompiled.getBundleIds();
-				bundleIds = extendBundleIdsWithDependencies(bundleIds);
+			}
 
-				classPath = extendClassPathWithBundleIds(classPath, bundleIds);
-				break;
-
-			default :
-
-				//close file manager
-				try {
-					fileManager.close();
-				} catch (IOException exception) {
-					//nothing to do here
-				}
-
-				//throw exception
-				String message = "The class loader type '" + classLoaderType
-						+ "' is not yet implemented.";
-				throw new IllegalStateException(message);
+			//throw exception
+			String message = "The class loader type '" + classLoaderType + "' is not yet implemented.";
+			throw new IllegalStateException(message);
 		}
 
 		//LOG.debug("classpath: " + classPath);
@@ -200,24 +176,24 @@ public class InMemoryClassFileManager
 		return classPath;
 	}
 
-	private static Set<String> extendBundleIdsWithDependencies(
-			Set<String> bundleIds) {
+	private static Set<String> extendBundleIdsWithDependencies(Set<String> bundleIds) {
 
 		Set<String> extendedBundleIds = new HashSet<>(bundleIds);
 
 		for (String bundleId : bundleIds) {
 			Bundle coreBundle = Platform.getBundle(bundleId);
 			if (coreBundle != null) {
-				Dictionary<String, String> manifestInfo = coreBundle
-						.getHeaders();
-				String requiredBundlesString = manifestInfo
-						.get("Require-Bundle");
+				Dictionary<String, String> manifestInfo = coreBundle.getHeaders();
+				String requiredBundlesString = manifestInfo.get("Require-Bundle");
 				if (requiredBundlesString != null) {
-					String[] requiredBundleIds = requiredBundlesString
-							.split(",");
-					List<String> extraBundleIds = Arrays
-							.asList(requiredBundleIds);
-					extendedBundleIds.addAll(extraBundleIds);
+					String[] requiredBundleIds = requiredBundlesString.split(",");
+
+					for (String requiredBundleId : requiredBundleIds) {
+
+						String extraBundleId = requiredBundleId.replace(";visibility:=reexport", "");
+						extendedBundleIds.add(extraBundleId);
+					}
+
 				}
 			}
 		}
@@ -225,45 +201,35 @@ public class InMemoryClassFileManager
 	}
 
 	/**
-	 * Extends the class path with the help of a given list of bundle ids (e.g.
-	 * "org.treez.core").
-	 *
-	 * @param classPath
-	 * @param bundleIds
-	 * @return
+	 * Extends the class path with the help of a given list of bundle ids (e.g. "org.treez.core").
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	private static String extendClassPathWithBundleIds(String classPath,
-			Set<String> bundleIds) {
+	private static String extendClassPathWithBundleIds(String classPath, Set<String> bundleIds) {
 
 		String newClassPath = classPath;
 		for (String bundleId : bundleIds) {
+
 			//get path to bundle and add it to the class path
 			try {
 				Bundle coreBundle = Platform.getBundle(bundleId);
 				String bundleLocation = coreBundle.getLocation();
-				newClassPath = appendClassPathWithBundleLocation(newClassPath,
-						bundleLocation);
+				newClassPath = appendClassPathWithBundleLocation(newClassPath, bundleLocation);
 			} catch (Exception exception) {
-				String message = "Could not extend classpath with bundleId "
-						+ bundleId;
+				String message = "Could not extend classpath with bundleId " + bundleId;
 				LOG.error(message, exception);
 			}
 		}
 		return newClassPath;
 	}
 
-	private static String appendClassPathWithBundleLocation(String classPath,
-			String location) {
+	private static String appendClassPathWithBundleLocation(String classPath, String location) {
 
 		boolean isJarLocation = location.contains(".jar");
 		if (isJarLocation) {
-			String newClassPath = appendClassPathWithJarBundleLocation(
-					classPath, location);
+			String newClassPath = appendClassPathWithJarBundleLocation(classPath, location);
 			return newClassPath;
 		} else {
-			String newClassPath = appendClassPathWithBinBundleLocation(
-					classPath, location);
+			String newClassPath = appendClassPathWithBinBundleLocation(classPath, location);
 			return newClassPath;
 		}
 
@@ -271,19 +237,13 @@ public class InMemoryClassFileManager
 
 	/**
 	 * Appends a given jar path to the class path
-	 *
-	 * @param classPath
-	 * @param location
-	 * @return
 	 */
-	private static String appendClassPathWithJarBundleLocation(String classPath,
-			String location) {
+	private static String appendClassPathWithJarBundleLocation(String classPath, String location) {
 		String newClassPath = classPath;
 
 		String prefix = "reference:file:";
 		int startIndex = prefix.length();
-		String relativePluginLocation = location.substring(startIndex,
-				location.length());
+		String relativePluginLocation = location.substring(startIndex, location.length());
 
 		String eclipsePath = getEclipsePath();
 
@@ -307,15 +267,10 @@ public class InMemoryClassFileManager
 	}
 
 	/**
-	 * Determines the path to a bin folder from the given bundle location and
-	 * adds the path to the bin folder to the class path
-	 *
-	 * @param classPath
-	 * @param location
-	 * @return
+	 * Determines the path to a bin folder from the given bundle location and adds the path to the bin folder to the
+	 * class path
 	 */
-	private static String appendClassPathWithBinBundleLocation(String classPath,
-			String location) {
+	private static String appendClassPathWithBinBundleLocation(String classPath, String location) {
 
 		boolean isSystemBundle = location.equals("System Bundle");
 		if (isSystemBundle) {
@@ -323,8 +278,7 @@ public class InMemoryClassFileManager
 		}
 		String prefix = "reference:file:/";
 		int startIndex = prefix.length();
-		String pluginClassPath = location.substring(startIndex,
-				location.length());
+		String pluginClassPath = location.substring(startIndex, location.length());
 		String pluginBinClassPath = pluginClassPath + "bin";
 		File binFolder = new File(pluginBinClassPath);
 
@@ -339,11 +293,6 @@ public class InMemoryClassFileManager
 		return newClassPath;
 	}
 
-	/**
-	 * Returns the full class name
-	 *
-	 * @return
-	 */
 	public String getFullClassName() {
 		return javaFileToBeCompiled.getFullClassName();
 	}

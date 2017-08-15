@@ -29,10 +29,6 @@ public final class CopyHelper {
 
 	/**
 	 * Copies the given attribute value (a simple value, a Copiable, a list of simple values or a list of Copiable)
-	 *
-	 * @param <T>
-	 * @param valueToCopy
-	 * @return
 	 */
 	public static <T> T copyAttributeValue(T valueToCopy) {
 		boolean isList = valueToCopy instanceof List;
@@ -81,18 +77,10 @@ public final class CopyHelper {
 			return null;
 		}
 
-		//check for primitive value
-		boolean isPrimitiveOrString = isPrimitiveOrString(valueToCopy.getClass());
+		//check if a copy needs to be made
+		boolean isPrimitiveOrString = canBeUsedDirectly(valueToCopy);
 		if (isPrimitiveOrString) {
 			return valueToCopy;
-		}
-
-		//check for Boolean
-		boolean isBoolean = valueToCopy instanceof Boolean;
-		if (isBoolean) {
-			Boolean oldValue = (Boolean) valueToCopy;
-			Boolean newValue = new Boolean(oldValue);
-			return (T) newValue;
 		}
 
 		//check for Copiable
@@ -122,8 +110,15 @@ public final class CopyHelper {
 	 * @param type
 	 * @return
 	 */
-	private static boolean isPrimitiveOrString(Class<?> type) {
-		return type.isPrimitive() || String.class.equals(type);
+	private static boolean canBeUsedDirectly(Object value) {
+
+		Class<?> type = value.getClass();
+
+		return type.isPrimitive() || //
+				value instanceof Number || //
+				value instanceof Enum || //
+				value instanceof Boolean || //
+				String.class.equals(type);
 	}
 
 	//#end region

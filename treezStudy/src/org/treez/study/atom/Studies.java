@@ -65,6 +65,7 @@ public class Studies extends AdjustableAtom {
 				//run study
 				runNonUiJob("Studies:execute study", (monitor) -> {
 					childStudy.runStudy(refreshable, monitor);
+					monitor.done();
 				});
 
 			}

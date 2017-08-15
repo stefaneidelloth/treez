@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -37,15 +38,50 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 		Layout layout = this.getLayout();
 		String message = layout.format(event);
 
+		String[] throwableLines = event.getThrowableStrRep();
+
 		//write formatted message to TreezConsole
 		MessageConsole console = getConsole();
 		if (console != null) {
-			try (MessageConsoleStream out = console.newMessageStream();) {
+			try (
+					MessageConsoleStream out = console.newMessageStream();) {
 				out.println(message);
 			} catch (IOException exception) {
 				exception.printStackTrace();
 			}
+
+			if (throwableLines != null) {
+				try (
+						MessageConsoleStream out = console.newMessageStream();) {
+					out.setColor(new Color(null, 255, 0, 0));
+					for (String throwableLine : throwableLines) {
+
+						out.println(throwableLine);
+					}
+
+				} catch (IOException exception) {
+					exception.printStackTrace();
+				}
+
+				/*
+				ThrowableInformation info = event.getThrowableInformation();
+				StackTraceElement element = info.getThrowable().getStackTrace()[0];
+				String filePath = element.getFileName();
+				int lineNumber = element.getLineNumber();
+				IPath path = Path.fromOSString(filePath);
+				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+				IHyperlink fileLink = new FileLink(file, null, -1, -1, lineNumber);
+				try {
+					console.addHyperlink(fileLink, 10, 5);
+				} catch (BadLocationException e) {
+					//TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				*/
+			}
+
 		}
+
 	}
 
 	@Override
@@ -58,12 +94,7 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 		return true;
 	}
 
-	/**
-	 * Returns the TreezConsole
-	 *
-	 * @return
-	 */
-	public static MessageConsole getConsole() {
+	private static MessageConsole getConsole() {
 		if (treezConsole == null) {
 			createTreezConsole();
 		}
@@ -94,8 +125,6 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 
 	/**
 	 * Gets the eclipse console manager
-	 *
-	 * @return
 	 */
 	private static IConsoleManager getConsoleManager() {
 		ConsolePlugin plugin = ConsolePlugin.getDefault();

@@ -3,7 +3,6 @@ package org.treez.model.atom.tableImport;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -20,6 +19,7 @@ import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.console.TreezMonitor;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.table.TableSource;
 import org.treez.core.data.table.TableSourceType;
@@ -71,6 +71,8 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	public final Attribute<Boolean> filterForJob = new Wrap<>();
 
+	private String customJobIdField;
+
 	public final Attribute<String> customJobId = new Wrap<>();
 
 	public final Attribute<Boolean> useCustomQuery = new Wrap<>();
@@ -91,9 +93,19 @@ public class TableImport extends AbstractModel implements TableSource {
 		createTableImportModel();
 	}
 
+	public TableImport(TableImport atomToCopy) {
+		super(atomToCopy);
+		copyTreezAttributes(atomToCopy, this);
+	}
+
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public TableImport copy() {
+		return new TableImport(this);
+	}
 
 	/**
 	 * Creates the model for this atom
@@ -165,7 +177,8 @@ public class TableImport extends AbstractModel implements TableSource {
 		inheritSourcePath.addModificationConsumer("enableComponents", () -> enableAndDisableDependentComponents());
 
 		//path to data file (enabled if source is file based)
-		sourceDataSection.createFilePath(sourceFilePath, this, "Source file", "C:\\data.txt");
+		String sourcePath = getSourcePath();
+		sourceDataSection.createFilePath(sourceFilePath, this, "Source file", sourcePath);
 
 		TextField columnSeparatorField = sourceDataSection.createTextField(columnSeparator, this, ";");
 		columnSeparatorField.setLabel("Column separator");
@@ -203,6 +216,12 @@ public class TableImport extends AbstractModel implements TableSource {
 						this.setJobId(customJobId.get());
 					}
 				});
+
+		if (customJobIdField != null) {
+			if (customJobId.get() == null) {
+				customJobId.set(customJobIdField);
+			}
+		}
 
 		sourceDataSection
 				.createCheckBox(useCustomQuery, this, false) //
@@ -256,6 +275,15 @@ public class TableImport extends AbstractModel implements TableSource {
 	@Override
 	protected void afterCreateControlAdaptionHook() {
 		enableAndDisableDependentComponents();
+		updatedInheritedSourcePath();
+	}
+
+	private void updatedInheritedSourcePath() {
+		boolean inheritPath = inheritSourceFilePath.get();
+		if (inheritPath) {
+			sourceFilePath.set(getSourcePath());
+		}
+
 	}
 
 	private void enableAndDisableDependentComponents() {
@@ -340,9 +368,6 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	/**
 	 * Sets the enabled state of the given attribute atom
-	 *
-	 * @param attribute
-	 * @param value
 	 */
 	private static void setEnabled(Attribute<?> attribute, boolean value) {
 		Wrap<?> attributeWrapper = (Wrap<?>) attribute;
@@ -355,11 +380,9 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	/**
 	 * Runs the model with the current model state and creates its ModelOutput.
-	 *
-	 * @return
 	 */
 	@Override
-	public ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, TreezMonitor monitor) {
 
 		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
@@ -367,6 +390,13 @@ public class TableImport extends AbstractModel implements TableSource {
 
 		if (targetModelPath.isEmpty()) {
 			throw new IllegalStateException("The table import must define a target table.");
+		}
+
+		try {
+			getChildFromRoot(targetModelPath);
+		} catch (Exception exception) {
+			String message = "Could not find target table " + targetModelPath;
+			throw new IllegalStateException(message);
 		}
 
 		Table treezTable;
@@ -450,11 +480,13 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	/**
 	 * Tries to retrieve the source path from a parent source path provider
-	 *
-	 * @return
 	 */
 	private String getSourcePathFromParent() {
 		AbstractAtom<?> parent = this.getParentAtom();
+		if (parent == null) {
+			return "";
+		}
+
 		boolean parentIsPathProvider = FilePathProvider.class.isAssignableFrom(parent.getClass());
 		if (parentIsPathProvider) {
 			FilePathProvider pathProvider = (FilePathProvider) parent;
@@ -480,11 +512,6 @@ public class TableImport extends AbstractModel implements TableSource {
 	/**
 	 * Writes the given table data to the table with the given model path. If appendData = true the data is appended to
 	 * the table. If appendDate = false the data is overridden. At the end the adapted table is returned.
-	 *
-	 * @param tableData
-	 * @param tableModelPath
-	 * @param appendData
-	 * @return
 	 */
 	private Table writeDataToTargetTable(TableData tableData, String tableModelPath, boolean appendData) {
 
@@ -570,7 +597,14 @@ public class TableImport extends AbstractModel implements TableSource {
 	}
 
 	public void setRowLimit(int maxRows) {
-		rowLimit.set(maxRows);
+
+		Wrap<Integer> wrap = (Wrap<Integer>) rowLimit;
+		Attribute<Integer> attribute = wrap.getAttribute();
+
+		if (attribute != null) {
+			attribute.set(maxRows);
+		}
+
 	}
 
 	@Override
@@ -636,7 +670,15 @@ public class TableImport extends AbstractModel implements TableSource {
 	@Override
 	public void setJobId(String jobId) {
 		super.setJobId(jobId);
-		this.customJobId.set(jobId);
+		customJobIdField = jobId;
+
+		Wrap<String> wrap = (Wrap<String>) customJobId;
+		Attribute<String> attribute = wrap.getAttribute();
+
+		if (attribute != null) {
+			attribute.set(jobId);
+		}
+
 	}
 
 	//#end region

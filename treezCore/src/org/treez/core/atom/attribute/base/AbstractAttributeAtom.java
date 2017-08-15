@@ -16,6 +16,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.parent.AbstractAttributeParentAtom;
 import org.treez.core.atom.copy.CopyHelper;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
@@ -103,6 +104,9 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public abstract AbstractAttributeAtom<A, T> copy();
 
 	/**
 	 * Creates the control for the AttributeAtom. A control for the parameters of the AttributeAtom can be created with
@@ -420,7 +424,7 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 		if (value != attributeValue) {
 			attributeValue = value;
 			setInitialized();
-			this.runUiJobBlocking(() -> refreshAttributeAtomControl());
+			AbstractUiSynchronizingAtom.runUiJobBlocking(() -> refreshAttributeAtomControl());
 			triggerListeners();
 		}
 		return getThis();

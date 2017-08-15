@@ -48,9 +48,19 @@ public class GenericInputModel extends AbstractModel {
 		createGenericModel();
 	}
 
+	public GenericInputModel(GenericInputModel atomToCopy) {
+		super(atomToCopy);
+		copyTreezAttributes(atomToCopy, this);
+	}
+
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public GenericInputModel copy() {
+		return new GenericInputModel(this);
+	}
 
 	/**
 	 * Creates the control adaption on the given contentComposite. You might want to clean old content on the

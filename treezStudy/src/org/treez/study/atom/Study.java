@@ -1,6 +1,6 @@
 package org.treez.study.atom;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 
 /**
@@ -31,6 +31,6 @@ public interface Study {
 	 * IProgressMonitor might be used to update the progress. The implementing class needs to handle the possible cases
 	 * where the arguments are null.
 	 */
-	void runStudy(FocusChangingRefreshable refreshable, IProgressMonitor monitor);
+	void runStudy(FocusChangingRefreshable refreshable, SubMonitor monitor);
 
 }

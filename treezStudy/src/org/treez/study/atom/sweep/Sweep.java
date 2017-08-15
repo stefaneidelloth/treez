@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -21,7 +19,9 @@ import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.atom.variablefield.VariableField;
+import org.treez.core.console.TreezMonitor;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.utils.Utils;
@@ -99,6 +99,9 @@ public class Sweep extends AbstractParameterVariation {
 						modelEntryPoint, false)
 				.setLabel("Variable source model (provides variables)");
 
+		//parallel execution
+		sweepSection.createCheckBox(isConcurrentVariation, this, true);
+
 		//study info
 		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
 		studyInfoSection.setLabel("Export study info");
@@ -121,24 +124,17 @@ public class Sweep extends AbstractParameterVariation {
 		setModel(root);
 	}
 
-	/**
-	 * Executes the sweep
-	 */
 	@Override
 	public void execute(FocusChangingRefreshable refreshable) {
 		String jobTitle = "Sweep '" + getName() + "'";
 		runNonUiJob(jobTitle, (monitor) -> {
 			runStudy(refreshable, monitor);
 		});
-
 	}
 
-	/**
-	 * Runs the study
-	 */
 	@Override
-	public void runStudy(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
-		Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
+	public void runStudy(FocusChangingRefreshable refreshable, SubMonitor monitor) {
+		//Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
 		this.treeViewRefreshable = refreshable;
 
 		String startMessage = "Executing sweep '" + getName() + "'";
@@ -155,22 +151,19 @@ public class Sweep extends AbstractParameterVariation {
 		//check if all variable ranges reference enabled variables
 		boolean allReferencedVariablesAreActive = checkIfAllREferencedVariablesAreActive(variableRanges);
 		if (allReferencedVariablesAreActive) {
-			doRunStudy(refreshable, monitor, inputGenerator, variableRanges);
+			doRunStudy(refreshable, inputGenerator, variableRanges, monitor);
 		}
 
 	}
 
 	private void doRunStudy(
 			FocusChangingRefreshable refreshable,
-			IProgressMonitor monitor,
 			SweepModelInputGenerator inputGenerator,
-			List<AbstractVariableRange<?>> variableRanges) {
+			List<AbstractVariableRange<?>> variableRanges,
+			SubMonitor monitor) {
 		//get total number of simulations
 		int numberOfSimulations = inputGenerator.getNumberOfSimulations(variableRanges);
 		LOG.info("Number of total simulations: " + numberOfSimulations);
-
-		//initialize progress monitor
-		monitor.beginTask("", numberOfSimulations);
 
 		//reset job index to 1
 		HashMapModelInput.resetIdCounter();
@@ -195,44 +188,137 @@ public class Sweep extends AbstractParameterVariation {
 		sweepOutputAtom.removeAllChildren();
 
 		//execute target model for all model inputs
-		executeTargetModel(refreshable, monitor, numberOfSimulations, modelInputs, sweepOutputAtom);
 
-		//inform progress monitor to be done
-		monitor.setTaskName("=>Finished!");
+		if (isConcurrentVariation.get()) {
+			executeTargetModelConcurrently(refreshable, numberOfSimulations, modelInputs, sweepOutputAtom, monitor);
+		} else {
+			executeTargetModelOneAfterAnother(refreshable, numberOfSimulations, modelInputs, sweepOutputAtom, monitor);
+		}
 
-		//show end message
-		logAndShowSweepEndMessage();
-		LOG.info("The sweep outout is located at " + sweepOutputAtomPath);
-		monitor.done();
 	}
 
-	private void executeTargetModel(
+	private void executeTargetModelConcurrently(
 			FocusChangingRefreshable refreshable,
-			IProgressMonitor monitor,
 			int numberOfSimulations,
 			List<ModelInput> modelInputs,
-			AbstractAtom<?> sweepOutputAtom) {
+			AbstractAtom<?> sweepOutputAtom,
+			SubMonitor monitor) {
+
+		monitor.beginTask("Running Sweep...", numberOfSimulations);
+
+		Model model = getModelToRun();
+
+		//get current time
+		Double currentTime = Double.parseDouble("" + System.currentTimeMillis());
+		String currentDateString = millisToDateString(currentTime);
+
+		//log start message
+		String message = "-- " + currentDateString + " --- Staring " + numberOfSimulations + " simulations ----------";
+		LOG.info(message);
+
+		List<Integer> numberOfRemainingModelJobs = new ArrayList<>();
+		numberOfRemainingModelJobs.add(numberOfSimulations);
+
+		Runnable jobFinishedHook = () -> {
+
+			monitor.worked(1);
+
+			int remainingModelJobs = numberOfRemainingModelJobs.get(0) - 1;
+			numberOfRemainingModelJobs.set(0, remainingModelJobs);
+
+			if (remainingModelJobs == 0) {
+
+				monitor.setTaskName("=>Finished!");
+				logAndShowSweepEndMessage();
+				AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+					refreshable.refresh();
+				});
+				monitor.done();
+			}
+		};
+
+		for (final ModelInput modelInput : modelInputs) {
+			createAndScheduleModelJob(refreshable, sweepOutputAtom, model, modelInput, monitor, jobFinishedHook);
+		}
+
+	}
+
+	private void createAndScheduleModelJob(
+			FocusChangingRefreshable refreshable,
+			AbstractAtom<?> sweepOutputAtom,
+			Model modelToRun,
+			final ModelInput modelInput,
+			SubMonitor monitor,
+			Runnable jobFinishedHook) {
+
+		String jobTitle = "Treez Sweep #" + modelInput.getJobId();
+		Thread thread = null;
+
+		Runnable modelJob = () -> {
+
+			try {
+
+				//treezMonitor.info("start\n");
+
+				//create shadow tree and retrieve shadow model
+				AbstractAtom<?> modelAtom = (AbstractAtom<?>) modelToRun;
+				String pathForModelToRun = modelAtom.createTreeNodeAdaption().getTreePath();
+				AbstractAtom<?> root = sweepOutputAtom.getRoot();
+				AbstractAtom<?> shadowRoot = root.copy();
+
+				//run shadow model
+				Model shadowModelToRun = (Model) shadowRoot.getChildFromRoot(pathForModelToRun);
+
+				TreezMonitor treezMonitor = new TreezMonitor(LOG, monitor);
+				ModelOutput modelOutput = shadowModelToRun.runModel(modelInput, refreshable, treezMonitor);
+
+				//store output in sweep output of main tree
+				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
+				String modelOutputName = this.getName() + "OutputId" + modelInput.getJobId();
+				modelOutputAtom.setName(modelOutputName);
+				sweepOutputAtom.addChild(modelOutputAtom);
+
+				//treezMonitor.info("finished\n");
+
+			} catch (Exception exception) {
+				LOG.error("Could not run model job.", exception);
+
+			}
+
+			jobFinishedHook.run();
+
+		};
+
+		thread = new Thread(modelJob);
+		thread.setName(jobTitle);
+		thread.run();
+
+	}
+
+	private void executeTargetModelOneAfterAnother(
+			FocusChangingRefreshable refreshable,
+			int numberOfSimulations,
+			List<ModelInput> modelInputs,
+			AbstractAtom<?> sweepOutputAtom,
+			SubMonitor monitor) {
+
+		monitor.beginTask("Running Sweep...", numberOfSimulations);
+
 		int counter = 1;
 		Model model = getModelToRun();
 		long startTime = System.currentTimeMillis();
+
 		for (ModelInput modelInput : modelInputs) {
 
 			//allows to cancel the sweep if a user clicks the cancel button at the progress monitor window
 			if (!monitor.isCanceled()) {
 				logModelStartMessage(counter, startTime, numberOfSimulations);
 
-				//create subtask and sub monitor for progress monitor
 				monitor.setTaskName("=>Simulation #" + counter);
+				TreezMonitor subMonitor = new TreezMonitor(LOG, monitor);
 
-				SubProgressMonitor subMonitor = new SubProgressMonitor(
-						monitor,
-						1,
-						SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
-
-				//execute model
 				ModelOutput modelOutput = model.runModel(modelInput, refreshable, subMonitor);
 
-				//post process model output
 				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
 				String modelOutputName = getName() + "OutputId" + modelInput.getJobId();
 				modelOutputAtom.setName(modelOutputName);
@@ -243,6 +329,26 @@ public class Sweep extends AbstractParameterVariation {
 		}
 
 		refresh();
+
+		//inform progress monitor to be done
+		monitor.setTaskName("=>Finished!");
+
+		//show end message
+		logAndShowSweepEndMessage();
+		monitor.done();
+
+		/*
+		
+		job.setProperty(IProgressConstants.KEEP_PROPERTY, true);
+		
+		Image treeImage = org.treez.core.Activator.getImage("tree.png");
+		ImageDescriptor treeImageDescriptor = AbstractActivator.getImageDescriptor(treeImage);
+		job.setProperty(IProgressConstants.ICON_PROPERTY, treeImageDescriptor);
+		
+		//job.setUser(true);
+		job.schedule();
+
+		*/
 
 	}
 

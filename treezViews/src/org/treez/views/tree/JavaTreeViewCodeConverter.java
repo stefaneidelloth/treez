@@ -258,7 +258,7 @@ public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 			try {
 				root = scripting.getRoot();
 
-			} catch (IllegalStateException exception) {
+			} catch (Exception exception) {
 				String message = "The root item 'root' could not be created.";
 				showImportError(message, exception);
 				attachRootAndClearErrorState(invisibleRoot, root);

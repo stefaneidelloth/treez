@@ -54,7 +54,7 @@ public class JavaFileToBeCompiledInMemory extends SimpleJavaFileObject {
 
 	/**
 	 * Creates the java file object URI
-	 * 
+	 *
 	 * @param content
 	 * @return
 	 */
@@ -78,18 +78,11 @@ public class JavaFileToBeCompiledInMemory extends SimpleJavaFileObject {
 
 	/**
 	 * Returns the ids of the bundles this java file object depends on
-	 *
-	 * @return
 	 */
 	public Set<String> getBundleIds() {
 		return bundleIds;
 	}
 
-	/**
-	 * Returns the full class name
-	 *
-	 * @return
-	 */
 	public String getFullClassName() {
 		return fullClassName;
 	}

@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -89,17 +90,31 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 
 	/**
 	 * Executes a (long running job) without blocking the UI. The calling method will "immediately" continue.
-	 *
-	 * @param jobName
-	 * @param nonUiJobRunnable
 	 */
-	public synchronized void runNonUiJob(String jobName, NonUiJob nonUiJobRunnable) {
+	public static synchronized void runNonUiJob(String jobName, NonUiJob nonUiJobRunnable) {
 		Objects.requireNonNull(nonUiJobRunnable, "Runnable must not be null.");
 		Job job = new Job(jobName) {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				nonUiJobRunnable.run(monitor);
+
+				SubMonitor subMonitor = SubMonitor.convert(monitor);
+				nonUiJobRunnable.run(subMonitor);
+				return Status.OK_STATUS;
+			}
+		};
+
+		//start the Job
+		job.schedule();
+	}
+
+	public static synchronized void runNonUiJob(String jobName, Runnable nonUiJobRunnable) {
+		Objects.requireNonNull(nonUiJobRunnable, "Runnable must not be null.");
+		Job job = new Job(jobName) {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				nonUiJobRunnable.run();
 				return Status.OK_STATUS;
 			}
 		};
@@ -114,7 +129,7 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 	 *
 	 * @param uiJobRunnable
 	 */
-	public synchronized void runUiJobNonBlocking(Runnable uiJobRunnable) {
+	public static synchronized void runUiJobNonBlocking(Runnable uiJobRunnable) {
 		Objects.requireNonNull(uiJobRunnable, "Runnable must not be null.");
 
 		Display display = Display.getDefault();
@@ -132,7 +147,7 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 	 *
 	 * @param uiJobRunnable
 	 */
-	public synchronized void runUiJobBlocking(Runnable uiJobRunnable) {
+	public static synchronized void runUiJobBlocking(Runnable uiJobRunnable) {
 		Objects.requireNonNull(uiJobRunnable, "Runnable must not be null.");
 
 		Display display = Display.getDefault();

@@ -9,6 +9,7 @@ import org.treez.core.atom.attribute.text.InfoText;
 import org.treez.core.atom.attribute.text.TextArea;
 import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
@@ -35,17 +36,26 @@ public class JarExecutable extends Executable {
 		modifyModel();
 	}
 
+	public JarExecutable(JarExecutable atomToCopy) {
+		super(atomToCopy, true);
+		copyTreezAttributes(atomToCopy, this);
+	}
+
 	//#end region
 
 	//#region METHODS
 
 	@Override
+	public JarExecutable copy() {
+		return new JarExecutable(this);
+	}
+
+	@Override
 	protected
 			void
 			createExecutableSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
-		Section executable = dataPage
-				.createSection("javaExecutable", executableHelpContextId)
-				.setLabel("Java executable");
+		Section executable = dataPage.createSection("javaExecutable", executableHelpContextId).setLabel(
+				"Java executable");
 
 		Image resetImage = Activator.getImage("resetJobIndex.png");
 		executable.createSectionAction("resetJobIndex", "Reset the job index to 1", () -> resetJobIndex(), resetImage);
@@ -85,10 +95,9 @@ public class JarExecutable extends Executable {
 		fullClassNameField.addModificationConsumer("updateStatus", updateStatusListener);
 	}
 
-	private void createJvmArgumentsSection(
-			Page dataPage,
-			Consumer updateStatusListener,
-			String executableHelpContextId) {
+	private
+			void
+			createJvmArgumentsSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
 
 		Section section = dataPage
 				.createSection("jvmArguments", executableHelpContextId) //
@@ -141,7 +150,7 @@ public class JarExecutable extends Executable {
 
 	@Override
 	public void refreshStatus() {
-		this.runUiJobNonBlocking(() -> {
+		AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
 			String infoTextMessage = buildCommand();
 			// LOG.debug("Updating info text: " + infoTextMessage);
 			commandInfo.set(infoTextMessage);

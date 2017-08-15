@@ -25,11 +25,9 @@ public final class Utils {
 	//#region CONSTRUCTORS
 
 	/**
-	 * Private Constructor that prevents construction. This class must only
-	 * contain static methods.
+	 * Private Constructor that prevents construction. This class must only contain static methods.
 	 */
-	private Utils() {
-	}
+	private Utils() {}
 
 	//#end region
 
@@ -38,8 +36,7 @@ public final class Utils {
 	//#region COLORS
 
 	/**
-	 * Parses a string and converts it to a RGB value Example input:
-	 * "RGB { 200,200,34 }"
+	 * Parses a string and converts it to a RGB value Example input: "RGB { 200,200,34 }"
 	 *
 	 * @param colorString
 	 * @return
@@ -57,8 +54,7 @@ public final class Utils {
 
 			return new RGB(red, green, blue);
 		} catch (IllegalArgumentException e) {
-			LOG.error("Could not convert " + colorString + " to a value.\n"
-					+ e.getMessage());
+			LOG.error("Could not convert " + colorString + " to a value.\n" + e.getMessage());
 			return new RGB(0, 0, 0);
 		}
 	}
@@ -75,8 +71,7 @@ public final class Utils {
 	 */
 	public static String[] stringListToArray(List<String> stringList) {
 		String[] headerArray = new String[stringList.size()];
-		for (int columnIndex = 0; columnIndex < stringList
-				.size(); columnIndex++) {
+		for (int columnIndex = 0; columnIndex < stringList.size(); columnIndex++) {
 			headerArray[columnIndex] = stringList.get(columnIndex);
 		}
 		return headerArray;
@@ -121,8 +116,7 @@ public final class Utils {
 	 * @return
 	 */
 	public static String getInput(String title, String defaultValue) {
-		InputDialog dlg = new InputDialog(Display.getCurrent().getActiveShell(),
-				"", title, defaultValue, null);
+		InputDialog dlg = new InputDialog(Display.getCurrent().getActiveShell(), "", title, defaultValue, null);
 		int result = dlg.open();
 		if (result == IDialogConstants.OK_ID) {
 			return dlg.getValue();
@@ -151,8 +145,7 @@ public final class Utils {
 			}
 
 			if (currentDisplay != null) {
-				MessageDialog.openConfirm(currentDisplay.getActiveShell(),
-						"Info", message);
+				MessageDialog.openConfirm(currentDisplay.getActiveShell(), "Info", message);
 			}
 
 		};
@@ -177,8 +170,7 @@ public final class Utils {
 
 		Runnable showMessageRunnable = () -> {
 			Display currentDisplay = Display.getCurrent();
-			MessageDialog.openError(currentDisplay.getActiveShell(), "Error",
-					message);
+			MessageDialog.openError(currentDisplay.getActiveShell(), "Error", message);
 		};
 		Display currentDisplay = Display.getCurrent();
 		if (currentDisplay == null) {
@@ -192,16 +184,14 @@ public final class Utils {
 	//#region CLASS & INTERFACE REFLECTION
 
 	/**
-	 * Returns true if the given class has one of the the given types or
-	 * implements an interface of the given types.
+	 * Returns true if the given class has one of the the given types or implements an interface of the given types.
 	 *
 	 * @param object
 	 * @param wantedTypeNames
 	 *            names of wanted types, separated by ","
 	 * @return
 	 */
-	public static boolean checkIfHasWantedType(Object object,
-			String wantedTypeNames) {
+	public static boolean checkIfHasWantedType(Object object, String wantedTypeNames) {
 
 		//get class of object
 		Class<?> actualClass = object.getClass();
@@ -226,8 +216,7 @@ public final class Utils {
 
 			if (wantedClass != null) {
 				//the wanted type represents a class: use it to perform the check
-				boolean hasWantedType = wantedClass
-						.isAssignableFrom(actualClass);
+				boolean hasWantedType = wantedClass.isAssignableFrom(actualClass);
 				if (hasWantedType) {
 					return true;
 				}
@@ -235,11 +224,9 @@ public final class Utils {
 			} else {
 				//the wanted type might represent an interface
 				//check if the actual class implements that interface
-				Set<Class<?>> implementedInterfaces = getAllInterfaces(
-						actualClass);
+				Set<Class<?>> implementedInterfaces = getAllInterfaces(actualClass);
 				for (Class<?> currentInterface : implementedInterfaces) {
-					boolean implementsWantedInterface = currentInterface
-							.getName().equals(wantedTypeName);
+					boolean implementsWantedInterface = currentInterface.getName().equals(wantedTypeName);
 					if (implementsWantedInterface) {
 						//implements wanted interface
 						return true;
@@ -255,8 +242,7 @@ public final class Utils {
 	}
 
 	/**
-	 * Returns the interfaces that are implemented by this class and all super
-	 * classes
+	 * Returns the interfaces that are implemented by this class and all super classes
 	 *
 	 * @param actualClass
 	 * @return
@@ -285,22 +271,16 @@ public final class Utils {
 
 	/**
 	 * Extracts the parent path
-	 *
-	 * @param path
-	 * @return
 	 */
 	public static String extractParentFolder(String path) {
 		String fileName = extractFileName(path);
-		int endIndex = path.length() - fileName.length();
+		int endIndex = path.length() - fileName.length() - 1;
 		String parentPath = path.substring(0, endIndex);
 		return parentPath;
 	}
 
 	/**
 	 * Extracts the file name from the given path
-	 *
-	 * @param pathWithoutExtension
-	 * @return
 	 */
 	public static String extractFileName(String pathWithoutExtension) {
 		String path = pathWithoutExtension.replace("\\", "/");
@@ -311,13 +291,8 @@ public final class Utils {
 
 	/**
 	 * Includes a postFix in front of the last point in a file name
-	 *
-	 * @param fileName
-	 * @param postFix
-	 * @return
 	 */
-	public static String includeNumberInFileName(String fileName,
-			String postFix) {
+	public static String includeNumberInFileName(String fileName, String postFix) {
 		String[] subStrings = fileName.split("\\.");
 		String newFileName = subStrings[0];
 		if (subStrings.length > 2) {
@@ -341,11 +316,7 @@ public final class Utils {
 	}
 
 	/**
-	 * Returns true if the given file path could represent a file (last
-	 * subString contains a point)
-	 *
-	 * @param outputPath
-	 * @return
+	 * Returns true if the given file path could represent a file (last subString contains a point)
 	 */
 	public static boolean isFilePath(String outputPath) {
 		Objects.requireNonNull(outputPath, "Output path must not be null.");

@@ -9,8 +9,7 @@ import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -34,6 +33,7 @@ import org.treez.core.atom.variablelist.NumberRangeProvider;
 import org.treez.core.atom.variablelist.VariableList;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.console.TreezMonitor;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.utils.Utils;
@@ -314,7 +314,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	}
 
 	@Override
-	public void runStudy(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+	public void runStudy(FocusChangingRefreshable refreshable, SubMonitor monitor) {
 		Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
 		this.treeViewRefreshable = refreshable;
 
@@ -390,7 +390,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 	private void doRunStudy(
 			FocusChangingRefreshable refreshable,
-			IProgressMonitor monitor,
+			SubMonitor monitor,
 			PickingModelInputGenerator inputGenerator,
 			List<Sample> samples) {
 
@@ -501,7 +501,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 	private void executeTargetModel(
 			FocusChangingRefreshable refreshable,
-			IProgressMonitor monitor,
+			SubMonitor monitor,
 			int numberOfSimulations,
 			List<ModelInput> modelInputs,
 			AbstractAtom<?> pickingOutputAtom) {
@@ -516,10 +516,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 				//create subtask and sub monitor for progress monitor
 				monitor.setTaskName("=>Simulation #" + counter);
-				SubProgressMonitor subMonitor = new SubProgressMonitor(
-						monitor,
-						1,
-						SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
+				TreezMonitor subMonitor = new TreezMonitor(LOG, monitor);
 
 				//execute model
 				ModelOutput modelOutput = model.runModel(modelInput, refreshable, subMonitor);

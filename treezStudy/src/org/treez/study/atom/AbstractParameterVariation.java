@@ -49,6 +49,8 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 	 */
 	public final Attribute<String> sourceModelPath = new Wrap<>();
 
+	public final Attribute<Boolean> isConcurrentVariation = new Wrap<>();
+
 	/**
 	 * If this is true, a text file with information about the study will be exported to the specified export path
 	 */
@@ -177,9 +179,6 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 	}
 
-	/**
-	 * Logs the end message
-	 */
 	protected void logAndShowSweepEndMessage() {
 		//get final time
 		double currentTime = Double.parseDouble("" + System.currentTimeMillis());
@@ -193,12 +192,6 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 	/**
 	 * Estimates the end time and returns it as date string
-	 *
-	 * @param startTime
-	 * @param currentTime
-	 * @param counter
-	 * @param numberOfSimulations
-	 * @return
 	 */
 	private String estimateEndTime(double startTime, double currentTime, int counter, int numberOfSimulations) {
 		Double timeDifference = Double.parseDouble("" + (currentTime - startTime));
@@ -216,11 +209,8 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 	/**
 	 * Converts the given time (as provided by System.currentTimeMillis()) to a date string
-	 *
-	 * @param timeInMilliseconds
-	 * @return
 	 */
-	private String millisToDateString(Double timeInMilliseconds) {
+	public String millisToDateString(Double timeInMilliseconds) {
 		if (timeInMilliseconds.isNaN()) {
 			return "  not yet estimated";
 		} else {

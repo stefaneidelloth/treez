@@ -25,13 +25,19 @@ import org.treez.core.atom.attribute.checkBox.CheckBox;
 import org.treez.core.atom.attribute.modelPath.ModelPath;
 import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.attribute.text.TextField;
+import org.treez.core.atom.base.AbstractAtom;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.atom.variablefield.QuantityVariableField;
 import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.attribute.Attribute;
+import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.model.Activator;
+import org.treez.model.atom.executable.Executable;
+import org.treez.model.atom.executable.InputPathModifier;
+import org.treez.model.atom.executable.InputPathProvider;
 import org.treez.model.atom.genericInput.GenericInputModel;
 
 /**
@@ -40,7 +46,7 @@ import org.treez.model.atom.genericInput.GenericInputModel;
  * then saved as new input file at the wanted input file path.
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-public class InputFileGenerator extends AdjustableAtom {
+public class InputFileGenerator extends AdjustableAtom implements InputPathProvider {
 
 	private static final Logger LOG = Logger.getLogger(InputFileGenerator.class);
 
@@ -66,6 +72,20 @@ public class InputFileGenerator extends AdjustableAtom {
 
 	public final Attribute<Boolean> deleteUnassignedRows = new Wrap<>();
 
+	public final Attribute<Boolean> includeDateInInputFile = new Wrap<>();
+
+	public final Attribute<Boolean> includeDateInInputFolder = new Wrap<>();
+
+	public final Attribute<Boolean> includeDateInInputSubFolder = new Wrap<>();
+
+	public final Attribute<Boolean> includeJobIndexInInputFile = new Wrap<>();
+
+	public final Attribute<Boolean> includeJobIndexInInputFolder = new Wrap<>();
+
+	public final Attribute<Boolean> includeJobIndexInInputSubFolder = new Wrap<>();
+
+	public final Attribute<String> inputPathInfo = new Wrap<>();
+
 	//#end region
 
 	//#region CONSTRUCTORS
@@ -76,9 +96,19 @@ public class InputFileGenerator extends AdjustableAtom {
 		createInputFileGeneratorModel();
 	}
 
+	public InputFileGenerator(InputFileGenerator atomToCopy) {
+		super(atomToCopy);
+		copyTreezAttributes(atomToCopy, this);
+	}
+
 	//#end region
 
 	//#region METHODS
+
+	@Override
+	public InputFileGenerator copy() {
+		return new InputFileGenerator(this);
+	}
 
 	/**
 	 * Creates the model for this atom
@@ -126,7 +156,75 @@ public class InputFileGenerator extends AdjustableAtom {
 		CheckBox deleteUnassigned = data.createCheckBox(deleteUnassignedRows, this, true);
 		deleteUnassigned.setLabel("Delete template rows with unassigned variable place holders.");
 
+		String inputModificationRelativeHelpContextId = "executableInputModification";
+		String inputModificationHelpContextId = Activator
+				.getAbsoluteHelpContextIdStatic(inputModificationRelativeHelpContextId);
+
+		Consumer updateStatus = () -> refreshStatus();
+		createInputModificationSection(dataPage, updateStatus, inputModificationHelpContextId);
+
+		String statusRelativeHelpContextId = "statusLogging";
+		String statusHelpContextId = Activator.getAbsoluteHelpContextIdStatic(statusRelativeHelpContextId);
+		createStatusSection(dataPage, statusHelpContextId);
+
+		refreshStatus();
+
 		setModel(root);
+	}
+
+	private void createInputModificationSection(Page dataPage, Consumer updateStatusListener, String helpContextId) {
+
+		Section inputModification = dataPage.createSection("inputModification", helpContextId);
+		inputModification.setLabel("Input modification");
+		inputModification.setExpanded(false);
+
+		inputModification.createLabel("includeDate", "Include date in:");
+
+		CheckBox dateInFolderCheck = inputModification.createCheckBox(includeDateInInputFolder, this, false);
+		dateInFolderCheck.setLabel("Folder name");
+		dateInFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		CheckBox dateInSubFolderCheck = inputModification.createCheckBox(includeDateInInputSubFolder, this, false);
+		dateInSubFolderCheck.setLabel("Extra folder");
+		dateInSubFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		CheckBox dateInFileCheck = inputModification.createCheckBox(includeDateInInputFile, this, false);
+		dateInFileCheck.setLabel("File name");
+		dateInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		@SuppressWarnings("unused")
+		org.treez.core.atom.attribute.text.Label jobIndexLabel = inputModification.createLabel("jobIndexLabel",
+				"Include job index in:");
+
+		CheckBox jobIndexInFolderCheck = inputModification.createCheckBox(includeJobIndexInInputFolder, this, false);
+		jobIndexInFolderCheck.setLabel("Folder name");
+		jobIndexInFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		CheckBox jobIndexInSubFolderCheck = inputModification.createCheckBox(includeJobIndexInInputSubFolder, this,
+				false);
+		jobIndexInSubFolderCheck.setLabel("Extra folder");
+		jobIndexInSubFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		CheckBox jobIndexInFileCheck = inputModification.createCheckBox(includeJobIndexInInputFile, this, false);
+		jobIndexInFileCheck.setLabel("File name");
+		jobIndexInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
+	}
+
+	protected void createStatusSection(Page dataPage, String executableHelpContextId) {
+		Section status = dataPage.createSection("status", executableHelpContextId);
+		status.setExpanded(false);
+
+		//resulting command
+		status.createInfoText(inputPathInfo, this, "Resulting input file path", "");
+
+	}
+
+	protected void refreshStatus() {
+		AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+
+			String modifiedInputPath = getModifiedInputFilePath();
+			inputPathInfo.set(modifiedInputPath);
+		});
 	}
 
 	@Override
@@ -134,8 +232,10 @@ public class InputFileGenerator extends AdjustableAtom {
 
 		LOG.info("Executing " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
+		String modifiedInputFilePath = getModifiedInputFilePath();
+
 		//delete old input file (=the output of this atom) if it exists
-		File inputFile = new File(inputFilePath.get());
+		File inputFile = new File(modifiedInputFilePath);
 		if (inputFile.exists()) {
 			inputFile.delete();
 		}
@@ -149,23 +249,19 @@ public class InputFileGenerator extends AdjustableAtom {
 				valueExpression.get(), deleteUnassignedRows.get());
 
 		if (inputFileString.isEmpty()) {
-			String message = "The input file '" + inputFilePath.get()
+			String message = "The input file '" + modifiedInputFilePath
 					+ "' is empty. Please check the place holder and the source variables.";
 			LOG.warn(message);
 		}
 
 		//save result as new input file
-		saveResult(inputFileString, inputFilePath.get());
+		saveResult(inputFileString, modifiedInputFilePath);
 
 	}
 
 	/**
 	 * Applies the template to the variable model. This means that the variable place holders in the template string are
 	 * replaced by the variable values for all variables that are provided by the variable source model.
-	 *
-	 * @param templateString
-	 * @param sourceModel
-	 * @return
 	 */
 	private static String applyTemplateToSourceModel(
 			String templateString,
@@ -189,37 +285,10 @@ public class InputFileGenerator extends AdjustableAtom {
 				unitString = quantityField.getUnitString(); //e.g. "m"
 			}
 
-			//get regular expression to replace
-			String placeholderExpression;
-			boolean containsName = nameExpression.contains(NAME_TAG);
-			if (containsName) {
-				placeholderExpression = nameExpression.replace(NAME_TAG, variableName);
-			} else {
-				boolean containsLabel = nameExpression.contains(LABEL_TAG);
-				if (containsLabel) {
-					placeholderExpression = nameExpression.replace(LABEL_TAG, variableLabel);
-				} else {
-					String message = "The placeholder must contain either a " + NAME_TAG + " or a " + LABEL_TAG
-							+ " tag.";
-					throw new IllegalStateException(message);
-				}
-			}
+			String placeholderExpression = createPlaceHolderExpression(nameExpression, variableName, variableLabel);
 
-			//get expression to inject
-			if (valueString == null) {
-				String message = "Value for variable '" + variableName + "' is null.";
-				LOG.warn(message);
-				valueString = "null";
-			}
-
-			String injectedExpression;
-			injectedExpression = valueExpression.replace(VALUE_TAG, valueString);
-			if (unitString != null) {
-				injectedExpression = injectedExpression.replace(UNIT_TAG, unitString);
-			} else {
-				//remove unit tag
-				injectedExpression = injectedExpression.replace(UNIT_TAG, "");
-			}
+			String injectedExpression = createExpressionToInject(valueExpression, variableName, valueString,
+					unitString);
 
 			//inject expression into template
 			LOG.info("Template placeholder to replace: '" + placeholderExpression + "'");
@@ -235,12 +304,64 @@ public class InputFileGenerator extends AdjustableAtom {
 		return resultString;
 	}
 
+	private static String createExpressionToInject(
+			String valueExpression,
+			String variableName,
+			String valueString,
+			String unitString) {
+
+		String correctedValueString = valueString;
+		if (valueString == null) {
+			String message = "Value for variable '" + variableName + "' is null.";
+			LOG.warn(message);
+			correctedValueString = "null";
+		}
+
+		String injectedExpression;
+		injectedExpression = valueExpression.replace(VALUE_TAG, correctedValueString);
+		if (unitString != null) {
+			injectedExpression = injectedExpression.replace(UNIT_TAG, unitString);
+		} else {
+			//remove unit tag
+			injectedExpression = injectedExpression.replace(UNIT_TAG, "");
+		}
+		return injectedExpression;
+	}
+
+	private static
+			String
+			createPlaceHolderExpression(String nameExpression, String variableName, String variableLabel) {
+		String placeholderExpression;
+		boolean containsName = nameExpression.contains(NAME_TAG);
+		if (containsName) {
+			placeholderExpression = nameExpression.replace(NAME_TAG, variableName);
+		} else {
+			boolean containsLabel = nameExpression.contains(LABEL_TAG);
+			if (containsLabel) {
+				placeholderExpression = nameExpression.replace(LABEL_TAG, variableLabel);
+			} else {
+				String message = "The placeholder must contain either a " + NAME_TAG + " or a " + LABEL_TAG + " tag.";
+				throw new IllegalStateException(message);
+			}
+		}
+		return placeholderExpression;
+	}
+
 	private static String deleteRowsWithUnassignedPlaceHolders(String nameExpression, String resultString) {
 		String generalPlaceHolderExpression = nameExpression.replace("{", "\\{");
 		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("}", "\\}");
 		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("$", "\\$");
 		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("<name>", ".*");
 		generalPlaceHolderExpression = generalPlaceHolderExpression.replace("<label>", ".*");
+
+		if (generalPlaceHolderExpression.equals(".*")) {
+			String message = "The deletion of rows with unassigned place holders is not yet implemented for place holders"
+					+ "of the type '" + nameExpression
+					+ "'. Please adapt the name expression or disable the deletion of template rows"
+					+ "with unassigned varaible place holders.";
+			LOG.warn(message);
+			return resultString;
+		}
 
 		String[] lines = resultString.split("\n");
 		List<String> removedLines = new ArrayList<>();
@@ -266,17 +387,11 @@ public class InputFileGenerator extends AdjustableAtom {
 		return newResultString;
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("inputFile.png");
 	}
 
-	/**
-	 * Creates the context menu actions
-	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
 
@@ -285,9 +400,6 @@ public class InputFileGenerator extends AdjustableAtom {
 		return actions;
 	}
 
-	/**
-	 * Returns the code adaption
-	 */
 	@Override
 	public CodeAdaption createCodeAdaption(ScriptType scriptType) {
 		return new AdjustableAtomCodeAdaption(this);
@@ -295,9 +407,6 @@ public class InputFileGenerator extends AdjustableAtom {
 
 	/**
 	 * Reads the template file
-	 *
-	 * @param templatePath
-	 * @return
 	 */
 	private static String readTemplateFile(String templatePath) {
 
@@ -316,9 +425,6 @@ public class InputFileGenerator extends AdjustableAtom {
 
 	/**
 	 * Saves the given text as text file with the given file path
-	 *
-	 * @param text
-	 * @param inputPath
 	 */
 	private static void saveResult(String text, String filePath) {
 		File file = new File(filePath);
@@ -330,6 +436,60 @@ public class InputFileGenerator extends AdjustableAtom {
 		}
 
 	}
+
+	public String getModifiedInputFilePath() {
+		InputPathModifier inputPathModifier = new InputPathModifier(this);
+
+		String modifiedInputPath = inputPathModifier.getModifiedInputPath(inputFilePath.get());
+		return modifiedInputPath;
+	}
+
+	//#region INPUT FILE PROVIDER
+
+	@Override
+	public boolean getIncludeDateInInputFolder() {
+		return includeDateInInputFolder.get();
+	}
+
+	@Override
+	public boolean getIncludeDateInInputSubFolder() {
+		return includeDateInInputSubFolder.get();
+	}
+
+	@Override
+	public boolean getIncludeDateInInputFile() {
+		return includeDateInInputFile.get();
+	}
+
+	@Override
+	public boolean getIncludeJobIndexInInputFile() {
+		return includeJobIndexInInputFile.get();
+	}
+
+	@Override
+	public boolean getIncludeJobIndexInInputFolder() {
+		return includeJobIndexInInputFolder.get();
+	}
+
+	@Override
+	public boolean getIncludeJobIndexInInputSubFolder() {
+		return includeJobIndexInInputSubFolder.get();
+	}
+
+	@Override
+	public String getJobId() {
+
+		AbstractAtom<?> parent = this.getParentAtom();
+		boolean parentIsExecutable = parent instanceof Executable;
+		if (parentIsExecutable) {
+			Executable executable = (Executable) parent;
+			return executable.getJobId();
+		}
+
+		return "{unknownJobId}";
+	}
+
+	//#end region
 
 	//#end region
 

@@ -46,18 +46,21 @@ public class SweepDemo extends ModelProvider {
 		Executable executable = new Executable("executable");
 		executable.executablePath.set(resourcePath + "executable.bat");
 		executable.inputPath.set(inputFilePath);
+		executable.includeJobIndexInInputFile.set(true);
 		executable.outputPath.set(importFilePath);
+		executable.includeJobIndexInOutputFile.set(true);
 		models.addChild(executable);
 
 		InputFileGenerator inputFile = new InputFileGenerator("inputFileGenerator");
 		inputFile.templateFilePath.set(resourcePath + "template.txt");
-		inputFile.inputFilePath.set(inputFilePath);
 		inputFile.nameExpression.set("<name>");
 		inputFile.valueExpression.set("<value>");
+		inputFile.inputFilePath.set(inputFilePath);
+		inputFile.includeJobIndexInInputFile.set(true);
+		inputFile.deleteUnassignedRows.set(false);
 		executable.addChild(inputFile);
 
 		TableImport dataImport = new TableImport("dataImport");
-		dataImport.sourceFilePath.set(importFilePath);
 		dataImport.resultTableModelPath.set("root.results.data.table");
 		dataImport.appendData.set(false);
 		executable.addChild(dataImport);
@@ -80,7 +83,7 @@ public class SweepDemo extends ModelProvider {
 		DoubleVariableRange yRange = new DoubleVariableRange("y");
 		sweep.addChild(yRange);
 		yRange.setRelativeSourceVariableModelPath("y");
-		yRange.setRangeValueString("{1,2,3,4,5,6,7,8,9}");
+		yRange.setRangeValueString("{10,20,30,40,50,60,70,80,90}");
 
 		//results------------------------------------------------------------
 		Results results = new Results("results");

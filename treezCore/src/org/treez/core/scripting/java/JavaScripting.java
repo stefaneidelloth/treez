@@ -233,16 +233,13 @@ public class JavaScripting extends AbstractScripting {
 
 	/**
 	 * Tries to retrieve the model from the ModelProvider
-	 *
-	 * @param modelProvider
-	 * @return
 	 */
 	private static AbstractAtom<?> retrieveModelFromModelProvider(ModelProvider modelProvider) {
 		AbstractAtom<?> root = null;
 		if (modelProvider != null) {
 			try {
 				root = modelProvider.createModel();
-			} catch (IllegalStateException exception) {
+			} catch (Exception exception) {
 				String message = "Could not retrive model from scripted java class. Please check the method 'createModel'.";
 				LOG.error(message, exception);
 				throw exception;

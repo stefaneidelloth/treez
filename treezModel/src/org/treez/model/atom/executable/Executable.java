@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
@@ -22,9 +21,11 @@ import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.attribute.text.InfoText;
 import org.treez.core.atom.attribute.text.TextArea;
 import org.treez.core.atom.attribute.text.TextField;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
+import org.treez.core.console.TreezMonitor;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
@@ -39,7 +40,7 @@ import org.treez.model.output.ModelOutput;
  * Represents an external executable that can be executed with additional command line arguments and file paths
  */
 @SuppressWarnings({ "checkstyle:visibilitymodifier", "checkstyle:classfanoutcomplexity" })
-public class Executable extends AbstractModel implements FilePathProvider {
+public class Executable extends AbstractModel implements FilePathProvider, InputPathProvider {
 
 	static final Logger LOG = Logger.getLogger(Executable.class);
 
@@ -51,25 +52,35 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	public final Attribute<String> inputPath = new Wrap<>();
 
+	public final Attribute<Boolean> copyInputFile = new Wrap<>();
+
+	public final Attribute<Boolean> includeDateInInputFile = new Wrap<>();
+
+	public final Attribute<Boolean> includeDateInInputFolder = new Wrap<>();
+
+	public final Attribute<Boolean> includeDateInInputSubFolder = new Wrap<>();
+
+	public final Attribute<Boolean> includeJobIndexInInputFile = new Wrap<>();
+
+	public final Attribute<Boolean> includeJobIndexInInputFolder = new Wrap<>();
+
+	public final Attribute<Boolean> includeJobIndexInInputSubFolder = new Wrap<>();
+
 	public final Attribute<String> outputArguments = new Wrap<>();
 
 	public final Attribute<String> outputPath = new Wrap<>();
 
-	public String modifiedOutputPath;
+	public final Attribute<Boolean> includeDateInOutputFile = new Wrap<>();
 
-	public final Attribute<Boolean> copyInputFile = new Wrap<>();
+	public final Attribute<Boolean> includeDateInOutputFolder = new Wrap<>();
 
-	public final Attribute<Boolean> includeDateInFile = new Wrap<>();
+	public final Attribute<Boolean> includeDateInOutputSubFolder = new Wrap<>();
 
-	public final Attribute<Boolean> includeDateInFolder = new Wrap<>();
+	public final Attribute<Boolean> includeJobIndexInOutputFile = new Wrap<>();
 
-	public final Attribute<Boolean> includeDateInSubFolder = new Wrap<>();
+	public final Attribute<Boolean> includeJobIndexInOutputFolder = new Wrap<>();
 
-	public final Attribute<Boolean> includeJobIndexInFile = new Wrap<>();
-
-	public final Attribute<Boolean> includeJobIndexInFolder = new Wrap<>();
-
-	public final Attribute<Boolean> includeJobIndexInSubFolder = new Wrap<>();
+	public final Attribute<Boolean> includeJobIndexInOutputSubFolder = new Wrap<>();
 
 	public final Attribute<String> logArguments = new Wrap<>();
 
@@ -91,6 +102,27 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		createModel();
 	}
 
+	public Executable(Executable atomToCopy, boolean skipAttributeCopy) {
+		super(atomToCopy);
+		if (!skipAttributeCopy) {
+			copyTreezAttributes(atomToCopy, this);
+		}
+	}
+
+	//#end region
+
+	//#region METHODS
+
+	@Override
+	public Executable getThis() {
+		return this;
+	}
+
+	@Override
+	public Executable copy() {
+		return new Executable(this, false);
+	}
+
 	protected void createModel() {
 		AttributeRoot root = new AttributeRoot("root");
 		Page dataPage = root.createPage("data", "   Data   ");
@@ -107,6 +139,11 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		String inputRelativeHelpContextId = "executableInput";
 		String inputHelpContextId = Activator.getAbsoluteHelpContextIdStatic(inputRelativeHelpContextId);
 		createInputSection(dataPage, updateStatus, inputHelpContextId);
+
+		String inputModificationRelativeHelpContextId = "executableInputModification";
+		String inputModificationHelpContextId = Activator
+				.getAbsoluteHelpContextIdStatic(inputModificationRelativeHelpContextId);
+		createInputModificationSection(dataPage, updateStatus, inputModificationHelpContextId);
 
 		String outputRelativeHelpContextId = "executableOutput";
 		String outputHelpContextId = Activator.getAbsoluteHelpContextIdStatic(outputRelativeHelpContextId);
@@ -139,15 +176,6 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		//this default implementation does nothing
 	}
 
-	//#end region
-
-	//#region METHODS
-
-	@Override
-	public Executable getThis() {
-		return this;
-	}
-
 	protected
 			void
 			createExecutableSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
@@ -172,6 +200,44 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		FileOrDirectoryPath inputPathChooser = input.createFileOrDirectoryPath(inputPath, this, "Input file or folder",
 				"");
 		inputPathChooser.addModificationConsumer("updateStatus", updateStatusListener);
+	}
+
+	private void createInputModificationSection(Page dataPage, Consumer updateStatusListener, String helpContextId) {
+
+		Section inputModification = dataPage.createSection("inputModification", helpContextId);
+		inputModification.setLabel("Input modification");
+		inputModification.setExpanded(false);
+
+		inputModification.createLabel("includeDate", "Include date in:");
+
+		CheckBox dateInFolderCheck = inputModification.createCheckBox(includeDateInInputFolder, this, false);
+		dateInFolderCheck.setLabel("Folder name");
+		dateInFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		CheckBox dateInSubFolderCheck = inputModification.createCheckBox(includeDateInInputSubFolder, this, false);
+		dateInSubFolderCheck.setLabel("Extra folder");
+		dateInSubFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		CheckBox dateInFileCheck = inputModification.createCheckBox(includeDateInInputFile, this, false);
+		dateInFileCheck.setLabel("File name");
+		dateInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		@SuppressWarnings("unused")
+		org.treez.core.atom.attribute.text.Label jobIndexLabel = inputModification.createLabel("jobIndexLabel",
+				"Include job index in:");
+
+		CheckBox jobIndexInFolderCheck = inputModification.createCheckBox(includeJobIndexInInputFolder, this, false);
+		jobIndexInFolderCheck.setLabel("Folder name");
+		jobIndexInFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		CheckBox jobIndexInSubFolderCheck = inputModification.createCheckBox(includeJobIndexInInputSubFolder, this,
+				false);
+		jobIndexInSubFolderCheck.setLabel("Extra folder");
+		jobIndexInSubFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
+
+		CheckBox jobIndexInFileCheck = inputModification.createCheckBox(includeJobIndexInInputFile, this, false);
+		jobIndexInFileCheck.setLabel("File name");
+		jobIndexInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
 	}
 
 	private void createOutputSection(Page dataPage, Consumer updateStatusListener, String executableHelpContextId) {
@@ -199,15 +265,15 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		outputModification.createLabel("includeDate", "Include date in:");
 
-		CheckBox dateInFolderCheck = outputModification.createCheckBox(includeDateInFolder, this, false);
+		CheckBox dateInFolderCheck = outputModification.createCheckBox(includeDateInOutputFolder, this, false);
 		dateInFolderCheck.setLabel("Folder name");
 		dateInFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
-		CheckBox dateInSubFolderCheck = outputModification.createCheckBox(includeDateInSubFolder, this, false);
+		CheckBox dateInSubFolderCheck = outputModification.createCheckBox(includeDateInOutputSubFolder, this, false);
 		dateInSubFolderCheck.setLabel("Extra folder");
 		dateInSubFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
-		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInFile, this, false);
+		CheckBox dateInFileCheck = outputModification.createCheckBox(includeDateInOutputFile, this, false);
 		dateInFileCheck.setLabel("File name");
 		dateInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
@@ -215,15 +281,16 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		org.treez.core.atom.attribute.text.Label jobIndexLabel = outputModification.createLabel("jobIndexLabel",
 				"Include job index in:");
 
-		CheckBox jobIndexInFolderCheck = outputModification.createCheckBox(includeJobIndexInFolder, this, false);
+		CheckBox jobIndexInFolderCheck = outputModification.createCheckBox(includeJobIndexInOutputFolder, this, false);
 		jobIndexInFolderCheck.setLabel("Folder name");
 		jobIndexInFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
-		CheckBox jobIndexInSubFolderCheck = outputModification.createCheckBox(includeJobIndexInSubFolder, this, false);
+		CheckBox jobIndexInSubFolderCheck = outputModification.createCheckBox(includeJobIndexInOutputSubFolder, this,
+				false);
 		jobIndexInSubFolderCheck.setLabel("Extra folder");
 		jobIndexInSubFolderCheck.addModificationConsumer("updateStatus", updateStatusListener);
 
-		CheckBox jobIndexInFileCheck = outputModification.createCheckBox(includeJobIndexInFile, this, false);
+		CheckBox jobIndexInFileCheck = outputModification.createCheckBox(includeJobIndexInOutputFile, this, false);
 		jobIndexInFileCheck.setLabel("File name");
 		jobIndexInFileCheck.addModificationConsumer("updateStatus", updateStatusListener);
 	}
@@ -264,7 +331,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	 * Updates the status text labels with data from other attribute atoms
 	 */
 	protected void refreshStatus() {
-		this.runUiJobNonBlocking(() -> {
+		AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
 			String infoTextMessage = buildCommand();
 			//LOG.debug("Updating info text: " + infoTextMessage);
 			commandInfo.set(infoTextMessage);
@@ -280,7 +347,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	}
 
 	@Override
-	public ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor progressMonitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, TreezMonitor progressMonitor) {
 
 		String startMessage = "Running " + this.getClass().getSimpleName() + " '" + getName() + "'.";
 		LOG.info(startMessage);
@@ -381,7 +448,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
 	private void copyInputFileToOutputFolder() {
-		String inputFilePath = inputPath.get();
+		String inputFilePath = getModifiedInputPath();
 		File inputFile = new File(inputFilePath);
 		if (inputFile.exists()) {
 			String destinationPath = null;
@@ -399,9 +466,6 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	/**
 	 * Copies the given inputFile to the given destination path
-	 *
-	 * @param inputFile
-	 * @param destinationPath
 	 */
 	private static void copyInputFileToOutputFolder(File inputFile, String destinationPath) {
 		File destinationFile = new File(destinationPath);
@@ -417,22 +481,20 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	/**
 	 * Returns the destination folder for the input file
-	 *
-	 * @return
 	 */
 	private String getOutputPathToCopyInputFile() {
 
-		String outputPathString = modifiedOutputPath;
+		String outputPathString = provideFilePath();
 
 		//split path with point to determine file extension if one exists
 
 		boolean isFilePath = Utils.isFilePath(outputPathString);
-		String folderPath = modifiedOutputPath;
+		String folderPath = outputPathString;
 		if (isFilePath) {
 			folderPath = Utils.extractParentFolder(outputPathString);
 		}
 
-		String inputPathString = inputPath.get();
+		String inputPathString = getModifiedInputPath();
 		boolean inputPathIsFilePath = Utils.isFilePath(inputPathString);
 		if (inputPathIsFilePath) {
 			String inputFileName = Utils.extractFileName(inputPathString);
@@ -456,7 +518,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	/**
 	 * Executes all children that are of type DataImport
 	 */
-	private ModelOutput runDataImport(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
+	private ModelOutput runDataImport(FocusChangingRefreshable refreshable, TreezMonitor monitor) {
 		boolean hasDataImportChild = hasChildModel(TableImport.class);
 		if (hasDataImportChild) {
 			ModelOutput modelOutput = runChildModel(TableImport.class, refreshable, monitor);
@@ -484,8 +546,6 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	/**
 	 * Builds the execution command from the individual paths and arguments
-	 *
-	 * @return
 	 */
 	protected String buildCommand() {
 		String command = "\"" + executablePath.get() + "\"";
@@ -505,7 +565,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		boolean inputPathIsEmpty = inputPath.get().isEmpty();
 		if (!inputPathIsEmpty) {
-			command += " " + inputPath;
+			command += " " + getModifiedInputPath();
 		}
 		return command;
 	}
@@ -519,8 +579,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 		boolean outputPathIsEmpty = outputPath.get().isEmpty();
 		if (!outputPathIsEmpty) {
-			modifiedOutputPath = provideFilePath();
-			command += " " + modifiedOutputPath;
+			command += " " + provideFilePath();
 		}
 		return command;
 	}
@@ -542,11 +601,7 @@ public class Executable extends AbstractModel implements FilePathProvider {
 	/**
 	 * If the input arguments contain place holders, those place holders are replaced by the actual studyId,
 	 * studyDescription and jobId.
-	 *
-	 * @param input
-	 * @return
 	 */
-
 	protected String injectStudyAndJobInfo(Attribute<String> input) {
 		String studyIdKey = "{$studyId$}";
 		String studyDescriptionKey = "{$studyDescription$}";
@@ -574,25 +629,16 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		return currentInputArguments;
 	}
 
-	/**
-	 * Resets the job index
-	 */
 	public void resetJobIndex() {
 		setJobId("1");
 		refreshStatus();
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("run.png");
 	}
 
-	/**
-	 * Creates the context menu actions for this atom
-	 */
 	@Override
 	protected List<Object> extendContextMenuActions(List<Object> actions, TreeViewerRefreshable treeViewer) {
 
@@ -615,21 +661,21 @@ public class Executable extends AbstractModel implements FilePathProvider {
 		return actions;
 	}
 
-	/**
-	 * Returns the code adaption
-	 */
 	@Override
 	public CodeAdaption createCodeAdaption(ScriptType scriptType) {
 		return new AdjustableAtomCodeAdaption(this);
+	}
+
+	public String getModifiedInputPath() {
+		InputPathModifier inputPathModifier = new InputPathModifier(this);
+		String filePath = inputPathModifier.getModifiedInputPath(inputPath.get());
+		return filePath;
 	}
 
 	//#region CREATE CHILD ATOMS
 
 	/**
 	 * Creates a InputFileGenerator child
-	 *
-	 * @param name
-	 * @return
 	 */
 	public InputFileGenerator createInputFileGenerator(String name) {
 		InputFileGenerator child = new InputFileGenerator(name);
@@ -639,9 +685,6 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	/**
 	 * Creates a TableImport child
-	 *
-	 * @param name
-	 * @return
 	 */
 	public TableImport createTableImport(String name) {
 		TableImport child = new TableImport(name);
@@ -655,9 +698,43 @@ public class Executable extends AbstractModel implements FilePathProvider {
 
 	@Override
 	public String provideFilePath() {
-		ExecutableOutputPathModifier outputPathModifier = new ExecutableOutputPathModifier(this);
+		OutputPathModifier outputPathModifier = new OutputPathModifier(this);
 		String filePath = outputPathModifier.getModifiedOutputPath(outputPath.get());
 		return filePath;
+	}
+
+	//#end region
+
+	//#region INPUT FILE PROVIDER
+
+	@Override
+	public boolean getIncludeDateInInputFolder() {
+		return includeDateInInputFolder.get();
+	}
+
+	@Override
+	public boolean getIncludeDateInInputSubFolder() {
+		return includeDateInInputSubFolder.get();
+	}
+
+	@Override
+	public boolean getIncludeDateInInputFile() {
+		return includeDateInInputFile.get();
+	}
+
+	@Override
+	public boolean getIncludeJobIndexInInputFile() {
+		return includeJobIndexInInputFile.get();
+	}
+
+	@Override
+	public boolean getIncludeJobIndexInInputFolder() {
+		return includeJobIndexInInputFolder.get();
+	}
+
+	@Override
+	public boolean getIncludeJobIndexInInputSubFolder() {
+		return includeJobIndexInInputSubFolder.get();
 	}
 
 	//#end region
