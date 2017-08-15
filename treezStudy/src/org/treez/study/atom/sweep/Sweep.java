@@ -100,7 +100,8 @@ public class Sweep extends AbstractParameterVariation {
 				.setLabel("Variable source model (provides variables)");
 
 		//parallel execution
-		sweepSection.createCheckBox(isConcurrentVariation, this, true);
+		CheckBox concurrentCheckBox = sweepSection.createCheckBox(isConcurrentVariation, this, true);
+		concurrentCheckBox.setLabel("Parallel execution");
 
 		//study info
 		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);

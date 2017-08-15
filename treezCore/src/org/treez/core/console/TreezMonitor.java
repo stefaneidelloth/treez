@@ -43,19 +43,19 @@ public class TreezMonitor implements IProgressMonitor {
 	//#region METHODS
 
 	private synchronized void initialize(String name, SubMonitor parentMonitor) {
-		//monitor = parentMonitor.newChild(1);
-		//console = getOrCreateConsole(name);
+		monitor = parentMonitor.newChild(1);
+		console = getOrCreateConsole(name);
 	}
 
 	public void info(Object message) {
-		/*
-				try (
-						IOConsoleOutputStream stream = console.newOutputStream();) {
-					stream.write(message.toString());
-				} catch (IOException e) {
-					throw new IllegalStateException("Could not log info", e);
-				}
-		*/
+
+		try (
+				IOConsoleOutputStream stream = console.newOutputStream();) {
+			stream.write(message.toString());
+		} catch (IOException e) {
+			throw new IllegalStateException("Could not log info", e);
+		}
+
 	}
 
 	public void info(Object message, Throwable throwable) {
@@ -71,43 +71,43 @@ public class TreezMonitor implements IProgressMonitor {
 
 	@Override
 	public void done() {
-		//monitor.done();
+		monitor.done();
 	}
 
 	@Override
 	public void internalWorked(double work) {
-		//monitor.internalWorked(work);
+		monitor.internalWorked(work);
 	}
 
 	@Override
 	public boolean isCanceled() {
-		//return monitor.isCanceled();
-		return false;
+		return monitor.isCanceled();
+
 	}
 
 	@Override
 	public void setCanceled(boolean value) {
-		//monitor.setCanceled(value);
+		monitor.setCanceled(value);
 	}
 
 	@Override
 	public void setTaskName(String name) {
-		//monitor.setTaskName(name);
+		monitor.setTaskName(name);
 	}
 
 	@Override
 	public void subTask(String name) {
-		//monitor.subTask(name);
+		monitor.subTask(name);
 	}
 
 	@Override
 	public void worked(int work) {
-		//monitor.worked(work);
+		monitor.worked(work);
 	}
 
 	@Override
 	public void beginTask(String name, int totalWork) {
-		//monitor.beginTask(name, totalWork);
+		monitor.beginTask(name, totalWork);
 	}
 
 	private static synchronized IOConsole getOrCreateConsole(String consoleName) {
