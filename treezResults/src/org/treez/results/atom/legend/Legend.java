@@ -94,7 +94,7 @@ public class Legend extends GraphicsPropertiesPage {
 		bindNameToId(legendGroupSelection);
 
 		rectSelection = legendGroupSelection //
-				.append("rect").onMouseClick(this);
+				.append("rect").onClick(this);
 
 		updatePlotWithD3(d3);
 

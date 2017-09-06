@@ -15,12 +15,10 @@ import org.treez.javafxd3.d3.functions.DataFunction;
 import org.treez.javafxd3.d3.functions.KeyFunction;
 import org.treez.javafxd3.d3.functions.MouseClickFunction;
 import org.treez.javafxd3.d3.svg.PathDataGenerator;
-import org.treez.javafxd3.d3.wrapper.Element;
 import org.treez.javafxd3.d3.wrapper.Inspector;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
-
-import org.treez.javafxd3.d3.core.JsEngine;
-import org.treez.javafxd3.d3.core.JsObject;
+import org.w3c.dom.Element;
+import org.w3c.dom.events.EventListener;
 
 /**
  * A selection is an array of elements pulled from the current document. D3 uses
@@ -58,14 +56,14 @@ import org.treez.javafxd3.d3.core.JsObject;
  * to integrate with GWT {@link Element} API.
  * <p>
  * <h1>Operating on selections</h1> Selections are arrays of
- * elementsâ€�?literally. D3 binds additional methods to the array so that you
- * can apply operators to the selected elements, such as setting an attribute on
- * all the selected elements. One nuance is that selections are grouped: rather
- * than a one-dimensional array, each selection is an array of arrays of
- * elements. This preserves the hierarchical structure of subselections. Most of
- * the time, you can ignore this detail, but that's why a single-element
- * selection looks like [[node]] rather than [node]. For more on nested
- * selections, see Nested Selections.
+ * elementsâ€�?literally. D3 binds additional methods to the array so that
+ * you can apply operators to the selected elements, such as setting an
+ * attribute on all the selected elements. One nuance is that selections are
+ * grouped: rather than a one-dimensional array, each selection is an array of
+ * arrays of elements. This preserves the hierarchical structure of
+ * subselections. Most of the time, you can ignore this detail, but that's why a
+ * single-element selection looks like [[node]] rather than [node]. For more on
+ * nested selections, see Nested Selections.
  * <p>
  * If you want to learn how selections work, try selecting elements
  * interactively using your browser's developer console. You can inspect the
@@ -101,12 +99,10 @@ public class Selection extends EnteringSelection {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param engine
-	 * @param wrappingJsObject
 	 */
 	public Selection(JsEngine engine, JsObject wrappingJsObject) {
 		super(engine, wrappingJsObject);
+
 	}
 
 	//#end region
@@ -120,7 +116,7 @@ public class Selection extends EnteringSelection {
 	 * @return the first non-null element in the current selection or null if
 	 *         the selection is empty.
 	 */
-	public final Element node() {
+	public final org.treez.javafxd3.d3.wrapper.Element node() {
 
 		JsObject result = call("node");
 
@@ -130,14 +126,14 @@ public class Selection extends EnteringSelection {
 			if (result == null) {
 				return null;
 			}
-			
+
 			boolean isElement = result.isElement();
-			if(!isElement){
+			if (!isElement) {
 				return null;
 			}
-			
+
 		}
-		return new Element(engine, result);
+		return new org.treez.javafxd3.d3.wrapper.Element(engine, result);
 	}
 
 	// ======== subselections ==========
@@ -213,7 +209,7 @@ public class Selection extends EnteringSelection {
 	 * @param func
 	 * @return
 	 */
-	public <T extends Element> Selection selectAll(DataFunction<T[]> func) {
+	public <T extends org.treez.javafxd3.d3.wrapper.Element> Selection selectAll(DataFunction<T[]> func) {
 
 		assertObjectIsNotAnonymous(func);
 
@@ -656,7 +652,7 @@ public class Selection extends EnteringSelection {
 	 *
 	 * @param classNames
 	 *            the class to assign or not
-	 * @param addFunction
+	 * @param assignSwitchFunction
 	 *            the function evaluated for each element and returning a
 	 *            boolean indicating to assign or not the class to the element
 	 * @return the current selection
@@ -792,7 +788,7 @@ public class Selection extends EnteringSelection {
 	 * Note: if you provide a DataFunction<T> parameterized with a wrapper type,
 	 * such as java.lang.Double or java.lang.Boolean, when getting the property
 	 * value ( {@link #property(String)}), you should use
-	 * {@link Value#as(Class)} with the corresponding Class object, such as
+	 *  Value#as with the corresponding Class object, such as
 	 * Value.as(Double) or Value.as(Boolean) to get the property value.
 	 *
 	 *
@@ -877,8 +873,7 @@ public class Selection extends EnteringSelection {
 		JsObject d3JsObj = getD3();
 		d3JsObj.setMember(methodName, callback);
 
-		String command = "this.text(function(d, i) {" + "return d3." + methodName + ".apply(this,d,i);"
-				+ " });";
+		String command = "this.text(function(d, i) {" + "return d3." + methodName + ".apply(this,d,i);" + " });";
 
 		JsObject result = evalForJsObject(command);
 
@@ -1020,10 +1015,10 @@ public class Selection extends EnteringSelection {
 	/**
 	 * Removes the elements in the current selection from the current document.
 	 * Returns the current selection (the same elements that were removed) which
-	 * are now â€œoff-screenâ€�, detached from the DOM. Note that there is not
-	 * currently a dedicated API to add removed elements back to the document;
-	 * however, you can pass a function to selection.each or selection.select to
-	 * re-add elements.
+	 * are now â€œoff-screenâ€�, detached from the DOM. Note that there
+	 * is not currently a dedicated API to add removed elements back to the
+	 * document; however, you can pass a function to selection.each or
+	 * selection.select to re-add elements.
 	 * <p>
 	 * The elements are removed from the DOM but still remains in the selection.
 	 * <p>
@@ -1061,7 +1056,7 @@ public class Selection extends EnteringSelection {
 	 * The each operator can be used to process selections recursively, by using
 	 * d3.select(context) within the callback function.
 	 *
-	 * @param func
+	 * @param function
 	 *            the callback function
 	 * @return the current selection
 	 */
@@ -1142,7 +1137,7 @@ public class Selection extends EnteringSelection {
 	 * default by-index key mapping.
 	 * <p>
 	 *
-	 * @param array
+	 * @param dataArrayString
 	 *            the data array to map to the selection
 	 * @return the update selection
 	 */
@@ -1302,7 +1297,7 @@ public class Selection extends EnteringSelection {
 	 *
 	 * @param values
 	 *            the data array to map to the selection
-	 * @param keyFunction
+	 * @param keyFunctionExpression
 	 *            the function to control how data is mapped to the selection
 	 *            elements
 	 * @return the {@link UpdateSelection}
@@ -2011,7 +2006,7 @@ public class Selection extends EnteringSelection {
 	 *            the function to be used as a filter
 	 * @return a new selection containing the filtered elements
 	 */
-	public Selection filter(final DataFunction<Element> datumFunction) {
+	public Selection filter(final DataFunction<org.treez.javafxd3.d3.wrapper.Element> datumFunction) {
 
 		assertObjectIsNotAnonymous(datumFunction);
 
@@ -2154,12 +2149,12 @@ public class Selection extends EnteringSelection {
 		JsObject d3JsObj = getD3();
 		d3JsObj.setMember(listenerName, listener);
 
-		String command = "var "+varName+" = d3." + listenerName + " == null ? null : " + "function(d, i) {" //		      
+		String command = "var " + varName + " = d3." + listenerName + " == null ? null : " + "function(d, i) {" //		      
 				+ "d3." + listenerName + ".apply(this,d,i);" //
 				+ " }; ";
 
 		eval(command);
-		String onCommand = "this.on('" + eventType + "', "+varName+");";
+		String onCommand = "this.on('" + eventType + "', " + varName + ");";
 
 		JsObject result = evalForJsObject(onCommand);
 
@@ -2224,10 +2219,10 @@ public class Selection extends EnteringSelection {
 		JsObject d3JsObj = getD3();
 		d3JsObj.setMember(methodName, listener);
 
-		String command = "var "+varName+" = (d3." + methodName + " == null ? null : function(d, i) {" + "d3." + methodName
-				+ ".apply(this,d,i);" //
+		String command = "var " + varName + " = (d3." + methodName + " == null ? null : function(d, i) {" + "d3."
+				+ methodName + ".apply(this,d,i);" //
 				+ " });" //
-				+ "return this.on('" + eventType + "', "+varName+", " + useCapture + ");";
+				+ "return this.on('" + eventType + "', " + varName + ", " + useCapture + ");";
 
 		JsObject result = evalForJsObject(command);
 
@@ -2242,34 +2237,39 @@ public class Selection extends EnteringSelection {
 
 	}
 
-	public Selection onMouseClick(MouseClickFunction listener) {
+	public Selection on(String eventType, EventListener listener) {
+		org.treez.javafxd3.d3.wrapper.Element node = node();
+		node.addEventListener(eventType, listener, false);
+		return this;
+	}
 
-		assertObjectIsNotAnonymous(listener);
-
-		String listenerName = createNewTemporaryInstanceName();
-		String varName = createNewTemporaryInstanceName();
-
-		JsObject d3JsObj = getD3();
-		d3JsObj.setMember(listenerName, listener);
-
-		String command = "var "+varName+" = d3." + listenerName + " == null ? null : " + "function(d, i) {" //		      
-				+ "d3." + listenerName + ".handleMouseClick(this);" //
-				+ " }; ";
-
-		eval(command);
-		String onCommand = "this.on('click', "+varName+");";
-
-		JsObject result = evalForJsObject(onCommand);
-
-		//hint: the "temporary" member of d3JsObj must stay as long as it is used. 
-		//don't remove it here with d3JsObj.removeMember(listenerName)
-
-		if (result == null) {
-			return null;
-		}
-
-		return new Selection(engine, result);
-
+	public Selection onClick(EventListener listener) {
+		org.treez.javafxd3.d3.wrapper.Element node = node();
+		node.addEventListener("click", listener, false);
+		return this;
+	}
+	
+	public Selection onClick(MouseClickFunction listener) {
+		org.treez.javafxd3.d3.wrapper.Element node = node();
+		
+		EventListener eventListener = (event)->{
+			org.w3c.dom.events.EventTarget context = event.getTarget();
+			listener.handleMouseClick(context);
+		};		
+		
+		node.addEventListener("click", eventListener, false);
+		return this;
+	}
+	
+	public Selection onClick(Runnable listener) {
+		org.treez.javafxd3.d3.wrapper.Element node = node();
+		
+		EventListener eventListener = (event)->{			
+			listener.run();
+		};		
+		
+		node.addEventListener("click", eventListener, false);
+		return this;
 	}
 
 	@Override

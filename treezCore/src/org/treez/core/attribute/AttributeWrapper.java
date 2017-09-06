@@ -1,8 +1,8 @@
 package org.treez.core.attribute;
 
 /**
- * Wraps a replaceable attribute. The methods are "hidden" if this
- * AttributeWrapper is passed as its parent interface Attribute
+ * Wraps a replaceable attribute. The methods are "hidden" if this AttributeWrapper is passed as its parent interface
+ * Attribute
  *
  * @param <T>
  */

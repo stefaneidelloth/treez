@@ -4,16 +4,14 @@ import java.util.Objects;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.TreeNodeAdaption;
 
 /**
- * Provides a label and an image for the tree node
- * (it just delegates the work to the tree node)	 *
+ * Provides a label and an image for the tree node (it just delegates the work to the tree node) *
  */
 public class TreeViewLabelAndImageProvider extends LabelProvider {
-	
+
 	@Override
 	public String getText(Object object) {
 		if (object instanceof Adaptable) {
@@ -24,22 +22,19 @@ public class TreeViewLabelAndImageProvider extends LabelProvider {
 			return "error";
 		}
 	}
-	
+
 	@Override
 	public Image getImage(Object object) {
 		if (object instanceof Adaptable) {
-			Image image = toTreeNode(object).getImage();	
+			Image image = toTreeNode(object).getImage();
 			return image;
 		} else {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Transforms an adaptable to a TreeNodeAdaption 
-	 * 
-	 * @param object
-	 * @return
+	 * Transforms an adaptable to a TreeNodeAdaption
 	 */
 	public static TreeNodeAdaption toTreeNode(Object object) {
 		Objects.requireNonNull(object, "Object must not be null.");

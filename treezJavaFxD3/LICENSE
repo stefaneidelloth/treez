@@ -1,4 +1,4 @@
-Treez Software User Agreement 2016
+Treez Software User Agreement 2017
 
 TREEZ
 
@@ -97,6 +97,17 @@ nv.d3.min.css
 Your use of NVD3.js is subject to the terms and conditions of the Apache License, Version 2.0. 
 A copy is available at http://www.apache.org/licenses/LICENSE-2.0.
 The source code is available at https://github.com/novus/nvd3.
+
+* materialize.js
+
+Treez is accompanied by materialize.js, developed by Carnegie Mellon University. 
+Treez includes the following files which are located in the resources directory of the 
+org.treez.javafxd3 plug-in: 
+materialize.min.js
+materialize.min.css   
+Your use of materialize.js is subject to the terms and conditions of the MIT License. 
+A copy is available at https://github.com/Dogfalo/materialize/blob/master/LICENSE.
+The source code is available at https://github.com/Dogfalo/materialize.
 
 * Plotly
 

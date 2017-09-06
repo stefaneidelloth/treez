@@ -1,16 +1,19 @@
 package org.treez.core.console;
 
 import java.io.IOException;
+import java.io.PrintStream;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
-import org.eclipse.swt.graphics.Color;
+import org.apache.log4j.spi.ThrowableInformation;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.treez.core.monitor.TreezMonitor;
 
 /**
  * For writing to the eclipse console
@@ -38,46 +41,46 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 		Layout layout = this.getLayout();
 		String message = layout.format(event);
 
-		String[] throwableLines = event.getThrowableStrRep();
-
-		//write formatted message to TreezConsole
-		MessageConsole console = getConsole();
+		String treezMonitorId = event.getNDC();
+		MessageConsole console = getConsole(treezMonitorId);
 		if (console != null) {
+
+			Level level = event.getLevel();
+
 			try (
-					MessageConsoleStream out = console.newMessageStream();) {
-				out.println(message);
+					MessageConsoleStream stream = console.newMessageStream();) {
+
+				if (level.equals(Level.WARN)) {
+					stream.setColor(TreezMonitor.ORANGE);
+				} else if (level.equals(Level.ERROR)) {
+					stream.setColor(TreezMonitor.RED);
+				}
+
+				stream.println(message);
 			} catch (IOException exception) {
 				exception.printStackTrace();
 			}
 
-			if (throwableLines != null) {
-				try (
-						MessageConsoleStream out = console.newMessageStream();) {
-					out.setColor(new Color(null, 255, 0, 0));
-					for (String throwableLine : throwableLines) {
+			ThrowableInformation throwableInformation = event.getThrowableInformation();
 
-						out.println(throwableLine);
+			if (throwableInformation != null) {
+
+				Throwable throwable = throwableInformation.getThrowable();
+
+				try (
+						MessageConsoleStream stream = console.newMessageStream();) {
+					if (level.equals(Level.WARN)) {
+						stream.setColor(TreezMonitor.ORANGE);
+					} else if (level.equals(Level.ERROR)) {
+						stream.setColor(TreezMonitor.RED);
 					}
+
+					throwable.printStackTrace(new PrintStream(stream));
 
 				} catch (IOException exception) {
 					exception.printStackTrace();
 				}
 
-				/*
-				ThrowableInformation info = event.getThrowableInformation();
-				StackTraceElement element = info.getThrowable().getStackTrace()[0];
-				String filePath = element.getFileName();
-				int lineNumber = element.getLineNumber();
-				IPath path = Path.fromOSString(filePath);
-				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-				IHyperlink fileLink = new FileLink(file, null, -1, -1, lineNumber);
-				try {
-					console.addHyperlink(fileLink, 10, 5);
-				} catch (BadLocationException e) {
-					//TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				*/
 			}
 
 		}
@@ -94,11 +97,19 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 		return true;
 	}
 
-	private static MessageConsole getConsole() {
-		if (treezConsole == null) {
-			createTreezConsole();
+	/**
+	 * If a non-null jobId is specified: returns the console for the given jobId or null if no corresponding console has
+	 * been registered for the TreezMonitors. If the given jobId is null, the (single) TreezConsole is returned.
+	 */
+	private static MessageConsole getConsole(String treezMonitorId) {
+		if (treezMonitorId == null) {
+			if (treezConsole == null) {
+				createTreezConsole();
+			}
+			return treezConsole;
+		} else {
+			return TreezMonitor.getConsole(treezMonitorId);
 		}
-		return treezConsole;
 	}
 
 	/**

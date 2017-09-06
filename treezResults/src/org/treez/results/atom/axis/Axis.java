@@ -121,7 +121,7 @@ public class Axis extends GraphicsPropertiesPage {
 		axisSelection = graphSelection //
 				.append("g") //
 				.attr("class", "axis") //
-				.onMouseClick(this);
+				.onClick(this);
 		bindNameToId(axisSelection);
 	}
 

@@ -185,7 +185,7 @@ public class AdjustableAtom extends AbstractUiSynchronizingAtom<AdjustableAtom> 
 
 			controlAdaptionWrapper.setValue(newControlAdaption);
 		};
-		runUiJobBlocking(createControlAdaptionRunnable);
+		runUiTaskBlocking(createControlAdaptionRunnable);
 		AdjustableAtomControlAdaption controlAdaption = controlAdaptionWrapper.getValue();
 
 		return controlAdaption;

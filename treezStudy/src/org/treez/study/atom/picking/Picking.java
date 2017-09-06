@@ -33,7 +33,7 @@ import org.treez.core.atom.variablelist.NumberRangeProvider;
 import org.treez.core.atom.variablelist.VariableList;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.core.console.TreezMonitor;
+import org.treez.core.monitor.TreezMonitor;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.utils.Utils;
@@ -110,9 +110,9 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	//#region METHODS
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(
-			Composite parent,
-			FocusChangingRefreshable treeViewRefreshable) {
+	public
+			AbstractControlAdaption
+			createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
 		updateAvailableVariablesForVariableList();
 		AbstractControlAdaption controlAdaption = super.createControlAdaption(parent, treeViewRefreshable);
 		return controlAdaption;
@@ -307,7 +307,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 	@Override
 	public void execute(FocusChangingRefreshable refreshable) {
 		String jobTitle = "Picking '" + getName() + "'";
-		runNonUiJob(jobTitle, (monitor) -> {
+		runNonUiTask(jobTitle, (monitor) -> {
 			runStudy(refreshable, monitor);
 		});
 
@@ -516,7 +516,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 				//create subtask and sub monitor for progress monitor
 				monitor.setTaskName("=>Simulation #" + counter);
-				TreezMonitor subMonitor = new TreezMonitor(LOG, monitor);
+				TreezMonitor subMonitor = new TreezMonitor("Executing target", monitor, 1);
 
 				//execute model
 				ModelOutput modelOutput = model.runModel(modelInput, refreshable, subMonitor);

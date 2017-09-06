@@ -28,7 +28,6 @@ public class PropertyValueDataFunction<T> implements DataFunction<T> {
 
 	/**
 	 * Constructor
-	 * @param propertyName
 	 */
 	public PropertyValueDataFunction(JsEngine engine, String propertyName) {
 		this.engine = engine;

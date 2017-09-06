@@ -11,9 +11,6 @@ import org.treez.javafxd3.d3.core.Selection;
  * know that nodes are not bound to any data.
  * 
  * 
- * @param <T> 
- * @param <D>
- * 
  */
 public interface DataFunction<R> {
 

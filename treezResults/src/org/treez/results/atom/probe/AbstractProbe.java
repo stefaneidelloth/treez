@@ -39,7 +39,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 	public void execute(FocusChangingRefreshable refreshable) {
 		Objects.requireNonNull(refreshable);
 		afterCreateControlAdaptionHook();
-		runNonUiJob("AbstractProbe: execute", (monitor) -> runProbe(refreshable, monitor));
+		runNonUiTask("AbstractProbe: execute", (monitor) -> runProbe(refreshable, monitor));
 	}
 
 	/**
@@ -78,7 +78,7 @@ public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 
 			//collect probe data
 			collectProbeDataAndFillTable(table);
-			this.runUiJobNonBlocking(() -> {
+			this.runUiTaskNonBlocking(() -> {
 				if (refreshable != null) {
 					refreshable.refresh();
 				}

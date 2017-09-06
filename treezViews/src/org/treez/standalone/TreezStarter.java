@@ -15,6 +15,7 @@ import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.standallone.StandAloneWorkbench;
 import org.treez.testutils.TestUtils;
 import org.treez.views.graphics.GraphicsViewPart;
+import org.treez.views.monitor.MonitorViewPart;
 import org.treez.views.properties.PropertyViewPart;
 import org.treez.views.tree.TreeViewPart;
 import org.treez.views.tree.rootAtom.Root;
@@ -29,6 +30,8 @@ public final class TreezStarter {
 	private static Composite propertyContainer;
 
 	private static Composite graphicsContainer;
+
+	private static Composite monitorContainer;
 
 	//#end region
 
@@ -67,10 +70,14 @@ public final class TreezStarter {
 		GraphicsViewPart graphicsView = new GraphicsViewPart();
 		StandAloneWorkbench.registerView(GraphicsViewPart.ID, graphicsView);
 
+		MonitorViewPart monitoringView = new MonitorViewPart();
+		StandAloneWorkbench.registerView(MonitorViewPart.ID, monitoringView);
+
 		//build views
 		treeView.createPartControl(treeContainer);
 		propertyView.createPartControl(propertyContainer);
 		graphicsView.createPartControl(graphicsContainer);
+		monitoringView.createPartControl(monitorContainer);
 
 		//set tree content
 		setTreeContent(root, treeView);
@@ -118,6 +125,9 @@ public final class TreezStarter {
 
 		Composite graphicsParentContainer = createParentComposite(restContainer);
 		graphicsContainer = new Composite(graphicsParentContainer, SWT.NONE);
+
+		Composite monitorParentContainer = createParentComposite(restContainer);
+		monitorContainer = new Composite(monitorParentContainer, SWT.NONE);
 
 		final double subRatio = 0.5;
 		@SuppressWarnings("unused")

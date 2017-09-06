@@ -7,7 +7,7 @@ import org.treez.core.Activator;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.base.AbstractStringAttributeAtom;
 import org.treez.core.atom.base.annotation.IsParameter;
-import org.treez.core.swt.JavaFxWrapperForSwt;
+import org.treez.javafxd3.javafx.JavaFxWrapperForSwt;
 
 /**
  * Plots a functional expression

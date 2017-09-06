@@ -4,6 +4,7 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.treez.views.graphics.GraphicsViewPart;
+import org.treez.views.monitor.MonitorViewPart;
 import org.treez.views.properties.PropertyViewPart;
 import org.treez.views.tree.TreeViewPart;
 
@@ -19,6 +20,8 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 	private static final String TREEZ_PROPERTIES_VIEW_ID = PropertyViewPart.ID;
 
 	private static final String TREEZ_GRAPHICS_VIEW_ID = GraphicsViewPart.ID;
+
+	private static final String TREEZ_MONITOR_VIEW_ID = MonitorViewPart.ID;
 
 	private static final String PROJECT_EXPLORER_ID = IPageLayout.ID_PROJECT_EXPLORER;
 
@@ -47,6 +50,9 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 
 		//add graphics view as tab on editor area
 		middleFolderLayout.addView(TREEZ_GRAPHICS_VIEW_ID);
+
+		//add monitor view as tab on editor area
+		middleFolderLayout.addView(TREEZ_MONITOR_VIEW_ID);
 
 		//create tab folder left to middle tab folder
 		final float widthRatioTreezTabFolderToProertyView = 0.4f;

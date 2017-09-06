@@ -171,7 +171,7 @@ public class Graph extends GraphicsPropertiesPage {
 		//create rect
 		rectSelection = graphGroupSelection //
 				.append("rect") //
-				.onMouseClick(this);
+				.onClick(this);
 
 		updatePlotWithD3(d3);
 		return graphGroupSelection;

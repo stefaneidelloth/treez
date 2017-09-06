@@ -19,10 +19,10 @@ import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.core.console.TreezMonitor;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.table.TableSource;
 import org.treez.core.data.table.TableSourceType;
+import org.treez.core.monitor.ObservableMonitor;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.data.column.Columns;
@@ -382,7 +382,7 @@ public class TableImport extends AbstractModel implements TableSource {
 	 * Runs the model with the current model state and creates its ModelOutput.
 	 */
 	@Override
-	public ModelOutput runModel(FocusChangingRefreshable refreshable, TreezMonitor monitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, ObservableMonitor monitor) {
 
 		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 

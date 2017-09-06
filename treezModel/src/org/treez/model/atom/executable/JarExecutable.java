@@ -150,7 +150,7 @@ public class JarExecutable extends Executable {
 
 	@Override
 	public void refreshStatus() {
-		AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+		AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> {
 			String infoTextMessage = buildCommand();
 			// LOG.debug("Updating info text: " + infoTextMessage);
 			commandInfo.set(infoTextMessage);

@@ -28,11 +28,6 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 	private Adaptable invisibleRoot = null;
 
 	/**
-	 * The root
-	 */
-	private Adaptable root = null;
-
-	/**
 	 * The class name(s) of the objects that are shown in the tree. This can be used to filter the elements in a model
 	 * to only show nodes of a particular class (and their parent nodes). Set targetClassName to null if you want to
 	 * show all classes. Use comma separated class names if you want to show several classes.
@@ -128,9 +123,6 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 	/**
 	 * Checks if a given AbstractAtom<?> is of the type that should be shown in the tree or if its children contain any
 	 * child that has the wanted type
-	 *
-	 * @param atom
-	 * @return
 	 */
 	private boolean checkIfAdaptableShouldBeShown(AbstractAtom<?> atom) {
 
@@ -190,9 +182,6 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 
 	/**
 	 * Transforms an adaptable to a TreeNodeAdaption
-	 *
-	 * @param object
-	 * @return
 	 */
 	public static TreeNodeAdaption toTreeNode(Object object) {
 		Objects.requireNonNull(object, "Object must not be null.");
@@ -208,14 +197,8 @@ public class TreeViewContentProvider implements ITreeContentProvider {
 
 	//#region ACCESSORS
 
-	public Adaptable getRoot() {
-		return root;
-	}
-
 	/**
 	 * Returns the invisible root of the content provider
-	 *
-	 * @return
 	 */
 	public Adaptable getInvisibleRoot() {
 		return invisibleRoot;

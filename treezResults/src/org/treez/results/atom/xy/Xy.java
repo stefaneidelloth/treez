@@ -105,7 +105,7 @@ public class Xy extends GraphicsPropertiesPage implements LegendContributor {
 		xySelection = graphOrXySeriesSelection //
 				.insert("g", ".axis") //
 				.attr("class", "xy") //
-				.onMouseClick(this);
+				.onClick(this);
 		bindNameToId(xySelection);
 
 		updatePlotWithD3(d3);

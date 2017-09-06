@@ -99,7 +99,7 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 		barSelection = graphOrBarSeriesSelection //
 				.insert("g", ".axis") //
 				.attr("class", "bar") //
-				.onMouseClick(this);
+				.onClick(this);
 		bindNameToId(barSelection);
 
 		updatePlotWithD3(d3);
@@ -287,11 +287,9 @@ public class Bar extends GraphicsPropertiesPage implements LegendContributor {
 	}
 
 	@Override
-	public Selection createLegendSymbolGroup(
-			D3 d3,
-			Selection parentSelection,
-			int symbolLengthInPx,
-			Refreshable refreshable) {
+	public
+			Selection
+			createLegendSymbolGroup(D3 d3, Selection parentSelection, int symbolLengthInPx, Refreshable refreshable) {
 		Selection symbolSelection = parentSelection //
 				.append("rect") //
 				.classed("bar-legend-entry-symbol", true);

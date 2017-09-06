@@ -33,7 +33,7 @@ public class TreezSpecificConsoleAppender extends AppenderSkeleton {
 
 		Layout layout = this.getLayout();
 
-		AbstractUiSynchronizingAtom.runNonUiJob("append", () -> {
+		AbstractUiSynchronizingAtom.runNonUiTask("append", () -> {
 			try (
 					IOConsoleOutputStream out = treezConsole.newOutputStream();) {
 

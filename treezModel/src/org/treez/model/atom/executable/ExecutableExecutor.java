@@ -1,6 +1,7 @@
 package org.treez.model.atom.executable;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -8,9 +9,11 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteResultHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.eclipse.ui.console.IOConsoleOutputStream;
+import org.eclipse.ui.console.MessageConsole;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
+import org.treez.core.monitor.ObservableMonitor;
 
 public class ExecutableExecutor {
 
@@ -30,9 +33,9 @@ public class ExecutableExecutor {
 
 	private String outputMessages = "";
 
-	private LoggingOutputStream outputStream;
+	private OutputStream outputStream;
 
-	private LoggingOutputStream errorStream;
+	private ErrorStream errorStream;
 
 	//#end region
 
@@ -48,11 +51,8 @@ public class ExecutableExecutor {
 
 	/**
 	 * Executes the given command and returns true if it ended successfully Also updates the executionStatusInfo
-	 *
-	 * @param command
-	 * @return
 	 */
-	public boolean executeCommand(String command) {
+	public boolean executeCommand(String command, ObservableMonitor executableMonitor) {
 
 		executionIsFinished = false;
 
@@ -60,8 +60,11 @@ public class ExecutableExecutor {
 		errorMessages = "";
 		outputMessages = "";
 
-		outputStream = new LoggingOutputStream(LOG, Level.INFO);
-		errorStream = new LoggingOutputStream(LOG, Level.ERROR);
+		MessageConsole console = executableMonitor.getConsole();
+		IOConsoleOutputStream stream = console.newOutputStream();
+
+		outputStream = stream;
+		errorStream = new ErrorStream(stream);
 
 		CommandLine cmdLine = CommandLine.parse(command);
 
@@ -83,7 +86,7 @@ public class ExecutableExecutor {
 
 			@Override
 			public void onProcessComplete(int exitValue) {
-				AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+				AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> {
 					postProcessCompletedProcess(exitValue);
 				});
 
@@ -93,7 +96,7 @@ public class ExecutableExecutor {
 
 			@Override
 			public void onProcessFailed(ExecuteException exception) {
-				AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+				AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> {
 					postProcessFailedProcess(exception);
 				});
 
@@ -134,11 +137,6 @@ public class ExecutableExecutor {
 		waitForExecutionToBeFinished(command, watchdog);
 	}
 
-	/**
-	 * Waits for the process execution to be finished
-	 *
-	 * @param command
-	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
 	private void waitForExecutionToBeFinished(String command, ExecuteWatchdog watchdog) {
 		while (!executionIsFinished) {
@@ -158,7 +156,8 @@ public class ExecutableExecutor {
 					errorStream.reset();
 					watchdog.destroyProcess();
 					executionIsFinished = true;
-					Exception exception = new Exception(errorData);
+					String message = "Error while executing system command '" + command + "':\n" + errorData;
+					Exception exception = new IllegalStateException(message);
 					postProcessFailedProcess(exception);
 				}
 
@@ -182,6 +181,11 @@ public class ExecutableExecutor {
 		String statusMessage = outputMessages + currentIssueMessage;
 
 		boolean emptyStatus = statusMessage.isEmpty();
+		if (emptyStatus) {
+			statusMessage = "Finished execution";
+		}
+		final String executionStatus = statusMessage;
+		AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> executable.executionStatusInfo.set(executionStatus));
 
 		boolean noIssues = currentIssueMessage.isEmpty();
 		if (noIssues) {
@@ -190,12 +194,6 @@ public class ExecutableExecutor {
 			executable.highlightError();
 		}
 
-		if (emptyStatus) {
-			statusMessage = "Finished execution";
-		}
-		executable.executionStatusInfo.set(statusMessage);
-		LOG.info(statusMessage);
-
 	}
 
 	private void postProcessFailedProcess(Exception exception) {
@@ -203,10 +201,10 @@ public class ExecutableExecutor {
 		String statusMessage = "Process execution failed:";
 		issueMessage = statusMessage;
 		LOG.error(statusMessage, exception);
-		AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> executable.executionStatusInfo.set(statusMessage));
+		AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> executable.executionStatusInfo.set(statusMessage));
 	}
 
-	private static void closeStreams(LoggingOutputStream out, LoggingOutputStream err) {
+	private static void closeStreams(OutputStream out, OutputStream err) {
 		try {
 			out.flush();
 			out.close();

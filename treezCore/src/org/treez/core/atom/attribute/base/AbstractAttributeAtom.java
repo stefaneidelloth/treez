@@ -25,18 +25,15 @@ import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.ActionSeparator;
 import org.treez.core.treeview.action.TreeViewerAction;
 
-import com.sun.javafx.binding.ExpressionHelper;
-
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-
 /**
  * Abstract base class for all AttributeAtoms. See the package description for more information. The second generic type
  * T determines the type of the represented value, e.g. Double or String.
  */
 public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T>, T>
 		extends
-		AbstractAttributeParentAtom<A> implements Attribute<T> {
+		AbstractAttributeParentAtom<A>
+		implements
+		Attribute<T> {
 
 	//#region ATTRIBUTES
 
@@ -75,8 +72,6 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 
 	private boolean isVisible = true;
 
-	private ExpressionHelper<T> javaFxListenerHelper;
-
 	protected Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	//#end region
@@ -91,14 +86,16 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	/**
 	 * Copy constructor
 	 */
-	public AbstractAttributeAtom(AbstractAttributeAtom<A, T> attributeAtomToCopy) {
-		super(attributeAtomToCopy);
+	public AbstractAttributeAtom(AbstractAttributeAtom<A, T> atomToCopy) {
+		super(atomToCopy);
 		//modify listeners are not copied
 		modifyListeners = new HashMap<>();
-		attributeValue = CopyHelper.copyAttributeValue(attributeAtomToCopy.attributeValue);
-		isInitialized = new Boolean(attributeAtomToCopy.isInitialized);
-		modifyListenersEnabled = attributeAtomToCopy.modifyListenersEnabled;
-
+		attributeValue = CopyHelper.copyAttributeValue(atomToCopy.attributeValue);
+		isInitialized = atomToCopy.isInitialized;
+		modifyListenersEnabled = atomToCopy.modifyListenersEnabled;
+		isEnabled = atomToCopy.isEnabled;
+		isVisible = atomToCopy.isVisible;
+		backgroundColor = atomToCopy.backgroundColor;
 	}
 
 	//#end region
@@ -115,9 +112,9 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 	 * @param parent
 	 * @return
 	 */
-	public abstract AbstractAttributeAtom<A, T> createAttributeAtomControl(
-			Composite parent,
-			FocusChangingRefreshable treeViewerRefreshable);
+	public abstract
+			AbstractAttributeAtom<A, T>
+			createAttributeAtomControl(Composite parent, FocusChangingRefreshable treeViewerRefreshable);
 
 	/**
 	 * Refreshes the control of the AttributeAtom after the attribute value has been set by calling setValue()
@@ -206,39 +203,12 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 				consumer.consume();
 			}
 
-			//trigger JavaFx change listeners
-			fireJavaFxValueChangedEvent();
-
 		}
 	}
 
 	//#end region
 
 	//#region JAVAFX CHANGE LISTENERS (for implementing JavaFx ObservableValue)
-
-	@Override
-	public void addListener(ChangeListener<? super T> listener) {
-		javaFxListenerHelper = ExpressionHelper.addListener(javaFxListenerHelper, this, listener);
-	}
-
-	@Override
-	public void removeListener(ChangeListener<? super T> listener) {
-		javaFxListenerHelper = ExpressionHelper.removeListener(javaFxListenerHelper, listener);
-	}
-
-	@Override
-	public void addListener(InvalidationListener listener) {
-		javaFxListenerHelper = ExpressionHelper.addListener(javaFxListenerHelper, this, listener);
-	}
-
-	@Override
-	public void removeListener(InvalidationListener listener) {
-		javaFxListenerHelper = ExpressionHelper.removeListener(javaFxListenerHelper, listener);
-	}
-
-	protected void fireJavaFxValueChangedEvent() {
-		ExpressionHelper.fireValueChangedEvent(javaFxListenerHelper);
-	}
 
 	//#end region
 
@@ -399,8 +369,6 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 
 	/**
 	 * Returns the object that represents the property value. Might be overridden by implementing classes.
-	 *
-	 * @return
 	 */
 	@Override
 	public T get() {
@@ -411,20 +379,12 @@ public abstract class AbstractAttributeAtom<A extends AbstractAttributeAtom<A, T
 		}
 	}
 
-	/**
-	 * For implementing javafx ObservableValue
-	 */
-	@Override
-	public T getValue() {
-		return get();
-	}
-
 	@Override
 	public A set(T value) {
 		if (value != attributeValue) {
 			attributeValue = value;
 			setInitialized();
-			AbstractUiSynchronizingAtom.runUiJobBlocking(() -> refreshAttributeAtomControl());
+			AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> refreshAttributeAtomControl());
 			triggerListeners();
 		}
 		return getThis();

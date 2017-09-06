@@ -3,23 +3,7 @@
 <plugin>
    <extension-point id="org.treez.extensionPoint.atomContextMenu" name="AtomContextMenuExtensionPoint" schema="schema/org.treez.extensionPoint.atomContextMenu.exsd"/>
 
-   <extension
-         id="org.treez.core.preferences"
-         point="org.eclipse.ui.preferencePages">
-      <page           
-            class="org.treez.core.atom.adjustable.preferencePage.PreferencePage"
-            id="org.treez.core.preferences.page"
-            name="TreezAdjustableAtom">
-      </page>
-   </extension>
-   
-   <extension
-         id="org.treez.core.defaultValues"
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.treez.core.atom.adjustable.preferencePage.DefaultValues">
-      </initializer>
-   </extension>
+  
    
    <extension   		
          point="org.eclipse.help.toc">

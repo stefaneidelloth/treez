@@ -220,7 +220,7 @@ public class InputFileGenerator extends AdjustableAtom implements InputPathProvi
 	}
 
 	protected void refreshStatus() {
-		AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+		AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> {
 
 			String modifiedInputPath = getModifiedInputFilePath();
 			inputPathInfo.set(modifiedInputPath);

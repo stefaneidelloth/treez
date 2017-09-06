@@ -1,5 +1,7 @@
 package org.treez.javafxd3.d3.core;
 
+import org.w3c.dom.events.EventListener;
+
 /**
  * Represents an object that has been returned
  * from java script and hides implementation details
@@ -86,5 +88,12 @@ public interface JsObject  {
 		 * a DOM element
 		 */
 		boolean isElement();
+		
+
+		/**
+		 * Adds the given listener if the wrapped JavaScript object represents an EventTarget.
+		 * Otherwise an IllegalStateException is thrown. 
+		 */
+		public abstract void addEventListener(String eventName, EventListener listener, boolean useCapture);
 
 }

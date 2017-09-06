@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.treez.javafxd3.d3.arrays.Array;
+import org.treez.javafxd3.d3.core.JsEngine;
+import org.treez.javafxd3.d3.core.JsObject;
 import org.treez.javafxd3.d3.core.Selection;
+import org.w3c.dom.events.EventListener;
 
 import javafx.geometry.BoundingBox;
-import org.treez.javafxd3.d3.core.JsEngine;
 import netscape.javascript.JSException;
-import org.treez.javafxd3.d3.core.JsObject;
 
 /**
  * 
@@ -39,6 +40,11 @@ public class Element extends Node {
 			return null;
 		}
 		return new Node(engine, result);
+	}	
+	
+	public void addEventListener(String eventName, EventListener listener, boolean useCapture) {
+		JsObject jsObject = getJsObject();
+		jsObject.addEventListener(eventName, listener, useCapture);		
 	}
 
 	public String getTagName() {
@@ -185,6 +191,8 @@ public class Element extends Node {
 			return Inspector.getInspectionInfo(jsObject);
 		}
 	}
+
+	
 
 	
 

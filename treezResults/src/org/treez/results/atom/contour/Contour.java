@@ -350,7 +350,7 @@ public class Contour extends GraphicsPropertiesPage {
 		Selection contourSelection = graphSelection //
 				.insert("g", ".axis") //
 				.attr("class", "contour-group") //
-				.onMouseClick(this);
+				.onClick(this);
 		bindNameToId(contourSelection);
 		return contourSelection;
 	}

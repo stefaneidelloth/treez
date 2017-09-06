@@ -2,6 +2,8 @@ package org.treez.javafxd3.javafx;
 
 import org.treez.javafxd3.d3.core.JsObject;
 import org.w3c.dom.Element;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
 
 import netscape.javascript.JSObject;
 
@@ -94,6 +96,19 @@ public class JavaFxJsObject implements JsObject {
 		return value;
 	}
 	
+	
+	@Override
+	public void addEventListener(String eventName, EventListener listener, boolean useCapture) {
+		boolean isEventTarget = wrappedJSObject instanceof EventTarget;
+		if (isEventTarget){
+			EventTarget eventTarget = (EventTarget) wrappedJSObject;
+			eventTarget.addEventListener(eventName, listener, useCapture);		
+		} else {
+			String message = "This object is not an EventTarget. Therefore the listener could not be added.";
+			throw new IllegalStateException(message);
+		}		
+	}
+	
 	@Override 
 	public int hashCode(){
 		return wrappedJSObject.hashCode();
@@ -122,6 +137,8 @@ public class JavaFxJsObject implements JsObject {
 	public boolean isElement() {
 		return wrappedJSObject instanceof Element;
 	}
+
+	
 	
 	//#end region
 

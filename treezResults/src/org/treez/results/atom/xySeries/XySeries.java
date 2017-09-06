@@ -326,7 +326,7 @@ public class XySeries extends AbstractGraphicsAtom implements LegendContributorP
 		//create new series group
 		seriesGroupSelection = graphSelection //
 				.append("g") //
-				.onMouseClick(this);
+				.onClick(this);
 		bindNameToId(seriesGroupSelection);
 
 		AbstractGraphicsAtom.bindDisplayToBooleanAttribute("hidePage", seriesGroupSelection, hide);

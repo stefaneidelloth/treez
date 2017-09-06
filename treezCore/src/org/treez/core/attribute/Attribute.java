@@ -1,11 +1,9 @@
 package org.treez.core.attribute;
 
-import javafx.beans.value.ObservableValue;
-
 /**
  * Represents an attribute
  */
-public interface Attribute<T> extends ObservableValue<T> {
+public interface Attribute<T> {
 
 	/**
 	 * Returns the attribute value

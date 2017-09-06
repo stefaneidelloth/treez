@@ -30,37 +30,20 @@ public class Activator extends AbstractActivator {
 
 	//#region METHODS
 
-	/**
-	 * Returns the absolute path
-	 *
-	 * @return
-	 */
 	public static String getAbsolutePathStatic() {
 		return getInstance().getAbsolutePath();
 	}
 
-	/**
-	 * @param baseImage
-	 * @param string
-	 * @return
-	 */
 	public static Image getOverlayImageStatic(Image baseImage, String string) {
 		return getInstance().getOverlayImage(baseImage, string);
 	}
 
-	/**
-	 * @param imageName
-	 * @return
-	 */
 	public static Image getImage(String imageName) {
 		return getInstance().getImageFromIconFolder(imageName);
 	}
 
 	/**
 	 * Returns an image descriptor from an image in the icon folder
-	 *
-	 * @param name
-	 * @return
 	 */
 	public static ImageDescriptor getImageDescriptorStatic(String name) {
 		return getInstance().getImageDescriptorFromInstance(name);
@@ -70,19 +53,11 @@ public class Activator extends AbstractActivator {
 
 	//#region ACCESSORS
 
-	/**
-	 * Overloads the parent method
-	 */
 	@Override
 	public String getPluginId() {
 		return PLUGIN_ID;
 	}
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
 	public static AbstractActivator getInstance() {
 		if (instance == null) {
 			instance = new Activator();
@@ -93,7 +68,6 @@ public class Activator extends AbstractActivator {
 	@Override
 	protected void setInstance(AbstractActivator abstractActivator) {
 		instance = abstractActivator;
-
 	}
 
 	//#end region

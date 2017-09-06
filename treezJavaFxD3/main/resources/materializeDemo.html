@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html style="font-size:3px;font-family: 'Segoe UI', Consolas, monospace;">
+
+<head>
+<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css"  media="screen,projection">
+</head>
+<body style="font-size:12px;">
+ <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.min.js"></script>
+
+
+
+<ul class="collapsible" data-collapsible="expandable">
+    <li>
+      <div class="collapsible-header">header</div>
+      <div class="collapsible-body">body</div>
+    </li>
+
+  </ul>
+
+  
+  <script type="text/javascript">
+  
+  $( document ).ready(function() {
+    console.log( "ready!" );
+	
+	$('.collapsible').collapsible({onOpen: function(element) { alert('Open'); }});
+	
+  });
+
+   
+</script>
+
+
+</body>
+</html>

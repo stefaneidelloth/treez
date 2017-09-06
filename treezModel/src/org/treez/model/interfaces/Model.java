@@ -1,7 +1,7 @@
 package org.treez.model.interfaces;
 
 import org.treez.core.adaptable.FocusChangingRefreshable;
-import org.treez.core.console.TreezMonitor;
+import org.treez.core.monitor.ObservableMonitor;
 import org.treez.model.input.ModelInput;
 import org.treez.model.output.ModelOutput;
 
@@ -18,13 +18,13 @@ public interface Model {
 	 *
 	 * @returns an AbstractAtom<?> that represents the results
 	 */
-	ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, TreezMonitor monitor);
+	ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, ObservableMonitor monitor);
 
 	/**
 	 * Runs this model with the current model state. The given Refreshable might be refreshed if it is not null. The
 	 * given TreezMonitor might be used to update the progress if it is not null.
 	 */
-	ModelOutput runModel(FocusChangingRefreshable refreshable, TreezMonitor monitor);
+	ModelOutput runModel(FocusChangingRefreshable refreshable, ObservableMonitor monitor);
 
 	/**
 	 * Returns true if this Model must be run manually. A manual Model can be executed directly but is not executed by

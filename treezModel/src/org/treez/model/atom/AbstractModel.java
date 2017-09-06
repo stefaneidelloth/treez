@@ -3,15 +3,13 @@ package org.treez.model.atom;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.base.AbstractAtom;
-import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
-import org.treez.core.console.TreezMonitor;
+import org.treez.core.monitor.ObservableMonitor;
+import org.treez.core.monitor.TreezMonitor;
 import org.treez.data.output.OutputAtom;
 import org.treez.model.input.ModelInput;
 import org.treez.model.interfaces.Model;
@@ -74,7 +72,9 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	 * Remotely runs the model with the given ModelInput
 	 */
 	@Override
-	public ModelOutput runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, TreezMonitor monitor) {
+	public
+			ModelOutput
+			runModel(ModelInput modelInput, FocusChangingRefreshable refreshable, ObservableMonitor monitor) {
 
 		//assign the model input to variable values (also assigns model input for sub models)
 		assignModelInput(modelInput);
@@ -106,19 +106,17 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 			this.setJobId(jobIndex);
 
 			//set variable values
-			AbstractUiSynchronizingAtom.runUiJobBlocking(() -> {
-				List<String> allVariableModelPaths = modelInput.getAllVariableModelPaths();
-				for (String variableModelPath : allVariableModelPaths) {
-					Object quantityToAssign = modelInput.getVariableValue(variableModelPath);
-					AbstractAttributeAtom<?, Object> variableAtom = getVariableAtom(variableModelPath);
-					if (variableAtom != null) {
-						variableAtom.set(quantityToAssign);
-					} else {
-						String message = "Could not get variable atom for model path " + variableModelPath;
-						throw new IllegalStateException(message);
-					}
+			List<String> allVariableModelPaths = modelInput.getAllVariableModelPaths();
+			for (String variableModelPath : allVariableModelPaths) {
+				Object quantityToAssign = modelInput.getVariableValue(variableModelPath);
+				AbstractAttributeAtom<?, Object> variableAtom = getVariableAtom(variableModelPath);
+				if (variableAtom != null) {
+					variableAtom.set(quantityToAssign);
+				} else {
+					String message = "Could not get variable atom for model path " + variableModelPath;
+					throw new IllegalStateException(message);
 				}
-			});
+			}
 
 		}
 	}
@@ -128,14 +126,15 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	 */
 	@Override
 	public void execute(FocusChangingRefreshable refreshable) {
-		runNonUiJob("AbstractModel: execute", (monitor) -> runModel(refreshable, monitor));
-	}
-
-	private ModelOutput runModel(FocusChangingRefreshable refreshable, IProgressMonitor monitor) {
-
-		SubMonitor subMonitor = SubMonitor.convert(monitor);
-		TreezMonitor treezMonitor = new TreezMonitor("Treez console", subMonitor);
-		return runModel(refreshable, treezMonitor);
+		runNonUiTask("AbstractModel: execute", (monitor) -> {
+			try {
+				TreezMonitor treezMonitor = new TreezMonitor("Treez console", monitor, 1);
+				runModel(refreshable, treezMonitor);
+			} catch (Exception exception) {
+				LOG.error("Could not execute model '" + getName() + "'!", exception);
+				monitor.done();
+			}
+		});
 	}
 
 	/**
@@ -144,7 +143,7 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	 * @return
 	 */
 	@Override
-	public ModelOutput runModel(FocusChangingRefreshable refreshable, TreezMonitor monitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, ObservableMonitor monitor) {
 
 		LOG.info("Running " + this.getClass().getSimpleName() + " '" + getName() + "'");
 
@@ -213,10 +212,9 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	 *
 	 * @param wantedClass
 	 */
-	protected ModelOutput runChildModel(
-			Class<?> wantedClass,
-			FocusChangingRefreshable refreshable,
-			TreezMonitor monitor) {
+	protected
+			ModelOutput
+			runChildModel(Class<?> wantedClass, FocusChangingRefreshable refreshable, ObservableMonitor monitor) {
 		for (AbstractAtom<?> child : children) {
 			Class<?> currentClass = child.getClass();
 			boolean hasWantedClass = currentClass.equals(wantedClass);

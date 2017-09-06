@@ -2,6 +2,7 @@ package org.treez.core.atom.uisynchronizing;
 
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,6 +23,8 @@ import org.treez.core.atom.base.AtomControlAdaption;
 public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchronizingAtom<A>> extends AbstractAtom<A>
 		implements
 		FocusChangingRefreshable {
+
+	private static Logger LOG = Logger.getLogger(AbstractUiSynchronizingAtom.class);
 
 	//#region ATTRIBUTES
 
@@ -51,9 +54,9 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 	//#region METHODS
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(
-			Composite parent,
-			FocusChangingRefreshable treeViewRefreshable) {
+	public
+			AbstractControlAdaption
+			createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
 
 		//store refreshable tree view
 		this.treeViewRefreshable = treeViewRefreshable;
@@ -69,7 +72,7 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 			AtomControlAdaption newControlAdaption = new AtomControlAdaption(parent, this);
 			controlAdaptionWrapper.setValue(newControlAdaption);
 		};
-		runUiJobBlocking(createControlAdaptionRunnable);
+		runUiTaskBlocking(createControlAdaptionRunnable);
 		AtomControlAdaption controlAdaption = controlAdaptionWrapper.getValue();
 
 		return controlAdaption;
@@ -91,16 +94,23 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 	/**
 	 * Executes a (long running job) without blocking the UI. The calling method will "immediately" continue.
 	 */
-	public static synchronized void runNonUiJob(String jobName, NonUiJob nonUiJobRunnable) {
-		Objects.requireNonNull(nonUiJobRunnable, "Runnable must not be null.");
-		Job job = new Job(jobName) {
+	public static synchronized void runNonUiTask(String taskName, NonUiJob nonUiJob) {
+		Objects.requireNonNull(nonUiJob, "Runnable must not be null.");
+		Job job = new Job(taskName) {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
 				SubMonitor subMonitor = SubMonitor.convert(monitor);
-				nonUiJobRunnable.run(subMonitor);
-				return Status.OK_STATUS;
+				try {
+					nonUiJob.run(subMonitor);
+					return Status.OK_STATUS;
+				} catch (Exception exception) {
+					String message = "Could not run non-ui job.";
+					LOG.error(message, exception);
+					return Status.CANCEL_STATUS;
+				}
+
 			}
 		};
 
@@ -108,14 +118,20 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 		job.schedule();
 	}
 
-	public static synchronized void runNonUiJob(String jobName, Runnable nonUiJobRunnable) {
-		Objects.requireNonNull(nonUiJobRunnable, "Runnable must not be null.");
-		Job job = new Job(jobName) {
+	public static synchronized void runNonUiTask(String taskName, Runnable taskRunnable) {
+		Objects.requireNonNull(taskRunnable, "Runnable must not be null.");
+		Job job = new Job(taskName) {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				nonUiJobRunnable.run();
-				return Status.OK_STATUS;
+				try {
+					taskRunnable.run();
+					return Status.OK_STATUS;
+				} catch (Exception exception) {
+					String message = "Could not run non-ui job.";
+					LOG.error(message, exception);
+					return Status.CANCEL_STATUS;
+				}
 			}
 		};
 
@@ -124,38 +140,40 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 	}
 
 	/**
-	 * Can be used from within non-UI jobs (see method runNonUiJob) to execute a runnable in the UI thread. The calling
-	 * method will "immediately" continue.
-	 *
-	 * @param uiJobRunnable
+	 * Execute a runnable in the UI thread. The calling method will "immediately" continue. Please make sure to catch
+	 * exceptions inside the runnable. Otherwise exception information might get lost.
 	 */
-	public static synchronized void runUiJobNonBlocking(Runnable uiJobRunnable) {
-		Objects.requireNonNull(uiJobRunnable, "Runnable must not be null.");
+	public static synchronized void runUiTaskNonBlocking(Runnable taskRunnable) {
+		Objects.requireNonNull(taskRunnable, "Runnable must not be null.");
 
 		Display display = Display.getDefault();
 		if (display == null || display.isDisposed()) {
 			return;
 		}
 
-		display.asyncExec(uiJobRunnable);
+		display.asyncExec(taskRunnable);
 
 	}
 
 	/**
-	 * Can be used from within non-UI jobs (see method runNonUiJob) to execute a runnable in the UI thread. The calling
-	 * method will wait until this method is finished before it continues.
-	 *
-	 * @param uiJobRunnable
+	 * Can be used from within non-UI tasks (see method runNonUiTask) to execute a runnable in the UI thread. The
+	 * calling method will wait until this method is finished before it continues.
 	 */
-	public static synchronized void runUiJobBlocking(Runnable uiJobRunnable) {
-		Objects.requireNonNull(uiJobRunnable, "Runnable must not be null.");
+	public static synchronized void runUiTaskBlocking(Runnable taskRunnable) {
+		Objects.requireNonNull(taskRunnable, "Runnable must not be null.");
 
 		Display display = Display.getDefault();
 		if (display == null || display.isDisposed()) {
 			return;
 		}
 
-		display.syncExec(uiJobRunnable);
+		try {
+			display.syncExec(taskRunnable);
+		} catch (Exception exception) {
+			String message = "Could not execute blocking UI job";
+			LOG.error(message, exception);
+			throw new IllegalStateException(message, exception);
+		}
 
 	}
 
@@ -165,7 +183,7 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 	@Override
 	public synchronized void refresh() {
 
-		runUiJobNonBlocking(() -> {
+		runUiTaskNonBlocking(() -> {
 			if (treeViewRefreshable != null) {
 				treeViewRefreshable.refresh();
 			}
@@ -179,7 +197,7 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 	@Override
 	public synchronized void setFocus(AbstractAtom<?> atomToFocus) {
 
-		runUiJobNonBlocking(() -> {
+		runUiTaskNonBlocking(() -> {
 			if (treeViewRefreshable != null) {
 				treeViewRefreshable.setFocus(atomToFocus);
 			}

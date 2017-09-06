@@ -1,6 +1,6 @@
 package org.treez.example.sweep;
 
-import org.treez.core.atom.variablefield.DoubleVariableField;
+import org.treez.core.atom.variablefield.IntegerVariableField;
 import org.treez.core.scripting.ModelProvider;
 import org.treez.data.table.nebula.Table;
 import org.treez.model.atom.Models;
@@ -10,7 +10,7 @@ import org.treez.model.atom.inputFileGenerator.InputFileGenerator;
 import org.treez.model.atom.tableImport.TableImport;
 import org.treez.results.atom.results.Results;
 import org.treez.study.atom.Studies;
-import org.treez.study.atom.range.DoubleVariableRange;
+import org.treez.study.atom.range.IntegerVariableRange;
 import org.treez.study.atom.sweep.Sweep;
 import org.treez.views.tree.rootAtom.Root;
 
@@ -29,11 +29,11 @@ public class SweepDemo extends ModelProvider {
 		GenericInputModel genericModel = new GenericInputModel("genericModel");
 		models.addChild(genericModel);
 
-		DoubleVariableField x = new DoubleVariableField("x");
+		IntegerVariableField x = new IntegerVariableField("x");
 		x.setValueString("10");
 		genericModel.addChild(x);
 
-		DoubleVariableField y = new DoubleVariableField("y");
+		IntegerVariableField y = new IntegerVariableField("y");
 		y.setValueString("20");
 		genericModel.addChild(y);
 
@@ -75,12 +75,12 @@ public class SweepDemo extends ModelProvider {
 		sweep.sourceModelPath.set("root.models.genericModel");
 		studies.addChild(sweep);
 
-		DoubleVariableRange xRange = new DoubleVariableRange("x");
+		IntegerVariableRange xRange = new IntegerVariableRange("x");
 		sweep.addChild(xRange);
 		xRange.setRelativeSourceVariableModelPath("x");
 		xRange.setRangeValueString("{1,2,3,4,5,6,7,8,9}");
 
-		DoubleVariableRange yRange = new DoubleVariableRange("y");
+		IntegerVariableRange yRange = new IntegerVariableRange("y");
 		sweep.addChild(yRange);
 		yRange.setRelativeSourceVariableModelPath("y");
 		yRange.setRangeValueString("{10,20,30,40,50,60,70,80,90}");

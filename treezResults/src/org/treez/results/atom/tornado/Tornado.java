@@ -94,7 +94,7 @@ public class Tornado extends GraphicsPropertiesPage implements LegendContributor
 		tornadoSelection = graphOrBarSeriesSelection //
 				.insert("g", ".axis") //
 				.attr("class", "tornado") //
-				.onMouseClick(this);
+				.onClick(this);
 		bindNameToId(tornadoSelection);
 
 		updatePlotWithD3(d3);

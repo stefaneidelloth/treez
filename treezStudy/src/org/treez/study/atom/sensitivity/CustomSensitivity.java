@@ -30,7 +30,7 @@ import org.treez.core.atom.variablelist.DoubleVariableListField;
 import org.treez.core.atom.variablelist.VariableList;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
-import org.treez.core.console.TreezMonitor;
+import org.treez.core.monitor.TreezMonitor;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.TreeViewerAction;
 import org.treez.core.utils.Utils;
@@ -126,9 +126,9 @@ public class CustomSensitivity extends AbstractParameterVariation {
 	//#region METHODS
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(
-			Composite parent,
-			FocusChangingRefreshable treeViewRefreshable) {
+	public
+			AbstractControlAdaption
+			createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
 
 		updateAvailableVariablesForVariableList();
 		return super.createControlAdaption(parent, treeViewRefreshable);
@@ -502,7 +502,7 @@ public class CustomSensitivity extends AbstractParameterVariation {
 
 				//create subtask and sub monitor for progress monitor
 				monitor.setTaskName("=>Simulation #" + counter);
-				TreezMonitor subMonitor = new TreezMonitor(LOG, monitor);
+				TreezMonitor subMonitor = new TreezMonitor("Executing target", monitor, 1);
 
 				//execute model
 				ModelOutput modelOutput = model.runModel(modelInput, refreshable, subMonitor);

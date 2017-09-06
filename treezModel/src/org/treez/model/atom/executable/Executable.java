@@ -25,7 +25,7 @@ import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Consumer;
 import org.treez.core.attribute.Wrap;
-import org.treez.core.console.TreezMonitor;
+import org.treez.core.monitor.ObservableMonitor;
 import org.treez.core.scripting.ScriptType;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
@@ -331,7 +331,7 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 	 * Updates the status text labels with data from other attribute atoms
 	 */
 	protected void refreshStatus() {
-		AbstractUiSynchronizingAtom.runUiJobNonBlocking(() -> {
+		AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> {
 			String infoTextMessage = buildCommand();
 			//LOG.debug("Updating info text: " + infoTextMessage);
 			commandInfo.set(infoTextMessage);
@@ -347,29 +347,35 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 	}
 
 	@Override
-	public ModelOutput runModel(FocusChangingRefreshable refreshable, TreezMonitor progressMonitor) {
+	public ModelOutput runModel(FocusChangingRefreshable refreshable, ObservableMonitor executableMonitor) {
 
 		String startMessage = "Running " + this.getClass().getSimpleName() + " '" + getName() + "'.";
 		LOG.info(startMessage);
 
 		//initialize progress monitor
 		final int totalWork = 3;
-		progressMonitor.beginTask(startMessage, totalWork);
+		executableMonitor.setTotalWork(totalWork);
 
 		//delete old output file and old log file if they exist
 		delteOldOutputAndLogFiles();
 
 		//update progress monitor
-		progressMonitor.subTask("=>Running InputFileGenerator children if exist.");
+		executableMonitor.setDescription("Running InputFileGenerator children if exist.");
 
 		//execute input file generator child(s) if exist
-		executeInputFileGenerator(refreshable);
+		try {
+			executeInputFileGenerator(refreshable);
+		} catch (Exception exception) {
+			LOG.error("Could not execute input file generator for executable " + getName(), exception);
+			executableMonitor.cancel();
+			return createEmptyModelOutput();
+		}
 
 		//update progress monitor
-		progressMonitor.worked(1);
+		executableMonitor.worked(1);
 
 		//update progress monitor
-		progressMonitor.subTask("=>Executiong system command.");
+		executableMonitor.setDescription("Executing system command.");
 
 		//create command
 		String command = buildCommand();
@@ -377,30 +383,56 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 
 		//execute command
 		ExecutableExecutor executor = new ExecutableExecutor(this);
-		executor.executeCommand(command);
+
+		try {
+			boolean success = executor.executeCommand(command, executableMonitor);
+			if (!success) {
+				String message = "Executing system command failed.";
+				executableMonitor.setDescription(message);
+				LOG.error(message);
+				executableMonitor.cancel();
+				return createEmptyModelOutput();
+			}
+		} catch (Exception exception) {
+			LOG.error("Could not execute " + getName(), exception);
+			executableMonitor.cancel();
+			return createEmptyModelOutput();
+		}
 
 		//update progress monitor
-		progressMonitor.worked(1);
+		executableMonitor.worked(1);
 
 		//create model output
-		progressMonitor.subTask("=>Post processing model output.");
+		executableMonitor.setDescription("=>Post processing model output.");
 		ModelOutput modelOutput = createEmptyModelOutput();
-		//if (successful) {
+
 		//execute data import child(s) if exist
-		ModelOutput dataImportOutput = runDataImport(refreshable, progressMonitor);
-		modelOutput.addChildOutput(dataImportOutput);
-		//}
+		try {
+			ModelOutput dataImportOutput = runDataImport(refreshable, executableMonitor);
+			modelOutput.addChildOutput(dataImportOutput);
+		} catch (Exception exception) {
+			LOG.error("Could not import results of " + getName(), exception);
+			executableMonitor.cancel();
+			return modelOutput;
+		}
 
 		//copy input file to output folder (modifies input file name)
-		if (copyInputFile.get()) {
-			copyInputFileToOutputFolder();
+		try {
+			if (copyInputFile.get()) {
+				copyInputFileToOutputFolder();
+			}
+		} catch (Exception exception) {
+			LOG.error("Could not copy input file for " + getName(), exception);
+			executableMonitor.cancel();
+			return modelOutput;
 		}
 
 		//increase job index
 		increasejobIndex();
 
 		//inform progress monitor to be done
-		progressMonitor.done();
+		executableMonitor.setDescription("finished\n");
+		executableMonitor.done();
 
 		return modelOutput;
 	}
@@ -518,7 +550,7 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 	/**
 	 * Executes all children that are of type DataImport
 	 */
-	private ModelOutput runDataImport(FocusChangingRefreshable refreshable, TreezMonitor monitor) {
+	private ModelOutput runDataImport(FocusChangingRefreshable refreshable, ObservableMonitor monitor) {
 		boolean hasDataImportChild = hasChildModel(TableImport.class);
 		if (hasDataImportChild) {
 			ModelOutput modelOutput = runChildModel(TableImport.class, refreshable, monitor);

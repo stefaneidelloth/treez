@@ -131,12 +131,8 @@ public final class Utils {
 
 	/**
 	 * Shows a message
-	 *
-	 * @param message
 	 */
 	public static void showMessage(String message) {
-
-		LOG.info(message);
 
 		Runnable showMessageRunnable = () -> {
 			Display currentDisplay = Display.getCurrent();

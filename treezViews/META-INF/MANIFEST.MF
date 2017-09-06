@@ -7,24 +7,26 @@ Bundle-Activator: org.treez.views.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.treez.perspective,
+ org.treez.standalone,
  org.treez.views,
  org.treez.views.graphics,
+ org.treez.views.monitor,
  org.treez.views.properties,
  org.treez.views.tree,
  org.treez.views.tree.rootAtom
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.editors,
+ org.eclipse.ui.console,
+ org.eclipse.ui.forms,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.jface.text,
  org.apache.log4j,
+ org.treez.javafxd3,
  org.treez.core,
  org.treez.data,
  org.treez.results,
  org.treez.model,
- org.treez.study,
- org.treez.javafxd3
+ org.treez.study
 Bundle-Vendor: Stefan Eidelloth
-
-
-
+Bundle-ClassPath: .

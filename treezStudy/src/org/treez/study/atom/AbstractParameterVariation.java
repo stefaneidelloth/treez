@@ -185,9 +185,9 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 		String finalDateString = millisToDateString(currentTime);
 
 		//log message
-		String message = "-- " + finalDateString + " -------- Completed! --------------------------------";
+		String message = "-- " + finalDateString + " -------- Finished! --------------------------------";
 		LOG.info(message);
-		Utils.showMessage("Completed!");
+		Utils.showMessage("Finished!");
 	}
 
 	/**

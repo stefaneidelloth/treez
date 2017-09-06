@@ -20,13 +20,13 @@ import org.treez.core.atom.graphics.AbstractGraphicsAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.standallone.StandAloneWorkbench;
-import org.treez.core.swt.JavaFxWrapperForSwt;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.TreezView;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
+import org.treez.javafxd3.javafx.JavaFxWrapperForSwt;
 import org.treez.results.Activator;
 import org.treez.results.atom.graph.Graph;
 
@@ -170,7 +170,7 @@ public class Page extends AbstractGraphicsAtom {
 		//create rect
 		rectSelection = pageSelection //
 				.append("rect") //
-				.onMouseClick(this);
+				.onClick(this);
 
 		bindStringAttribute(rectSelection, "fill", color);
 		bindStringAttribute(rectSelection, "width", width);

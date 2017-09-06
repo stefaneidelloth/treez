@@ -34,6 +34,7 @@ public class TreeViewerRefreshable extends TreeViewer implements FocusChangingRe
 	public TreeViewerRefreshable(Composite parent, FocusChangingRefreshable actionRefreshable, int style) {
 		super(parent, style);
 		this.actionRefreshable = actionRefreshable;
+
 	}
 
 	//#end region

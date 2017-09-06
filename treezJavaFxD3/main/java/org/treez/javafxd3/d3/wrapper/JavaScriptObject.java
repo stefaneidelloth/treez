@@ -424,11 +424,8 @@ public class JavaScriptObject {
 
 	/**
 	 * Evaluates the given java script command and returns the result as Object
-	 * 
-	 * @param command
-	 * @return
 	 */
-	public Object eval(String command) {
+	public synchronized Object eval(String command) {
 		try{
 			Object result = jsObject.eval(command);			
 			return result;
@@ -441,11 +438,8 @@ public class JavaScriptObject {
 
 	/**
 	 * Evaluates the given java script command and returns the result as Boolean
-	 * 
-	 * @param command
-	 * @return
 	 */
-	public Boolean evalForBoolean(String command) {
+	public synchronized Boolean evalForBoolean(String command) {
 		Object result = jsObject.eval(command);
 		if(result==null){
 			return null;
@@ -461,11 +455,8 @@ public class JavaScriptObject {
 
 	/**
 	 * Evaluates the given java script command and returns the result as Integer
-	 * 
-	 * @param command
-	 * @return
 	 */
-	public Integer evalForInteger(String command) {
+	public synchronized Integer evalForInteger(String command) {
 		Object result = jsObject.eval(command);
 		if (result==null){
 			return null;
@@ -490,7 +481,7 @@ public class JavaScriptObject {
 	 * @param command
 	 * @return
 	 */
-	public Double evalForDouble(String command) {
+	public synchronized Double evalForDouble(String command) {
 		Object result = jsObject.eval(command);
 		if (result==null){
 			return null;
@@ -516,11 +507,8 @@ public class JavaScriptObject {
 
 	/**
 	 * Evaluates the given java script command and returns the result as String
-	 * 
-	 * @param command
-	 * @return
 	 */
-	public String evalForString(String command) {
+	public synchronized String evalForString(String command) {
 		Object result = jsObject.eval(command);
 		if(result==null){
 			return null;
@@ -537,11 +525,8 @@ public class JavaScriptObject {
 	/**
 	 * Evaluates the given java script command and returns the result as
 	 * JsObject
-	 * 
-	 * @param command
-	 * @return
 	 */
-	public JsObject evalForJsObject(String command) {
+	public synchronized JsObject evalForJsObject(String command) {
 		Object resultObj = jsObject.eval(command);
 		JsObject result = (JsObject) resultObj;
 		return result;
@@ -601,6 +586,11 @@ public class JavaScriptObject {
 	protected JsObject getD3() {
 		JsObject d3jsObj = (JsObject) engine.executeScript("d3");
 		return d3jsObj;
+	}
+	
+	protected JsObject getWindow() {
+		JsObject window = (JsObject) engine.executeScript("window");
+		return window;
 	}
 	
 	protected void assertObjectIsNotAnonymous(final Object callback) {

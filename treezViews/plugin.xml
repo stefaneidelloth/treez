@@ -32,6 +32,14 @@
             id="org.treez.views.graphics"            
             restorable="true"
       />
+      <view
+            category="org.treez"
+            class="org.treez.views.monitor.MonitorViewPart"
+            icon="icons/tree.png"
+            id="org.treez.views.monitor"
+            name="Treez Monitor"
+            restorable="true">
+      </view>
      
       <category
             id="org.treez"

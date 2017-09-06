@@ -38,26 +38,18 @@ public class CountDataFunction implements DataFunction<Void> {
 
 	/**
 	 * Return true by default.
-	 * 
-	 * @param context
-	 * @param d
-	 * @param index
 	 * @return true to increment the count, false otherwise.
 	 */
 	private boolean takeIntoAccount(final Object context, final Object d, final int index) {
 		return true;
 	}
 
-	/**
-	 * @return
-	 */
+
 	public int getCount() {
 		return count;
 	}
 
-	/**
-	 * @return
-	 */
+
 	public CountDataFunction reset() {
 		count = 0;
 		return this;
