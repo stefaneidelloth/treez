@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.treez.feature_1.0.1.qualifier.jar" id="org.treez.feature" version="1.0.1.qualifier">
+   <feature url="features/org.treez.feature_1.0.0.qualifier.jar" id="org.treez.feature" version="1.0.0.qualifier">
       <category name="org.treez"/>
    </feature>
    <category-def name="org.treez" label="org.treez"/>

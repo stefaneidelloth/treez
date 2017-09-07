@@ -2,7 +2,7 @@
 <feature
       id="org.treez.feature"
       label="Treez"
-      version="1.0.1.qualifier"
+      version="1.0.0.qualifier"
       provider-name="Stefan Eidelloth"
       plugin="org.treez.core">
 
@@ -17,14 +17,14 @@ Visit https://github.com/stefaneidelloth/treez/
 Treez is a set of Eclipse plugins for the creation of generic
 tree based user interfaces.
 Visit https://github.com/stefaneidelloth/treez
-Copyright (c) 2016 Stefan Eidelloth
+Copyright (c) 2017 Stefan Eidelloth
 Treez is based on technology from several projects and you have
 to consider their copyright notices, too. See the license
 agreement for more details.
    </copyright>
 
    <license url="https://github.com/stefaneidelloth/treez">
-      Treez Software User Agreement 2016
+      Treez Software User Agreement 2017
 
 TREEZ
 
