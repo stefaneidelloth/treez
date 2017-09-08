@@ -329,7 +329,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		Thread thread = new Thread(modelJob);
 		thread.setName(jobTitle);
-		thread.run();
+		thread.start();
 
 	}
 
