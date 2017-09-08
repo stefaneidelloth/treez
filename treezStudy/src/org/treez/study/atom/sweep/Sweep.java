@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -51,6 +53,8 @@ import org.treez.study.atom.range.StringVariableRange;
 public class Sweep extends AbstractParameterVariation {
 
 	private static final Logger LOG = Logger.getLogger(Sweep.class);
+
+	private int numberOfActiveThreads = 0;
 
 	//#region CONSTRUCTORS
 
@@ -273,13 +277,48 @@ public class Sweep extends AbstractParameterVariation {
 		String message = "-- " + currentDateString + " --- Staring " + numberOfSimulations + " simulations ----------";
 		LOG.info(message);
 
+		Queue<Runnable> jobQueue = new ConcurrentLinkedQueue<Runnable>();
+
+		Runnable jobFinished = () -> {
+
+			jobFinishedHook.run();
+			numberOfActiveThreads--;
+			continueToProcessQueue(jobQueue);
+		};
+
+		//fill queue with model jobs
 		for (final ModelInput modelInput : modelInputs) {
-			createAndScheduleModelJob(refreshable, sweepOutputAtom, model, modelInput, sweepMonitor, jobFinishedHook);
+			createAndEnqueueModelJob(jobQueue, refreshable, sweepOutputAtom, model, modelInput, sweepMonitor,
+					jobFinished);
 		}
+
+		//process queue
+		continueToProcessQueue(jobQueue);
 
 	}
 
-	private void createAndScheduleModelJob(
+	private synchronized void continueToProcessQueue(Queue<Runnable> jobQueue) {
+
+		int numberOfProcessors = Runtime.getRuntime().availableProcessors();
+		int numberOfFreeThreads = numberOfProcessors - numberOfActiveThreads;
+
+		for (int index = 0; index < numberOfFreeThreads; index++) {
+			Runnable modelJob = jobQueue.poll();
+			if (modelJob == null) {
+				return;
+			}
+
+			Thread thread = new Thread(modelJob);
+			numberOfActiveThreads++;
+			thread.start();
+		}
+
+		LOG.info("Working on model job queue with " + numberOfActiveThreads + " threads.");
+
+	}
+
+	private void createAndEnqueueModelJob(
+			Queue<Runnable> queue,
 			FocusChangingRefreshable refreshable,
 			AbstractAtom<?> sweepOutputAtom,
 			Model modelToRun,
@@ -327,9 +366,7 @@ public class Sweep extends AbstractParameterVariation {
 
 		};
 
-		Thread thread = new Thread(modelJob);
-		thread.setName(jobTitle);
-		thread.start();
+		queue.add(modelJob);
 
 	}
 
