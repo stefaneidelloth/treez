@@ -13,6 +13,7 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.monitor.TreezMonitor;
 
 /**
@@ -45,43 +46,47 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 		MessageConsole console = getConsole(treezMonitorId);
 		if (console != null) {
 
-			Level level = event.getLevel();
+			AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> {
 
-			try (
-					MessageConsoleStream stream = console.newMessageStream();) {
-
-				if (level.equals(Level.WARN)) {
-					stream.setColor(TreezMonitor.ORANGE);
-				} else if (level.equals(Level.ERROR)) {
-					stream.setColor(TreezMonitor.RED);
-				}
-
-				stream.println(message);
-			} catch (IOException exception) {
-				exception.printStackTrace();
-			}
-
-			ThrowableInformation throwableInformation = event.getThrowableInformation();
-
-			if (throwableInformation != null) {
-
-				Throwable throwable = throwableInformation.getThrowable();
+				Level level = event.getLevel();
 
 				try (
 						MessageConsoleStream stream = console.newMessageStream();) {
+
 					if (level.equals(Level.WARN)) {
 						stream.setColor(TreezMonitor.ORANGE);
 					} else if (level.equals(Level.ERROR)) {
 						stream.setColor(TreezMonitor.RED);
 					}
 
-					throwable.printStackTrace(new PrintStream(stream));
-
+					stream.println(message);
 				} catch (IOException exception) {
 					exception.printStackTrace();
 				}
 
-			}
+				ThrowableInformation throwableInformation = event.getThrowableInformation();
+
+				if (throwableInformation != null) {
+
+					Throwable throwable = throwableInformation.getThrowable();
+
+					try (
+							MessageConsoleStream stream = console.newMessageStream();) {
+						if (level.equals(Level.WARN)) {
+							stream.setColor(TreezMonitor.ORANGE);
+						} else if (level.equals(Level.ERROR)) {
+							stream.setColor(TreezMonitor.RED);
+						}
+
+						throwable.printStackTrace(new PrintStream(stream));
+
+					} catch (IOException exception) {
+						exception.printStackTrace();
+					}
+
+				}
+
+			});
 
 		}
 

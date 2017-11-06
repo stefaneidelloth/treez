@@ -190,6 +190,17 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 		Utils.showMessage("Finished!");
 	}
 
+	protected void logAndShowSweepCancelMessage() {
+		//get final time
+		double currentTime = Double.parseDouble("" + System.currentTimeMillis());
+		String finalDateString = millisToDateString(currentTime);
+
+		//log message
+		String message = "-- " + finalDateString + " -------- Canceled! --------------------------------";
+		LOG.info(message);
+		Utils.showMessage("Canceled!");
+	}
+
 	/**
 	 * Estimates the end time and returns it as date string
 	 */

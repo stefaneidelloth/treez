@@ -54,7 +54,13 @@ public class Sweep extends AbstractParameterVariation {
 
 	private static final Logger LOG = Logger.getLogger(Sweep.class);
 
+	//#region ATTRIBUTES
+
 	private int numberOfActiveThreads = 0;
+
+	private boolean isAlreadyCanceled = false;
+
+	//#emd region
 
 	//#region CONSTRUCTORS
 
@@ -149,6 +155,7 @@ public class Sweep extends AbstractParameterVariation {
 	public void runStudy(FocusChangingRefreshable refreshable, SubMonitor mainMonitor) {
 		//Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
 		this.treeViewRefreshable = refreshable;
+		this.isAlreadyCanceled = false;
 
 		String startMessage = "Executing sweep '" + getName() + "'";
 		LOG.info(startMessage);
@@ -208,12 +215,12 @@ public class Sweep extends AbstractParameterVariation {
 		sweepOutputAtom.removeAllChildren();
 
 		//execute target model for all model inputs
-
 		List<Integer> numberOfRemainingModelJobs = new ArrayList<>();
 		numberOfRemainingModelJobs.add(numberOfSimulations);
 
 		if (!mainMonitor.isCanceled()) {
-			Runnable jobFinishedHook = () -> finishIfDone(refreshable, sweepMonitor, numberOfRemainingModelJobs);
+			Runnable jobFinishedHook = () -> finishOrCancelIfDone(refreshable, sweepMonitor,
+					numberOfRemainingModelJobs);
 
 			if (isConcurrentVariation.get()) {
 				executeTargetModelConcurrently(refreshable, numberOfSimulations, modelInputs, sweepOutputAtom,
@@ -226,7 +233,7 @@ public class Sweep extends AbstractParameterVariation {
 
 	}
 
-	private synchronized void finishIfDone(
+	private synchronized void finishOrCancelIfDone(
 			FocusChangingRefreshable refreshable,
 			TreezMonitor mainMonitor,
 			List<Integer> numberOfRemainingModelJobs) {
@@ -235,7 +242,23 @@ public class Sweep extends AbstractParameterVariation {
 		numberOfRemainingModelJobs.set(0, remainingModelJobs);
 
 		if (mainMonitor.isChildCanceled()) {
+
+			if (isAlreadyCanceled) {
+				return;
+			}
+			isAlreadyCanceled = true;
 			mainMonitor.markIssue();
+			mainMonitor.setDescription("Canceled!");
+			mainMonitor.cancel();
+
+			logAndShowSweepCancelMessage();
+			AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> {
+				try {
+					refreshable.refresh();
+				} catch (Exception exception) {
+					LOG.error("Could not refresh.", exception);
+				}
+			});
 		}
 
 		if (remainingModelJobs == 0) {
@@ -257,6 +280,7 @@ public class Sweep extends AbstractParameterVariation {
 				}
 			});
 		}
+
 	}
 
 	private void executeTargetModelConcurrently(
@@ -313,7 +337,7 @@ public class Sweep extends AbstractParameterVariation {
 			thread.start();
 		}
 
-		LOG.info("Working on model job queue with " + numberOfActiveThreads + " threads.");
+		//LOG.info("Working on model job queue with " + numberOfActiveThreads + " threads.");
 
 	}
 
@@ -329,15 +353,27 @@ public class Sweep extends AbstractParameterVariation {
 		String jobId = modelInput.getJobId();
 		String jobTitle = "Sweep Job '" + jobId + "'";
 
+		AbstractAtom<?> modelAtom = (AbstractAtom<?>) modelToRun;
+		String pathForModelToRun = modelAtom.createTreeNodeAdaption().getTreePath();
+		AbstractAtom<?> root = sweepOutputAtom.getRoot();
+
+		//create snapshot of root as blueprint for shadow roots
+		//(The actual root tree will be modified during execution and it would be a bad idea
+		//to use the changing root as blueprint.)
+
+		AbstractAtom<?> rootSnapshot = root.copy();
+
 		Runnable modelJob = () -> {
+
+			if (sweepMonitor.isCanceled()) {
+				jobFinishedHook.run();
+				return;
+			}
 
 			try {
 
 				//create shadow tree and retrieve shadow model
-				AbstractAtom<?> modelAtom = (AbstractAtom<?>) modelToRun;
-				String pathForModelToRun = modelAtom.createTreeNodeAdaption().getTreePath();
-				AbstractAtom<?> root = sweepOutputAtom.getRoot();
-				AbstractAtom<?> shadowRoot = root.copy();
+				AbstractAtom<?> shadowRoot = rootSnapshot.copy();
 
 				//run shadow model
 				Model shadowModelToRun = (Model) shadowRoot.getChildFromRoot(pathForModelToRun);
@@ -345,9 +381,17 @@ public class Sweep extends AbstractParameterVariation {
 				try (
 						ObservableMonitor jobMonitor = sweepMonitor.createChild(jobTitle, jobId, 1)) {
 
-					//LOG.error("error", new IllegalStateException("my exception"));
+					if (sweepMonitor.isCanceled()) {
+						jobFinishedHook.run();
+						return;
+					}
 
 					ModelOutput modelOutput = shadowModelToRun.runModel(modelInput, refreshable, jobMonitor);
+
+					if (sweepMonitor.isCanceled()) {
+						jobFinishedHook.run();
+						return;
+					}
 
 					//store output in sweep output of main tree
 					AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();

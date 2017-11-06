@@ -79,6 +79,11 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 		//assign the model input to variable values (also assigns model input for sub models)
 		assignModelInput(modelInput);
 
+		if (monitor.isCanceled()) {
+			LOG.error("Model '\" + name + \"' does not run since execution has been canceled.");
+			return createEmptyModelOutput();
+		}
+
 		//run model
 		ModelOutput modelOutput = runModel(refreshable, monitor);
 

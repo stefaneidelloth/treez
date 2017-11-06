@@ -133,6 +133,7 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	public abstract AbstractAtom<A> copy();
 
 	private static List<AbstractAtom<?>> copyAbstractAtoms(List<AbstractAtom<?>> abstractAtomsToCopy) {
+
 		List<AbstractAtom<?>> abstractAtoms = new ArrayList<>(abstractAtomsToCopy.size());
 		for (AbstractAtom<?> abstractAtomToCopy : abstractAtomsToCopy) {
 			AbstractAtom<?> abstractAtom = abstractAtomToCopy.copy();

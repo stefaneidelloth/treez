@@ -139,28 +139,40 @@ public class MonitorViewPart extends ViewPart implements MonitorTreezView {
 		createProgressNodes(root, treezMonitor);
 	}
 
-	private synchronized void createProgressNodes(Selection root, ObservableMonitor monitor) {
+	private synchronized void createProgressNodes(Selection parentSelection, ObservableMonitor monitor) {
 
 		List<ObservableMonitor> subMonitors = monitor.getChildren();
 
-		Selection div = root
-				.append("div") //
-				.attr("id", "progressContainer");
+		Selection div = parentSelection.append("div");
 
-		Selection details = div
-				.append("details") //
-				.attr("id", "collapsible") //
-				.attr("open", "true"); //expandable for progress that has children (might be hidden)
+		Selection details = div.append("div"); //expandable for progress that has children (might be hidden)
 
-		Selection collapsibleHeader = details
-				.append("summary") //
-				.attr("id", "header") //
-				.style("outline", "none");
+		Selection collapsibleHeader = details.append("div");
+
+		Selection collapsibleSymbol = collapsibleHeader
+				.append("span") //
+				.style("text-size", "14px") //
+				.text("\u25BE ");
 
 		Selection collapsibleContent = details
 				.append("div") //
-				.attr("id", "content")
 				.style("padding-left", "10px");
+
+		collapsibleSymbol.onClick(() -> {
+
+			boolean isCollapsed = collapsibleContent.classed("collapsed");
+
+			if (isCollapsed) {
+				collapsibleContent.classed("collapsed", false);
+				collapsibleContent.style("display", "block");
+				collapsibleSymbol.text("\u25BE ");
+			} else {
+				collapsibleContent.classed("collapsed", true);
+				collapsibleContent.style("display", "none");
+				collapsibleSymbol.text("\u25B8 ");
+			}
+
+		});
 
 		Selection nonExpandableHeader = div.append("div"); //for progress that does not have children (might be hidden)
 

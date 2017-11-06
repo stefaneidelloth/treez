@@ -412,7 +412,12 @@ public class TreezMonitor implements ObservableMonitor {
 
 	@Override
 	public boolean isDone() {
-		return finishedWork == totalWork;
+
+		if (totalWork == null) {
+			return false;
+		}
+
+		return finishedWork >= totalWork;
 	}
 
 	@Override
