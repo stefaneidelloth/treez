@@ -61,7 +61,7 @@ public class MySqlDatabase {
 				Statement statement = connection.createStatement();) {
 			statement.executeUpdate(query);
 		} catch (SQLException exception) {
-			String message = "Could execute query " + query;
+			String message = "Could not execute query " + query;
 			throw new IllegalStateException(message, exception);
 		}
 	}

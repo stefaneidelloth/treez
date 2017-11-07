@@ -10,7 +10,7 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
-import org.treez.core.atom.attribute.checkBox.CheckBox;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
 import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.base.AbstractAtom;
@@ -19,6 +19,7 @@ import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.model.interfaces.Model;
 import org.treez.study.Activator;
 import org.treez.study.atom.AbstractParameterVariation;
+import org.treez.study.atom.sweep.ExportStudyInfoType;
 
 /**
  * Represents a probability parameter variation. Each parameter is specified with a probability distribution. the
@@ -78,17 +79,40 @@ public class Probability extends AbstractParameterVariation {
 						modelEntryPoint, false)
 				.setLabel("Variable source model (provides variables)");
 
-		//export study info check box
-		CheckBox exportStudy = pickingSection.createCheckBox(exportStudyInfo, this, true);
+		//study info
+		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
+		studyInfoSection.setLabel("Export study info");
+
+		//export study info combo box
+		EnumComboBox<ExportStudyInfoType> exportStudy = studyInfoSection.createEnumComboBox(exportStudyInfoType, this,
+				ExportStudyInfoType.DISABLED);
 		exportStudy.setLabel("Export study information");
 
-		//export study info path
-		FilePath filePath = pickingSection.createFilePath(exportStudyInfoPath, this,
+		//export sweep info path
+		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
+
 		filePath.addModificationConsumer("updateEnabledState", () -> {
-			boolean exportSweepInfoEnabled = exportStudyInfo.get();
-			filePath.setEnabled(exportSweepInfoEnabled);
+
+			ExportStudyInfoType exportType = exportStudyInfoType.get();
+			switch (exportType) {
+			case DISABLED:
+				filePath.setEnabled(false);
+				break;
+			case TEXT_FILE:
+				filePath.setEnabled(true);
+				break;
+			case SQLITE:
+				filePath.setEnabled(true);
+				break;
+			case MYSQL:
+				filePath.setEnabled(false);
+				break;
+			default:
+				throw new IllegalStateException("The export type '" + exportType + "' has not yet been implemented.");
+			}
+
 		});
 
 		setModel(root);

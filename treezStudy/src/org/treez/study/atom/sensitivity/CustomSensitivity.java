@@ -44,6 +44,7 @@ import org.treez.study.Activator;
 import org.treez.study.atom.AbstractParameterVariation;
 import org.treez.study.atom.picking.PickingModelInputGenerator;
 import org.treez.study.atom.picking.Sample;
+import org.treez.study.atom.sweep.ExportStudyInfoType;
 
 /**
  * Represents a sensitivity parameter variation where the varied values can be specified differently for each variables
@@ -212,17 +213,36 @@ public class CustomSensitivity extends AbstractParameterVariation {
 		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
 		studyInfoSection.setLabel("Export study info");
 
-		//export study info check box
-		CheckBox export = studyInfoSection.createCheckBox(exportStudyInfo, this, true);
-		export.setLabel("Export study information");
+		//export study info combo box
+		EnumComboBox<ExportStudyInfoType> exportStudy = studyInfoSection.createEnumComboBox(exportStudyInfoType, this,
+				ExportStudyInfoType.DISABLED);
+		exportStudy.setLabel("Export study information");
 
-		//export study info path
+		//export sweep info path
 		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
+
 		filePath.addModificationConsumer("updateEnabledState", () -> {
-			boolean exportSweepInfoEnabled = exportStudyInfo.get();
-			filePath.setEnabled(exportSweepInfoEnabled);
+
+			ExportStudyInfoType exportType = exportStudyInfoType.get();
+			switch (exportType) {
+			case DISABLED:
+				filePath.setEnabled(false);
+				break;
+			case TEXT_FILE:
+				filePath.setEnabled(true);
+				break;
+			case SQLITE:
+				filePath.setEnabled(true);
+				break;
+			case MYSQL:
+				filePath.setEnabled(false);
+				break;
+			default:
+				throw new IllegalStateException("The export type '" + exportType + "' has not yet been implemented.");
+			}
+
 		});
 
 		setModel(root);
@@ -394,7 +414,7 @@ public class CustomSensitivity extends AbstractParameterVariation {
 		List<ModelInput> modelInputs = inputGenerator.createModelInputs(studyId.get(), studyDescription.get(), samples);
 
 		//export study info to text file if the corresponding option is enabled
-		if (exportStudyInfo.get()) {
+		if (exportStudyInfoType.get() != ExportStudyInfoType.DISABLED) {
 			exportStudyInfo(samples, numberOfSimulations);
 		}
 

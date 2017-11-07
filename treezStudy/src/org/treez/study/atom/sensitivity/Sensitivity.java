@@ -17,9 +17,7 @@ import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
-import org.treez.core.atom.attribute.checkBox.CheckBox;
 import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
-import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.attribute.modelPath.ModelPath;
 import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.base.AbstractAtom;
@@ -42,6 +40,7 @@ import org.treez.study.Activator;
 import org.treez.study.atom.AbstractParameterVariation;
 import org.treez.study.atom.picking.PickingModelInputGenerator;
 import org.treez.study.atom.picking.Sample;
+import org.treez.study.atom.sweep.ExportStudyInfoType;
 
 /**
  * Represents a sensitivity parameter variation
@@ -134,25 +133,6 @@ public class Sensitivity extends AbstractParameterVariation {
 
 	private void updateVariableInfos() {
 		SensitivityValueFactory.updateVariableInfos(variableList, this);
-	}
-
-	private void createStudyInfoSection(Page dataPage, String absoluteHelpContextId) {
-		//study info
-		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
-		studyInfoSection.setLabel("Export study info");
-
-		//export study info check box
-		CheckBox export = studyInfoSection.createCheckBox(exportStudyInfo, this, true);
-		export.setLabel("Export study information");
-
-		//export study info path
-		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
-				"Target file path for study information", "");
-		filePath.setValidatePath(false);
-		filePath.addModificationConsumer("updateEnabledState", () -> {
-			boolean exportSweepInfoEnabled = exportStudyInfo.get();
-			filePath.setEnabled(exportSweepInfoEnabled);
-		});
 	}
 
 	private ModelPath createSensitivitySection(Page dataPage, String absoluteHelpContextId) {
@@ -259,27 +239,27 @@ public class Sensitivity extends AbstractParameterVariation {
 		/*
 		Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
 		this.treeViewRefreshable = refreshable;
-		
+
 		String startMessage = "Executing picking '" + getName() + "'";
 		LOG.info(startMessage);
-		
+
 		//create ModelInput generator
 		PickingModelInputGenerator inputGenerator = new PickingModelInputGenerator(this);
-		
+
 		//get samples
 		List<Sample> samples = inputGenerator.getEnabledSamples();
 		int numberOfSamples = samples.size();
 		LOG.info("Number of samples: " + numberOfSamples);
-		
+
 		boolean isTimeDependentPicking = this.isTimeDependent.get();
 		if (isTimeDependentPicking) {
 			int numberOfTimeSteps = inputGenerator.getNumberOfTimeSteps();
 			LOG.info("Number of time steps: " + numberOfTimeSteps);
 		}
-		
+
 		if (numberOfSamples > 0) {
 			Sample firstSample = samples.get(0);
-		
+
 			//check if the picking variables reference enabled variables
 			boolean allReferencedVariablesAreActive = checkIfAllReferencedVariablesAreActive(firstSample);
 			if (allReferencedVariablesAreActive) {
@@ -351,7 +331,7 @@ public class Sensitivity extends AbstractParameterVariation {
 		List<ModelInput> modelInputs = inputGenerator.createModelInputs(studyId.get(), studyDescription.get(), samples);
 
 		//export study info to text file if the corresponding option is enabled
-		if (exportStudyInfo.get()) {
+		if (exportStudyInfoType.get() != ExportStudyInfoType.DISABLED) {
 			exportStudyInfo(samples, numberOfSimulations);
 		}
 

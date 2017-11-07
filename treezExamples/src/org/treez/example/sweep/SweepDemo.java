@@ -11,6 +11,7 @@ import org.treez.model.atom.tableImport.TableImport;
 import org.treez.results.atom.results.Results;
 import org.treez.study.atom.Studies;
 import org.treez.study.atom.range.IntegerVariableRange;
+import org.treez.study.atom.sweep.ExportStudyInfoType;
 import org.treez.study.atom.sweep.Sweep;
 import org.treez.views.tree.rootAtom.Root;
 
@@ -71,6 +72,8 @@ public class SweepDemo extends ModelProvider {
 
 		//sweep
 		Sweep sweep = new Sweep("sweep");
+		sweep.studyId.set("myStudyId");
+		sweep.studyDescription.set("myStudyDescription");
 		sweep.modelToRunModelPath.set("root.models");
 		sweep.sourceModelPath.set("root.models.genericModel");
 		studies.addChild(sweep);
@@ -84,6 +87,13 @@ public class SweepDemo extends ModelProvider {
 		sweep.addChild(yRange);
 		yRange.setRelativeSourceVariableModelPath("y");
 		yRange.setRangeValueString("{10,20,30,40,50,60,70,80,90}");
+
+		sweep.exportStudyInfoType.set(ExportStudyInfoType.MYSQL);
+		sweep.host.set("dagobah");
+		sweep.port.set("3366");
+		sweep.user.set("root");
+		sweep.password.set("ISI");
+		sweep.schema.set("170817_eload_hh+mob+hp");
 
 		//results------------------------------------------------------------
 		Results results = new Results("results");

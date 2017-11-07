@@ -1,13 +1,10 @@
 package org.treez.study.atom.sweep;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.action.Action;
@@ -17,7 +14,6 @@ import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.attribute.checkBox.CheckBox;
-import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
@@ -28,7 +24,6 @@ import org.treez.core.monitor.TreezMonitor;
 import org.treez.core.treeview.TreeViewerRefreshable;
 import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
 import org.treez.core.utils.Utils;
-import org.treez.data.database.sqlite.SqLiteDatabase;
 import org.treez.data.output.OutputAtom;
 import org.treez.model.input.HashMapModelInput;
 import org.treez.model.input.ModelInput;
@@ -114,24 +109,8 @@ public class Sweep extends AbstractParameterVariation {
 		CheckBox concurrentCheckBox = sweepSection.createCheckBox(isConcurrentVariation, this, true);
 		concurrentCheckBox.setLabel("Parallel execution");
 
-		//study info
-		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
-		studyInfoSection.setLabel("Export study info");
-
-		//export study info check box
-		CheckBox exportStudy = studyInfoSection.createCheckBox(exportStudyInfo, this, true);
-		exportStudy.setLabel("Export study information");
-
-		//export sweep info path
-		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
-				"Target file path for study information", "");
-		filePath.setValidatePath(false);
-		filePath.addModificationConsumer("updateEnabledState", () -> {
-			boolean exportSweepInfoEnabled = exportStudyInfo.get();
-			filePath.setEnabled(exportSweepInfoEnabled);
-		}
-
-		);
+		//export study info
+		createStudyInfoSection(dataPage, absoluteHelpContextId);
 
 		setModel(root);
 	}
@@ -198,8 +177,8 @@ public class Sweep extends AbstractParameterVariation {
 		//create model inputs
 		List<ModelInput> modelInputs = inputGenerator.createModelInputs(variableRanges);
 
-		//exports study info if the corresponding option is enabled
-		if (exportStudyInfo.get()) {
+		//export study info
+		if (exportStudyInfoType.get() != ExportStudyInfoType.DISABLED) {
 			exportStudyInfo(variableRanges, modelInputs, numberOfSimulations);
 		}
 
@@ -298,7 +277,7 @@ public class Sweep extends AbstractParameterVariation {
 		String currentDateString = millisToDateString(currentTime);
 
 		//log start message
-		String message = "-- " + currentDateString + " --- Staring " + numberOfSimulations + " simulations ----------";
+		String message = "-- " + currentDateString + " --- Starting " + numberOfSimulations + " simulations ----------";
 		LOG.info(message);
 
 		Queue<Runnable> jobQueue = new ConcurrentLinkedQueue<Runnable>();
@@ -487,129 +466,6 @@ public class Sweep extends AbstractParameterVariation {
 			return false;
 		}
 
-	}
-
-	/**
-	 * Creates a text file with some information about the (Sweep) study and saves it at the exportStudyInfoPath
-	 *
-	 * @param variableRanges
-	 * @param numberOfSimulations
-	 */
-	private void exportStudyInfo(
-			List<AbstractVariableRange<?>> variableRanges,
-			List<ModelInput> modelInputs,
-			int numberOfSimulations) {
-
-		String filePath = exportStudyInfoPath.get();
-
-		if (filePath.isEmpty()) {
-			LOG.warn("Export of study info is enabled but no file (e.g. c:/studyInfo.txt) is specified. ");
-			return;
-		}
-
-		boolean isTextFile = filePath.endsWith(".txt");
-		if (isTextFile) {
-			exportStudyInfoToTextFile(variableRanges, numberOfSimulations, filePath);
-			return;
-		}
-
-		boolean isSqLiteFile = filePath.endsWith(".sqlite");
-		if (isSqLiteFile) {
-			exportStudyInfoToSqLiteDatabase(variableRanges, modelInputs, filePath);
-			return;
-		}
-
-		String message = "Could not export study info due to unknown file format of file path '" + filePath + "'";
-		throw new IllegalStateException(message);
-
-	}
-
-	private void exportStudyInfoToSqLiteDatabase(
-			List<AbstractVariableRange<?>> variableRanges,
-			List<ModelInput> modelInputs,
-			String filePath) {
-
-		SqLiteDatabase database = new SqLiteDatabase(filePath);
-		writeStudyInfo(variableRanges, database);
-		writeJobInfo(modelInputs, database);
-
-	}
-
-	private void writeStudyInfo(List<AbstractVariableRange<?>> variableRanges, SqLiteDatabase database) {
-		String studyInfoTableName = "study_info";
-		createStudyInfoTableIfNotExists(database, studyInfoTableName);
-		deleteOldEntriesForStudyIfExist(database, studyInfoTableName);
-
-		for (AbstractVariableRange<?> range : variableRanges) {
-			String variablePath = range.getSourceVariableModelPath();
-			List<?> rangeValues = range.getRange();
-			for (Object value : rangeValues) {
-				String query = "INSERT INTO '" + studyInfoTableName + "' VALUES(null, '" + studyId + "', '"
-						+ variablePath + "','" + value + "')";
-				database.execute(query);
-			}
-		}
-	}
-
-	private void deleteOldEntriesForStudyIfExist(SqLiteDatabase database, String tableName) {
-		String query = "DELETE FROM '" + tableName + "' WHERE study = '" + studyId + "';";
-		database.execute(query);
-	}
-
-	private static void createStudyInfoTableIfNotExists(SqLiteDatabase database, String tableName) {
-		String query = "CREATE TABLE IF NOT EXISTS '" + tableName
-				+ "' (id INTEGER PRIMARY KEY NOT NULL, study TEXT, variable TEXT, value TEXT);";
-		database.execute(query);
-	}
-
-	private void writeJobInfo(List<ModelInput> modelInputs, SqLiteDatabase database) {
-		String jobInfoTableName = "job_info";
-		createJobInfoTableIfNotExists(database, jobInfoTableName);
-		deleteOldEntriesForStudyIfExist(database, jobInfoTableName);
-		for (ModelInput modelInput : modelInputs) {
-			String jobId = modelInput.getJobId();
-			List<String> variablePaths = modelInput.getAllVariableModelPaths();
-			for (String variablePath : variablePaths) {
-				Object value = modelInput.getVariableValue(variablePath);
-				String query = "INSERT INTO '" + jobInfoTableName + "' VALUES(null, '" + studyId + "', '" + jobId
-						+ "', '" + variablePath + "','" + value + "')";
-				database.execute(query);
-			}
-		}
-	}
-
-	private static void createJobInfoTableIfNotExists(SqLiteDatabase database, String tableName) {
-		String query = "CREATE TABLE IF NOT EXISTS '" + tableName
-				+ "' (id INTEGER PRIMARY KEY NOT NULL, study TEXT, job TEXT, variable TEXT, value TEXT);";
-		database.execute(query);
-	}
-
-	private static void exportStudyInfoToTextFile(
-			List<AbstractVariableRange<?>> variableRanges,
-			int numberOfSimulations,
-			String filePath) {
-		String studyInfo = "---------- SweepInfo ----------\r\n\r\n" + "Total number of simulations:\r\n"
-				+ numberOfSimulations + "\r\n\r\n" + "Variable model paths and values:\r\n\r\n";
-
-		for (AbstractVariableRange<?> range : variableRanges) {
-			String variablePath = range.getSourceVariableModelPath();
-			studyInfo += variablePath + "\r\n";
-			List<?> rangeValues = range.getRange();
-			for (Object value : rangeValues) {
-				studyInfo += value.toString() + "\r\n";
-			}
-			studyInfo += "\r\n";
-		}
-
-		File file = new File(filePath);
-
-		try {
-			FileUtils.writeStringToFile(file, studyInfo);
-		} catch (IOException exception) {
-			String message = "The specified exportStudyInfoPath '" + filePath
-					+ "' is not valid. Export of study info is skipped.";
-			LOG.error(message);
-		}
 	}
 
 	/**

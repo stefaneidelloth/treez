@@ -20,6 +20,7 @@ import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 import org.treez.core.atom.attribute.checkBox.CheckBox;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
 import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.attribute.modelPath.ModelPath;
 import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
@@ -45,6 +46,7 @@ import org.treez.model.interfaces.Model;
 import org.treez.model.output.ModelOutput;
 import org.treez.study.Activator;
 import org.treez.study.atom.AbstractParameterVariation;
+import org.treez.study.atom.sweep.ExportStudyInfoType;
 
 /**
  * Represents a picking parameter variation. The variation does does not walk through a whole definition space. Instead,
@@ -189,17 +191,36 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
 		studyInfoSection.setLabel("Export study info");
 
-		//export study info check box
-		CheckBox export = studyInfoSection.createCheckBox(exportStudyInfo, this, true);
-		export.setLabel("Export study information");
+		//export study info combo box
+		EnumComboBox<ExportStudyInfoType> exportStudy = studyInfoSection.createEnumComboBox(exportStudyInfoType, this,
+				ExportStudyInfoType.DISABLED);
+		exportStudy.setLabel("Export study information");
 
-		//export study info path
+		//export sweep info path
 		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
 				"Target file path for study information", "");
 		filePath.setValidatePath(false);
+
 		filePath.addModificationConsumer("updateEnabledState", () -> {
-			boolean exportSweepInfoEnabled = exportStudyInfo.get();
-			filePath.setEnabled(exportSweepInfoEnabled);
+
+			ExportStudyInfoType exportType = exportStudyInfoType.get();
+			switch (exportType) {
+			case DISABLED:
+				filePath.setEnabled(false);
+				break;
+			case TEXT_FILE:
+				filePath.setEnabled(true);
+				break;
+			case SQLITE:
+				filePath.setEnabled(true);
+				break;
+			case MYSQL:
+				filePath.setEnabled(false);
+				break;
+			default:
+				throw new IllegalStateException("The export type '" + exportType + "' has not yet been implemented.");
+			}
+
 		});
 
 		setModel(root);
@@ -408,7 +429,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 		List<ModelInput> modelInputs = inputGenerator.createModelInputs(studyId.get(), studyDescription.get(), samples);
 
 		//export study info to text file if the corresponding option is enabled
-		if (exportStudyInfo.get()) {
+		if (exportStudyInfoType.get() != ExportStudyInfoType.DISABLED) {
 			exportStudyInfo(samples, numberOfSimulations);
 		}
 

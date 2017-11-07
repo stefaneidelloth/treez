@@ -1,18 +1,32 @@
 package org.treez.study.atom;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.treez.core.atom.adjustable.AdjustableAtom;
+import org.treez.core.atom.attribute.attributeContainer.Page;
+import org.treez.core.atom.attribute.attributeContainer.section.Section;
+import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
+import org.treez.core.atom.attribute.fileSystem.FilePath;
+import org.treez.core.atom.attribute.text.TextField;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.attribute.Attribute;
 import org.treez.core.attribute.Wrap;
 import org.treez.core.utils.Utils;
+import org.treez.data.database.mysql.MySqlDatabase;
+import org.treez.data.database.sqlite.SqLiteDatabase;
 import org.treez.model.atom.AbstractModel;
+import org.treez.model.input.ModelInput;
 import org.treez.model.interfaces.Model;
 import org.treez.results.atom.data.Data;
 import org.treez.results.atom.results.Results;
+import org.treez.study.atom.range.AbstractVariableRange;
+import org.treez.study.atom.sweep.ExportStudyInfoType;
 
 /**
  * Parent class for parameter variations
@@ -54,12 +68,22 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 	/**
 	 * If this is true, a text file with information about the study will be exported to the specified export path
 	 */
-	public final Attribute<Boolean> exportStudyInfo = new Wrap<>();
+	public final Attribute<ExportStudyInfoType> exportStudyInfoType = new Wrap<>();
 
 	/**
 	 * The path where study info will be exported if the export option is enabled
 	 */
 	public final Attribute<String> exportStudyInfoPath = new Wrap<>();
+
+	public final Attribute<String> host = new Wrap<>();
+
+	public final Attribute<String> port = new Wrap<>();
+
+	public final Attribute<String> user = new Wrap<>();
+
+	public final Attribute<String> password = new Wrap<>();
+
+	public final Attribute<String> schema = new Wrap<>();
 
 	//#end region
 
@@ -231,6 +255,271 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 			String dateString = dateFormat.format(date);
 			return dateString;
 		}
+	}
+
+	protected void createStudyInfoSection(Page dataPage, String absoluteHelpContextId) {
+		//study info
+		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
+		studyInfoSection.setLabel("Export study info");
+
+		//export study info combo box
+		EnumComboBox<ExportStudyInfoType> exportStudyInfoTypeCombo = studyInfoSection
+				.createEnumComboBox(exportStudyInfoType, this, ExportStudyInfoType.DISABLED);
+		exportStudyInfoTypeCombo.setLabel("Export study information");
+
+		//export sweep info path
+		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
+				"Target file path for study information", "");
+		filePath.setValidatePath(false);
+
+		//host
+		TextField hostField = studyInfoSection.createTextField(host, this, "localhost");
+		hostField.setLabel("Host name/IP address");
+
+		//port
+		TextField portField = studyInfoSection.createTextField(port, this, "3306");
+
+		//user
+		TextField userField = studyInfoSection.createTextField(user, this, "root");
+
+		//password
+		TextField passwordField = studyInfoSection.createTextField(password, this, "");
+
+		//schema
+		TextField schemaField = studyInfoSection.createTextField(schema, this, "my_schema");
+		schemaField.setLabel("Schema name");
+
+		//enable & disable fields
+		exportStudyInfoTypeCombo.addModificationConsumer("updateEnabledState", () -> {
+
+			ExportStudyInfoType exportType = exportStudyInfoType.get();
+			switch (exportType) {
+			case DISABLED:
+				filePath.setEnabled(false);
+				hostField.setEnabled(false);
+				portField.setEnabled(false);
+				userField.setEnabled(false);
+				passwordField.setEnabled(false);
+				schemaField.setEnabled(false);
+				break;
+			case TEXT_FILE:
+				filePath.setEnabled(true);
+				hostField.setEnabled(false);
+				portField.setEnabled(false);
+				userField.setEnabled(false);
+				passwordField.setEnabled(false);
+				schemaField.setEnabled(false);
+				break;
+			case SQLITE:
+				filePath.setEnabled(true);
+				hostField.setEnabled(false);
+				portField.setEnabled(false);
+				userField.setEnabled(false);
+				passwordField.setEnabled(false);
+				schemaField.setEnabled(false);
+				break;
+			case MYSQL:
+				filePath.setEnabled(false);
+				hostField.setEnabled(true);
+				portField.setEnabled(true);
+				userField.setEnabled(true);
+				passwordField.setEnabled(true);
+				schemaField.setEnabled(true);
+				break;
+			default:
+				throw new IllegalStateException("The export type '" + exportType + "' has not yet been implemented.");
+			}
+
+		});
+	}
+
+	protected void exportStudyInfo(
+			List<AbstractVariableRange<?>> variableRanges,
+			List<ModelInput> modelInputs,
+			int numberOfSimulations) {
+
+		ExportStudyInfoType exportType = exportStudyInfoType.get();
+		String filePath = exportStudyInfoPath.get();
+
+		switch (exportType) {
+		case DISABLED:
+			//Nothing to do
+			break;
+		case TEXT_FILE:
+			if (filePath.isEmpty()) {
+				LOG.warn(
+						"Export of study info to text file is enabled but no file (e.g. c:/studyInfo.txt) has been specified. Export is cancled.");
+				return;
+			}
+			exportStudyInfoToTextFile(variableRanges, numberOfSimulations, filePath);
+			return;
+		case SQLITE:
+			if (filePath.isEmpty()) {
+				LOG.warn(
+						"Export of study info to text file is enabled but no file (e.g. c:/studyInfo.txt) has been specified. Export is cancled.");
+				return;
+			}
+			exportStudyInfoToSqLiteDatabase(variableRanges, modelInputs, filePath);
+			return;
+		case MYSQL:
+			exportStudyInfoToMySqlDatabase(variableRanges, modelInputs);
+			break;
+		default:
+			throw new IllegalStateException("The export type '" + exportType + "' has not yet been implemented.");
+		}
+
+	}
+
+	private static void exportStudyInfoToTextFile(
+			List<AbstractVariableRange<?>> variableRanges,
+			int numberOfSimulations,
+			String filePath) {
+		String studyInfo = "---------- SweepInfo ----------\r\n\r\n" + "Total number of simulations:\r\n"
+				+ numberOfSimulations + "\r\n\r\n" + "Variable model paths and values:\r\n\r\n";
+
+		for (AbstractVariableRange<?> range : variableRanges) {
+			String variablePath = range.getSourceVariableModelPath();
+			studyInfo += variablePath + "\r\n";
+			List<?> rangeValues = range.getRange();
+			for (Object value : rangeValues) {
+				studyInfo += value.toString() + "\r\n";
+			}
+			studyInfo += "\r\n";
+		}
+
+		File file = new File(filePath);
+
+		try {
+			FileUtils.writeStringToFile(file, studyInfo);
+		} catch (IOException exception) {
+			String message = "The specified exportStudyInfoPath '" + filePath
+					+ "' is not valid. Export of study info is skipped.";
+			LOG.error(message);
+		}
+	}
+
+	private void exportStudyInfoToSqLiteDatabase(
+			List<AbstractVariableRange<?>> variableRanges,
+			List<ModelInput> modelInputs,
+			String filePath) {
+
+		SqLiteDatabase database = new SqLiteDatabase(filePath);
+		writeStudyInfo(variableRanges, database);
+		writeJobInfo(modelInputs, database);
+
+	}
+
+	private void exportStudyInfoToMySqlDatabase(
+			List<AbstractVariableRange<?>> variableRanges,
+			List<ModelInput> modelInputs) {
+
+		String url = host.get() + ":" + port.get();
+		String user = this.user.get();
+		String password = this.password.get();
+		String schema = this.schema.get();
+
+		MySqlDatabase database = new MySqlDatabase(url, user, password);
+		writeStudyInfo(variableRanges, database, schema);
+		writeJobInfo(modelInputs, database, schema);
+
+	}
+
+	private void writeStudyInfo(List<AbstractVariableRange<?>> variableRanges, SqLiteDatabase database) {
+		String studyInfoTableName = "study_info";
+		createStudyInfoTableIfNotExists(database, studyInfoTableName);
+		deleteOldEntriesForStudyIfExist(database, studyInfoTableName);
+
+		for (AbstractVariableRange<?> range : variableRanges) {
+			String variablePath = range.getSourceVariableModelPath();
+			List<?> rangeValues = range.getRange();
+			for (Object value : rangeValues) {
+				String query = "INSERT INTO '" + studyInfoTableName + "' VALUES(null, '" + studyId + "', '"
+						+ variablePath + "','" + value + "')";
+				database.execute(query);
+			}
+		}
+	}
+
+	private void writeStudyInfo(List<AbstractVariableRange<?>> variableRanges, MySqlDatabase database, String schema) {
+		String studyInfoTableName = "study_info";
+		createStudyInfoTableIfNotExists(database, schema, studyInfoTableName);
+		deleteOldEntriesForStudyIfExist(database, schema, studyInfoTableName);
+
+		for (AbstractVariableRange<?> range : variableRanges) {
+			String variablePath = range.getSourceVariableModelPath();
+			List<?> rangeValues = range.getRange();
+			for (Object value : rangeValues) {
+				String query = "INSERT INTO `" + schema + "`.`" + studyInfoTableName + "` VALUES(null, '" + studyId
+						+ "', '" + variablePath + "','" + value + "')";
+				database.execute(query);
+			}
+		}
+	}
+
+	private static void createStudyInfoTableIfNotExists(SqLiteDatabase database, String tableName) {
+		String query = "CREATE TABLE IF NOT EXISTS '" + tableName
+				+ "' (id INTEGER PRIMARY KEY NOT NULL, study TEXT, variable TEXT, value TEXT);";
+		database.execute(query);
+	}
+
+	private static void createStudyInfoTableIfNotExists(MySqlDatabase database, String schema, String tableName) {
+		String query = "CREATE TABLE IF NOT EXISTS `" + schema + "`.`" + tableName
+				+ "` (id int NOT NULL AUTO_INCREMENT, study TEXT, variable TEXT, value TEXT, PRIMARY KEY(id));";
+		database.execute(query);
+	}
+
+	private void deleteOldEntriesForStudyIfExist(SqLiteDatabase database, String tableName) {
+		String query = "DELETE FROM '" + tableName + "' WHERE study = '" + studyId + "';";
+		database.execute(query);
+	}
+
+	private void deleteOldEntriesForStudyIfExist(MySqlDatabase database, String schema, String tableName) {
+		String query = "DELETE FROM `" + schema + "`.`" + tableName + "` WHERE study = '" + studyId + "';";
+		database.execute(query);
+	}
+
+	private void writeJobInfo(List<ModelInput> modelInputs, SqLiteDatabase database) {
+		String jobInfoTableName = "job_info";
+		createJobInfoTableIfNotExists(database, jobInfoTableName);
+		deleteOldEntriesForStudyIfExist(database, jobInfoTableName);
+		for (ModelInput modelInput : modelInputs) {
+			String jobId = modelInput.getJobId();
+			List<String> variablePaths = modelInput.getAllVariableModelPaths();
+			for (String variablePath : variablePaths) {
+				Object value = modelInput.getVariableValue(variablePath);
+				String query = "INSERT INTO '" + jobInfoTableName + "' VALUES(null, '" + studyId + "', '" + jobId
+						+ "', '" + variablePath + "','" + value + "')";
+				database.execute(query);
+			}
+		}
+	}
+
+	private void writeJobInfo(List<ModelInput> modelInputs, MySqlDatabase database, String schema) {
+		String jobInfoTableName = "job_info";
+		createJobInfoTableIfNotExists(database, schema, jobInfoTableName);
+		deleteOldEntriesForStudyIfExist(database, schema, jobInfoTableName);
+		for (ModelInput modelInput : modelInputs) {
+			String jobId = modelInput.getJobId();
+			List<String> variablePaths = modelInput.getAllVariableModelPaths();
+			for (String variablePath : variablePaths) {
+				Object value = modelInput.getVariableValue(variablePath);
+				String query = "INSERT INTO `" + schema + "`.`" + jobInfoTableName + "` VALUES(null, '" + studyId
+						+ "', '" + jobId + "', '" + variablePath + "','" + value + "')";
+				database.execute(query);
+			}
+		}
+	}
+
+	private static void createJobInfoTableIfNotExists(SqLiteDatabase database, String tableName) {
+		String query = "CREATE TABLE IF NOT EXISTS '" + tableName
+				+ "' (id INTEGER PRIMARY KEY NOT NULL, study TEXT, job TEXT, variable TEXT, value TEXT);";
+		database.execute(query);
+	}
+
+	private static void createJobInfoTableIfNotExists(MySqlDatabase database, String schema, String tableName) {
+		String query = "CREATE TABLE IF NOT EXISTS `" + schema + "`.`" + tableName
+				+ "` (id int NOT NULL AUTO_INCREMENT, study TEXT, job TEXT, variable TEXT, value TEXT, PRIMARY KEY(id));";
+		database.execute(query);
 	}
 
 	//#end region
