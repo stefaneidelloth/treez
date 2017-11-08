@@ -370,12 +370,13 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 	}
 
-	private static void exportStudyInfoToTextFile(
+	protected static void exportStudyInfoToTextFile(
 			List<AbstractVariableRange<?>> variableRanges,
 			int numberOfSimulations,
 			String filePath) {
-		String studyInfo = "---------- SweepInfo ----------\r\n\r\n" + "Total number of simulations:\r\n"
-				+ numberOfSimulations + "\r\n\r\n" + "Variable model paths and values:\r\n\r\n";
+		String studyInfo = "---------- StudyInfo ----------\r\n\r\n" + //
+				"Total number of simulations:\r\n" + numberOfSimulations + "\r\n\r\n" + //
+				"Variable model paths and values:\r\n\r\n";
 
 		for (AbstractVariableRange<?> range : variableRanges) {
 			String variablePath = range.getSourceVariableModelPath();
@@ -414,13 +415,13 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 			List<ModelInput> modelInputs) {
 
 		String url = host.get() + ":" + port.get();
-		String user = this.user.get();
-		String password = this.password.get();
-		String schema = this.schema.get();
+		String userValue = user.get();
+		String passwordValue = password.get();
+		String schemaValue = schema.get();
 
-		MySqlDatabase database = new MySqlDatabase(url, user, password);
-		writeStudyInfo(variableRanges, database, schema);
-		writeJobInfo(modelInputs, database, schema);
+		MySqlDatabase database = new MySqlDatabase(url, userValue, passwordValue);
+		writeStudyInfo(variableRanges, database, schemaValue);
+		writeJobInfo(modelInputs, database, schemaValue);
 
 	}
 

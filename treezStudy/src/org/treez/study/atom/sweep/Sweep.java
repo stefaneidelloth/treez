@@ -303,6 +303,19 @@ public class Sweep extends AbstractParameterVariation {
 	private synchronized void continueToProcessQueue(Queue<Runnable> jobQueue) {
 
 		int numberOfProcessors = Runtime.getRuntime().availableProcessors();
+
+		//reserve processors on the server for other tasks
+		//otherwise it would be possible to freeze the server
+		//and the UI might not react any more
+
+		if (numberOfProcessors > 6) {
+			numberOfProcessors -= 2;
+		} else {
+			if (numberOfProcessors > 1) {
+				numberOfProcessors -= 1;
+			}
+		}
+
 		int numberOfFreeThreads = numberOfProcessors - numberOfActiveThreads;
 
 		for (int index = 0; index < numberOfFreeThreads; index++) {
@@ -315,6 +328,8 @@ public class Sweep extends AbstractParameterVariation {
 			numberOfActiveThreads++;
 			thread.start();
 		}
+
+		Thread.yield();
 
 		//LOG.info("Working on model job queue with " + numberOfActiveThreads + " threads.");
 
@@ -386,6 +401,8 @@ public class Sweep extends AbstractParameterVariation {
 			}
 
 			jobFinishedHook.run();
+
+			Thread.yield();
 
 		};
 
