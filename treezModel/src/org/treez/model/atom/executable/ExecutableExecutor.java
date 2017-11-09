@@ -63,9 +63,6 @@ public class ExecutableExecutor {
 		MessageConsole console = executableMonitor.getConsole();
 		IOConsoleOutputStream stream = console.newOutputStream();
 
-		outputStream = stream;
-		errorStream = new ErrorStream(stream);
-
 		CommandLine cmdLine = CommandLine.parse(command);
 
 		//create and configure executor
@@ -76,6 +73,19 @@ public class ExecutableExecutor {
 		executor.setWatchdog(watchdog);
 
 		//define handling of output and error stream of the process
+
+		errorStream = new ErrorStream(stream);
+
+		outputStream = new OutputStream() {
+
+			@Override
+			public void write(int b) throws IOException {
+				stream.write(b);
+				if (executableMonitor.isCanceled()) {
+					watchdog.destroyProcess();
+				}
+			}
+		};
 
 		PumpStreamHandler executionStreamHandler = new PumpStreamHandler(outputStream, errorStream, System.in);
 

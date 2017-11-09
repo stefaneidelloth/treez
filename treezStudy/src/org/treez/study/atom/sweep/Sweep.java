@@ -304,12 +304,13 @@ public class Sweep extends AbstractParameterVariation {
 
 		int numberOfProcessors = Runtime.getRuntime().availableProcessors();
 
-		//reserve processors on the server for other tasks
-		//otherwise it would be possible to freeze the server
-		//and the UI might not react any more
+		//Reserve some processors on the server for other tasks.
+		//Also set a minimum priority.
+		//Otherwise it would be possible to freeze the server
+		//and the UI of Eclipse might not react any more.
 
 		if (numberOfProcessors > 6) {
-			numberOfProcessors -= 2;
+			numberOfProcessors = numberOfProcessors / 2;
 		} else {
 			if (numberOfProcessors > 1) {
 				numberOfProcessors -= 1;
@@ -325,6 +326,7 @@ public class Sweep extends AbstractParameterVariation {
 			}
 
 			Thread thread = new Thread(modelJob);
+			thread.setPriority(Thread.MIN_PRIORITY);
 			numberOfActiveThreads++;
 			thread.start();
 		}
