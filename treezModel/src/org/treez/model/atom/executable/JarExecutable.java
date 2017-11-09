@@ -119,7 +119,7 @@ public class JarExecutable extends Executable {
 
 	@Override
 	protected String buildCommand() {
-		String command = "\"" + executablePath.get() + "\"";
+		String command = "cmd.exe /C start /b /wait /low \"" + executablePath.get() + "\"";
 
 		command = addJavaArguments(command);
 		command = addInputArguments(command);
