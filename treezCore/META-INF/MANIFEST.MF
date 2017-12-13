@@ -12,7 +12,7 @@ Bundle-ClassPath: .,
  lib/log4j-1.2.5.jar,
  lib/spring-expression-4.1.6.RELEASE.jar,
  lib/spring-core-4.1.6.RELEASE.jar,
- lib/jfxswt.jar
+ lib/javafx-swt.jar
 Export-Package: org.apache.commons.exec;uses:="new org.apache.commons.exec",
  org.apache.log4j;uses:="org.apache.log4j.helpers,org.apache.log4j.or,org.apache.log4j.spi",
  org.treez.core;

@@ -9,6 +9,9 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
+
+
+
 /**
  * A JavaFx Node that shows d3 content on a JavaFx WebView.
  * Also provides access to Nvd3, Plotly, and FunctionPlotter.
