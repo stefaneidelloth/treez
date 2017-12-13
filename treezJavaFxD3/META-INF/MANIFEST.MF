@@ -137,7 +137,7 @@ Export-Package: com.sun.javafx.scene.control.skin,
  org.treez.javafxd3.plotly.data.line;uses:="org.treez.javafxd3.d3.wrapper,org.treez.javafxd3.d3.core",
  org.treez.javafxd3.plotly.layout;uses:="org.treez.javafxd3.d3.wrapper,org.treez.javafxd3.d3.core,org.treez.javafxd3.plotly.layout.margin",
  org.treez.javafxd3.plotly.layout.margin;uses:="org.treez.javafxd3.d3.wrapper,org.treez.javafxd3.d3.core"
-Bundle-RequiredExecutionEnvironment: JavaSE-9
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.apache.log4j,
  org.eclipse.ui,
  org.eclipse.ui.intro,
