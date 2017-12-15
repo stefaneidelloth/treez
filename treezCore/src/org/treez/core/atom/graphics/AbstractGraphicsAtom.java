@@ -407,7 +407,7 @@ public abstract class AbstractGraphicsAtom extends AdjustableAtom implements Mou
 	 */
 	@Override
 	public void handleMouseClick(Object context) {
-		LOG.debug("Setting focus");
+
 		setFocus(this);
 	}
 
