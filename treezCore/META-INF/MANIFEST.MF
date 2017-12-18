@@ -4,17 +4,18 @@ Bundle-Name: org.treez.core
 Bundle-SymbolicName: org.treez.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.treez.core.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-9
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/commons-exec-1.3.jar,
  lib/commons-logging-1.2.jar,
- lib/log4j-1.2.5.jar,
  lib/spring-expression-4.1.6.RELEASE.jar,
  lib/spring-core-4.1.6.RELEASE.jar,
- lib/javafx-swt.jar
+ lib/javafx-swt.jar,
+ lib/log4j-api-2.3.jar,
+ lib/log4j-core-2.3.jar
 Export-Package: org.apache.commons.exec;uses:="new org.apache.commons.exec",
- org.apache.log4j;uses:="org.apache.log4j.helpers,org.apache.log4j.or,org.apache.log4j.spi",
+ org.apache.logging.log4j,
  org.treez.core;
   uses:="org.osgi.framework,
    org.eclipse.swt.graphics,

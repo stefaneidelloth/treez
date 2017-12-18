@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -41,7 +42,7 @@ import org.treez.core.data.row.Row;
  */
 public class TreezListViewer extends Composite {
 
-	private static final Logger LOG = Logger.getLogger(TreezListViewer.class);
+	private static final Logger LOG = LogManager.getLogger(TreezListViewer.class);
 
 	//#region ATTRIBUTES
 

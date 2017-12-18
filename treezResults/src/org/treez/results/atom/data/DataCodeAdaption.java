@@ -1,6 +1,6 @@
 package org.treez.results.atom.data;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.base.AtomCodeAdaption;
 
@@ -10,7 +10,7 @@ import org.treez.core.atom.base.AtomCodeAdaption;
 public class DataCodeAdaption extends AtomCodeAdaption {
 
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(DataCodeAdaption.class);
+	private static final Logger LOG = LogManager.getLogger(DataCodeAdaption.class);
 
 	//#end region
 

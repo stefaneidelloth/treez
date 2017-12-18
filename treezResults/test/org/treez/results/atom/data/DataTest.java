@@ -1,6 +1,6 @@
 package org.treez.results.atom.data;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
 
@@ -13,7 +13,7 @@ public class DataTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(DataTest.class);
+	private static final Logger LOG = LogManager.getLogger(DataTest.class);
 
 	//#region SETUP
 

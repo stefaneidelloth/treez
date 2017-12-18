@@ -6,8 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.NDC;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
@@ -27,7 +28,7 @@ import org.treez.core.standallone.StandAloneWorkbench;
 
 public class TreezMonitor implements ObservableMonitor {
 
-	private static Logger LOG = Logger.getLogger(TreezMonitor.class);
+	private static Logger LOG = LogManager.getLogger(TreezMonitor.class);
 
 	//#region ATTRIBUTES
 
@@ -195,7 +196,7 @@ public class TreezMonitor implements ObservableMonitor {
 		assertChildWorkIsNotTooLarge(coveredWorkOfParentMonitor);
 
 		//Add jobId to logging context, also see http://www.baeldung.com/java-logging-ndc-log4j
-		NDC.push(id);
+		ThreadContext.push(id);
 
 		workCoveredByChildren += coveredWorkOfParentMonitor;
 		TreezMonitor treezSubMonitor = new TreezMonitor(title, id, this, coveredWorkOfParentMonitor);
@@ -277,7 +278,7 @@ public class TreezMonitor implements ObservableMonitor {
 	@Override
 	public void close() throws Exception {
 		cancel();
-		NDC.pop();
+		ThreadContext.pop();
 	}
 
 	private void assertTotalWorkHasBeenSet() {

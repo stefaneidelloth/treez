@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
@@ -47,7 +47,7 @@ import org.treez.study.atom.range.StringVariableRange;
 @SuppressWarnings({ "checkstyle:visibilitymodifier", "checkstyle:classfanoutcomplexity" })
 public class Sweep extends AbstractParameterVariation {
 
-	private static final Logger LOG = Logger.getLogger(Sweep.class);
+	private static final Logger LOG = LogManager.getLogger(Sweep.class);
 
 	//#region ATTRIBUTES
 

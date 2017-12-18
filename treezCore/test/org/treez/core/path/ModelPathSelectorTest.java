@@ -1,6 +1,6 @@
 package org.treez.core.path;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class ModelPathSelectorTest {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOG = Logger.getLogger(ModelPathSelectorTest.class);
+	private static final Logger LOG = LogManager.getLogger(ModelPathSelectorTest.class);
 
 	//#region ATTRIBUTES
 

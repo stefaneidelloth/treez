@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -43,7 +43,7 @@ import org.treez.core.utils.Utils;
  */
 public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptable, Copiable<AbstractAtom<A>> {
 
-	private static final Logger LOG = Logger.getLogger(AbstractAtom.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractAtom.class);
 
 	//#region ATTRIBUTES
 

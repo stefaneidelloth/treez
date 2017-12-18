@@ -2,7 +2,7 @@ package org.treez.results.atom.xySeries;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -34,7 +34,7 @@ import org.treez.results.atom.xy.Xy;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class XySeries extends AbstractGraphicsAtom implements LegendContributorProvider {
 
-	private static final Logger LOG = Logger.getLogger(XySeries.class);
+	private static final Logger LOG = LogManager.getLogger(XySeries.class);
 
 	//#region ATTRIBUTES
 

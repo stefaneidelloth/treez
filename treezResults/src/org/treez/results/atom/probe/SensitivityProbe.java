@@ -3,7 +3,7 @@ package org.treez.results.atom.probe;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
@@ -28,7 +28,7 @@ import org.treez.results.Activator;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class SensitivityProbe extends AbstractProbe {
 
-	private static final Logger LOG = Logger.getLogger(SensitivityProbe.class);
+	private static final Logger LOG = LogManager.getLogger(SensitivityProbe.class);
 
 	//#region ATTRIBUTES
 

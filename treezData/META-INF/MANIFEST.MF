@@ -13,7 +13,7 @@ Bundle-ClassPath: .,
  lib/org.eclipse.nebula.widgets.nattable.core.source_1.4.0.201606011907.jar,
  lib/org.eclipse.nebula.widgets.pagination.source_1.0.0.201701041652.jar,
  lib/mysql-connector-java-5.1.40-bin.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-9
 Bundle-ActivationPolicy: lazy
 Export-Package: org.treez.data,
  org.treez.data.cell,

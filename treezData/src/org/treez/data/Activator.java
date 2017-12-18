@@ -1,6 +1,6 @@
 package org.treez.data;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.AbstractActivator;
@@ -10,7 +10,7 @@ import org.treez.core.AbstractActivator;
  */
 public class Activator extends AbstractActivator {
 
-	private static final Logger LOG = Logger.getLogger(Activator.class);
+	private static final Logger LOG = LogManager.getLogger(Activator.class);
 
 	//#region ATTRIBUTES
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.CodeContainer;
@@ -21,7 +21,7 @@ import org.treez.core.scripting.VariableNameRegistry;
  */
 public abstract class AbstractAtomCodeAdaption implements CodeAdaption {
 
-	private static final Logger LOG = Logger.getLogger(AbstractAtomCodeAdaption.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractAtomCodeAdaption.class);
 
 	//#region ATTRIBUTES
 

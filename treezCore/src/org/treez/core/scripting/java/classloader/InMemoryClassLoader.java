@@ -3,7 +3,7 @@ package org.treez.core.scripting.java.classloader;
 import java.util.Objects;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.treez.core.scripting.java.file.CompiledJavaFileContainer;
 
 /**
@@ -12,7 +12,7 @@ import org.treez.core.scripting.java.file.CompiledJavaFileContainer;
  */
 public class InMemoryClassLoader extends ClassLoader {
 
-	private static final Logger LOG = Logger.getLogger(InMemoryClassLoader.class);
+	private static final Logger LOG = LogManager.getLogger(InMemoryClassLoader.class);
 
 	//#region ATTRIBUTES
 

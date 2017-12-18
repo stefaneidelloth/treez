@@ -3,7 +3,7 @@ package org.treez.core.atom.base;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.treez.core.adaptable.Adaptable;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.CodeContainer;
@@ -17,7 +17,7 @@ import org.treez.core.scripting.ScriptType;
  */
 public class RegionsAtomCodeAdaption extends AdjustableAtomCodeAdaption {
 
-	private static final Logger LOG = Logger.getLogger(RegionsAtomCodeAdaption.class);
+	private static final Logger LOG = LogManager.getLogger(RegionsAtomCodeAdaption.class);
 
 	//#region CONSTRUCTORS
 

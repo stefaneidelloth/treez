@@ -1,22 +1,20 @@
 package org.treez.core.atom.variablefield;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 
 /**
  * Tests the StringItemVariableField
  */
-public class StringItemVariableFieldTest
-		extends
-			AbstractAttributeAtomConstructionTest<String> {
+public class StringItemVariableFieldTest extends AbstractAttributeAtomConstructionTest<String> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger
-			.getLogger(StringItemVariableFieldTest.class);
+	private static final Logger LOG = LogManager.getLogger(StringItemVariableFieldTest.class);
 
 	//#region SETUP
 
@@ -28,8 +26,7 @@ public class StringItemVariableFieldTest
 	public void createTestAtom() {
 
 		// create test atom
-		StringItemVariableField variableField = new StringItemVariableField(
-				atomName);
+		StringItemVariableField variableField = new StringItemVariableField(atomName);
 		variableField.setLabel("MyVariable:");
 		variableField.setItems("foo,baa");
 		variableField.setTooltip("My tooltip");

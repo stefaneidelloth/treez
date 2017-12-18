@@ -2,7 +2,7 @@ package org.treez.core.path;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class ModelPathValidatorTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(ModelPathValidatorTest.class);
+	private static final Logger LOG = LogManager.getLogger(ModelPathValidatorTest.class);
 
 	//#region ATTRIBUTES
 

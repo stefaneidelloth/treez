@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
@@ -34,7 +34,7 @@ import org.treez.study.atom.sweep.ExportStudyInfoType;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public abstract class AbstractParameterVariation extends AdjustableAtom implements Study {
 
-	private static final Logger LOG = Logger.getLogger(AbstractParameterVariation.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractParameterVariation.class);
 
 	//#region ATTRIBUTES
 

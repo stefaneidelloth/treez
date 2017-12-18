@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute.attributeContainer.section;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeContainerAtomConstructonTest;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
@@ -14,7 +14,7 @@ public class SectionTest extends AbstractAttributeContainerAtomConstructonTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(SectionTest.class);
+	private static final Logger LOG = LogManager.getLogger(SectionTest.class);
 
 	//#region SETUP
 

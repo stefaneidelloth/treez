@@ -4,7 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -23,13 +24,12 @@ import org.treez.core.atom.base.annotation.IsParameter;
 import org.treez.core.atom.base.annotation.IsParameters;
 
 /**
- * Control adaption for an adaptable that only has "primitive parameters". The
- * primitive parameters are defined using the @IsParameter annotation.
+ * Control adaption for an adaptable that only has "primitive parameters". The primitive parameters are defined using
+ * the @IsParameter annotation.
  */
 public class AtomControlAdaption extends AbstractControlAdaption {
 
-	private static final Logger LOG = Logger
-			.getLogger(AtomControlAdaption.class);
+	private static final Logger LOG = LogManager.getLogger(AtomControlAdaption.class);
 
 	//#region CONSTRUCTORS
 
@@ -53,13 +53,11 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 	}
 
 	/**
-	 * Creates controls for all attributes that are annotated with the
-	 * IsParameter annotation.
+	 * Creates controls for all attributes that are annotated with the IsParameter annotation.
 	 *
 	 * @param adaptable
 	 */
-	private void createControlsForAnnotatedAttributes(
-			final Adaptable adaptable) {
+	private void createControlsForAnnotatedAttributes(final Adaptable adaptable) {
 
 		//get all attributes from super super class, super class and class
 		List<Field> allAttributes = getAllAttributes(adaptable);
@@ -68,8 +66,7 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 			//LOG.debug("Creating control for attribute: " +
 			//attribute.getName());
 			attribute.setAccessible(true);
-			boolean isAnnotated = attribute
-					.isAnnotationPresent(IsParameter.class);
+			boolean isAnnotated = attribute.isAnnotationPresent(IsParameter.class);
 			if (isAnnotated) {
 				//LOG.debug("The attribute " + attribute.getName() + " is
 				//annotated.");
@@ -95,8 +92,7 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 			Class<?> superSuperClass = superClass.getSuperclass();
 
 			if (superSuperClass != null) {
-				Field[] superSuperAttributes = superSuperClass
-						.getDeclaredFields();
+				Field[] superSuperAttributes = superSuperClass.getDeclaredFields();
 				for (Field attribute : superSuperAttributes) {
 					allAttributes.add(attribute);
 				}
@@ -135,15 +131,13 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 		boolean comboItemsExist = comboItems != null && comboItems.length > 0;
 
 		//get the default value as string
-		String defaultValueString = IsParameters
-				.getDefaultValueString(attribute);
+		String defaultValueString = IsParameters.getDefaultValueString(attribute);
 		//LOG.debug("default value: " + defaultValueString);
 
 		//get the current value of the attribute as string
 		//(if the attribute is an Enum or Boolean, the value will be converted
 		//to a string)
-		String valueString = IsParameters.getCurrentValueString(attribute,
-				adaptable);
+		String valueString = IsParameters.getCurrentValueString(attribute, adaptable);
 		//LOG.debug("current value: " + valueString);
 
 		//initialize the value with the default value if the current value is
@@ -153,8 +147,7 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 		}
 
 		//create control
-		createControl(attribute, name, typeName, comboItems, comboItemsExist,
-				valueString);
+		createControl(attribute, name, typeName, comboItems, comboItemsExist, valueString);
 
 	}
 
@@ -171,29 +164,32 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 		return typeName;
 	}
 
-	private void createControl(final Field attribute, String name,
-			String typeName, String[] comboItems, boolean comboItemsExist,
+	private void createControl(
+			final Field attribute,
+			String name,
+			String typeName,
+			String[] comboItems,
+			boolean comboItemsExist,
 			String valueString) {
 		switch (typeName) {
-			case "BOOLEAN" :
-				createCheckBox(name, valueString, attribute);
-				break;
-			case "ENUM" :
+		case "BOOLEAN":
+			createCheckBox(name, valueString, attribute);
+			break;
+		case "ENUM":
+			createComboBox(name, valueString, comboItems, attribute);
+			break;
+		case "DOUBLE":
+		case "FLOAT":
+		case "INTEGER":
+		case "STRING":
+			if (comboItemsExist) {
 				createComboBox(name, valueString, comboItems, attribute);
-				break;
-			case "DOUBLE" :
-			case "FLOAT" :
-			case "INTEGER" :
-			case "STRING" :
-				if (comboItemsExist) {
-					createComboBox(name, valueString, comboItems, attribute);
-				} else {
-					createTextField(name, valueString, attribute);
-				}
-				break;
-			default :
-				throw new IllegalStateException(
-						"The type " + typeName + " is not known.");
+			} else {
+				createTextField(name, valueString, attribute);
+			}
+			break;
+		default:
+			throw new IllegalStateException("The type " + typeName + " is not known.");
 		}
 	}
 
@@ -205,15 +201,12 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 	 * @param comboItems
 	 * @param attribute
 	 */
-	private void createComboBox(String name, String value, String[] comboItems,
-			final Field attribute) {
+	private void createComboBox(String name, String value, String[] comboItems, final Field attribute) {
 		Label label = new Label(this, SWT.NONE);
-		label.setText(name.substring(0, 1).toUpperCase()
-				+ name.substring(1, name.length()) + ":");
+		label.setText(name.substring(0, 1).toUpperCase() + name.substring(1, name.length()) + ":");
 
 		Combo combo = new Combo(this, SWT.READ_ONLY);
-		combo.setLayoutData(
-				new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		combo.setItems(comboItems);
 		combo.setText(value);
 
@@ -225,10 +218,8 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 				String valueString = combo.getText();
 
 				//convert value string to right format for the attribute
-				Object attributeParent = AtomControlAdaption.this
-						.getAdaptable();
-				IsParameters.setAttributeValue(attribute, attributeParent,
-						valueString);
+				Object attributeParent = AtomControlAdaption.this.getAdaptable();
+				IsParameters.setAttributeValue(attribute, attributeParent, valueString);
 				//LOG.debug("Set attribute '" + attribute.getName() + "' to
 				//new value " + valueString);
 			}
@@ -255,8 +246,7 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 		}
 
 		Label label = new Label(this, SWT.NONE);
-		label.setText(name.substring(0, 1).toUpperCase()
-				+ name.substring(1, name.length()) + ":");
+		label.setText(name.substring(0, 1).toUpperCase() + name.substring(1, name.length()) + ":");
 
 		Button checkBox = new Button(this, SWT.CHECK);
 		checkBox.setSelection(state);
@@ -293,12 +283,10 @@ public class AtomControlAdaption extends AbstractControlAdaption {
 	 */
 	private void createTextField(String name, String value, final Field field) {
 		Label label = new Label(this, SWT.NONE);
-		label.setText(name.substring(0, 1).toUpperCase()
-				+ name.substring(1, name.length()) + ":");
+		label.setText(name.substring(0, 1).toUpperCase() + name.substring(1, name.length()) + ":");
 
 		Text text = new Text(this, SWT.BORDER);
-		text.setLayoutData(
-				new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		text.setText(value);
 
 		Listener textListener = new Listener() {

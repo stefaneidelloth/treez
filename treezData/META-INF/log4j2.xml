@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration 
+   xmlns:log4j="http://jakarta.apache.org/log4j/"
+   packages="org.treez.core.console"   
+>
+
+	<Appenders>
+		<Console
+			name="ConsoleAppender"
+			target="SYSTEM_OUT"
+		>
+			<PatternLayout pattern="%-6r [%t] %-5p %c{1} %x  : %m%n" />
+			<filters>
+				<ThresholdFilter level="DEBUG" />
+			</filters>
+		</Console>
+		
+		<TreezConsoleAppender
+			name="TreezConsoleAppender"			
+		>
+			<PatternLayout pattern="%-6r [%t] %-5p %c{1} %x  : %m%n" />
+			<filters>
+				<ThresholdFilter level="DEBUG" />
+			</filters>			
+		</TreezConsoleAppender>
+
+		<RollingFile
+			name="RollingFileAppender"
+			fileName="Logfile.log"	
+			filePattern="Logfile.log"					
+		>
+			<PatternLayout pattern="%-6r [%t] %-5p %c{1} %x  : %m%n" />
+			<filters>
+				<ThresholdFilter level="INFO" />
+			</filters>
+			<Policies>               
+                <SizeBasedTriggeringPolicy size="0.001 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+		</RollingFile>	
+		
+	</Appenders>
+
+	<loggers>
+		<root level="DEBUG">
+			<appender-ref ref="ConsoleAppender" />
+			<appender-ref ref="RollingFileAppender" />
+			<appender-ref ref="TreezConsoleAppender"/>
+		</root>
+	</loggers>
+
+</log4j:configuration>
+

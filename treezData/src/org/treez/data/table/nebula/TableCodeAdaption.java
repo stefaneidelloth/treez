@@ -2,7 +2,7 @@ package org.treez.data.table.nebula;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.atom.base.AtomCodeAdaption;
 import org.treez.core.data.row.Row;
@@ -10,7 +10,7 @@ import org.treez.core.data.row.Row;
 public class TableCodeAdaption extends AtomCodeAdaption {
 
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(TableCodeAdaption.class);
+	private static final Logger LOG = LogManager.getLogger(TableCodeAdaption.class);
 
 	//#end region
 

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class AbstractAtomTest {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOG = Logger.getLogger(AbstractAtomTest.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractAtomTest.class);
 
 	//#region ATTRIBUTES
 

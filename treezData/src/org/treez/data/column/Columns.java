@@ -3,7 +3,8 @@ package org.treez.data.column;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -28,7 +29,7 @@ import org.treez.core.treeview.action.AddChildAtomTreeViewerAction;
  */
 public class Columns extends AdjustableAtom {
 
-	private static final Logger LOG = Logger.getLogger(Columns.class);
+	private static final Logger LOG = LogManager.getLogger(Columns.class);
 
 	//#region CONSTRUCTORS
 
@@ -71,9 +72,9 @@ public class Columns extends AdjustableAtom {
 	 * Provides a control to represent this atom
 	 */
 	@Override
-	public AbstractControlAdaption createControlAdaption(
-			Composite parent,
-			FocusChangingRefreshable treeViewRefreshable) {
+	public
+			AbstractControlAdaption
+			createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		return new EmptyControlAdaption(parent, this, "This atom represents all columns of its parent table.");
 	}

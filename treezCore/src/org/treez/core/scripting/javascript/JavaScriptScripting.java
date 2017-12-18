@@ -4,7 +4,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -16,7 +16,7 @@ import org.treez.core.scripting.AbstractScripting;
  */
 public class JavaScriptScripting extends AbstractScripting {
 
-	private static final Logger LOG = Logger.getLogger(JavaScriptScripting.class);
+	private static final Logger LOG = LogManager.getLogger(JavaScriptScripting.class);
 
 	//#region ATTRIBUTES
 

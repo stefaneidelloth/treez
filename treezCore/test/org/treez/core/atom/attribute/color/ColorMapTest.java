@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute.color;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 import org.treez.core.atom.attribute.color.ColorMap;
@@ -17,7 +17,7 @@ public class ColorMapTest
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(ColorMapTest.class);
+	private static final Logger LOG = LogManager.getLogger(ColorMapTest.class);
 
 	//#region SETUP
 

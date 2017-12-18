@@ -2,7 +2,7 @@ package org.treez.views.tree;
 
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -18,7 +18,7 @@ import org.treez.core.treeview.action.ActionProviderRefreshable;
  */
 public class TreeViewPart extends ViewPart implements TreezView {
 
-	private static final Logger LOG = Logger.getLogger(TreeViewPart.class);
+	private static final Logger LOG = LogManager.getLogger(TreeViewPart.class);
 
 	//#region ATTRIBUTES
 

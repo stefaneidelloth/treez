@@ -5,7 +5,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.treez.core.data.column.ColumnBlueprint;
 import org.treez.core.data.column.ColumnType;
 import org.treez.core.data.column.ColumnTypeConverter;
@@ -20,7 +20,7 @@ import org.treez.data.database.sqlite.SqLiteColumnTypeConverter;
 
 public final class MySqlImporter extends AbstractImporter {
 
-	private static Logger LOG = Logger.getLogger(MySqlImporter.class);
+	private static Logger LOG = LogManager.getLogger(MySqlImporter.class);
 
 	//#region CONSTRUCTORS
 

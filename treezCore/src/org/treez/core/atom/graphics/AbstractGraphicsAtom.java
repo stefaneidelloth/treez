@@ -4,7 +4,7 @@ import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.treez.core.atom.adjustable.AdjustableAtom;
 import org.treez.core.atom.attribute.comboBox.lineStyle.LineStyleValue;
 import org.treez.core.atom.graphics.length.Length;
@@ -18,7 +18,7 @@ import org.treez.javafxd3.d3.functions.MouseClickFunction;
  */
 public abstract class AbstractGraphicsAtom extends AdjustableAtom implements MouseClickFunction {
 
-	private static final Logger LOG = Logger.getLogger(AbstractGraphicsAtom.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractGraphicsAtom.class);
 
 	//#region ATTRIBUTES
 
@@ -407,8 +407,9 @@ public abstract class AbstractGraphicsAtom extends AdjustableAtom implements Mou
 	 */
 	@Override
 	public void handleMouseClick(Object context) {
-
+		LOG.info("Handling mouse click");
 		setFocus(this);
+		LOG.info("Handled mouse click");
 	}
 
 	//#end region

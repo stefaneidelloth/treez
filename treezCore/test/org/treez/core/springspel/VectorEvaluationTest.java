@@ -2,7 +2,7 @@ package org.treez.core.springspel;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.treez.testutils.TestUtils;
 
@@ -14,7 +14,7 @@ public class VectorEvaluationTest {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOG = Logger.getLogger(VectorEvaluationTest.class);
+	private static final Logger LOG = LogManager.getLogger(VectorEvaluationTest.class);
 
 	/**
 	 * tests the vector evaluation

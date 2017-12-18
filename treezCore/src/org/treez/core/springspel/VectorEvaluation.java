@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -16,7 +16,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
  */
 public class VectorEvaluation {
 
-	private static final Logger LOG = Logger.getLogger(VectorEvaluation.class);
+	private static final Logger LOG = LogManager.getLogger(VectorEvaluation.class);
 
 	//#region ATTRIBUTES
 
