@@ -139,7 +139,8 @@ Export-Package: org.treez.javafxd3.d3;
 Bundle-RequiredExecutionEnvironment: JavaSE-9
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.intro,
- org.eclipse.ui.intro.universal
+ org.eclipse.ui.intro.universal,
+ org.eclipse.swt
 Bundle-ClassPath: main/resources/,
  .,
  lib/javafx-swt.jar,
