@@ -9,7 +9,8 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteResultHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
@@ -164,11 +165,13 @@ public class ExecutableExecutor {
 				if (errorStream.hasData()) {
 					String errorData = errorStream.getDataAsString();
 					errorStream.reset();
-					watchdog.destroyProcess();
-					executionIsFinished = true;
-					String message = "Error while executing system command '" + command + "':\n" + errorData;
-					Exception exception = new IllegalStateException(message);
-					postProcessFailedProcess(exception);
+					if (!errorData.contains("WARNING:")) {
+						watchdog.destroyProcess();
+						executionIsFinished = true;
+						String message = "Error while executing system command '" + command + "':\n" + errorData;
+						Exception exception = new IllegalStateException(message);
+						postProcessFailedProcess(exception);
+					}
 				}
 
 			} catch (InterruptedException exception) {
