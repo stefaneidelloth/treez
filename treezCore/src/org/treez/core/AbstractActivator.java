@@ -66,8 +66,13 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	protected void initializeLog4j() {
 
 		LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
-		File file = new File(getAbsolutePath() + "/META-INF/log4j2.xml");
-		loggerContext.setConfigLocation(file.toURI());
+
+		try {
+			URL log4j2xml = this.getClass().getClassLoader().getResource("META-INF/log4j2.xml");
+			loggerContext.setConfigLocation(log4j2xml.toURI());
+		} catch (URISyntaxException exception) {
+			throw new IllegalStateException("Could not find log4j properties file", exception);
+		}
 	}
 
 	@Override
