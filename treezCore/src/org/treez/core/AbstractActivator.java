@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -40,7 +42,11 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 
 	//#region CONSTRUCTORS
 
-	public AbstractActivator() {}
+	public AbstractActivator() {
+		String message = "Constructing AbstractActivator for " + this.getClass().getName();
+
+		JOptionPane.showMessageDialog(null, message);
+	}
 
 	//#end region
 
