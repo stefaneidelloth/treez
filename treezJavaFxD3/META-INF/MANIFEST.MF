@@ -1,8 +1,10 @@
 Manifest-Version: 1.0
+Automatic-Module-Name: org.treez.javafxd3
 Bundle-ManifestVersion: 2
 Bundle-Name: org.treez.javafxd3
 Bundle-SymbolicName: org.treez.javafxd3;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Stefan Eidelloth
 Export-Package: org.treez.javafxd3.d3;
   uses:="org.treez.javafxd3.d3.svg,
    org.treez.javafxd3.d3.time,

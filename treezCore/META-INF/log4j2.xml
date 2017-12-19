@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- the warning about the grammar constraint can be ignored, see https://stackoverflow.com/questions/13904481/in-log4j2-how-do-i-associate-an-xml-schema-with-log4j2-xml  -->
+
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
 	<appenders>
@@ -23,7 +24,7 @@
 			<filters>
 				<ThresholdFilter level="INFO" />
 			</filters>
-		</File>	
+		</RollingFile>	
 		
 	</appenders>
 
