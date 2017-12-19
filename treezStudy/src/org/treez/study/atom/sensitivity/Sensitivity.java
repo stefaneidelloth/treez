@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -48,7 +48,7 @@ import org.treez.study.atom.sweep.ExportStudyInfoType;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Sensitivity extends AbstractParameterVariation {
 
-	private static final Logger LOG = LogManager.getLogger(Sensitivity.class);
+	private static final Logger LOG = Logger.getLogger(Sensitivity.class);
 
 	//#region ATTRIBUTES
 

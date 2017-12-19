@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute.text;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -17,7 +17,7 @@ import org.treez.core.utils.Utils;
 
 public class TextField extends AbstractStringAttributeAtom<TextField> {
 
-	private static final Logger LOG = LogManager.getLogger(TextField.class);
+	private static final Logger LOG = Logger.getLogger(TextField.class);
 
 	//#region ATTRIBUTES
 

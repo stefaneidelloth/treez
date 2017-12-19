@@ -3,7 +3,7 @@ package org.treez.views.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -19,7 +19,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 public class TreeNodeMenuManager extends MenuManager {
 
-	private static final Logger LOG = LogManager.getLogger(TreeNodeMenuManager.class);
+	private static final Logger LOG = Logger.getLogger(TreeNodeMenuManager.class);
 
 	//#region ATTRIBUTES
 

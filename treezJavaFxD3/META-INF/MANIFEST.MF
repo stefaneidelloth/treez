@@ -146,6 +146,5 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ClassPath: main/resources/,
  .,
  lib/javafx-swt.jar,
- lib/log4j-api-2.3.jar,
- lib/log4j-core-2.3.jar
+ lib/log4j-1.2.15.jar
 

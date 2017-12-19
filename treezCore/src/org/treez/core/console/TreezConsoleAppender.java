@@ -2,18 +2,12 @@ package org.treez.core.console;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.Serializable;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -22,9 +16,10 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 import org.treez.core.monitor.TreezMonitor;
 
-//note: class name need not match the @Plugin name.
-@Plugin(name = "TreezConsoleAppender", category = "Core", elementType = "appender", printObject = true)
-public final class TreezConsoleAppender extends AbstractAppender {
+/**
+ * For writing to the eclipse console
+ */
+public class TreezConsoleAppender extends AppenderSkeleton {
 
 	//#region ATTRIBUTES
 
@@ -36,22 +31,18 @@ public final class TreezConsoleAppender extends AbstractAppender {
 
 	//#region CONSTRUCTORS
 
-	protected TreezConsoleAppender(
-			String name,
-			Filter filter,
-			Layout<? extends Serializable> layout,
-			final boolean ignoreExceptions) {
-		super(name, filter, layout, ignoreExceptions);
-	}
-
 	//#end region
 
 	//#region METHODS
 
 	@Override
-	public void append(LogEvent event) {
+	protected void append(LoggingEvent event) {
 
-		String treezMonitorId = event.getContextStack().pop();
+		//get formatted message
+		Layout layout = this.getLayout();
+		String message = layout.format(event);
+
+		String treezMonitorId = event.getNDC();
 		MessageConsole console = getConsole(treezMonitorId);
 		if (console != null) {
 
@@ -67,15 +58,18 @@ public final class TreezConsoleAppender extends AbstractAppender {
 					} else if (level.equals(Level.ERROR)) {
 						stream.setColor(TreezMonitor.RED);
 					}
-					String message = event.getMessage().getFormattedMessage();
+
 					stream.println(message);
 				} catch (IOException exception) {
 					exception.printStackTrace();
 				}
 
-				Throwable throwable = event.getThrown();
+				ThrowableInformation throwableInformation = event.getThrowableInformation();
 
-				if (throwable != null) {
+				if (throwableInformation != null) {
+
+					Throwable throwable = throwableInformation.getThrowable();
+
 					try (
 							MessageConsoleStream stream = console.newMessageStream();) {
 						if (level.equals(Level.WARN)) {
@@ -89,6 +83,7 @@ public final class TreezConsoleAppender extends AbstractAppender {
 					} catch (IOException exception) {
 						exception.printStackTrace();
 					}
+
 				}
 
 			});
@@ -97,25 +92,14 @@ public final class TreezConsoleAppender extends AbstractAppender {
 
 	}
 
-	// Your custom appender needs to declare a factory method
-	// annotated with `@PluginFactory`. Log4j will parse the configuration
-	// and call this factory method to construct an appender instance with
-	// the configured attributes.
-	@PluginFactory
-	public static TreezConsoleAppender createAppender(
-			@PluginAttribute("name") String name,
-			@PluginElement("Layout") Layout<? extends Serializable> layout,
-			@PluginElement("Filter") final Filter filter) {
-		if (name == null) {
-			LOGGER.error("No name provided for TreezConsoleAppender");
-			return null;
-		}
+	@Override
+	public void close() {
+		//not used here
+	}
 
-		Layout<? extends Serializable> layoutOrDefault = null;
-		if (layout == null) {
-			layoutOrDefault = PatternLayout.createDefaultLayout();
-		}
-		return new TreezConsoleAppender(name, filter, layoutOrDefault, true);
+	@Override
+	public boolean requiresLayout() {
+		return true;
 	}
 
 	/**

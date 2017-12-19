@@ -39,9 +39,9 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.html.HTML;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
 /**
@@ -52,7 +52,7 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOG = LogManager.getLogger(Terminal.class);
+	private static final Logger LOG = Logger.getLogger(Terminal.class);
 
 	//#region ATTRIBUTES
 
@@ -87,11 +87,8 @@ public class Terminal extends JFrame implements ActionListener, MouseListener, K
 	 */
 	public Terminal(String[] args) {
 
-		LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
-		File file = new File("META-INF/log4j2.xml");
-		loggerContext.setConfigLocation(file.toURI());
-
-		//Configurator.setLevel(LOG.getName(), Level.DEBUG);
+		PropertyConfigurator.configure("meta-inf/log4j.properties");
+		LOG.setLevel(Level.DEBUG);
 
 		createControl();
 

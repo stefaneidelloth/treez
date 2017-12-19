@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.treez.core.adaptable.CodeContainer;
 import org.treez.core.atom.base.annotation.IsParameters;
 import org.treez.core.scripting.ScriptType;
@@ -16,7 +16,7 @@ import org.treez.core.scripting.ScriptType;
  */
 public class AtomCodeAdaption extends AbstractAtomCodeAdaption {
 
-	private static final Logger LOG = LogManager.getLogger(AtomCodeAdaption.class);
+	private static final Logger LOG = Logger.getLogger(AtomCodeAdaption.class);
 
 	//#region ATTRIBUTES
 

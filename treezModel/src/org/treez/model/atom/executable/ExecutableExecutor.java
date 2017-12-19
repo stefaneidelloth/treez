@@ -9,8 +9,7 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteResultHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
@@ -18,7 +17,7 @@ import org.treez.core.monitor.ObservableMonitor;
 
 public class ExecutableExecutor {
 
-	private static final Logger LOG = LogManager.getLogger(ExecutableExecutor.class);
+	private static final Logger LOG = Logger.getLogger(ExecutableExecutor.class);
 
 	//#region ATTRIBUTES
 

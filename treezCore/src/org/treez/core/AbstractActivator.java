@@ -5,11 +5,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import javax.swing.JOptionPane;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -38,15 +35,11 @@ import org.treez.core.standallone.StandAloneWorkbench;
 @SuppressWarnings("restriction")
 public abstract class AbstractActivator extends AbstractUIPlugin {
 
-	private static final Logger LOG = LogManager.getLogger(AbstractActivator.class);
+	private static final Logger LOG = Logger.getLogger(AbstractActivator.class);
 
 	//#region CONSTRUCTORS
 
-	public AbstractActivator() {
-		String message = "Constructing AbstractActivator for " + this.getClass().getName();
-
-		JOptionPane.showMessageDialog(null, message);
-	}
+	public AbstractActivator() {}
 
 	//#end region
 
@@ -70,14 +63,8 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	 * Initializes log4j
 	 */
 	protected void initializeLog4j() {
-
-		try {
-			LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
-			URL log4j2xml = this.getClass().getClassLoader().getResource("META-INF/log4j2.xml");
-			loggerContext.setConfigLocation(log4j2xml.toURI());
-		} catch (URISyntaxException exception) {
-			exception.printStackTrace();
-		}
+		URL log4jProperties = this.getClass().getClassLoader().getResource("META-INF/log4j.properties");
+		PropertyConfigurator.configure(log4jProperties);
 	}
 
 	@Override

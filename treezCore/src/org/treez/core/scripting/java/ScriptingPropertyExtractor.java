@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * Provides helping methods to extract properties (e.g. the full class name) from the code of a class that is given as a
@@ -15,7 +15,7 @@ import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logg
  */
 public final class ScriptingPropertyExtractor {
 
-	private static final Logger LOG = LogManager.getLogger(ScriptingPropertyExtractor.class);
+	private static final Logger LOG = Logger.getLogger(ScriptingPropertyExtractor.class);
 
 	//#region CONSTRUCTORS
 

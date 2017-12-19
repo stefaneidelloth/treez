@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.arrays.ArrayUtils;
@@ -87,7 +87,7 @@ import org.w3c.dom.events.EventListener;
  */
 public class Selection extends EnteringSelection {
 	
-	private static final Logger LOG = LogManager.getLogger(Selection.class);
+	private static final Logger LOG = Logger.getLogger(Selection.class);
 
 	//#region ATTRIBUTES
 

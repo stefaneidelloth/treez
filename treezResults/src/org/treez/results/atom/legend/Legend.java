@@ -3,7 +3,7 @@ package org.treez.results.atom.legend;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.graphics.GraphicsPropertiesPageFactory;
@@ -19,7 +19,7 @@ import org.treez.results.atom.graphicsPage.GraphicsPropertiesPage;
 public class Legend extends GraphicsPropertiesPage {
 
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(Legend.class);
+	private static final Logger LOG = Logger.getLogger(Legend.class);
 
 	//#region ATTRIBUTES
 

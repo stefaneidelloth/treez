@@ -1,6 +1,6 @@
 package org.treez.results.atom.tornado;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
@@ -23,7 +23,7 @@ import org.treez.results.atom.graph.Graph;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Labels implements GraphicsPropertiesPageFactory {
 
-	Logger LOG = LogManager.getLogger(Labels.class);
+	Logger LOG = Logger.getLogger(Labels.class);
 
 	//#region ATTRIBUTES
 

@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute.checkBox;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.treez.core.atom.attribute.AbstractAttributeContainerAtomConstructonTest;
 import org.treez.core.atom.attribute.checkBox.CheckBoxEnableTarget;
 
@@ -13,7 +13,7 @@ public class CheckBoxEnableTargetTest extends AbstractAttributeContainerAtomCons
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(CheckBoxEnableTargetTest.class);
+	private static final Logger LOG = Logger.getLogger(CheckBoxEnableTargetTest.class);
 
 	//#region SETUP
 

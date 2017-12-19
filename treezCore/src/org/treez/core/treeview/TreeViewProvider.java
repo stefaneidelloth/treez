@@ -1,7 +1,7 @@
 package org.treez.core.treeview;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -29,7 +29,7 @@ import org.treez.core.treeview.action.EmptyActionBars;
 @SuppressWarnings("restriction")
 public class TreeViewProvider {
 
-	private static final Logger LOG = LogManager.getLogger(TreeViewProvider.class);
+	private static final Logger LOG = Logger.getLogger(TreeViewProvider.class);
 
 	//#region ATTRIBUTES
 

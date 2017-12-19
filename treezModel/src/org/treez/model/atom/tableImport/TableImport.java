@@ -2,7 +2,7 @@ package org.treez.model.atom.tableImport;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -41,7 +41,7 @@ import org.treez.model.output.ModelOutput;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class TableImport extends AbstractModel implements TableSource {
 
-	private static final Logger LOG = LogManager.getLogger(TableImport.class);
+	private static final Logger LOG = Logger.getLogger(TableImport.class);
 
 	//#region ATTRIBUTES
 

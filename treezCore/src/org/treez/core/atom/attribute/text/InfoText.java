@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute.text;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
@@ -21,7 +21,7 @@ import org.treez.core.swt.CustomLabel;
  */
 public class InfoText extends AbstractStringAttributeAtom<InfoText> {
 
-	private static final Logger LOG = LogManager.getLogger(InfoText.class);
+	private static final Logger LOG = Logger.getLogger(InfoText.class);
 
 	//#region ATTRIBUTES
 

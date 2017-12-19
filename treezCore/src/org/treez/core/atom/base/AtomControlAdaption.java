@@ -4,8 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -29,7 +28,7 @@ import org.treez.core.atom.base.annotation.IsParameters;
  */
 public class AtomControlAdaption extends AbstractControlAdaption {
 
-	private static final Logger LOG = LogManager.getLogger(AtomControlAdaption.class);
+	private static final Logger LOG = Logger.getLogger(AtomControlAdaption.class);
 
 	//#region CONSTRUCTORS
 

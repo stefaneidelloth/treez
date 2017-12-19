@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
@@ -41,7 +41,7 @@ import org.treez.data.table.TreezTableViewer;
 
 public class TreezNatTable extends NatTable {
 
-	private static final Logger LOG = LogManager.getLogger(TreezTableViewer.class);
+	private static final Logger LOG = Logger.getLogger(TreezTableViewer.class);
 
 	//#region ATTRIBUTES
 

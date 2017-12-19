@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute.fileSystem;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 import org.treez.core.atom.attribute.fileSystem.DirectoryPathList;
@@ -14,7 +14,7 @@ public class DirectoryPathListTest extends AbstractAttributeAtomConstructionTest
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(DirectoryPathListTest.class);
+	private static final Logger LOG = Logger.getLogger(DirectoryPathListTest.class);
 
 	//#region SETUP
 

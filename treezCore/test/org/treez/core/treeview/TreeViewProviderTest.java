@@ -1,6 +1,6 @@
 package org.treez.core.treeview;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class TreeViewProviderTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(TreeViewProviderTest.class);
+	private static final Logger LOG = Logger.getLogger(TreeViewProviderTest.class);
 
 	//#region ATTRIBUTES
 

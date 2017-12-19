@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Objects;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
  * A writer that redirects its output to a Logger.

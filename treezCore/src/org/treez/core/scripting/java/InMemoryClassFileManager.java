@@ -17,7 +17,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.treez.core.scripting.java.classloader.BundleClassLoader;
@@ -31,7 +31,7 @@ import org.treez.core.scripting.java.file.JavaFileToBeCompiledInMemory;
  */
 public class InMemoryClassFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
-	private static final Logger LOG = LogManager.getLogger(InMemoryClassFileManager.class);
+	private static final Logger LOG = Logger.getLogger(InMemoryClassFileManager.class);
 
 	//#region ATTRIBUTES
 

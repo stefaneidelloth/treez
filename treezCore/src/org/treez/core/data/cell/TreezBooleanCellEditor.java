@@ -1,6 +1,6 @@
 package org.treez.core.data.cell;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.widgets.Composite;
 
@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class TreezBooleanCellEditor extends TreezStringCellEditor {
 
-	private static final Logger LOG = LogManager.getLogger(TreezBooleanCellEditor.class);
+	private static final Logger LOG = Logger.getLogger(TreezBooleanCellEditor.class);
 
 	//#region CONSTRUCTORS
 

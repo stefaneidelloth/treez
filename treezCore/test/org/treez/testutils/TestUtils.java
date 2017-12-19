@@ -5,8 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * Provides some static utility methods that help testing
@@ -39,24 +38,24 @@ public final class TestUtils {
 
 	@SuppressWarnings("checkstyle:illegalcatch")
 	private static void initializeLoggingWithBinUri(URI binUri) {
-		LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
-		URI log4jUri = binUri.resolve("../META-INF/log4j2.xml");
+		URI log4jUri = binUri.resolve("../META-INF/log4j.properties");
 		try {
 			URL log4jUrl = log4jUri.toURL();
 			String filePath = log4jUrl.toString().substring(6);
 			File file = new File(filePath);
 
 			if (file.exists()) {
-				loggerContext.setConfigLocation(file.toURI());
+				PropertyConfigurator.configure(log4jUrl);
 			} else {
-				log4jUri = binUri.resolve("../classes/log4j2.xml");
+				log4jUri = binUri.resolve("../classes/log4j.properties");
 				try {
 					log4jUrl = log4jUri.toURL();
-					loggerContext.setConfigLocation(file.toURI());
+					PropertyConfigurator.configure(log4jUrl);
 				} catch (Exception exception) {
 					throw new IllegalStateException("Could not initialize logging");
 				}
 			}
+
 		} catch (Exception e) {
 			throw new IllegalStateException("Could not initialize logging");
 		}

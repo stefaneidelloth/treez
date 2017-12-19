@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute.comboBox.errorBar;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 
@@ -13,7 +13,7 @@ public class ErrorBarStyleTest extends AbstractAttributeAtomConstructionTest<Str
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(ErrorBarStyleTest.class);
+	private static final Logger LOG = Logger.getLogger(ErrorBarStyleTest.class);
 
 	//#region SETUP
 

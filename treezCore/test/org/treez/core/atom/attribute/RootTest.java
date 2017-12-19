@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 
@@ -13,7 +13,7 @@ public class RootTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(RootTest.class);
+	private static final Logger LOG = Logger.getLogger(RootTest.class);
 
 	//#region SETUP
 

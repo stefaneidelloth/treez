@@ -4,8 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -17,7 +16,7 @@ import org.treez.core.AbstractActivator;
  */
 public final class StandAloneWorkbench {
 
-	private static final Logger LOG = LogManager.getLogger(StandAloneWorkbench.class);
+	private static final Logger LOG = Logger.getLogger(StandAloneWorkbench.class);
 
 	//#region ATTRIBUTES
 

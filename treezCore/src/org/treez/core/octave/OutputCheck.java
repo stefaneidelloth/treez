@@ -7,14 +7,14 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * Checks the output of an octave process
  */
 public class OutputCheck extends TimerTask {
 
-	private static final Logger LOG = LogManager.getLogger(OutputCheck.class);
+	private static final Logger LOG = Logger.getLogger(OutputCheck.class);
 
 	//#region ATTRIBUTES
 

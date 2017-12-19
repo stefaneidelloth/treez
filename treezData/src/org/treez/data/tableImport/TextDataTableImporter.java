@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.treez.core.data.column.ColumnType;
 
 /**
@@ -15,7 +15,7 @@ import org.treez.core.data.column.ColumnType;
  */
 public final class TextDataTableImporter {
 
-	private static final Logger LOG = LogManager.getLogger(TextDataTableImporter.class);
+	private static final Logger LOG = Logger.getLogger(TextDataTableImporter.class);
 
 	//#region CONSTRUCTORS
 

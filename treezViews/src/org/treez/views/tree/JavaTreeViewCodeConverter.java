@@ -3,7 +3,7 @@ package org.treez.views.tree;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -31,7 +31,7 @@ import org.treez.views.tree.rootAtom.Root;
  */
 public class JavaTreeViewCodeConverter implements TreeViewCodeConverter {
 
-	private static final Logger LOG = LogManager.getLogger(JavaTreeViewCodeConverter.class);
+	private static final Logger LOG = Logger.getLogger(JavaTreeViewCodeConverter.class);
 
 	//#region ATTRIBUTES
 

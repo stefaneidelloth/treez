@@ -12,9 +12,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.scripting.AbstractScripting;
 import org.treez.core.scripting.LoggingWriter;
@@ -25,7 +24,7 @@ import org.treez.core.scripting.ModelProvider;
  */
 public class JavaScripting extends AbstractScripting {
 
-	private static final Logger LOG = LogManager.getLogger(JavaScripting.class);
+	private static final Logger LOG = Logger.getLogger(JavaScripting.class);
 
 	//#region ATTRIBUTES
 

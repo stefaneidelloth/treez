@@ -1,7 +1,6 @@
 package org.treez.core.adaptable;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -12,7 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class AbstractControlAdaption extends Composite implements ControlAdaption {
 
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(AbstractControlAdaption.class);
+	private static final Logger LOG = Logger.getLogger(AbstractControlAdaption.class);
 
 	//#region ATTRIBUTES
 

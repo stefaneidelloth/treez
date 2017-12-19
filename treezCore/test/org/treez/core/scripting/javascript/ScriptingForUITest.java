@@ -1,6 +1,6 @@
 package org.treez.core.scripting.javascript;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,7 +19,7 @@ public class ScriptingForUITest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(ScriptingForUITest.class);
+	private static final Logger LOG = Logger.getLogger(ScriptingForUITest.class);
 
 	//#region ATTRIBUTES
 

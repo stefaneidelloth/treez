@@ -2,7 +2,7 @@ package org.treez.core.atom.attribute.list;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 import org.treez.core.atom.attribute.list.StringItemList;
@@ -18,7 +18,7 @@ public class StringItemListTest
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(StringItemListTest.class);
+	private static final Logger LOG = Logger.getLogger(StringItemListTest.class);
 
 	//#region SETUP
 

@@ -2,7 +2,7 @@ package org.treez.core.atom.attribute.list;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 import org.treez.core.atom.attribute.list.StringList;
@@ -16,7 +16,7 @@ public class StringListTest extends AbstractAttributeAtomConstructionTest<List<S
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LogManager.getLogger(StringListTest.class);
+	private static final Logger LOG = Logger.getLogger(StringListTest.class);
 
 	//#region SETUP
 

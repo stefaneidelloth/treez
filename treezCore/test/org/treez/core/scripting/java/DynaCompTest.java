@@ -8,7 +8,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.scripting.ModelProvider;
@@ -22,7 +22,7 @@ public class DynaCompTest {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOG = LogManager.getLogger(DynaCompTest.class);
+	private static final Logger LOG = Logger.getLogger(DynaCompTest.class);
 
 	/**
 	 * Main

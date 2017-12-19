@@ -3,7 +3,7 @@ package org.treez.results.atom.probe;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager; import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -19,7 +19,7 @@ import org.treez.data.table.nebula.Table;
  */
 public abstract class AbstractProbe extends AdjustableAtom implements Probe {
 
-	private static final Logger LOG = LogManager.getLogger(AbstractProbe.class);
+	private static final Logger LOG = Logger.getLogger(AbstractProbe.class);
 
 	//#region CONSTRUCTORS
 
