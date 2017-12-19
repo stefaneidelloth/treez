@@ -10,6 +10,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import jdk.nashorn.internal.objects.NativeObject;
+
 /**
  * Uses an SWT Browser to show a d3 example html file
  */
@@ -69,8 +71,9 @@ public class ChartJsTest {
 		boolean success = browser.execute(script);
 
 		Object chart = browser.evaluate("return obj;");
+		NativeObject object = (NativeObject) chart;
 
-		System.out.println(chart);
+		System.out.println(object);
 
 	}
 

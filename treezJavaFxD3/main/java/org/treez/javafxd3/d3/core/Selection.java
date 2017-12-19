@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.arrays.Array;
 import org.treez.javafxd3.d3.arrays.ArrayUtils;
@@ -86,8 +85,6 @@ import org.w3c.dom.events.EventListener;
  * <p>
  */
 public class Selection extends EnteringSelection {
-	
-	private static final Logger LOG = Logger.getLogger(Selection.class);
 
 	//#region ATTRIBUTES
 
@@ -2257,12 +2254,7 @@ public class Selection extends EnteringSelection {
 		
 		EventListener eventListener = (event)->{
 			org.w3c.dom.events.EventTarget context = event.getTarget();
-			try {
 			listener.handleMouseClick(context);
-			} catch (Exception exception) {
-				LOG.error("Could not execute on click event", exception);
-				throw exception;
-			}
 		};		
 		
 		node.addEventListener("click", eventListener, false);

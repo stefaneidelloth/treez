@@ -7,13 +7,16 @@ import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 /**
  * Tests the StringItemVariableField
  */
-public class StringItemVariableFieldTest extends AbstractAttributeAtomConstructionTest<String> {
+public class StringItemVariableFieldTest
+		extends
+			AbstractAttributeAtomConstructionTest<String> {
 
 	/**
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(StringItemVariableFieldTest.class);
+	private static final Logger LOG = Logger
+			.getLogger(StringItemVariableFieldTest.class);
 
 	//#region SETUP
 
@@ -25,7 +28,8 @@ public class StringItemVariableFieldTest extends AbstractAttributeAtomConstructi
 	public void createTestAtom() {
 
 		// create test atom
-		StringItemVariableField variableField = new StringItemVariableField(atomName);
+		StringItemVariableField variableField = new StringItemVariableField(
+				atomName);
 		variableField.setLabel("MyVariable:");
 		variableField.setItems("foo,baa");
 		variableField.setTooltip("My tooltip");

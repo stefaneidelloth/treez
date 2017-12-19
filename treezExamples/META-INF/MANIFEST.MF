@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Automatic-Module-Name: org.treez.examples
 Bundle-ManifestVersion: 2
 Bundle-Name: TreezExamples
 Bundle-SymbolicName: TreezExamples

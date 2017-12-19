@@ -39,7 +39,8 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 
 	//#region CONSTRUCTORS
 
-	public AbstractActivator() {}
+	public AbstractActivator() {
+	}
 
 	//#end region
 
@@ -63,7 +64,8 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	 * Initializes log4j
 	 */
 	protected void initializeLog4j() {
-		URL log4jProperties = this.getClass().getClassLoader().getResource("META-INF/log4j.properties");
+		URL log4jProperties = this.getClass().getClassLoader()
+				.getResource("META-INF/log4j.properties");
 		PropertyConfigurator.configure(log4jProperties);
 	}
 
@@ -94,8 +96,10 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 
 	}
 
-	private static String getAbsoluteFilePathWithFileLocator(String pathSeparator, Bundle bundle) {
-		org.eclipse.core.runtime.Path path = new org.eclipse.core.runtime.Path("/");
+	private static String getAbsoluteFilePathWithFileLocator(
+			String pathSeparator, Bundle bundle) {
+		org.eclipse.core.runtime.Path path = new org.eclipse.core.runtime.Path(
+				"/");
 		URL url;
 		try {
 			url = FileLocator.find(bundle, path, null);
@@ -105,10 +109,12 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 				File file = new File(url.toURI());
 				file = file.getAbsoluteFile();
 				String pathWithRelativeContent = file.getAbsolutePath();
-				IPath ipath = new org.eclipse.core.runtime.Path(pathWithRelativeContent);
+				IPath ipath = new org.eclipse.core.runtime.Path(
+						pathWithRelativeContent);
 				IPath absPath = ipath.makeAbsolute();
 				String pathToPluginDirAbsolute = absPath.toString();
-				pathToPluginDirAbsolute = pathToPluginDirAbsolute.replace("/", pathSeparator);
+				pathToPluginDirAbsolute = pathToPluginDirAbsolute.replace("/",
+						pathSeparator);
 				return pathToPluginDirAbsolute;
 			} catch (URISyntaxException e) {
 				throw new IllegalStateException("Could not get absolute path");
@@ -119,22 +125,24 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Creates a new image from two images of the icon folder. The second image is put on top of the first image to
-	 * create the new image.
+	 * Creates a new image from two images of the icon folder. The second image
+	 * is put on top of the first image to create the new image.
 	 *
 	 * @param baseImageName
 	 * @param overlayImageName
 	 * @return
 	 */
-	public Image getOverlayImage(String baseImageName, String overlayImageName) {
+	public Image getOverlayImage(String baseImageName,
+			String overlayImageName) {
 		Image baseImage = getImageFromIconFolder(baseImageName);
 		Image newImage = getOverlayImage(baseImage, overlayImageName);
 		return newImage;
 	}
 
 	/**
-	 * Creates a new image from the given image and an image from the icon folder. The second image is put on top of the
-	 * first image to create the new image.
+	 * Creates a new image from the given image and an image from the icon
+	 * folder. The second image is put on top of the first image to create the
+	 * new image.
 	 *
 	 * @param baseImage
 	 * @param overlayImageName
@@ -142,10 +150,13 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	 */
 	public Image getOverlayImage(Image baseImage, String overlayImageName) {
 		Image overlayImage = getImageFromIconFolder(overlayImageName);
-		ImageDescriptor overlayImageDescriptor = ImageDescriptor.createFromImage(overlayImage);
-		ImageDescriptor[] overlaysArray = new ImageDescriptor[] { overlayImageDescriptor };
+		ImageDescriptor overlayImageDescriptor = ImageDescriptor
+				.createFromImage(overlayImage);
+		ImageDescriptor[] overlaysArray = new ImageDescriptor[]{
+				overlayImageDescriptor};
 
-		DecorationOverlayIcon overlayIcon = new DecorationOverlayIcon(baseImage, overlaysArray);
+		DecorationOverlayIcon overlayIcon = new DecorationOverlayIcon(baseImage,
+				overlaysArray);
 		Image newImage = overlayIcon.createImage(true);
 		return newImage;
 	}
@@ -174,7 +185,8 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 				//LOG.debug("Loading image from path '" + path + "'.");
 				try {
 					image = new Image(display, path);
-				} catch (IllegalArgumentException | SWTException | SWTError exception) {
+				} catch (IllegalArgumentException | SWTException
+						| SWTError exception) {
 					//use error image as a default and log message
 					image = createDefaultImage();
 					String message = "Could not load image";
@@ -247,23 +259,28 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	//#region HELP CONTEXTS
 
 	/**
-	 * Registers the given relative help id for the given control. The absolute help id already contains the plugin id
-	 * in front of the relative help id, e.g. org.treez.Data.MY_RELATIVE_HELP_CONTEXT_ID
+	 * Registers the given relative help id for the given control. The absolute
+	 * help id already contains the plugin id in front of the relative help id,
+	 * e.g. org.treez.Data.MY_RELATIVE_HELP_CONTEXT_ID
 	 *
 	 * @param relativeHelpContextId
 	 */
-	public void registerRelativeHelpId(String relativeHelpContextId, Control helpControl) {
-		String absoluteHelpContextId = getAbsoluteHelpContextId(relativeHelpContextId);
+	public void registerRelativeHelpId(String relativeHelpContextId,
+			Control helpControl) {
+		String absoluteHelpContextId = getAbsoluteHelpContextId(
+				relativeHelpContextId);
 		registerAbsoluteHelpId(absoluteHelpContextId, helpControl);
 	}
 
 	/**
-	 * Registers the given absolute help id for the given control. The absolute help id already contains the plugin id
-	 * in front of the relative help id, e.g. org.treez.Data.MY_RELATIVE_HELP_CONTEXT_ID
+	 * Registers the given absolute help id for the given control. The absolute
+	 * help id already contains the plugin id in front of the relative help id,
+	 * e.g. org.treez.Data.MY_RELATIVE_HELP_CONTEXT_ID
 	 *
 	 * @param helpContextId
 	 */
-	public static void registerAbsoluteHelpId(String helpContextId, Control helpControl) {
+	public static void registerAbsoluteHelpId(String helpContextId,
+			Control helpControl) {
 
 		if (isRunningInEclipse()) {
 			IWorkbenchHelpSystem helpSystem = getHelpSystem();
@@ -275,7 +292,8 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 		}
 	}
 
-	private static void applzHelpId(String helpContextId, Control helpControl, IWorkbenchHelpSystem helpSystem) {
+	private static void applzHelpId(String helpContextId, Control helpControl,
+			IWorkbenchHelpSystem helpSystem) {
 		helpSystem.setHelp(helpControl, helpContextId);
 
 		Display display = Display.getDefault();
@@ -292,8 +310,9 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Shows the help view which will automatically navigate to the help page for this control adaption if a help id has
-	 * been registered and a corresponding help page exists.
+	 * Shows the help view which will automatically navigate to the help page
+	 * for this control adaption if a help id has been registered and a
+	 * corresponding help page exists.
 	 */
 	public static void showDynamicHelp() {
 		IWorkbenchHelpSystem helpSystem = getHelpSystem();
@@ -303,10 +322,12 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Shows the help view and navigates to the page that corresponds to the given help context id.
+	 * Shows the help view and navigates to the page that corresponds to the
+	 * given help context id.
 	 */
 	public void showHelpForRelativeHelpContextId(String relativeHelpContextId) {
-		String absoluteHelpContextId = getAbsoluteHelpContextId(relativeHelpContextId);
+		String absoluteHelpContextId = getAbsoluteHelpContextId(
+				relativeHelpContextId);
 		IWorkbenchHelpSystem helpSystem = getHelpSystem();
 		if (helpSystem != null) {
 			helpSystem.displayHelp(absoluteHelpContextId);
@@ -314,8 +335,8 @@ public abstract class AbstractActivator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the absolute help context id for the given relative help context id. The absolute help context id
-	 * includes the plugin id.
+	 * Returns the absolute help context id for the given relative help context
+	 * id. The absolute help context id includes the plugin id.
 	 *
 	 * @param relativeHelpContextId
 	 * @return

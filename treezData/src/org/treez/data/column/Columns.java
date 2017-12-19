@@ -71,9 +71,9 @@ public class Columns extends AdjustableAtom {
 	 * Provides a control to represent this atom
 	 */
 	@Override
-	public
-			AbstractControlAdaption
-			createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
+	public AbstractControlAdaption createControlAdaption(
+			Composite parent,
+			FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 		return new EmptyControlAdaption(parent, this, "This atom represents all columns of its parent table.");
 	}

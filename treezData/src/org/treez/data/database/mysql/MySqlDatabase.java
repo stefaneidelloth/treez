@@ -46,7 +46,7 @@ public class MySqlDatabase {
 		try (
 				Connection connection = DriverManager.getConnection("jdbc:mysql://" + url, user,
 						password);) {} catch (SQLException exception) {
-			String message = "Could not establish MySql database connection to " + url;
+			String message = "Could not establish SqLite database connection to " + url;
 			throw new IllegalStateException(message, exception);
 		}
 

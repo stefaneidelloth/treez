@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Automatic-Module-Name: org.treez.study
 Bundle-ManifestVersion: 2
 Bundle-Name: org.treez.study
 Bundle-SymbolicName: org.treez.study;singleton:=true
@@ -10,7 +9,6 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.ui.console,
  org.eclipse.core.runtime,
  org.apache.commons.io,
- org.apache.log4j,
  org.treez.core,
  org.treez.data,
  org.treez.model,

@@ -40,7 +40,8 @@ public class LoggingWriter extends Writer {
 	 * @throws NullPointerException
 	 *             in case if one of arguments is null.
 	 */
-	public LoggingWriter(final Logger log, final Level level) throws NullPointerException {
+	public LoggingWriter(final Logger log, final Level level)
+			throws NullPointerException {
 		Objects.requireNonNull(log, "Logger must be not null.");
 		Objects.requireNonNull(level, "Log level must be not null.");
 		this.log = log;
@@ -57,7 +58,8 @@ public class LoggingWriter extends Writer {
 			throw new NullPointerException();
 		} else {
 			boolean offOutOfBounds = (off < 0) || (off > cbuf.length);
-			boolean endOutOfBounds = ((off + len) > cbuf.length) || ((off + len) < 0);
+			boolean endOutOfBounds = ((off + len) > cbuf.length)
+					|| ((off + len) < 0);
 			boolean wrongIndex = offOutOfBounds || (len < 0) || endOutOfBounds;
 			if (wrongIndex) {
 				throw new IndexOutOfBoundsException();

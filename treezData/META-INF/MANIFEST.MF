@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Automatic-Module-Name: org.treez.data
 Bundle-ManifestVersion: 2
 Bundle-Name: org.treez.data
 Bundle-SymbolicName: org.treez.data;singleton:=true
@@ -37,6 +36,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.forms,
  org.eclipse.jface,
- org.apache.log4j,
+ org.apache.commons.logging,
  org.treez.core
 Bundle-Vendor: Stefan Eidelloth

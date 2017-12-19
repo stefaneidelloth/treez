@@ -49,8 +49,6 @@ public class PlainJavaFxD3Browser extends StackPane implements Browser {
 	 * The d3.js wrapper
 	 */
 	protected D3 d3;
-	
-	
 
 	/**
 	 * This runnable is executed after the initial loading of the browser has

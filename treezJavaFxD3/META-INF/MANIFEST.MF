@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
-Automatic-Module-Name: org.treez.javafxd3
 Bundle-ManifestVersion: 2
 Bundle-Name: org.treez.javafxd3
 Bundle-SymbolicName: org.treez.javafxd3;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Stefan Eidelloth
-Export-Package: org.treez.javafxd3.d3;
+Export-Package: com.sun.javafx.scene.control.skin,
+ org.treez.javafxd3.d3;
   uses:="org.treez.javafxd3.d3.svg,
    org.treez.javafxd3.d3.time,
    org.treez.javafxd3.d3.arrays,
@@ -139,12 +138,12 @@ Export-Package: org.treez.javafxd3.d3;
  org.treez.javafxd3.plotly.layout;uses:="org.treez.javafxd3.d3.wrapper,org.treez.javafxd3.d3.core,org.treez.javafxd3.plotly.layout.margin",
  org.treez.javafxd3.plotly.layout.margin;uses:="org.treez.javafxd3.d3.wrapper,org.treez.javafxd3.d3.core"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.apache.log4j,
+ org.eclipse.ui,
  org.eclipse.ui.intro,
- org.eclipse.ui.intro.universal,
- org.eclipse.swt
+ org.eclipse.ui.intro.universal
 Bundle-ClassPath: main/resources/,
  .,
- lib/javafx-swt.jar,
- lib/log4j-1.2.15.jar
+ lib/jfxrt.jar,
+ lib/jfxswt.jar
 

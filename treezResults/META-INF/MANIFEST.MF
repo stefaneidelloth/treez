@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Automatic-Module-Name: org.treez.results
 Bundle-ManifestVersion: 2
 Bundle-Name: org.treez.results
 Bundle-SymbolicName: org.treez.results;singleton:=true
@@ -34,7 +33,6 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.forms,
- org.apache.log4j,
  org.treez.javafxd3,
  org.treez.core,
  org.treez.data,

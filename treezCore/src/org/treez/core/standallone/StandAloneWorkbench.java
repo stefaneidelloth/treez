@@ -16,7 +16,8 @@ import org.treez.core.AbstractActivator;
  */
 public final class StandAloneWorkbench {
 
-	private static final Logger LOG = Logger.getLogger(StandAloneWorkbench.class);
+	private static final Logger LOG = Logger
+			.getLogger(StandAloneWorkbench.class);
 
 	//#region ATTRIBUTES
 
@@ -29,7 +30,8 @@ public final class StandAloneWorkbench {
 	/**
 	 * Private Constructor that prevents construction
 	 */
-	private StandAloneWorkbench() {}
+	private StandAloneWorkbench() {
+	}
 
 	//#end region
 
@@ -50,7 +52,8 @@ public final class StandAloneWorkbench {
 	 * @return
 	 */
 	@SuppressWarnings("checkstyle:illegalcatch")
-	public static Image getImage(String imageName, AbstractActivator activator) {
+	public static Image getImage(String imageName,
+			AbstractActivator activator) {
 
 		Display display = Display.getCurrent();
 		String path = activator.getAbsolutePath() + "//icons//" + imageName;
@@ -80,7 +83,8 @@ public final class StandAloneWorkbench {
 		File file = new File("");
 		file = file.getAbsoluteFile();
 		String pathWithRelativeContent = file.getAbsolutePath();
-		IPath ipath = new org.eclipse.core.runtime.Path(pathWithRelativeContent);
+		IPath ipath = new org.eclipse.core.runtime.Path(
+				pathWithRelativeContent);
 		IPath absPath = ipath.makeAbsolute();
 
 		String[] filePathItems = absPath.toString().split("/");
