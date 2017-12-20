@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Automatic-Module-Name: org.eclipse.examples
 Bundle-ManifestVersion: 2
 Bundle-Name: TreezExamples
 Bundle-SymbolicName: TreezExamples
@@ -10,5 +11,5 @@ Require-Bundle: org.treez.javafxd3,
  org.treez.results,
  org.treez.study,
  org.treez.views
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-9
 Bundle-Vendor: Stefan Eidelloth
