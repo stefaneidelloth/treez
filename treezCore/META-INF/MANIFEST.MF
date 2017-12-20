@@ -14,7 +14,7 @@ Bundle-ClassPath: .,
  lib/spring-core-4.1.6.RELEASE.jar,
  lib/jfxswt.jar
 Export-Package: org.apache.commons.exec;uses:="new org.apache.commons.exec",
- org.apache.log4j;uses:="org.apache.log4j.helpers,org.apache.log4j.or,org.apache.log4j.spi",
+ org.apache.log4j,
  org.treez.core;
   uses:="org.osgi.framework,
    org.eclipse.swt.graphics,
