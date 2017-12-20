@@ -1,5 +1,8 @@
 package org.treez.views.tree;
 
+import java.util.Objects;
+
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -14,6 +17,8 @@ import org.treez.core.treeview.action.ActionProviderRefreshable;
  * This plugin provides a Tree View for the UGUI
  */
 public class TreeViewPart extends ViewPart implements TreezView {
+
+	private static final Logger LOG = Logger.getLogger(TreeViewPart.class);
 
 	//#region ATTRIBUTES
 
@@ -60,8 +65,7 @@ public class TreeViewPart extends ViewPart implements TreezView {
 			treeViewCodeConverter = new JavaTreeViewCodeConverter(treeViewProvider);
 		} catch (Exception exception) {
 			String message = "Could not create treeViewCodeConverter";
-			System.out.println(message);
-			exception.printStackTrace();
+			LOG.error(message, exception);
 			return;
 		}
 		treeViewProvider.provideTreeView(null, treeViewActionProvider, treeViewCodeConverter);
@@ -95,9 +99,7 @@ public class TreeViewPart extends ViewPart implements TreezView {
 	 */
 	@Override
 	public Composite getContentComposite() {
-		if (contentComposite == null) {
-			throw new IllegalStateException("The content composite has not been set yet.");
-		}
+		Objects.requireNonNull(contentComposite, "The content composite has not been set yet.");
 		return contentComposite;
 	}
 
