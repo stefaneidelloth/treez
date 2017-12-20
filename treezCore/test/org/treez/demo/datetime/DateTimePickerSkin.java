@@ -1,18 +1,15 @@
 package org.treez.demo.datetime;
 
-import com.sun.javafx.scene.control.skin.DatePickerContent;
-import com.sun.javafx.scene.control.skin.DatePickerSkin;
-
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.skin.DatePickerSkin;
 
 public class DateTimePickerSkin extends DatePickerSkin {
 
 	private DateTimePicker datePicker;
 
-	private DatePickerContent ret;
+	private Node ret;
 
 	public DateTimePickerSkin(DateTimePicker datePicker) {
 		super(datePicker);
@@ -22,7 +19,7 @@ public class DateTimePickerSkin extends DatePickerSkin {
 	@Override
 	public Node getPopupContent() {
 		if (ret == null) {
-			ret = (DatePickerContent) super.getPopupContent();
+			ret = super.getPopupContent();
 
 			Slider hours = new Slider(
 					0,
@@ -47,8 +44,8 @@ public class DateTimePickerSkin extends DatePickerSkin {
 					"Seconds: " + (datePicker.getTimeValue() != null ? datePicker.getTimeValue().getSecond() : "")
 							+ " ");
 
-			ret.getChildren().addAll(new HBox(hoursValue, hours), new HBox(minutesValue, minutes),
-					new HBox(secondsValue, seconds));
+			//ret.getChildren().addAll(new HBox(hoursValue, hours), new HBox(minutesValue, minutes),
+			//	new HBox(secondsValue, seconds));
 
 			hours.valueProperty().addListener((observable, oldValue, newValue) -> {
 				datePicker.setTimeValue(datePicker.getTimeValue().withHour(newValue.intValue()));
