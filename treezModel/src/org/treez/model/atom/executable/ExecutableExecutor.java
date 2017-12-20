@@ -164,11 +164,13 @@ public class ExecutableExecutor {
 				if (errorStream.hasData()) {
 					String errorData = errorStream.getDataAsString();
 					errorStream.reset();
-					watchdog.destroyProcess();
-					executionIsFinished = true;
-					String message = "Error while executing system command '" + command + "':\n" + errorData;
-					Exception exception = new IllegalStateException(message);
-					postProcessFailedProcess(exception);
+					if (!errorData.contains("WARNING:")) {
+						watchdog.destroyProcess();
+						executionIsFinished = true;
+						String message = "Error while executing system command '" + command + "':\n" + errorData;
+						Exception exception = new IllegalStateException(message);
+						postProcessFailedProcess(exception);
+					}
 				}
 
 			} catch (InterruptedException exception) {
