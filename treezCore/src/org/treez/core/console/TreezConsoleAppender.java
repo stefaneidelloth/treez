@@ -137,7 +137,7 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 
 			//console does not already exist: create new one
 			treezConsole = new MessageConsole(CONSOLE_NAME, null);
-			treezConsole.setWaterMarks(80000, 80000);
+			treezConsole.setWaterMarks(80000, 80001);
 			consoleManager.addConsoles(new IConsole[] { treezConsole });
 		}
 	}

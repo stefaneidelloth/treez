@@ -322,7 +322,7 @@ public class TreezMonitor implements ObservableMonitor {
 			LOG.warn("Could not create console because ConsolePlugin is not available");
 		} else {
 			console = new MessageConsole(title, imageDescriptor, false);
-			console.setWaterMarks(80000, 80000);
+			console.setWaterMarks(80000, 80001);
 
 			//console.addPatternMatchListener(new PatternMatchListener());
 			registerConsole(id, console);
