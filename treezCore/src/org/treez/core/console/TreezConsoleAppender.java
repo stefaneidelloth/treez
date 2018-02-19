@@ -44,6 +44,7 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 
 		String treezMonitorId = event.getNDC();
 		MessageConsole console = getConsole(treezMonitorId);
+
 		if (console != null) {
 
 			AbstractUiSynchronizingAtom.runUiTaskNonBlocking(() -> {
@@ -130,11 +131,13 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 				boolean isWantedConsole = CONSOLE_NAME.equals(currentConsoleName);
 				if (isWantedConsole) {
 					treezConsole = (MessageConsole) currentConsole;
+					return;
 				}
 			}
 
 			//console does not already exist: create new one
 			treezConsole = new MessageConsole(CONSOLE_NAME, null);
+			treezConsole.setWaterMarks(80000, 80000);
 			consoleManager.addConsoles(new IConsole[] { treezConsole });
 		}
 	}
