@@ -10,8 +10,9 @@ import org.treez.model.atom.inputFileGenerator.InputFileGenerator;
 import org.treez.model.atom.tableImport.TableImport;
 import org.treez.results.atom.results.Results;
 import org.treez.study.atom.Studies;
+import org.treez.study.atom.exportStudyInfo.StudyInfoExport;
+import org.treez.study.atom.exportStudyInfo.StudyInfoExportType;
 import org.treez.study.atom.range.IntegerVariableRange;
-import org.treez.study.atom.sweep.ExportStudyInfoType;
 import org.treez.study.atom.sweep.Sweep;
 import org.treez.views.tree.rootAtom.Root;
 
@@ -88,12 +89,13 @@ public class SweepDemo extends ModelProvider {
 		yRange.setRelativeSourceVariableModelPath("y");
 		yRange.setRangeValueString("{10,20,30,40,50,60,70,80,90}");
 
-		sweep.exportStudyInfoType.set(ExportStudyInfoType.MYSQL);
-		sweep.host.set("dagobah");
-		sweep.port.set("3366");
-		sweep.user.set("root");
-		sweep.password.set("ISI");
-		sweep.schema.set("170817_eload_hh+mob+hp");
+		StudyInfoExport studyInfoExport = sweep.createStudyInfoExport("stuyInfoExport");
+		studyInfoExport.studyInfoExportType.set(StudyInfoExportType.MYSQL);
+		studyInfoExport.host.set("dagobah");
+		studyInfoExport.port.set("3366");
+		studyInfoExport.user.set("root");
+		studyInfoExport.password.set("***");
+		studyInfoExport.schema.set("170817_eload_hh+mob+hp");
 
 		//results------------------------------------------------------------
 		Results results = new Results("results");

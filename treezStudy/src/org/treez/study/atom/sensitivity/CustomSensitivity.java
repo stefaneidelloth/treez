@@ -1,13 +1,10 @@
 package org.treez.study.atom.sensitivity;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.swt.graphics.Image;
@@ -19,7 +16,6 @@ import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
 import org.treez.core.atom.attribute.checkBox.CheckBox;
 import org.treez.core.atom.attribute.comboBox.enumeration.EnumComboBox;
-import org.treez.core.atom.attribute.fileSystem.FilePath;
 import org.treez.core.atom.attribute.modelPath.ModelPath;
 import org.treez.core.atom.attribute.modelPath.ModelPathSelectionType;
 import org.treez.core.atom.base.AbstractAtom;
@@ -42,9 +38,9 @@ import org.treez.model.interfaces.Model;
 import org.treez.model.output.ModelOutput;
 import org.treez.study.Activator;
 import org.treez.study.atom.AbstractParameterVariation;
+import org.treez.study.atom.ModelInputGenerator;
 import org.treez.study.atom.picking.PickingModelInputGenerator;
 import org.treez.study.atom.picking.Sample;
-import org.treez.study.atom.sweep.ExportStudyInfoType;
 
 /**
  * Represents a sensitivity parameter variation where the varied values can be specified differently for each variables
@@ -208,42 +204,6 @@ public class CustomSensitivity extends AbstractParameterVariation {
 
 		//add listener to update variable list for new source model path and do initial update
 		modelPath.addModificationConsumer("updateVariableList", () -> updateAvailableVariablesForVariableList());
-
-		//study info
-		Section studyInfoSection = dataPage.createSection("studyInfo", absoluteHelpContextId);
-		studyInfoSection.setLabel("Export study info");
-
-		//export study info combo box
-		EnumComboBox<ExportStudyInfoType> exportStudy = studyInfoSection.createEnumComboBox(exportStudyInfoType, this,
-				ExportStudyInfoType.DISABLED);
-		exportStudy.setLabel("Export study information");
-
-		//export sweep info path
-		FilePath filePath = studyInfoSection.createFilePath(exportStudyInfoPath, this,
-				"Target file path for study information", "");
-		filePath.setValidatePath(false);
-
-		filePath.addModificationConsumer("updateEnabledState", () -> {
-
-			ExportStudyInfoType exportType = exportStudyInfoType.get();
-			switch (exportType) {
-			case DISABLED:
-				filePath.setEnabled(false);
-				break;
-			case TEXT_FILE:
-				filePath.setEnabled(true);
-				break;
-			case SQLITE:
-				filePath.setEnabled(true);
-				break;
-			case MYSQL:
-				filePath.setEnabled(false);
-				break;
-			default:
-				throw new IllegalStateException("The export type '" + exportType + "' has not yet been implemented.");
-			}
-
-		});
 
 		setModel(root);
 	}
@@ -411,12 +371,7 @@ public class CustomSensitivity extends AbstractParameterVariation {
 		HashMapModelInput.resetIdCounter();
 
 		//create model inputs
-		List<ModelInput> modelInputs = inputGenerator.createModelInputs(studyId.get(), studyDescription.get(), samples);
-
-		//export study info to text file if the corresponding option is enabled
-		if (exportStudyInfoType.get() != ExportStudyInfoType.DISABLED) {
-			exportStudyInfo(samples, numberOfSimulations);
-		}
+		List<ModelInput> modelInputs = inputGenerator.createModelInputs();
 
 		//prepare result structure
 		prepareResultStructure();
@@ -439,43 +394,6 @@ public class CustomSensitivity extends AbstractParameterVariation {
 		logAndShowSweepEndMessage();
 		LOG.info("The picking output is located at " + studyOutputAtomPath);
 		monitor.done();
-	}
-
-	/**
-	 * Creates a text file with some information about the sweep and saves it at the exportSweepInfoPath
-	 *
-	 * @param variableRanges
-	 * @param numberOfSimulations
-	 */
-	private void exportStudyInfo(List<Sample> samples, int numberOfSimulations) {
-		String studyInfo = "---------- PickingInfo ----------\r\n\r\n" + //
-				"Total number of simulations:\r\n" + numberOfSimulations + "\r\n\r\n" + //
-				"Source model path:\r\n" + sourceModelPath.get() + "\r\n\r\n" + //
-				"Variable names and values:\r\n\r\n";
-
-		for (Sample sample : samples) {
-			studyInfo += "== Sample '" + sample.getName() + "' ===\r\n";
-
-			Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
-			for (String variableName : variableData.keySet()) {
-				VariableField<?, ?> variableField = variableData.get(variableName);
-				String valueString = variableField.getValueString();
-				studyInfo += variableName + ": " + valueString + "\r\n";
-			}
-			studyInfo += "\r\n";
-		}
-
-		String filePath = exportStudyInfoPath.get();
-		File file = new File(filePath);
-
-		try {
-			FileUtils.writeStringToFile(file, studyInfo);
-		} catch (IOException exception) {
-			String message = "The specified exportStudyInfoPath '" + filePath
-					+ "' is not valid. Export of study info is skipped.";
-			LOG.error(message);
-		}
-
 	}
 
 	/**
@@ -556,6 +474,12 @@ public class CustomSensitivity extends AbstractParameterVariation {
 	@Override
 	public String getDescription() {
 		return studyDescription.get();
+	}
+
+	@Override
+	public ModelInputGenerator getModelInputGenerator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	//#end region

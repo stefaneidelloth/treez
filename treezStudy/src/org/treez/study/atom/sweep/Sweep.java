@@ -31,6 +31,8 @@ import org.treez.model.interfaces.Model;
 import org.treez.model.output.ModelOutput;
 import org.treez.study.Activator;
 import org.treez.study.atom.AbstractParameterVariation;
+import org.treez.study.atom.ModelInputGenerator;
+import org.treez.study.atom.exportStudyInfo.StudyInfoExport;
 import org.treez.study.atom.range.AbstractVariableRange;
 import org.treez.study.atom.range.BooleanVariableRange;
 import org.treez.study.atom.range.DirectoryPathVariableRange;
@@ -109,9 +111,6 @@ public class Sweep extends AbstractParameterVariation {
 		CheckBox concurrentCheckBox = sweepSection.createCheckBox(isConcurrentVariation, this, true);
 		concurrentCheckBox.setLabel("Parallel execution");
 
-		//export study info
-		createStudyInfoSection(dataPage, absoluteHelpContextId);
-
 		setModel(root);
 	}
 
@@ -140,17 +139,16 @@ public class Sweep extends AbstractParameterVariation {
 		LOG.info(startMessage);
 
 		//create ModelInput generator
-		String sweepModelPath = Sweep.this.createTreeNodeAdaption().getTreePath();
-		SweepModelInputGenerator inputGenerator = new SweepModelInputGenerator(sweepModelPath);
+		SweepModelInputGenerator inputGenerator = new SweepModelInputGenerator(this);
 
 		//get variable ranges
-		List<AbstractVariableRange<?>> variableRanges = inputGenerator.getEnabledVariableRanges(this);
+		List<AbstractVariableRange<?>> variableRanges = inputGenerator.getEnabledVariableRanges();
 		LOG.info("Number of variable ranges: " + variableRanges.size());
 
 		//check if all variable ranges reference enabled variables
 		boolean allReferencedVariablesAreActive = checkIfAllReferencedVariablesAreActive(variableRanges);
 		if (allReferencedVariablesAreActive) {
-			doRunStudy(refreshable, inputGenerator, variableRanges, mainMonitor);
+			doRunStudy(refreshable, inputGenerator, mainMonitor);
 		} else {
 			mainMonitor.done();
 		}
@@ -160,11 +158,10 @@ public class Sweep extends AbstractParameterVariation {
 	private void doRunStudy(
 			FocusChangingRefreshable refreshable,
 			SweepModelInputGenerator inputGenerator,
-			List<AbstractVariableRange<?>> variableRanges,
 			SubMonitor mainMonitor) {
 
 		String sweepTitle = "Running Sweep";
-		int numberOfSimulations = inputGenerator.getNumberOfSimulations(variableRanges);
+		int numberOfSimulations = inputGenerator.getNumberOfSimulations();
 
 		TreezMonitor sweepMonitor = new TreezMonitor(sweepTitle, mainMonitor, numberOfSimulations);
 		TreezMonitor.showInMonitorView(sweepMonitor);
@@ -175,12 +172,7 @@ public class Sweep extends AbstractParameterVariation {
 		HashMapModelInput.resetIdCounter();
 
 		//create model inputs
-		List<ModelInput> modelInputs = inputGenerator.createModelInputs(variableRanges);
-
-		//export study info
-		if (exportStudyInfoType.get() != ExportStudyInfoType.DISABLED) {
-			exportStudyInfo(variableRanges, modelInputs, numberOfSimulations);
-		}
+		List<ModelInput> modelInputs = inputGenerator.createModelInputs();
 
 		//prepare result structure
 		prepareResultStructure();
@@ -208,6 +200,9 @@ public class Sweep extends AbstractParameterVariation {
 				executeTargetModelOneAfterAnother(refreshable, numberOfSimulations, modelInputs, sweepOutputAtom,
 						sweepMonitor, jobFinishedHook);
 			}
+
+			executeExecutableChildren(refreshable);
+
 		}
 
 	}
@@ -515,9 +510,11 @@ public class Sweep extends AbstractParameterVariation {
 
 	}
 
-	/**
-	 * Provides an image to represent this atom
-	 */
+	@Override
+	public ModelInputGenerator getModelInputGenerator() {
+		return new SweepModelInputGenerator(this);
+	}
+
 	@Override
 	public Image provideImage() {
 		return Activator.getImage("sweep.png");
@@ -593,6 +590,14 @@ public class Sweep extends AbstractParameterVariation {
 				treeViewer);
 		actions.add(addDirectoryPathRange);
 
+		Action addStudyInfoExport = new AddChildAtomTreeViewerAction(
+				StudyInfoExport.class,
+				"studyInfoExport",
+				Activator.getImage("studyInfoExport.png"),
+				this,
+				treeViewer);
+		actions.add(addStudyInfoExport);
+
 		return actions;
 	}
 
@@ -642,6 +647,12 @@ public class Sweep extends AbstractParameterVariation {
 
 	public QuantityVariableRange createQuantityVariableRange(String name) {
 		QuantityVariableRange child = new QuantityVariableRange(name);
+		addChild(child);
+		return child;
+	}
+
+	public StudyInfoExport createStudyInfoExport(String name) {
+		StudyInfoExport child = new StudyInfoExport(name);
 		addChild(child);
 		return child;
 	}

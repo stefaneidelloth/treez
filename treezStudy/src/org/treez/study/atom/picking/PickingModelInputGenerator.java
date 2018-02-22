@@ -1,25 +1,37 @@
 package org.treez.study.atom.picking;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
+import org.treez.data.database.mysql.MySqlDatabase;
+import org.treez.data.database.sqlite.SqLiteDatabase;
 import org.treez.model.input.HashMapModelInput;
 import org.treez.model.input.ModelInput;
+import org.treez.study.atom.ModelInputGenerator;
+import org.treez.study.atom.sweep.SweepModelInputGenerator;
 
 /**
  * Creates the model input for a Picking parameter variation
  */
-public class PickingModelInputGenerator {
+public class PickingModelInputGenerator implements ModelInputGenerator {
+
+	private static final Logger LOG = Logger.getLogger(SweepModelInputGenerator.class);
 
 	//#region ATTRIBUTES
 
 	private Picking picking;
-
-	private String pickingModelPath;
 
 	//#end region
 
@@ -27,28 +39,24 @@ public class PickingModelInputGenerator {
 
 	PickingModelInputGenerator(Picking picking) {
 		this.picking = picking;
-		this.pickingModelPath = picking.createTreeNodeAdaption().getTreePath();
 	}
 
 	//#end region
 
 	//#region METHODS
 
-	/**
-	 * Creates the model inputs for the given samples
-	 *
-	 * @param samples
-	 * @return
-	 */
-	public List<ModelInput> createModelInputs(String studyId, String studyDescription, List<Sample> samples) {
+	@Override
+	public List<ModelInput> createModelInputs() {
 
 		List<ModelInput> modelInputs = new ArrayList<>();
 
+		List<Sample> samples = getEnabledSamples();
+
 		if (!samples.isEmpty()) {
 
-			Sample firstSample = samples.get(0);
-			String sourceModelPath = getSourceModelPath(firstSample);
-
+			String studyId = picking.getId();
+			String studyDescription = picking.getDescription();
+			String sourceModelPath = picking.getSourceModelPath();
 			boolean isTimeDependent = picking.isTimeDependent.get();
 
 			if (isTimeDependent) {
@@ -74,7 +82,102 @@ public class PickingModelInputGenerator {
 		}
 
 		return modelInputs;
+	}
 
+	@Override
+	public int getNumberOfSimulations() {
+		return getEnabledSamples().size();
+	}
+
+	@Override
+	public void exportStudyInfoToTextFile(String filePath) {
+
+		List<Sample> samples = getEnabledSamples();
+		int numberOfSimulations = getNumberOfSimulations();
+
+		String sourceModelPath = picking.getSourceModelPath();
+
+		String studyInfo = "---------- PickingInfo ----------\r\n\r\n" + //
+				"Total number of simulations:\r\n" + numberOfSimulations + "\r\n\r\n" + //
+				"Source model path:\r\n" + sourceModelPath + "\r\n\r\n" + //
+				"Variable names and values:\r\n\r\n";
+
+		for (Sample sample : samples) {
+			studyInfo += "== Sample '" + sample.getName() + "' ===\r\n";
+
+			Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
+			for (String variableName : variableData.keySet()) {
+				VariableField<?, ?> variableField = variableData.get(variableName);
+				String valueString = variableField.getValueString();
+				studyInfo += variableName + ": " + valueString + "\r\n";
+			}
+			studyInfo += "\r\n";
+		}
+
+		File file = new File(filePath);
+
+		try {
+			FileUtils.writeStringToFile(file, studyInfo);
+		} catch (IOException exception) {
+			String message = "The specified exportStudyInfoPath '" + filePath
+					+ "' is not valid. Export of study info is skipped.";
+			LOG.error(message);
+		}
+
+	}
+
+	@Override
+	public void fillStudyInfo(SqLiteDatabase database, String tableName, String studyId) {
+
+		List<Sample> samples = getEnabledSamples();
+		Map<String, Set<String>> uniqueVariableValues = collectUniqueVariableValues(samples);
+		for (Entry<String, Set<String>> entry : uniqueVariableValues.entrySet()) {
+
+			String variableName = entry.getKey();
+			Set<String> variableValues = entry.getValue();
+
+			for (String variableValue : variableValues) {
+				String query = "INSERT INTO '" + tableName + "' VALUES(null, '" + studyId + "', '" + variableName
+						+ "','" + variableValue + "')";
+				database.execute(query);
+			}
+		}
+	}
+
+	@Override
+	public void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyId) {
+		List<Sample> samples = getEnabledSamples();
+		Map<String, Set<String>> uniqueVariableValues = collectUniqueVariableValues(samples);
+		for (Entry<String, Set<String>> entry : uniqueVariableValues.entrySet()) {
+
+			String variableName = entry.getKey();
+			Set<String> variableValues = entry.getValue();
+
+			for (String variableValue : variableValues) {
+				String query = "INSERT INTO `" + schemaName + "`.`" + tableName + "` VALUES(null, '" + studyId + "', '"
+						+ variableName + "','" + variableValue + "')";
+				database.execute(query);
+			}
+		}
+
+	}
+
+	private static Map<String, Set<String>> collectUniqueVariableValues(List<Sample> samples) {
+		Map<String, Set<String>> uniqueVariableValues = new HashMap<>();
+		for (Sample sample : samples) {
+
+			Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
+			for (String variableName : variableData.keySet()) {
+				VariableField<?, ?> variableField = variableData.get(variableName);
+				String variableValue = variableField.getValueString();
+				if (!uniqueVariableValues.containsKey(variableName)) {
+					uniqueVariableValues.put(variableName, new HashSet<>());
+				}
+				Set<String> variableValues = uniqueVariableValues.get(variableName);
+				variableValues.add(variableValue);
+			}
+		}
+		return uniqueVariableValues;
 	}
 
 	private ModelInput createModelInputFromSampleForTimeStep(
@@ -85,6 +188,8 @@ public class PickingModelInputGenerator {
 			String timeVariablePath,
 			int timeIndex,
 			Number timeValue) {
+
+		String pickingModelPath = picking.createTreeNodeAdaption().getTreePath();
 
 		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyId, studyDescription);
 
@@ -115,17 +220,11 @@ public class PickingModelInputGenerator {
 
 	}
 
-	private static String getSourceModelPath(Sample sample) {
-		Picking picking = (Picking) sample.getParentAtom();
-		String sourceModelPath = picking.sourceModelPath.get();
-		return sourceModelPath;
-	}
+	private
+			ModelInput
+			createModelInputFromSample(String sourceModelPath, String studyId, String studyDescription, Sample sample) {
 
-	private ModelInput createModelInputFromSample(
-			String sourceModelPath,
-			String studyId,
-			String studyDescription,
-			Sample sample) {
+		String pickingModelPath = picking.createTreeNodeAdaption().getTreePath();
 		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyId, studyDescription);
 		Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
 		for (String variableName : variableData.keySet()) {
@@ -140,8 +239,6 @@ public class PickingModelInputGenerator {
 
 	/**
 	 * Gets the samples from the picking
-	 *
-	 * @return
 	 */
 	public List<Sample> getEnabledSamples() {
 		List<Sample> samples = new ArrayList<>();
@@ -160,8 +257,6 @@ public class PickingModelInputGenerator {
 
 	/**
 	 * Returns the number of time steps
-	 *
-	 * @return
 	 */
 	public int getNumberOfTimeSteps() {
 		List<Number> timeRange = picking.getTimeRange();

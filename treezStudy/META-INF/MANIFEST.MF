@@ -19,6 +19,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.treez.study,
  org.treez.study.atom,
+ org.treez.study.atom.exportStudyInfo,
  org.treez.study.atom.picking,
  org.treez.study.atom.probability,
  org.treez.study.atom.range,

@@ -14,17 +14,15 @@ public interface Study {
 
 	/**
 	 * Returns the absolute model path to the model that is executed by this Study
-	 *
-	 * @return
 	 */
 	String getModelToRunModelPath();
 
 	/**
 	 * Returns the absolute model path to the source model of this Study
-	 *
-	 * @return
 	 */
 	String getSourceModelPath();
+
+	ModelInputGenerator getModelInputGenerator();
 
 	/**
 	 * Runs the study. While the study is running the given Refreshable (tree view) might be refreshed and the given

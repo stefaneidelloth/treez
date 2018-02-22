@@ -1,13 +1,10 @@
 package org.treez.study.atom.sensitivity;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.swt.graphics.Image;
@@ -38,9 +35,8 @@ import org.treez.model.interfaces.Model;
 import org.treez.model.output.ModelOutput;
 import org.treez.study.Activator;
 import org.treez.study.atom.AbstractParameterVariation;
-import org.treez.study.atom.picking.PickingModelInputGenerator;
+import org.treez.study.atom.ModelInputGenerator;
 import org.treez.study.atom.picking.Sample;
-import org.treez.study.atom.sweep.ExportStudyInfoType;
 
 /**
  * Represents a sensitivity parameter variation
@@ -114,8 +110,6 @@ public class Sensitivity extends AbstractParameterVariation {
 		sensitivityTypeChanged();
 
 		createVariableListSection(dataPage, absoluteHelpContextId, modelPath);
-
-		createStudyInfoSection(dataPage, absoluteHelpContextId);
 
 		setModel(root);
 	}
@@ -239,27 +233,27 @@ public class Sensitivity extends AbstractParameterVariation {
 		/*
 		Objects.requireNonNull(monitor, "You need to pass a valid IProgressMonitor that is not null.");
 		this.treeViewRefreshable = refreshable;
-
+		
 		String startMessage = "Executing picking '" + getName() + "'";
 		LOG.info(startMessage);
-
+		
 		//create ModelInput generator
 		PickingModelInputGenerator inputGenerator = new PickingModelInputGenerator(this);
-
+		
 		//get samples
 		List<Sample> samples = inputGenerator.getEnabledSamples();
 		int numberOfSamples = samples.size();
 		LOG.info("Number of samples: " + numberOfSamples);
-
+		
 		boolean isTimeDependentPicking = this.isTimeDependent.get();
 		if (isTimeDependentPicking) {
 			int numberOfTimeSteps = inputGenerator.getNumberOfTimeSteps();
 			LOG.info("Number of time steps: " + numberOfTimeSteps);
 		}
-
+		
 		if (numberOfSamples > 0) {
 			Sample firstSample = samples.get(0);
-
+		
 			//check if the picking variables reference enabled variables
 			boolean allReferencedVariablesAreActive = checkIfAllReferencedVariablesAreActive(firstSample);
 			if (allReferencedVariablesAreActive) {
@@ -314,7 +308,7 @@ public class Sensitivity extends AbstractParameterVariation {
 	private void doRunStudy(
 			FocusChangingRefreshable refreshable,
 			SubMonitor monitor,
-			PickingModelInputGenerator inputGenerator,
+			SensitivityModelInputGenerator inputGenerator,
 			List<Sample> samples) {
 
 		//get total number of simulations
@@ -328,12 +322,7 @@ public class Sensitivity extends AbstractParameterVariation {
 		HashMapModelInput.resetIdCounter();
 
 		//create model inputs
-		List<ModelInput> modelInputs = inputGenerator.createModelInputs(studyId.get(), studyDescription.get(), samples);
-
-		//export study info to text file if the corresponding option is enabled
-		if (exportStudyInfoType.get() != ExportStudyInfoType.DISABLED) {
-			exportStudyInfo(samples, numberOfSimulations);
-		}
+		List<ModelInput> modelInputs = inputGenerator.createModelInputs();
 
 		//prepare result structure
 		prepareResultStructure();
@@ -349,6 +338,8 @@ public class Sensitivity extends AbstractParameterVariation {
 		//execute target model for all model inputs
 		executeTargetModel(refreshable, monitor, numberOfSimulations, modelInputs, studyOutputAtom);
 
+		executeExecutableChildren(refreshable);
+
 		//inform progress monitor to be done
 		monitor.setTaskName("=>Finished!");
 
@@ -356,43 +347,6 @@ public class Sensitivity extends AbstractParameterVariation {
 		logAndShowSweepEndMessage();
 		LOG.info("The picking output is located at " + studyOutputAtomPath);
 		monitor.done();
-	}
-
-	/**
-	 * Creates a text file with some information about the sweep and saves it at the exportSweepInfoPath
-	 *
-	 * @param variableRanges
-	 * @param numberOfSimulations
-	 */
-	private void exportStudyInfo(List<Sample> samples, int numberOfSimulations) {
-		String studyInfo = "---------- PickingInfo ----------\r\n\r\n" + //
-				"Total number of simulations:\r\n" + numberOfSimulations + "\r\n\r\n" + //
-				"Source model path:\r\n" + sourceModelPath.get() + "\r\n\r\n" + //
-				"Variable names and values:\r\n\r\n";
-
-		for (Sample sample : samples) {
-			studyInfo += "== Sample '" + sample.getName() + "' ===\r\n";
-
-			Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
-			for (String variableName : variableData.keySet()) {
-				VariableField<?, ?> variableField = variableData.get(variableName);
-				String valueString = variableField.getValueString();
-				studyInfo += variableName + ": " + valueString + "\r\n";
-			}
-			studyInfo += "\r\n";
-		}
-
-		String filePath = exportStudyInfoPath.get();
-		File file = new File(filePath);
-
-		try {
-			FileUtils.writeStringToFile(file, studyInfo);
-		} catch (IOException exception) {
-			String message = "The specified exportStudyInfoPath '" + filePath
-					+ "' is not valid. Export of study info is skipped.";
-			LOG.error(message);
-		}
-
 	}
 
 	/**
@@ -473,6 +427,12 @@ public class Sensitivity extends AbstractParameterVariation {
 	@Override
 	public String getDescription() {
 		return studyDescription.get();
+	}
+
+	@Override
+	public ModelInputGenerator getModelInputGenerator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	//#end region
