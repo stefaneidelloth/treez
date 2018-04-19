@@ -160,7 +160,7 @@ public class JarExecutable extends Executable {
 			executionStatusInfoText.resetError();
 			executionStatusInfoText.set("Not yet executed");
 
-			jobIndexInfo.set("" + getJobId());
+			jobIndexInfo.set("" + getJobName());
 		});
 
 	}

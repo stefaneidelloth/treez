@@ -104,8 +104,9 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 	}
 
 	/**
-	 * If a non-null jobId is specified: returns the console for the given jobId or null if no corresponding console has
-	 * been registered for the TreezMonitors. If the given jobId is null, the (single) TreezConsole is returned.
+	 * If a non-null treezMonitorId is specified: returns the console for the given treezMonitorId or null if no
+	 * corresponding console has been registered for the TreezMonitors. If the given treezMonitorId is null, the
+	 * (single) TreezConsole is returned.
 	 */
 	private static MessageConsole getConsole(String treezMonitorId) {
 		if (treezMonitorId == null) {

@@ -463,7 +463,7 @@ public class Picking extends AbstractParameterVariation implements NumberRangePr
 
 				//post process model output
 				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
-				String modelOutputName = getName() + "OutputId" + modelInput.getJobId();
+				String modelOutputName = getName() + "OutputId" + modelInput.getjobName();
 				modelOutputAtom.setName(modelOutputName);
 				pickingOutputAtom.addChild(modelOutputAtom);
 				refresh();

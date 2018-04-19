@@ -17,7 +17,7 @@ public class TableSourceTest extends AbstractAbstractAtomTest {
 
 		//create test atom
 		TableSource tableSource = new TableSource(atomName);
-		//tableSource.jobId.set("5");
+		//tableSource.jobName.set("5");
 
 		atom = tableSource;
 

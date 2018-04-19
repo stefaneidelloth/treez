@@ -447,7 +447,7 @@ public class CustomSensitivity extends AbstractParameterVariation {
 
 				//post process model output
 				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
-				String modelOutputName = getName() + "OutputId" + modelInput.getJobId();
+				String modelOutputName = getName() + "OutputId" + modelInput.getjobName();
 				modelOutputAtom.setName(modelOutputName);
 				pickingOutputAtom.addChild(modelOutputAtom);
 				refresh();
@@ -468,7 +468,7 @@ public class CustomSensitivity extends AbstractParameterVariation {
 
 	@Override
 	public String getId() {
-		return studyId.get();
+		return studyName.get();
 	}
 
 	@Override

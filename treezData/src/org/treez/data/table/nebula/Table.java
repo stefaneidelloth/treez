@@ -79,9 +79,9 @@ public class Table extends AbstractTreezTable<Table> {
 	}
 
 	@Override
-	public AbstractControlAdaption createControlAdaption(
-			Composite parent,
-			FocusChangingRefreshable treeViewRefreshable) {
+	public
+			AbstractControlAdaption
+			createControlAdaption(Composite parent, FocusChangingRefreshable treeViewRefreshable) {
 		this.treeViewRefreshable = treeViewRefreshable;
 
 		if (isLinkedToSource()) {
@@ -249,9 +249,9 @@ public class Table extends AbstractTreezTable<Table> {
 		Boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
 		if (isUsingCustomQuery) {
 			String customQuery = tableSource.getCustomQuery();
-			String jobId = tableSource.getJobId();
+			String jobName = tableSource.getJobName();
 			List<ColumnBlueprint> tableStructure = SqLiteImporter.readTableStructureWithCustomQuery(sqLiteFilePath,
-					password, customQuery, jobId);
+					password, customQuery, jobName);
 			return tableStructure;
 		} else {
 			String tableName = tableSource.getTableName();
@@ -274,9 +274,9 @@ public class Table extends AbstractTreezTable<Table> {
 		Boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
 		if (isUsingCustomQuery) {
 			String customQuery = tableSource.getCustomQuery();
-			String jobId = tableSource.getJobId();
+			String jobName = tableSource.getJobName();
 			List<ColumnBlueprint> tableStructure = MySqlImporter.readTableStructureWithCustomQuery(url, user, password,
-					customQuery, jobId);
+					customQuery, jobName);
 			return tableStructure;
 		} else {
 			String tableName = tableSource.getTableName();
@@ -308,20 +308,20 @@ public class Table extends AbstractTreezTable<Table> {
 		String sqLiteFilePath = tableSource.getSourceFilePath();
 
 		String password = tableSource.getPassword();
-		String jobId = tableSource.getJobId();
+		String jobName = tableSource.getJobName();
 
 		Boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
 		if (isUsingCustomQuery) {
 			String customQuery = tableSource.getCustomQuery();
-			Row row = SqLiteImporter.readRowWithCustomQuery(sqLiteFilePath, password, customQuery, jobId, rowIndex,
+			Row row = SqLiteImporter.readRowWithCustomQuery(sqLiteFilePath, password, customQuery, jobName, rowIndex,
 					this);
 			return row;
 		} else {
 			String tableName = tableSource.getTableName();
-			Boolean filterRowsByJobId = tableSource.isFilteringForJob();
+			Boolean filterRowsByjobName = tableSource.isFilteringForJob();
 
-			Row row = SqLiteImporter.readRow(sqLiteFilePath, password, tableName, filterRowsByJobId, jobId, rowIndex,
-					this);
+			Row row = SqLiteImporter.readRow(sqLiteFilePath, password, tableName, filterRowsByjobName, jobName,
+					rowIndex, this);
 			return row;
 		}
 	}
@@ -335,18 +335,19 @@ public class Table extends AbstractTreezTable<Table> {
 		String user = tableSource.getUser();
 		String password = tableSource.getPassword();
 
-		String jobId = tableSource.getJobId();
+		String jobName = tableSource.getJobName();
 
 		Boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
 		if (isUsingCustomQuery) {
 			String customQuery = tableSource.getCustomQuery();
 
-			Row row = MySqlImporter.readRowWithCustomQuery(url, user, password, customQuery, jobId, rowIndex, this);
+			Row row = MySqlImporter.readRowWithCustomQuery(url, user, password, customQuery, jobName, rowIndex, this);
 			return row;
 		} else {
 			String tableName = tableSource.getTableName();
-			Boolean filterRowsByJobId = tableSource.isFilteringForJob();
-			Row row = MySqlImporter.readRow(url, user, password, tableName, filterRowsByJobId, jobId, rowIndex, this);
+			Boolean filterRowsByjobName = tableSource.isFilteringForJob();
+			Row row = MySqlImporter.readRow(url, user, password, tableName, filterRowsByjobName, jobName, rowIndex,
+					this);
 			return row;
 		}
 	}

@@ -52,7 +52,7 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 
 			/*
 			
-			String studyId = sensitivity.getId();
+			String studyName = sensitivity.getId();
 			String studyDescription = sensitivity.getDescription();
 			String sourceModelPath = sensitivity.getSourceModelPath();
 			boolean isTimeDependent = sensitivity.isTimeDependent.get();
@@ -63,7 +63,7 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 				for (int timeIndex = 0; timeIndex < timeRange.size(); timeIndex++) {
 					Number timeValue = timeRange.get(timeIndex);
 					for (Sample sample : samples) {
-						ModelInput modelInput = createModelInputFromSampleForTimeStep(sourceModelPath, studyId,
+						ModelInput modelInput = createModelInputFromSampleForTimeStep(sourceModelPath, studyName,
 								studyDescription, sample, timeVariablePath, timeIndex, timeValue);
 						modelInputs.add(modelInput);
 					}
@@ -72,7 +72,7 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 			} else {
 			
 				for (Sample sample : samples) {
-					ModelInput modelInput = createModelInputFromSample(sourceModelPath, studyId, studyDescription,
+					ModelInput modelInput = createModelInputFromSample(sourceModelPath, studyName, studyDescription,
 							sample);
 					modelInputs.add(modelInput);
 				}
@@ -127,20 +127,20 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 	}
 
 	@Override
-	public void fillStudyInfo(SqLiteDatabase database, String tableName, String studyId) {
+	public void fillStudyInfo(SqLiteDatabase database, String tableName, String studyName) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyId) {
+	public void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyName) {
 		// TODO Auto-generated method stub
 
 	}
 
 	private ModelInput createModelInputFromSampleForTimeStep(
 			String sourceModelPath,
-			String studyId,
+			String studyName,
 			String studyDescription,
 			Sample sample,
 			String timeVariablePath,
@@ -149,7 +149,7 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 
 		String pickingModelPath = sensitivity.createTreeNodeAdaption().getTreePath();
 
-		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyId, studyDescription);
+		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyName, studyDescription);
 
 		//set time value
 		modelInput.add(timeVariablePath, timeValue);
@@ -180,10 +180,10 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 
 	private
 			ModelInput
-			createModelInputFromSample(String sourceModelPath, String studyId, String studyDescription, Sample sample) {
+			createModelInputFromSample(String sourceModelPath, String studyName, String studyDescription, Sample sample) {
 
 		String pickingModelPath = sensitivity.createTreeNodeAdaption().getTreePath();
-		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyId, studyDescription);
+		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyName, studyDescription);
 		Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
 		for (String variableName : variableData.keySet()) {
 			VariableField<?, ?> variableField = variableData.get(variableName);

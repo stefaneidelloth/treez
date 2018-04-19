@@ -11,5 +11,4 @@ Require-Bundle: org.treez.javafxd3,
  org.treez.results,
  org.treez.study,
  org.treez.views
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Stefan Eidelloth

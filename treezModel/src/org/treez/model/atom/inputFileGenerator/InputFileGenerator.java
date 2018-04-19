@@ -477,16 +477,16 @@ public class InputFileGenerator extends AdjustableAtom implements InputPathProvi
 	}
 
 	@Override
-	public String getJobId() {
+	public String getJobName() {
 
 		AbstractAtom<?> parent = this.getParentAtom();
 		boolean parentIsExecutable = parent instanceof Executable;
 		if (parentIsExecutable) {
 			Executable executable = (Executable) parent;
-			return executable.getJobId();
+			return executable.getJobName();
 		}
 
-		return "{unknownJobId}";
+		return "{unknownjobName}";
 	}
 
 	//#end region

@@ -20,14 +20,14 @@ public class HashMapModelInput implements ModelInput {
 	 */
 	private static long nextId = 1;
 
-	private String studyId;
+	private String studyName;
 
 	private String studyDescription;
 
 	/**
 	 * The id of this model input
 	 */
-	private long jobId;
+	private long jobName;
 
 	/**
 	 * Maps from model path of variable to corresponding Quantity to set
@@ -43,10 +43,10 @@ public class HashMapModelInput implements ModelInput {
 
 	//#region CONSTRUCTORS
 
-	public HashMapModelInput(String parentStudyModelPath, String studyId, String studyDescription) {
-		this.studyId = studyId;
+	public HashMapModelInput(String parentStudyModelPath, String studyName, String studyDescription) {
+		this.studyName = studyName;
 		this.studyDescription = studyDescription;
-		this.jobId = getNextId();
+		this.jobName = getNextId();
 		modelInputMap = new HashMap<>();
 		this.parentStudyModelPath = parentStudyModelPath;
 	}
@@ -59,9 +59,9 @@ public class HashMapModelInput implements ModelInput {
 	 */
 	private HashMapModelInput(HashMapModelInput modelInputToCopy) {
 		modelInputMap = copyInputMap(modelInputToCopy.modelInputMap);
-		this.studyId = modelInputToCopy.studyId;
+		this.studyName = modelInputToCopy.studyName;
 		this.studyDescription = modelInputToCopy.studyDescription;
-		this.jobId = modelInputToCopy.jobId;
+		this.jobName = modelInputToCopy.jobName;
 		this.parentStudyModelPath = modelInputToCopy.parentStudyModelPath;
 	}
 
@@ -84,9 +84,13 @@ public class HashMapModelInput implements ModelInput {
 		nextId = 1;
 	}
 
+	public static void setIdCounter(int nextIdValue) {
+		nextId = nextIdValue;
+	}
+
 	@Override
-	public void increaseJobId() {
-		this.jobId = getNextId();
+	public void increasejobName() {
+		this.jobName = getNextId();
 	}
 
 	@Override
@@ -135,8 +139,8 @@ public class HashMapModelInput implements ModelInput {
 	//#region ACCESSORS
 
 	@Override
-	public String getStudyId() {
-		return studyId;
+	public String getstudyName() {
+		return studyName;
 	}
 
 	@Override
@@ -145,8 +149,8 @@ public class HashMapModelInput implements ModelInput {
 	}
 
 	@Override
-	public String getJobId() {
-		String idString = "" + jobId;
+	public String getjobName() {
+		String idString = "" + jobName;
 		return idString;
 	}
 

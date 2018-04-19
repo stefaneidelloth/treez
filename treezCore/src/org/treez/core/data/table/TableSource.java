@@ -75,9 +75,9 @@ public interface TableSource {
 	 */
 	Boolean isFilteringForJob();
 
-	String getJobId();
+	String getJobName();
 
-	void setJobId(String jobId);
+	void setJobName(String jobName);
 
 	Boolean isUsingCustomQuery();
 

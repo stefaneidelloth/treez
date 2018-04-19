@@ -90,7 +90,7 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 	private static TableData importData(TableSource tableSource, int pageOffset, int pageSize) {
 
 		TableSourceType sourceType = tableSource.getSourceType();
-		String jobId = tableSource.getJobId();
+		String jobName = tableSource.getJobName();
 		boolean isUsingCustomQuery = tableSource.isUsingCustomQuery();
 
 		if (sourceType.equals(TableSourceType.SQLITE)) {
@@ -101,13 +101,13 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 			if (isUsingCustomQuery) {
 				String customQuery = tableSource.getCustomQuery();
 				TableData tableData = SqLiteImporter.importDataWithCustomQuery(sqLiteFilePath, password, customQuery,
-						jobId, pageSize, pageOffset);
+						jobName, pageSize, pageOffset);
 				return tableData;
 			} else {
 				String tableName = tableSource.getTableName();
 				boolean filterForJob = tableSource.isFilteringForJob();
 				TableData tableData = SqLiteImporter.importData(sqLiteFilePath, password, tableName, filterForJob,
-						jobId, pageSize, pageOffset);
+						jobName, pageSize, pageOffset);
 				return tableData;
 			}
 
@@ -130,7 +130,7 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 			} else {
 				String tableName = tableSource.getTableName();
 				boolean filterForJob = tableSource.isFilteringForJob();
-				TableData tableData = MySqlImporter.importData(url, user, password, tableName, filterForJob, jobId,
+				TableData tableData = MySqlImporter.importData(url, user, password, tableName, filterForJob, jobName,
 						pageSize, pageOffset);
 				return tableData;
 			}
@@ -152,8 +152,8 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 
 			if (isUsingCustomQuery) {
 				String customQuery = tableSource.getCustomQuery();
-				String jobId = tableSource.getJobId();
-				int totalSize = SqLiteImporter.getNumberOfRowsForCustomQuery(sqLiteFilePath, customQuery, jobId);
+				String jobName = tableSource.getJobName();
+				int totalSize = SqLiteImporter.getNumberOfRowsForCustomQuery(sqLiteFilePath, customQuery, jobName);
 				return totalSize;
 			} else {
 
@@ -174,8 +174,8 @@ public class DatabasePageResultLoader implements IPageLoader<PageResult<Row>> {
 
 			if (isUsingCustomQuery) {
 				String customQuery = tableSource.getCustomQuery();
-				String jobId = tableSource.getJobId();
-				int totalSize = MySqlImporter.getNumberOfRowsForCustomQuery(url, user, password, customQuery, jobId);
+				String jobName = tableSource.getJobName();
+				int totalSize = MySqlImporter.getNumberOfRowsForCustomQuery(url, user, password, customQuery, jobName);
 				return totalSize;
 			} else {
 				String tableName = tableSource.getTableName();

@@ -12,7 +12,7 @@ public interface ModelInput extends Copiable<ModelInput> {
 	/**
 	 * The Id of the study this input belongs to
 	 */
-	String getStudyId();
+	String getstudyName();
 
 	/**
 	 * The description of the study this input belongs to
@@ -26,12 +26,12 @@ public interface ModelInput extends Copiable<ModelInput> {
 	 *
 	 * @return
 	 */
-	String getJobId();
+	String getjobName();
 
 	/**
 	 * Increases the Id to the next available value. You might want to use this after copying a ModelInput.
 	 */
-	void increaseJobId();
+	void increasejobName();
 
 	/**
 	 * Returns the model path of the parent Study this ModelInput belongs to, e.g root.studies.mySweep
@@ -88,7 +88,7 @@ public interface ModelInput extends Copiable<ModelInput> {
 	 * @return
 	 */
 	default String toDisplayString() {
-		return getJobId();
+		return getjobName();
 	}
 
 }

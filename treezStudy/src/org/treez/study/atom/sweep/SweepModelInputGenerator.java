@@ -83,13 +83,13 @@ public class SweepModelInputGenerator implements ModelInputGenerator {
 	}
 
 	@Override
-	public void fillStudyInfo(SqLiteDatabase database, String tableName, String studyId) {
+	public void fillStudyInfo(SqLiteDatabase database, String tableName, String studyName) {
 		List<AbstractVariableRange<?>> variableRanges = getEnabledVariableRanges();
 		for (AbstractVariableRange<?> range : variableRanges) {
 			String variablePath = range.getSourceVariableModelPath();
 			List<?> rangeValues = range.getRange();
 			for (Object value : rangeValues) {
-				String query = "INSERT INTO '" + tableName + "' VALUES(null, '" + studyId + "', '" + variablePath
+				String query = "INSERT INTO '" + tableName + "' VALUES(null, '" + studyName + "', '" + variablePath
 						+ "','" + value + "')";
 				database.execute(query);
 			}
@@ -97,13 +97,13 @@ public class SweepModelInputGenerator implements ModelInputGenerator {
 	}
 
 	@Override
-	public void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyId) {
+	public void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyName) {
 		List<AbstractVariableRange<?>> variableRanges = getEnabledVariableRanges();
 		for (AbstractVariableRange<?> range : variableRanges) {
 			String variablePath = range.getSourceVariableModelPath();
 			List<?> rangeValues = range.getRange();
 			for (Object value : rangeValues) {
-				String query = "INSERT INTO `" + schemaName + "`.`" + tableName + "` VALUES(null, '" + studyId + "', '"
+				String query = "INSERT INTO `" + schemaName + "`.`" + tableName + "` VALUES(null, '" + studyName + "', '"
 						+ variablePath + "','" + value + "')";
 				database.execute(query);
 			}
@@ -166,13 +166,13 @@ public class SweepModelInputGenerator implements ModelInputGenerator {
 			List<AbstractVariableRange<?>> remainingRanges = variableRanges.subList(1, variableRanges.size());
 			String variableModelPath = firstRange.getSourceVariableModelPath();
 			Study study = (Study) firstRange.getParentAtom();
-			String studyId = study.getId();
+			String studyName = study.getId();
 			String studyDescription = study.getDescription();
 
 			List<? extends Object> rangeObjects = firstRange.getRange();
 			for (Object currentRangeObject : rangeObjects) {
 				//create model input that initially contains the current quantity
-				ModelInput initialInput = createInitialModelInput(variableModelPath, studyId, studyDescription,
+				ModelInput initialInput = createInitialModelInput(variableModelPath, studyName, studyDescription,
 						currentRangeObject);
 
 				//copy and extended the initial model input using the remaining variable ranges
@@ -213,7 +213,7 @@ public class SweepModelInputGenerator implements ModelInputGenerator {
 
 				//increase the id for new model inputs
 				if (counter > 1) {
-					modelInput.increaseJobId();
+					modelInput.increasejobName();
 				}
 
 				//add current quantity
@@ -233,11 +233,11 @@ public class SweepModelInputGenerator implements ModelInputGenerator {
 	 */
 	private ModelInput createInitialModelInput(
 			String variableModelPath,
-			String studyId,
+			String studyName,
 			String studyDescription,
 			Object rangeObject) {
 		String sweepModelPath = sweep.createTreeNodeAdaption().getTreePath();
-		ModelInput initialInput = new HashMapModelInput(sweepModelPath, studyId, studyDescription);
+		ModelInput initialInput = new HashMapModelInput(sweepModelPath, studyName, studyDescription);
 		initialInput.add(variableModelPath, rangeObject);
 		return initialInput;
 	}

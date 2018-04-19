@@ -14,6 +14,6 @@ public interface InputPathProvider {
 
 	boolean getIncludeDateInInputFile();
 
-	String getJobId();
+	String getJobName();
 
 }

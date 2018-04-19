@@ -74,7 +74,7 @@ public class OutputPathModifier {
 
 		boolean doIncludejobIndexInFolder = executable.includeJobIndexInOutputFolder.get();
 		if (doIncludejobIndexInFolder) {
-			newOutputPath += "#" + executable.getJobId();
+			newOutputPath += "#" + executable.getJobName();
 		}
 		return newOutputPath;
 	}
@@ -96,7 +96,7 @@ public class OutputPathModifier {
 		}
 
 		if (doIncludejobIndexInSubFolder) {
-			newOutputPath += "#" + executable.getJobId();
+			newOutputPath += "#" + executable.getJobName();
 		}
 		return newOutputPath;
 	}
@@ -119,7 +119,7 @@ public class OutputPathModifier {
 
 		boolean doIncludejobIndex = executable.includeJobIndexInOutputFile.get();
 		if (doIncludejobIndex) {
-			newOutputPath += "#" + executable.getJobId();
+			newOutputPath += "#" + executable.getJobName();
 		}
 		newOutputPath += pathPostFix; //is empty for directories
 		return newOutputPath;

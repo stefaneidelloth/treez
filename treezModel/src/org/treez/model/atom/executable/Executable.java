@@ -341,7 +341,7 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 			executionStatusInfoText.resetError();
 			executionStatusInfoText.set("Not yet executed");
 
-			jobIndexInfo.set("" + getJobId());
+			jobIndexInfo.set("" + getJobName());
 		});
 
 	}
@@ -440,14 +440,14 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 	private void increasejobIndex() {
 		int currentIndex = 0;
 		try {
-			String jobId = getJobId();
-			currentIndex = Integer.parseInt(jobId);
+			String jobName = getJobName();
+			currentIndex = Integer.parseInt(jobName);
 		} catch (NumberFormatException exception) {
-			LOG.warn("Could not interpret last jobId as Integer. "
+			LOG.warn("Could not interpret last jobName as Integer. "
 					+ "Starting with 1 for the next job index of the executable.");
 		}
 		int newIndex = currentIndex + 1;
-		setJobId("" + newIndex);
+		setJobName("" + newIndex);
 		refreshStatus();
 	}
 
@@ -530,7 +530,7 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 		boolean inputPathIsFilePath = Utils.isFilePath(inputPathString);
 		if (inputPathIsFilePath) {
 			String inputFileName = Utils.extractFileName(inputPathString);
-			String newInputFileName = Utils.includeNumberInFileName(inputFileName, "#" + getJobId());
+			String newInputFileName = Utils.includeNumberInFileName(inputFileName, "#" + getJobName());
 			String destinationPath = folderPath + "/" + newInputFileName;
 			return destinationPath;
 		} else {
@@ -631,22 +631,22 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 	}
 
 	/**
-	 * If the input arguments contain place holders, those place holders are replaced by the actual studyId,
-	 * studyDescription and jobId.
+	 * If the input arguments contain place holders, those place holders are replaced by the actual studyName,
+	 * studyDescription and jobName.
 	 */
 	protected String injectStudyAndJobInfo(Attribute<String> input) {
-		String studyIdKey = "{$studyId$}";
+		String studyNameKey = "{$studyName$}";
 		String studyDescriptionKey = "{$studyDescription$}";
-		String jobIdKey = "{$jobId$}";
+		String jobNameKey = "{$jobId$}";
 
 		String currentInputArguments = input.get();
 
-		if (currentInputArguments.contains(studyIdKey)) {
-			String studyName = getStudyId();
+		if (currentInputArguments.contains(studyNameKey)) {
+			String studyName = getstudyName();
 			if (studyName == null) {
-				currentInputArguments = currentInputArguments.replace(studyIdKey, "");
+				currentInputArguments = currentInputArguments.replace(studyNameKey, "");
 			} else {
-				currentInputArguments = currentInputArguments.replace(studyIdKey, studyName);
+				currentInputArguments = currentInputArguments.replace(studyNameKey, studyName);
 			}
 
 		}
@@ -655,14 +655,14 @@ public class Executable extends AbstractModel implements FilePathProvider, Input
 			currentInputArguments = currentInputArguments.replace(studyDescriptionKey, getStudyDescription());
 		}
 
-		if (currentInputArguments.contains(jobIdKey)) {
-			currentInputArguments = currentInputArguments.replace(jobIdKey, getJobId());
+		if (currentInputArguments.contains(jobNameKey)) {
+			currentInputArguments = currentInputArguments.replace(jobNameKey, getJobName());
 		}
 		return currentInputArguments;
 	}
 
 	public void resetJobIndex() {
-		setJobId("1");
+		setJobName("1");
 		refreshStatus();
 	}
 

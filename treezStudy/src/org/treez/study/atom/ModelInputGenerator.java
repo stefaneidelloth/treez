@@ -14,8 +14,8 @@ public interface ModelInputGenerator {
 
 	void exportStudyInfoToTextFile(String filePath);
 
-	void fillStudyInfo(SqLiteDatabase database, String tableName, String studyId);
+	void fillStudyInfo(SqLiteDatabase database, String tableName, String studyName);
 
-	void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyId);
+	void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyName);
 
 }

@@ -33,7 +33,7 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 	/**
 	 * Identifies the study (length should be <= 64 characters)
 	 */
-	public final Attribute<String> studyId = new Wrap<>();
+	public final Attribute<String> studyName = new Wrap<>();
 
 	/**
 	 * Describes the purpose of the study
@@ -49,6 +49,10 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 	 * The path to the model that provides the variables/parameters that can be varied
 	 */
 	public final Attribute<String> sourceModelPath = new Wrap<>();
+
+	public final Attribute<Boolean> isUsingjobNameOffset = new Wrap<>();
+
+	public final Attribute<String> jobNameOffset = new Wrap<>();
 
 	public final Attribute<Boolean> isConcurrentVariation = new Wrap<>();
 
@@ -239,7 +243,7 @@ public abstract class AbstractParameterVariation extends AdjustableAtom implemen
 
 	@Override
 	public String getId() {
-		return studyId.get();
+		return studyName.get();
 	}
 
 	@Override

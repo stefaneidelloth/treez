@@ -35,28 +35,28 @@ public interface Model {
 	boolean isManualModel();
 
 	/**
-	 * A study may consist of several jobs, where a job corresponds to a single model run. This sets the id of the job
+	 * A study may consist of several jobs, where a job corresponds to a single model run. This sets the name of the job
 	 * for the current execution of the model.
 	 */
-	void setJobId(String jobId);
+	void setJobName(String jobName);
 
 	/**
 	 * The id for the last execution of the model. This might be the id from a ModelInput while executing a study (e.g.
 	 * sweep). It might also be an id from a manual execution that has been set by the model itself.
 	 */
-	String getJobId();
+	String getJobName();
 
 	/**
 	 * The optional id of the study this model is run for.
 	 */
-	void setStudyId(String studyId);
+	void setstudyName(String studyName);
 
-	String getStudyId();
+	String getstudyName();
 
 	/**
 	 * The optional id of the study this model is run for.
 	 */
-	void setStudyDescription(String studyId);
+	void setStudyDescription(String studyName);
 
 	String getStudyDescription();
 

@@ -194,7 +194,7 @@ public class TreezMonitor implements ObservableMonitor {
 		assertTotalWorkHasBeenSet();
 		assertChildWorkIsNotTooLarge(coveredWorkOfParentMonitor);
 
-		//Add jobId to logging context, also see http://www.baeldung.com/java-logging-ndc-log4j
+		//Add Id to logging context, also see http://www.baeldung.com/java-logging-ndc-log4j
 		NDC.push(id);
 
 		workCoveredByChildren += coveredWorkOfParentMonitor;

@@ -73,7 +73,7 @@ public class SweepDemo extends ModelProvider {
 
 		//sweep
 		Sweep sweep = new Sweep("sweep");
-		sweep.studyId.set("myStudyId");
+		sweep.studyName.set("mystudyName");
 		sweep.studyDescription.set("myStudyDescription");
 		sweep.modelToRunModelPath.set("root.models");
 		sweep.sourceModelPath.set("root.models.genericModel");

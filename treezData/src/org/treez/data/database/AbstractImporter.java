@@ -25,8 +25,8 @@ public abstract class AbstractImporter {
 		}
 	}
 
-	protected static String injectJobIdIfIncludesPlaceholder(String customQuery, String jobId) {
-		return customQuery.replace(JOB_ID_PLACEHOLDER, jobId);
+	protected static String injectjobNameIfIncludesPlaceholder(String customQuery, String jobName) {
+		return customQuery.replace(JOB_ID_PLACEHOLDER, jobName);
 	}
 
 	//#end region

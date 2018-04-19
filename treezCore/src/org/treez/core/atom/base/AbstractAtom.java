@@ -132,12 +132,17 @@ public abstract class AbstractAtom<A extends AbstractAtom<A>> implements Adaptab
 	@Override
 	public abstract AbstractAtom<A> copy();
 
-	private static List<AbstractAtom<?>> copyAbstractAtoms(List<AbstractAtom<?>> abstractAtomsToCopy) {
+	private List<AbstractAtom<?>> copyAbstractAtoms(List<AbstractAtom<?>> abstractAtomsToCopy) {
 
 		List<AbstractAtom<?>> abstractAtoms = new ArrayList<>(abstractAtomsToCopy.size());
 		for (AbstractAtom<?> abstractAtomToCopy : abstractAtomsToCopy) {
 			AbstractAtom<?> abstractAtom = abstractAtomToCopy.copy();
+			if (abstractAtom == null) {
+				throw new IllegalStateException("Copied atom must not be null.");
+			}
+
 			abstractAtoms.add(abstractAtom);
+
 		}
 		return abstractAtoms;
 	}

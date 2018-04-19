@@ -4,7 +4,8 @@ Bundle-Name: org.treez.model
 Bundle-SymbolicName: org.treez.model;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.treez.model.Activator
-Require-Bundle: org.apache.commons.io,
+Require-Bundle: org.junit,
+ org.apache.commons.io,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.console,
@@ -14,7 +15,6 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.help,
  org.treez.javafxd3
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.treez.model,
  org.treez.model.atom,
@@ -26,3 +26,4 @@ Export-Package: org.treez.model,
  org.treez.model.interfaces,
  org.treez.model.output
 Bundle-Vendor: Stefan Eidelloth
+Automatic-Module-Name: org.treez.model

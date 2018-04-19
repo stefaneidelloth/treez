@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.treez.results;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.treez.results.Activator
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.treez.results,
  org.treez.results.atom,
@@ -29,7 +28,8 @@ Export-Package: org.treez.results,
  org.treez.results.elycharts,
  org.treez.results.jmathplot,
  org.treez.results.nebula
-Require-Bundle: org.apache.commons.io,
+Require-Bundle: org.junit,
+ org.apache.commons.io,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.forms,
@@ -39,3 +39,4 @@ Require-Bundle: org.apache.commons.io,
  org.treez.model,
  org.eclipse.draw2d
 Bundle-Vendor: Stefan Eidelloth
+Automatic-Module-Name: org.treez.results

@@ -13,7 +13,6 @@ Bundle-ClassPath: .,
  lib/org.eclipse.nebula.widgets.nattable.core.source_1.4.0.201606011907.jar,
  lib/org.eclipse.nebula.widgets.pagination.source_1.0.0.201701041652.jar,
  lib/mysql-connector-java-5.1.40-bin.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.treez.data,
  org.treez.data.cell,
@@ -31,7 +30,8 @@ Export-Package: org.treez.data,
  org.treez.data.tableImport,
  org.treez.data.tableSource,
  org.treez.data.variable
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.junit,
+ org.eclipse.core.runtime,
  org.eclipse.swt,
  org.eclipse.ui,
  org.eclipse.ui.forms,
@@ -39,3 +39,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.logging,
  org.treez.core
 Bundle-Vendor: Stefan Eidelloth
+Automatic-Module-Name: org.treez.data

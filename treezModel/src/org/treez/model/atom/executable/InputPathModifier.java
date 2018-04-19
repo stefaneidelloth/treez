@@ -74,7 +74,7 @@ public class InputPathModifier {
 
 		boolean doIncludejobIndexInFolder = inputPathProvider.getIncludeJobIndexInInputFolder();
 		if (doIncludejobIndexInFolder) {
-			newInputPath += "#" + inputPathProvider.getJobId();
+			newInputPath += "#" + inputPathProvider.getJobName();
 		}
 		return newInputPath;
 	}
@@ -96,7 +96,7 @@ public class InputPathModifier {
 		}
 
 		if (doIncludejobIndexInSubFolder) {
-			newInputPath += "#" + inputPathProvider.getJobId();
+			newInputPath += "#" + inputPathProvider.getJobName();
 		}
 		return newInputPath;
 	}
@@ -119,7 +119,7 @@ public class InputPathModifier {
 
 		boolean doIncludejobIndex = inputPathProvider.getIncludeJobIndexInInputFile();
 		if (doIncludejobIndex) {
-			newInputPath += "#" + inputPathProvider.getJobId();
+			newInputPath += "#" + inputPathProvider.getJobName();
 		}
 		newInputPath += pathPostFix; //is empty for directories
 		return newInputPath;

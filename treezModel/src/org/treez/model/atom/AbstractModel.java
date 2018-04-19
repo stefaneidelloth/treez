@@ -32,7 +32,7 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	/**
 	 * If the execution of the model is part of a study, this holds the name of the study.
 	 */
-	protected String studyId = null;
+	protected String studyName = null;
 
 	protected String studyDescription = "";
 
@@ -40,7 +40,7 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	 * The id for the last execution of the model. This might be the id from a model input while executing a study (e.g.
 	 * sweep). It might also be an id from a manual execution that has been set by the model itself.
 	 */
-	protected String jobId = "1";
+	protected String jobName = "1";
 
 	//#end region
 
@@ -56,9 +56,9 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	public AbstractModel(AbstractModel atomToCopy) {
 		super(atomToCopy);
 		isManualModel = atomToCopy.isManualModel;
-		studyId = atomToCopy.studyId;
+		studyName = atomToCopy.studyName;
 		studyDescription = atomToCopy.studyDescription;
-		jobId = atomToCopy.jobId;
+		jobName = atomToCopy.jobName;
 	}
 
 	//#end region
@@ -100,15 +100,15 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 		if (modelInput != null) {
 
 			//set study data
-			String currentStudyId = modelInput.getStudyId();
-			this.setStudyId(currentStudyId);
+			String currentstudyName = modelInput.getstudyName();
+			this.setstudyName(currentstudyName);
 
 			String currentStudyDescription = modelInput.getStudyDescription();
 			this.setStudyDescription(currentStudyDescription);
 
 			//set job index
-			String jobIndex = modelInput.getJobId();
-			this.setJobId(jobIndex);
+			String jobIndex = modelInput.getjobName();
+			this.setJobName(jobIndex);
 
 			//set variable values
 			List<String> allVariableModelPaths = modelInput.getAllVariableModelPaths();
@@ -273,45 +273,45 @@ public abstract class AbstractModel extends AdjustableAtom implements Model {
 	}
 
 	@Override
-	public String getJobId() {
-		return jobId;
+	public String getJobName() {
+		return jobName;
 	}
 
 	/**
 	 * Sets the job id for this model and all sub models
 	 *
-	 * @param jobId
+	 * @param jobName
 	 */
 	@Override
-	public void setJobId(String jobId) {
-		this.jobId = jobId;
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
 		for (AbstractAtom<?> child : children) {
 			boolean isModel = child instanceof Model;
 			if (isModel) {
 				Model model = (Model) child;
-				model.setJobId(jobId);
+				model.setJobName(jobName);
 			}
 		}
 	}
 
 	@Override
-	public String getStudyId() {
-		return studyId;
+	public String getstudyName() {
+		return studyName;
 	}
 
 	/**
 	 * Sets the study id for this model and all sub models
 	 *
-	 * @param studyId
+	 * @param studyName
 	 */
 	@Override
-	public void setStudyId(String studyId) {
-		this.studyId = studyId;
+	public void setstudyName(String studyName) {
+		this.studyName = studyName;
 		for (AbstractAtom<?> child : children) {
 			boolean isModel = child instanceof Model;
 			if (isModel) {
 				Model model = (Model) child;
-				model.setStudyId(studyId);
+				model.setstudyName(studyName);
 			}
 		}
 	}

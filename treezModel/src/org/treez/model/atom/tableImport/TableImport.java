@@ -71,9 +71,9 @@ public class TableImport extends AbstractModel implements TableSource {
 
 	public final Attribute<Boolean> filterForJob = new Wrap<>();
 
-	private String customJobIdField;
+	private String customjobNameField;
 
-	public final Attribute<String> customJobId = new Wrap<>();
+	public final Attribute<String> customjobName = new Wrap<>();
 
 	public final Attribute<Boolean> useCustomQuery = new Wrap<>();
 
@@ -205,21 +205,21 @@ public class TableImport extends AbstractModel implements TableSource {
 
 		sourceDataSection
 				.createCheckBox(filterForJob, this, false) //
-				.setLabel("Filter rows with JobId") //
+				.setLabel("Filter rows with jobName") //
 				.addModificationConsumer("enableAndDistableJobComponents", () -> enableAndDisableJobComponents());
 
 		sourceDataSection
-				.createTextField(customJobId, this) //
-				.setLabel("JobId") //
-				.addModificationConsumer("updateJobIdOfAbstractModelWithUserInput", () -> {
-					if (getJobId() != customJobId.get()) {
-						this.setJobId(customJobId.get());
+				.createTextField(customjobName, this) //
+				.setLabel("jobName") //
+				.addModificationConsumer("updatejobNameOfAbstractModelWithUserInput", () -> {
+					if (getJobName() != customjobName.get()) {
+						this.setJobName(customjobName.get());
 					}
 				});
 
-		if (customJobIdField != null) {
-			if (customJobId.get() == null) {
-				customJobId.set(customJobIdField);
+		if (customjobNameField != null) {
+			if (customjobName.get() == null) {
+				customjobName.set(customjobNameField);
 			}
 		}
 
@@ -237,9 +237,9 @@ public class TableImport extends AbstractModel implements TableSource {
 	private void enableAndDisableJobComponents() {
 		boolean isFilteringForJob = filterForJob.get();
 		if (isFilteringForJob) {
-			setEnabled(customJobId, true);
+			setEnabled(customjobName, true);
 		} else {
-			setEnabled(customJobId, false);
+			setEnabled(customjobName, false);
 		}
 	}
 
@@ -249,7 +249,7 @@ public class TableImport extends AbstractModel implements TableSource {
 			setEnabled(customQuery, true);
 			setEnabled(tableName, false);
 			setEnabled(filterForJob, false);
-			setEnabled(customJobId, true);
+			setEnabled(customjobName, true);
 		} else {
 			setEnabled(customQuery, false);
 			setEnabled(tableName, true);
@@ -440,7 +440,7 @@ public class TableImport extends AbstractModel implements TableSource {
 		String tableNameString = tableName.get();
 
 		Boolean filterRows = filterForJob.get();
-		String jobIdString = getJobId();
+		String jobNameString = getJobName();
 
 		//determine file extension (=>data type)
 		TableData tableData;
@@ -449,8 +449,8 @@ public class TableImport extends AbstractModel implements TableSource {
 			tableData = TextDataTableImporter.importData(sourcePath, columnSeparatorString, maxRows);
 			return tableData;
 		case SQLITE:
-			tableData = SqLiteImporter.importData(sourcePath, passwordString, tableNameString, filterRows, jobIdString,
-					maxRows, 0);
+			tableData = SqLiteImporter.importData(sourcePath, passwordString, tableNameString, filterRows,
+					jobNameString, maxRows, 0);
 			return tableData;
 		case MYSQL:
 			String hostString = host.get();
@@ -460,7 +460,7 @@ public class TableImport extends AbstractModel implements TableSource {
 			String url = hostString + ":" + portString + "/" + schemaString;
 
 			tableData = org.treez.data.database.mysql.MySqlImporter.importData(url, userString, passwordString,
-					tableNameString, filterRows, jobIdString, maxRows, 0);
+					tableNameString, filterRows, jobNameString, maxRows, 0);
 			return tableData;
 		default:
 			throw new IllegalStateException("The TableSourceType '" + tableSourceType + "' is not yet implemented.");
@@ -668,15 +668,15 @@ public class TableImport extends AbstractModel implements TableSource {
 	}
 
 	@Override
-	public void setJobId(String jobId) {
-		super.setJobId(jobId);
-		customJobIdField = jobId;
+	public void setJobName(String jobName) {
+		super.setJobName(jobName);
+		customjobNameField = jobName;
 
-		Wrap<String> wrap = (Wrap<String>) customJobId;
+		Wrap<String> wrap = (Wrap<String>) customjobName;
 		Attribute<String> attribute = wrap.getAttribute();
 
 		if (attribute != null) {
-			attribute.set(jobId);
+			attribute.set(jobName);
 		}
 
 	}

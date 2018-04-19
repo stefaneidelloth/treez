@@ -52,12 +52,12 @@ public final class SqLiteImporter extends AbstractImporter {
 
 	}
 
-	public static int getNumberOfRowsForCustomQuery(String filePath, String customQuery, String jobId) {
+	public static int getNumberOfRowsForCustomQuery(String filePath, String customQuery, String jobName) {
 
 		SqLiteDatabase database = new SqLiteDatabase(filePath);
 
 		String subQuery = removeTrailingSemicolon(customQuery);
-		subQuery = injectJobIdIfIncludesPlaceholder(subQuery, jobId);
+		subQuery = injectjobNameIfIncludesPlaceholder(subQuery, jobName);
 		String sizeQuery = "SELECT COUNT(*) FROM (" + subQuery + ");";
 
 		int[] size = { 0 };
@@ -79,15 +79,15 @@ public final class SqLiteImporter extends AbstractImporter {
 			String filePath,
 			String password,
 			String tableName,
-			boolean filterRowsByJobId,
-			String jobId,
+			boolean filterRowsByjobName,
+			String jobName,
 			Integer rowLimit,
 			Integer rowOffset) {
 
 		List<ColumnBlueprint> columnBlueprints = readTableStructure(filePath, password, tableName);
 
-		List<List<Object>> data = readData(filePath, password, tableName, filterRowsByJobId, jobId, rowLimit, rowOffset,
-				columnBlueprints);
+		List<List<Object>> data = readData(filePath, password, tableName, filterRowsByjobName, jobName, rowLimit,
+				rowOffset, columnBlueprints);
 
 		TableData tableData = new TableData(columnBlueprints, data);
 
@@ -98,14 +98,14 @@ public final class SqLiteImporter extends AbstractImporter {
 			String filePath,
 			String password,
 			String customQuery,
-			String jobId,
+			String jobName,
 			Integer rowLimit,
 			Integer rowOffset) {
 
 		List<ColumnBlueprint> columnBlueprints = readTableStructureWithCustomQuery(filePath, password, customQuery,
-				jobId);
+				jobName);
 
-		List<List<Object>> data = readDataWithCustomQuery(filePath, password, customQuery, jobId, rowLimit, rowOffset,
+		List<List<Object>> data = readDataWithCustomQuery(filePath, password, customQuery, jobName, rowLimit, rowOffset,
 				columnBlueprints);
 
 		TableData tableData = new TableData(columnBlueprints, data);
@@ -148,11 +148,9 @@ public final class SqLiteImporter extends AbstractImporter {
 		return tableStructure;
 	}
 
-	public static List<ColumnBlueprint> readTableStructureWithCustomQuery(
-			String filePath,
-			String password,
-			String customQuery,
-			String jobId) {
+	public static
+			List<ColumnBlueprint>
+			readTableStructureWithCustomQuery(String filePath, String password, String customQuery, String jobName) {
 		SqLiteDatabase database = new SqLiteDatabase(filePath);
 
 		int length = customQuery.length();
@@ -162,7 +160,7 @@ public final class SqLiteImporter extends AbstractImporter {
 
 		String firstLineQuery = customQuery;
 		firstLineQuery = removeTrailingSemicolon(customQuery);
-		firstLineQuery = injectJobIdIfIncludesPlaceholder(firstLineQuery, jobId);
+		firstLineQuery = injectjobNameIfIncludesPlaceholder(firstLineQuery, jobName);
 		firstLineQuery += " LIMIT 1;";
 
 		List<ColumnBlueprint> tableStructure = new ArrayList<>();
@@ -251,17 +249,17 @@ public final class SqLiteImporter extends AbstractImporter {
 			String filePath,
 			String password,
 			String tableName,
-			boolean filterRowsByJobId,
-			String jobId,
+			boolean filterRowsByjobName,
+			String jobName,
 			Integer rowLimit,
 			Integer rowOffset,
 			List<ColumnBlueprint> columnBlueprints) {
 		SqLiteDatabase database = new SqLiteDatabase(filePath);
 		String dataQuery = "SELECT * FROM '" + tableName + "'";
 
-		boolean applyFilter = filterRowsByJobId && jobId != null;
+		boolean applyFilter = filterRowsByjobName && jobName != null;
 		if (applyFilter) {
-			dataQuery += " WHERE job_id = '" + jobId + "'";
+			dataQuery += " WHERE job_id = '" + jobName + "'";
 		}
 
 		int offset = 0;
@@ -289,7 +287,7 @@ public final class SqLiteImporter extends AbstractImporter {
 		if (data.isEmpty()) {
 			String message = "Could not find any rows";
 			if (applyFilter) {
-				message += " for jobId '" + jobId + "'";
+				message += " for jobName '" + jobName + "'";
 			}
 			LOG.warn(message);
 
@@ -302,7 +300,7 @@ public final class SqLiteImporter extends AbstractImporter {
 			String filePath,
 			String password,
 			String customQuery,
-			String jobId,
+			String jobName,
 			Integer rowLimit,
 			Integer rowOffset,
 			List<ColumnBlueprint> columnBlueprints) {
@@ -314,7 +312,7 @@ public final class SqLiteImporter extends AbstractImporter {
 		}
 
 		String dataQuery = removeTrailingSemicolon(customQuery);
-		dataQuery = injectJobIdIfIncludesPlaceholder(dataQuery, jobId);
+		dataQuery = injectjobNameIfIncludesPlaceholder(dataQuery, jobName);
 
 		int offset = 0;
 		if (rowOffset != null) {
@@ -350,17 +348,17 @@ public final class SqLiteImporter extends AbstractImporter {
 			String filePath,
 			String password,
 			String tableName,
-			boolean filterRowsByJobId,
-			String jobId,
+			boolean filterRowsByjobName,
+			String jobName,
 			int rowIndex,
 			TreezTable table) {
 
 		SqLiteDatabase database = new SqLiteDatabase(filePath);
 		String dataQuery = "SELECT * FROM '" + tableName + "'";
 
-		boolean applyFilter = filterRowsByJobId && jobId != null;
+		boolean applyFilter = filterRowsByjobName && jobName != null;
 		if (applyFilter) {
-			dataQuery += " WHERE job_id = '" + jobId + "'";
+			dataQuery += " WHERE job_id = '" + jobName + "'";
 		}
 
 		dataQuery += " LIMIT 1 OFFSET " + rowIndex + ";";
@@ -371,7 +369,7 @@ public final class SqLiteImporter extends AbstractImporter {
 			String filePath,
 			String password,
 			String customQuery,
-			String jobId,
+			String jobName,
 			int rowIndex,
 			TreezTable table) {
 
@@ -383,7 +381,7 @@ public final class SqLiteImporter extends AbstractImporter {
 		}
 
 		String dataQuery = removeTrailingSemicolon(customQuery);
-		dataQuery = injectJobIdIfIncludesPlaceholder(dataQuery, jobId);
+		dataQuery = injectjobNameIfIncludesPlaceholder(dataQuery, jobName);
 		dataQuery += " LIMIT 1 OFFSET " + rowIndex + ";";
 
 		return readRow(table, database, dataQuery);

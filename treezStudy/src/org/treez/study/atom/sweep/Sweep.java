@@ -81,9 +81,9 @@ public class Sweep extends AbstractParameterVariation {
 		Section sweepSection = dataPage.createSection("sweep", absoluteHelpContextId);
 		sweepSection.createSectionAction("action", "Run sweep", () -> execute(treeViewRefreshable));
 
-		//studyId
-		TextField studyIdField = sweepSection.createTextField(studyId, this, "");
-		studyIdField.setLabel("Id");
+		//studyName
+		TextField studyNameField = sweepSection.createTextField(studyName, this, "");
+		studyNameField.setLabel("Name");
 
 		//description
 		TextField descriptionField = sweepSection.createTextField(studyDescription, this);
@@ -106,6 +106,17 @@ public class Sweep extends AbstractParameterVariation {
 				.createModelPath(sourceModelPath, this, sourceModelDefaultValue, Model.class, selectionType,
 						modelEntryPoint, false)
 				.setLabel("Variable source model (provides variables)");
+
+		//jobName offset
+		var isUsingjobNameOffsetCheckBox = sweepSection.createCheckBox(isUsingjobNameOffset, this, false);
+		isUsingjobNameOffsetCheckBox.setLabel("Use manual offset for jobName");
+
+		var jobNameOffsetField = sweepSection.createTextField(jobNameOffset, this);
+		jobNameOffsetField.setLabel("First jobName");
+
+		isUsingjobNameOffsetCheckBox.addModificationConsumerAndRun("toggleVisibilityOfjobNameOffsetTextField", () -> {
+			jobNameOffsetField.setEnabled(isUsingjobNameOffsetCheckBox.get());
+		});
 
 		//parallel execution
 		CheckBox concurrentCheckBox = sweepSection.createCheckBox(isConcurrentVariation, this, true);
@@ -168,8 +179,14 @@ public class Sweep extends AbstractParameterVariation {
 
 		LOG.info("Number of total simulations: " + numberOfSimulations);
 
-		//reset job index to 1
-		HashMapModelInput.resetIdCounter();
+		//set initial job index
+
+		if (isUsingjobNameOffset.get()) {
+			var nextId = Integer.parseInt(jobNameOffset.get());
+			HashMapModelInput.setIdCounter(nextId);
+		} else {
+			HashMapModelInput.resetIdCounter();
+		}
 
 		//create model inputs
 		List<ModelInput> modelInputs = inputGenerator.createModelInputs();
@@ -341,8 +358,8 @@ public class Sweep extends AbstractParameterVariation {
 			TreezMonitor sweepMonitor,
 			Runnable jobFinishedHook) {
 
-		String jobId = modelInput.getJobId();
-		String jobTitle = "Sweep Job '" + jobId + "'";
+		String jobName = modelInput.getjobName();
+		String jobTitle = "Sweep Job '" + jobName + "'";
 
 		AbstractAtom<?> modelAtom = (AbstractAtom<?>) modelToRun;
 		String pathForModelToRun = modelAtom.createTreeNodeAdaption().getTreePath();
@@ -370,7 +387,7 @@ public class Sweep extends AbstractParameterVariation {
 				Model shadowModelToRun = (Model) shadowRoot.getChildFromRoot(pathForModelToRun);
 
 				try (
-						ObservableMonitor jobMonitor = sweepMonitor.createChild(jobTitle, jobId, 1)) {
+						ObservableMonitor jobMonitor = sweepMonitor.createChild(jobTitle, jobName, 1)) {
 
 					if (sweepMonitor.isCanceled()) {
 						jobFinishedHook.run();
@@ -386,7 +403,7 @@ public class Sweep extends AbstractParameterVariation {
 
 					//store output in sweep output of main tree
 					AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
-					String modelOutputName = this.getName() + "OutputId" + modelInput.getJobId();
+					String modelOutputName = this.getName() + "OutputId" + modelInput.getjobName();
 					modelOutputAtom.setName(modelOutputName);
 					sweepOutputAtom.addChild(modelOutputAtom);
 
@@ -427,14 +444,14 @@ public class Sweep extends AbstractParameterVariation {
 
 				monitor.setDescription("=>Job #" + counter);
 
-				String jobId = modelInput.getJobId();
-				String jobTitle = "Sweep Job '" + jobId + "'";
-				ObservableMonitor jobMonitor = monitor.createChild(jobTitle, jobId, 1);
+				String jobName = modelInput.getjobName();
+				String jobTitle = "Sweep Job '" + jobName + "'";
+				ObservableMonitor jobMonitor = monitor.createChild(jobTitle, jobName, 1);
 
 				ModelOutput modelOutput = model.runModel(modelInput, refreshable, jobMonitor);
 
 				AbstractAtom<?> modelOutputAtom = modelOutput.getOutputAtom();
-				String modelOutputName = getName() + "OutputId" + modelInput.getJobId();
+				String modelOutputName = getName() + "OutputId" + modelInput.getjobName();
 				modelOutputAtom.setName(modelOutputName);
 				sweepOutputAtom.addChild(modelOutputAtom);
 

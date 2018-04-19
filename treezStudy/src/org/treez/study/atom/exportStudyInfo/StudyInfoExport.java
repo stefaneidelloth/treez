@@ -57,6 +57,10 @@ public class StudyInfoExport extends AbstractModel {
 		createModel();
 	}
 
+	public StudyInfoExport(StudyInfoExport atomToCopy) {
+		super(atomToCopy);
+	}
+
 	//#end region
 
 	//#region METHODS
@@ -90,7 +94,7 @@ public class StudyInfoExport extends AbstractModel {
 		});
 	}
 
-	private String getStudyIdFromParent() {
+	private String getstudyNameFromParent() {
 		Study study = (Study) this.getParentAtom();
 		return study.getId();
 	}
@@ -107,7 +111,7 @@ public class StudyInfoExport extends AbstractModel {
 
 	@Override
 	public AbstractModel copy() {
-		return null;
+		return new StudyInfoExport(this);
 	}
 
 	protected void createStudyInfoSection(Page dataPage, String absoluteHelpContextId) {
@@ -249,14 +253,14 @@ public class StudyInfoExport extends AbstractModel {
 		String studyInfoTableName = "study_info";
 		createStudyInfoTableIfNotExists(database, studyInfoTableName);
 		deleteOldEntriesForStudyIfExist(database, studyInfoTableName);
-		inputGenerator.fillStudyInfo(database, studyInfoTableName, getStudyIdFromParent());
+		inputGenerator.fillStudyInfo(database, studyInfoTableName, getstudyNameFromParent());
 	}
 
 	private void writeStudyInfo(ModelInputGenerator inputGenerator, MySqlDatabase database, String schema) {
 		String studyInfoTableName = "study_info";
 		createStudyInfoTableIfNotExists(database, schema, studyInfoTableName);
 		deleteOldEntriesForStudyIfExist(database, schema, studyInfoTableName);
-		inputGenerator.fillStudyInfo(database, schema, studyInfoTableName, getStudyIdFromParent());
+		inputGenerator.fillStudyInfo(database, schema, studyInfoTableName, getstudyNameFromParent());
 	}
 
 	private static void createStudyInfoTableIfNotExists(SqLiteDatabase database, String tableName) {
@@ -272,12 +276,12 @@ public class StudyInfoExport extends AbstractModel {
 	}
 
 	private void deleteOldEntriesForStudyIfExist(SqLiteDatabase database, String tableName) {
-		String query = "DELETE FROM '" + tableName + "' WHERE study = '" + getStudyIdFromParent() + "';";
+		String query = "DELETE FROM '" + tableName + "' WHERE study = '" + getstudyNameFromParent() + "';";
 		database.execute(query);
 	}
 
 	private void deleteOldEntriesForStudyIfExist(MySqlDatabase database, String schema, String tableName) {
-		String query = "DELETE FROM `" + schema + "`.`" + tableName + "` WHERE study = '" + getStudyIdFromParent()
+		String query = "DELETE FROM `" + schema + "`.`" + tableName + "` WHERE study = '" + getstudyNameFromParent()
 				+ "';";
 		database.execute(query);
 	}
@@ -286,14 +290,14 @@ public class StudyInfoExport extends AbstractModel {
 		String jobInfoTableName = "job_info";
 		createJobInfoTableIfNotExists(database, jobInfoTableName);
 		deleteOldEntriesForStudyIfExist(database, jobInfoTableName);
-		String studyId = getStudyIdFromParent();
+		String studyName = getstudyNameFromParent();
 
 		for (ModelInput modelInput : inputGenerator.createModelInputs()) {
-			String jobId = modelInput.getJobId();
+			String jobName = modelInput.getjobName();
 			List<String> variablePaths = modelInput.getAllVariableModelPaths();
 			for (String variablePath : variablePaths) {
 				Object value = modelInput.getVariableValue(variablePath);
-				String query = "INSERT INTO '" + jobInfoTableName + "' VALUES(null, '" + studyId + "', '" + jobId
+				String query = "INSERT INTO '" + jobInfoTableName + "' VALUES(null, '" + studyName + "', '" + jobName
 						+ "', '" + variablePath + "','" + value + "')";
 				database.execute(query);
 			}
@@ -304,14 +308,14 @@ public class StudyInfoExport extends AbstractModel {
 		String jobInfoTableName = "job_info";
 		createJobInfoTableIfNotExists(database, schema, jobInfoTableName);
 		deleteOldEntriesForStudyIfExist(database, schema, jobInfoTableName);
-		String studyId = getStudyIdFromParent();
+		String studyName = getstudyNameFromParent();
 		for (ModelInput modelInput : inputGenerator.createModelInputs()) {
-			String jobId = modelInput.getJobId();
+			String jobName = modelInput.getjobName();
 			List<String> variablePaths = modelInput.getAllVariableModelPaths();
 			for (String variablePath : variablePaths) {
 				Object value = modelInput.getVariableValue(variablePath);
-				String query = "INSERT INTO `" + schema + "`.`" + jobInfoTableName + "` VALUES(null, '" + studyId
-						+ "', '" + jobId + "', '" + variablePath + "','" + value + "')";
+				String query = "INSERT INTO `" + schema + "`.`" + jobInfoTableName + "` VALUES(null, '" + studyName
+						+ "', '" + jobName + "', '" + variablePath + "','" + value + "')";
 				database.execute(query);
 			}
 		}

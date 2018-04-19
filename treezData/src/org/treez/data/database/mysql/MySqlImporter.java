@@ -58,11 +58,11 @@ public final class MySqlImporter extends AbstractImporter {
 			String user,
 			String password,
 			String customQuery,
-			String jobId) {
+			String jobName) {
 
 		MySqlDatabase database = new MySqlDatabase(url, user, password);
 		String subQuery = removeTrailingSemicolon(customQuery);
-		subQuery = injectJobIdIfIncludesPlaceholder(subQuery, jobId);
+		subQuery = injectjobNameIfIncludesPlaceholder(subQuery, jobName);
 		String sizeQuery = "SELECT COUNT(*) FROM (" + subQuery + ");";
 
 		int[] size = { 0 };
@@ -85,14 +85,14 @@ public final class MySqlImporter extends AbstractImporter {
 			String user,
 			String password,
 			String tableName,
-			boolean filterRowsByJobId,
-			String jobId,
+			boolean filterRowsByjobName,
+			String jobName,
 			Integer rowLimit,
 			Integer rowOffset) {
 
 		List<ColumnBlueprint> columnBlueprints = readTableStructure(url, user, password, tableName);
 
-		List<List<Object>> data = readData(url, user, password, tableName, filterRowsByJobId, jobId, rowLimit,
+		List<List<Object>> data = readData(url, user, password, tableName, filterRowsByjobName, jobName, rowLimit,
 				rowOffset, columnBlueprints);
 
 		TableData tableData = new TableData(columnBlueprints, data);
@@ -105,15 +105,15 @@ public final class MySqlImporter extends AbstractImporter {
 			String user,
 			String password,
 			String customQuery,
-			String jobId,
+			String jobName,
 			Integer rowLimit,
 			Integer rowOffset) {
 
 		List<ColumnBlueprint> columnBlueprints = readTableStructureWithCustomQuery(url, user, password, customQuery,
-				jobId);
+				jobName);
 
-		List<List<Object>> data = readDataWithCustomQuery(url, user, password, customQuery, jobId, rowLimit, rowOffset,
-				columnBlueprints);
+		List<List<Object>> data = readDataWithCustomQuery(url, user, password, customQuery, jobName, rowLimit,
+				rowOffset, columnBlueprints);
 
 		TableData tableData = new TableData(columnBlueprints, data);
 
@@ -163,7 +163,7 @@ public final class MySqlImporter extends AbstractImporter {
 			String user,
 			String password,
 			String customQuery,
-			String jobId) {
+			String jobName) {
 		MySqlDatabase database = new MySqlDatabase(url, user, password);
 
 		int length = customQuery.length();
@@ -172,7 +172,7 @@ public final class MySqlImporter extends AbstractImporter {
 		}
 
 		String firstLineQuery = removeTrailingSemicolon(customQuery);
-		firstLineQuery = injectJobIdIfIncludesPlaceholder(firstLineQuery, jobId);
+		firstLineQuery = injectjobNameIfIncludesPlaceholder(firstLineQuery, jobName);
 		firstLineQuery += " LIMIT 1;";
 
 		List<ColumnBlueprint> tableStructure = new ArrayList<>();
@@ -270,17 +270,17 @@ public final class MySqlImporter extends AbstractImporter {
 			String user,
 			String password,
 			String tableName,
-			boolean filterRowsByJobId,
-			String jobId,
+			boolean filterRowsByjobName,
+			String jobName,
 			Integer rowLimit,
 			Integer rowOffset,
 			List<ColumnBlueprint> columnBlueprints) {
 		MySqlDatabase database = new MySqlDatabase(url, user, password);
 		String dataQuery = "SELECT * FROM `" + tableName + "`";
 
-		boolean applyFilter = filterRowsByJobId && jobId != null;
+		boolean applyFilter = filterRowsByjobName && jobName != null;
 		if (applyFilter) {
-			dataQuery += " WHERE job_id = '" + jobId + "'";
+			dataQuery += " WHERE job_id = '" + jobName + "'";
 		}
 
 		int offset = 0;
@@ -308,7 +308,7 @@ public final class MySqlImporter extends AbstractImporter {
 		if (data.isEmpty()) {
 			String message = "Could not find any rows";
 			if (applyFilter) {
-				message += " for jobId '" + jobId + "'";
+				message += " for jobName '" + jobName + "'";
 			}
 			LOG.warn(message);
 
@@ -322,7 +322,7 @@ public final class MySqlImporter extends AbstractImporter {
 			String user,
 			String password,
 			String customQuery,
-			String jobId,
+			String jobName,
 			Integer rowLimit,
 			Integer rowOffset,
 			List<ColumnBlueprint> columnBlueprints) {
@@ -334,7 +334,7 @@ public final class MySqlImporter extends AbstractImporter {
 		}
 
 		String dataQuery = removeTrailingSemicolon(customQuery);
-		dataQuery = injectJobIdIfIncludesPlaceholder(dataQuery, jobId);
+		dataQuery = injectjobNameIfIncludesPlaceholder(dataQuery, jobName);
 
 		int offset = 0;
 		if (rowOffset != null) {
@@ -371,17 +371,17 @@ public final class MySqlImporter extends AbstractImporter {
 			String user,
 			String password,
 			String tableName,
-			boolean filterRowsByJobId,
-			String jobId,
+			boolean filterRowsByjobName,
+			String jobName,
 			int rowIndex,
 			TreezTable table) {
 
 		MySqlDatabase database = new MySqlDatabase(url, user, password);
 		String dataQuery = "SELECT * FROM '" + tableName + "'";
 
-		boolean applyFilter = filterRowsByJobId && jobId != null;
+		boolean applyFilter = filterRowsByjobName && jobName != null;
 		if (applyFilter) {
-			dataQuery += " WHERE job_id = '" + jobId + "'";
+			dataQuery += " WHERE job_id = '" + jobName + "'";
 		}
 
 		dataQuery += " LIMIT 1 OFFSET " + rowIndex + ";";
@@ -393,7 +393,7 @@ public final class MySqlImporter extends AbstractImporter {
 			String user,
 			String password,
 			String customQuery,
-			String jobId,
+			String jobName,
 			int rowIndex,
 			TreezTable table) {
 
@@ -405,7 +405,7 @@ public final class MySqlImporter extends AbstractImporter {
 		}
 
 		String dataQuery = removeTrailingSemicolon(customQuery);
-		dataQuery = injectJobIdIfIncludesPlaceholder(dataQuery, jobId);
+		dataQuery = injectjobNameIfIncludesPlaceholder(dataQuery, jobName);
 		dataQuery += " LIMIT 1 OFFSET " + rowIndex + ";";
 
 		return readRow(table, database, dataQuery);

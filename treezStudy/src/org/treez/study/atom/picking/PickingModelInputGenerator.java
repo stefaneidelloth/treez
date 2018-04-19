@@ -54,7 +54,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 
 		if (!samples.isEmpty()) {
 
-			String studyId = picking.getId();
+			String studyName = picking.getId();
 			String studyDescription = picking.getDescription();
 			String sourceModelPath = picking.getSourceModelPath();
 			boolean isTimeDependent = picking.isTimeDependent.get();
@@ -65,7 +65,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 				for (int timeIndex = 0; timeIndex < timeRange.size(); timeIndex++) {
 					Number timeValue = timeRange.get(timeIndex);
 					for (Sample sample : samples) {
-						ModelInput modelInput = createModelInputFromSampleForTimeStep(sourceModelPath, studyId,
+						ModelInput modelInput = createModelInputFromSampleForTimeStep(sourceModelPath, studyName,
 								studyDescription, sample, timeVariablePath, timeIndex, timeValue);
 						modelInputs.add(modelInput);
 					}
@@ -74,7 +74,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 			} else {
 
 				for (Sample sample : samples) {
-					ModelInput modelInput = createModelInputFromSample(sourceModelPath, studyId, studyDescription,
+					ModelInput modelInput = createModelInputFromSample(sourceModelPath, studyName, studyDescription,
 							sample);
 					modelInputs.add(modelInput);
 				}
@@ -127,7 +127,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 	}
 
 	@Override
-	public void fillStudyInfo(SqLiteDatabase database, String tableName, String studyId) {
+	public void fillStudyInfo(SqLiteDatabase database, String tableName, String studyName) {
 
 		List<Sample> samples = getEnabledSamples();
 		Map<String, Set<String>> uniqueVariableValues = collectUniqueVariableValues(samples);
@@ -137,7 +137,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 			Set<String> variableValues = entry.getValue();
 
 			for (String variableValue : variableValues) {
-				String query = "INSERT INTO '" + tableName + "' VALUES(null, '" + studyId + "', '" + variableName
+				String query = "INSERT INTO '" + tableName + "' VALUES(null, '" + studyName + "', '" + variableName
 						+ "','" + variableValue + "')";
 				database.execute(query);
 			}
@@ -145,7 +145,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 	}
 
 	@Override
-	public void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyId) {
+	public void fillStudyInfo(MySqlDatabase database, String schemaName, String tableName, String studyName) {
 		List<Sample> samples = getEnabledSamples();
 		Map<String, Set<String>> uniqueVariableValues = collectUniqueVariableValues(samples);
 		for (Entry<String, Set<String>> entry : uniqueVariableValues.entrySet()) {
@@ -154,7 +154,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 			Set<String> variableValues = entry.getValue();
 
 			for (String variableValue : variableValues) {
-				String query = "INSERT INTO `" + schemaName + "`.`" + tableName + "` VALUES(null, '" + studyId + "', '"
+				String query = "INSERT INTO `" + schemaName + "`.`" + tableName + "` VALUES(null, '" + studyName + "', '"
 						+ variableName + "','" + variableValue + "')";
 				database.execute(query);
 			}
@@ -182,7 +182,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 
 	private ModelInput createModelInputFromSampleForTimeStep(
 			String sourceModelPath,
-			String studyId,
+			String studyName,
 			String studyDescription,
 			Sample sample,
 			String timeVariablePath,
@@ -191,7 +191,7 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 
 		String pickingModelPath = picking.createTreeNodeAdaption().getTreePath();
 
-		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyId, studyDescription);
+		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyName, studyDescription);
 
 		//set time value
 		modelInput.add(timeVariablePath, timeValue);
@@ -222,10 +222,10 @@ public class PickingModelInputGenerator implements ModelInputGenerator {
 
 	private
 			ModelInput
-			createModelInputFromSample(String sourceModelPath, String studyId, String studyDescription, Sample sample) {
+			createModelInputFromSample(String sourceModelPath, String studyName, String studyDescription, Sample sample) {
 
 		String pickingModelPath = picking.createTreeNodeAdaption().getTreePath();
-		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyId, studyDescription);
+		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyName, studyDescription);
 		Map<String, VariableField<?, ?>> variableData = sample.getVariableData();
 		for (String variableName : variableData.keySet()) {
 			VariableField<?, ?> variableField = variableData.get(variableName);

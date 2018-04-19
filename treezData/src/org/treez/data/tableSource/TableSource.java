@@ -44,7 +44,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 
 	public final Attribute<Boolean> filterForJob = new Wrap<>();
 
-	public final Attribute<String> jobId = new Wrap<>();
+	public final Attribute<String> jobName = new Wrap<>();
 
 	public final Attribute<Boolean> useCustomQuery = new Wrap<>();
 
@@ -75,7 +75,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		schema.set(tableSource.getSchema());
 		tableName.set(tableSource.getTableName());
 		filterForJob.set(tableSource.isFilteringForJob());
-		jobId.set(tableSource.getJobId());
+		jobName.set(tableSource.getJobName());
 		useCustomQuery.set(tableSource.isUsingCustomQuery());
 		customQuery.set(tableSource.getCustomQuery());
 
@@ -153,12 +153,12 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 
 		sourceDataSection
 				.createCheckBox(filterForJob, this, false) //
-				.setLabel("Filter rows with JobId") //
+				.setLabel("Filter rows with jobName") //
 				.addModificationConsumer("enableAndDistableJobComponents", () -> enableAndDisableJobComponents());
 
 		sourceDataSection
-				.createTextField(jobId, this) //
-				.setLabel("JobId");
+				.createTextField(jobName, this) //
+				.setLabel("jobName");
 
 		sourceDataSection
 				.createCheckBox(useCustomQuery, this, false) //
@@ -197,9 +197,9 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 	private void enableAndDisableJobComponents() {
 		boolean isFilteringForJob = filterForJob.get();
 		if (isFilteringForJob) {
-			setEnabled(jobId, true);
+			setEnabled(jobName, true);
 		} else {
-			setEnabled(jobId, false);
+			setEnabled(jobName, false);
 		}
 	}
 
@@ -209,7 +209,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 			setEnabled(customQuery, true);
 			setEnabled(tableName, false);
 			setEnabled(filterForJob, false);
-			setEnabled(jobId, true);
+			setEnabled(jobName, true);
 		} else {
 			setEnabled(customQuery, false);
 			setEnabled(tableName, true);
@@ -227,7 +227,7 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 		setEnabled(schema, false);
 		setEnabled(tableName, false);
 		setEnabled(filterForJob, false);
-		setEnabled(jobId, false);
+		setEnabled(jobName, false);
 		setEnabled(useCustomQuery, false);
 		setEnabled(customQuery, false);
 	}
@@ -366,13 +366,13 @@ public class TableSource extends AdjustableAtom implements org.treez.core.data.t
 	}
 
 	@Override
-	public String getJobId() {
-		return jobId.get();
+	public String getJobName() {
+		return jobName.get();
 	}
 
 	@Override
-	public void setJobId(String jobId) {
-		this.jobId.set(jobId);
+	public void setJobName(String jobName) {
+		this.jobName.set(jobName);
 	}
 
 	//#end region
