@@ -144,4 +144,6 @@ Bundle-ClassPath: main/resources/,
  .,
  lib/javafx-swt.jar
 Automatic-Module-Name: org.treez.javafxd3
+Bundle-RequiredExecutionEnvironment: JavaSE-9,
+ JavaSE-10
 

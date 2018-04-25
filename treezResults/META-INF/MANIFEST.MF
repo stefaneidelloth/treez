@@ -40,3 +40,5 @@ Require-Bundle: org.junit,
  org.eclipse.draw2d
 Bundle-Vendor: Stefan Eidelloth
 Automatic-Module-Name: org.treez.results
+Bundle-RequiredExecutionEnvironment: JavaSE-9,
+ JavaSE-10

@@ -27,3 +27,5 @@ Export-Package: org.treez.model,
  org.treez.model.output
 Bundle-Vendor: Stefan Eidelloth
 Automatic-Module-Name: org.treez.model
+Bundle-RequiredExecutionEnvironment: JavaSE-9,
+ JavaSE-10
