@@ -12,5 +12,4 @@ Require-Bundle: org.treez.javafxd3,
  org.treez.study,
  org.treez.views
 Bundle-Vendor: Stefan Eidelloth
-Bundle-RequiredExecutionEnvironment: JavaSE-9,
- JavaSE-10
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -108,10 +108,10 @@ public class Sweep extends AbstractParameterVariation {
 				.setLabel("Variable source model (provides variables)");
 
 		//jobName offset
-		var isUsingjobNameOffsetCheckBox = sweepSection.createCheckBox(isUsingjobNameOffset, this, false);
+		CheckBox isUsingjobNameOffsetCheckBox = sweepSection.createCheckBox(isUsingjobNameOffset, this, false);
 		isUsingjobNameOffsetCheckBox.setLabel("Use manual offset for jobName");
 
-		var jobNameOffsetField = sweepSection.createTextField(jobNameOffset, this);
+		TextField jobNameOffsetField = sweepSection.createTextField(jobNameOffset, this);
 		jobNameOffsetField.setLabel("First jobName");
 
 		isUsingjobNameOffsetCheckBox.addModificationConsumerAndRun("toggleVisibilityOfjobNameOffsetTextField", () -> {
@@ -182,7 +182,7 @@ public class Sweep extends AbstractParameterVariation {
 		//set initial job index
 
 		if (isUsingjobNameOffset.get()) {
-			var nextId = Integer.parseInt(jobNameOffset.get());
+			Integer nextId = Integer.parseInt(jobNameOffset.get());
 			HashMapModelInput.setIdCounter(nextId);
 		} else {
 			HashMapModelInput.resetIdCounter();

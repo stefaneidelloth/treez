@@ -166,5 +166,4 @@ Require-Bundle: org.treez.javafxd3;visibility:=reexport,
  org.eclipse.core.resources
 Bundle-Vendor: Stefan Eidelloth
 Automatic-Module-Name: org.treez.core
-Bundle-RequiredExecutionEnvironment: JavaSE-9,
- JavaSE-10
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

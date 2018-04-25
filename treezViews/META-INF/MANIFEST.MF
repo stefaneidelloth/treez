@@ -30,5 +30,4 @@ Require-Bundle: org.junit,
  org.treez.study
 Bundle-Vendor: Stefan Eidelloth
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-9,
- JavaSE-10
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
