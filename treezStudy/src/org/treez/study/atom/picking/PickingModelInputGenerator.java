@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
@@ -27,7 +27,7 @@ import org.treez.study.atom.sweep.SweepModelInputGenerator;
  */
 public class PickingModelInputGenerator implements ModelInputGenerator {
 
-	private static final Logger LOG = Logger.getLogger(SweepModelInputGenerator.class);
+	private static final Logger LOG = LogManager.getLogger(SweepModelInputGenerator.class);
 
 	//#region ATTRIBUTES
 

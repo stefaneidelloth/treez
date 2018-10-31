@@ -3,7 +3,7 @@ package org.treez.core.path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -32,7 +32,7 @@ import org.treez.core.utils.Utils;
  */
 public class ModelPathTreeSelectionWindow implements TreezView {
 
-	private static final Logger LOG = Logger.getLogger(ModelPathTreeSelectionWindow.class);
+	private static final Logger LOG = LogManager.getLogger(ModelPathTreeSelectionWindow.class);
 
 	//#region ATTRIBUTES
 

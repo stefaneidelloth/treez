@@ -2,7 +2,7 @@ package org.treez.views.monitor;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.swt.widgets.Composite;
@@ -15,7 +15,7 @@ import org.treez.testutils.TestUtils;
 
 public class MonitorViewPartTest {
 
-	private static Logger LOG = Logger.getLogger(MonitorViewPartTest.class);
+	private static Logger LOG = LogManager.getLogger(MonitorViewPartTest.class);
 
 	//#region METHODS
 

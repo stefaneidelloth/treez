@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -43,7 +43,7 @@ import org.treez.data.row.RowHeaderRenderer;
  */
 public class TreezTableViewer extends GridTableViewer {
 
-	private static final Logger LOG = Logger.getLogger(TreezTableViewer.class);
+	private static final Logger LOG = LogManager.getLogger(TreezTableViewer.class);
 
 	//#region ATTRIBUTES
 

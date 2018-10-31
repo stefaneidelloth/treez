@@ -1,6 +1,6 @@
 package org.treez.core.scripting.java;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class JavaScriptingTest {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOG = Logger.getLogger(JavaScriptingTest.class);
+	private static final Logger LOG = LogManager.getLogger(JavaScriptingTest.class);
 
 	//#region ATTRIBUTES
 

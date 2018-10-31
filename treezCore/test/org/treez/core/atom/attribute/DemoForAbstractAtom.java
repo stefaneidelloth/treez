@@ -2,7 +2,7 @@ package org.treez.core.atom.attribute;
 
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.treez.core.adaptable.CodeAdaption;
@@ -17,7 +17,7 @@ import org.treez.testutils.TestUtils;
  */
 public class DemoForAbstractAtom {
 
-	private static final Logger LOG = Logger.getLogger(DemoForAbstractAtom.class);
+	private static final Logger LOG = LogManager.getLogger(DemoForAbstractAtom.class);
 
 	//#region ATTRIBUTES
 

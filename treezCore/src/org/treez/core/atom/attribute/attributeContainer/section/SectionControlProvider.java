@@ -2,7 +2,8 @@ package org.treez.core.atom.attribute.attributeContainer.section;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -29,7 +30,7 @@ import org.treez.core.atom.attribute.base.AbstractAttributeAtom;
 
 public class SectionControlProvider {
 
-	private static final Logger LOG = Logger.getLogger(SectionControlProvider.class);
+	private static final Logger LOG = LogManager.getLogger(SectionControlProvider.class);
 
 	//#region ATTRIBUTES
 

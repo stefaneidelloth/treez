@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.treez.core.adaptable.TreeNodeAdaption;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.utils.Utils;
@@ -15,7 +15,7 @@ import org.treez.core.utils.Utils;
  */
 public final class ModelPathSelector {
 
-	private static final Logger LOG = Logger.getLogger(ModelPathSelector.class);
+	private static final Logger LOG = LogManager.getLogger(ModelPathSelector.class);
 
 	//#region CONSTRUCTORS
 

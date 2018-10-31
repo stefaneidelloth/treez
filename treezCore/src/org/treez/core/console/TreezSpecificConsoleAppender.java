@@ -1,15 +1,20 @@
 package org.treez.core.console;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Layout;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.message.Message;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.treez.core.atom.uisynchronizing.AbstractUiSynchronizingAtom;
 
-public class TreezSpecificConsoleAppender extends AppenderSkeleton {
+@Plugin(name = "TreezConsoleAppender", category = "Core", elementType = "appender", printObject = true)
+public class TreezSpecificConsoleAppender extends AbstractAppender {
 
 	//#region ATTRIBUTES
 
@@ -19,8 +24,16 @@ public class TreezSpecificConsoleAppender extends AppenderSkeleton {
 
 	//#region CONSTRUCTORS
 
+	protected TreezSpecificConsoleAppender(
+			String name,
+			Filter filter,
+			Layout<? extends Serializable> layout,
+			final boolean ignoreExceptions) {
+		super(name, filter, layout, ignoreExceptions);
+	}
+
 	public TreezSpecificConsoleAppender(IOConsole console) {
-		super();
+		super("TreezConsoleAppender", null, null, false);
 		treezConsole = console;
 	}
 
@@ -29,39 +42,25 @@ public class TreezSpecificConsoleAppender extends AppenderSkeleton {
 	//#region METHODS
 
 	@Override
-	protected void append(LoggingEvent event) {
-
-		Layout layout = this.getLayout();
+	public void append(LogEvent event) {
 
 		AbstractUiSynchronizingAtom.runNonUiTask("append", () -> {
 			try (
 					IOConsoleOutputStream out = treezConsole.newOutputStream();) {
 
 				String message = "# unknown message #";
-				if (layout != null) {
-					message = layout.format(event);
-				} else {
-					Object eventMessage = event.getMessage();
-					if (eventMessage != null) {
-						message = eventMessage.toString();
-					}
+
+				Message eventMessage = event.getMessage();
+				if (eventMessage != null) {
+					message = eventMessage.getFormattedMessage();
 				}
+
 				out.write(message);
 			} catch (IOException exception) {
 				throw new IllegalStateException("Could not append message.", exception);
 			}
 		});
 
-	}
-
-	@Override
-	public void close() {
-		//not used here
-	}
-
-	@Override
-	public boolean requiresLayout() {
-		return true;
 	}
 
 	//#end region

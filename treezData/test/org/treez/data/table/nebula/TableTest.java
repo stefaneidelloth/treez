@@ -1,6 +1,6 @@
 package org.treez.data.table.nebula;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
 import org.treez.core.data.column.ColumnType;
@@ -11,7 +11,7 @@ import org.treez.data.tableSource.TableSource;
 public class TableTest extends AbstractAbstractAtomTest {
 
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(TableTest.class);
+	private static final Logger LOG = LogManager.getLogger(TableTest.class);
 
 	//#region SETUP
 

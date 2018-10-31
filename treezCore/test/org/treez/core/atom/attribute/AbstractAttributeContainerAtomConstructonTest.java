@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -30,7 +30,7 @@ public abstract class AbstractAttributeContainerAtomConstructonTest {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOG = Logger.getLogger(AbstractAttributeContainerAtomConstructonTest.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractAttributeContainerAtomConstructonTest.class);
 
 	//#region ATTRIBUTES
 

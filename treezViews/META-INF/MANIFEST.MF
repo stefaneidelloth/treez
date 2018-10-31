@@ -30,4 +30,4 @@ Require-Bundle: org.junit,
  org.treez.study
 Bundle-Vendor: Stefan Eidelloth
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"

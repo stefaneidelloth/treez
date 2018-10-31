@@ -3,7 +3,7 @@ package org.treez.core.atom.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -20,7 +20,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 public class AtomTreeNodeAdaption implements TreeNodeAdaption {
 
-	private static final Logger LOG = Logger.getLogger(AtomTreeNodeAdaption.class);
+	private static final Logger LOG = LogManager.getLogger(AtomTreeNodeAdaption.class);
 
 	//#region ATTRIBUTES
 

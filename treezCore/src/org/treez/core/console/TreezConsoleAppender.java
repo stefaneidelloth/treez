@@ -2,12 +2,14 @@ package org.treez.core.console;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Serializable;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ThrowableInformation;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -19,7 +21,8 @@ import org.treez.core.monitor.TreezMonitor;
 /**
  * For writing to the eclipse console
  */
-public class TreezConsoleAppender extends AppenderSkeleton {
+@Plugin(name = "TreezConsoleAppender", category = "Core", elementType = "appender", printObject = true)
+public class TreezConsoleAppender extends AbstractAppender {
 
 	//#region ATTRIBUTES
 
@@ -31,18 +34,24 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 
 	//#region CONSTRUCTORS
 
+	protected TreezConsoleAppender(
+			String name,
+			Filter filter,
+			Layout<? extends Serializable> layout,
+			final boolean ignoreExceptions) {
+		super(name, filter, layout, ignoreExceptions);
+	}
+
 	//#end region
 
 	//#region METHODS
 
 	@Override
-	protected void append(LoggingEvent event) {
+	public void append(LogEvent event) {
 
-		//get formatted message
-		Layout layout = this.getLayout();
-		String message = layout.format(event);
+		String message = event.getMessage().getFormattedMessage();
 
-		String treezMonitorId = event.getNDC();
+		String treezMonitorId = event.getContextData().getValue("id");
 		MessageConsole console = getConsole(treezMonitorId);
 
 		if (console != null) {
@@ -65,11 +74,9 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 					exception.printStackTrace();
 				}
 
-				ThrowableInformation throwableInformation = event.getThrowableInformation();
+				Throwable throwable = event.getThrown();
 
-				if (throwableInformation != null) {
-
-					Throwable throwable = throwableInformation.getThrowable();
+				if (throwable != null) {
 
 					try (
 							MessageConsoleStream stream = console.newMessageStream();) {
@@ -91,16 +98,6 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 
 		}
 
-	}
-
-	@Override
-	public void close() {
-		//not used here
-	}
-
-	@Override
-	public boolean requiresLayout() {
-		return true;
 	}
 
 	/**
@@ -154,7 +151,6 @@ public class TreezConsoleAppender extends AppenderSkeleton {
 		} else {
 			return null;
 		}
-
 	}
 
 	//#end region

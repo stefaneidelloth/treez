@@ -2,7 +2,8 @@ package org.treez.study.atom.exportStudyInfo;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
@@ -24,7 +25,7 @@ import org.treez.study.atom.Study;
 
 public class StudyInfoExport extends AbstractModel {
 
-	private static final Logger LOG = Logger.getLogger(StudyInfoExport.class);
+	private static final Logger LOG = LogManager.getLogger(StudyInfoExport.class);
 
 	//#region ATTRIBUTES
 
@@ -126,8 +127,8 @@ public class StudyInfoExport extends AbstractModel {
 		exportStudyInfoTypeCombo.setLabel("Export study information");
 
 		//export sweep info path
-		FilePath filePath = studyInfoSection.createFilePath(studyInfoExportPath, this,
-				"Target file path for study information", "");
+		FilePath filePath = studyInfoSection
+				.createFilePath(studyInfoExportPath, this, "Target file path for study information", "");
 		filePath.setValidatePath(false);
 
 		//host

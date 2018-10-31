@@ -3,7 +3,7 @@ package org.treez.views.monitor;
 import java.util.List;
 import java.util.concurrent.FutureTask;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -27,7 +27,7 @@ import org.treez.standalone.VerticalSeparatorPanel;
 @SuppressWarnings("restriction")
 public class MonitorViewPart extends ViewPart implements MonitorTreezView {
 
-	private static Logger LOG = Logger.getLogger(MonitorViewPart.class);
+	private static Logger LOG = LogManager.getLogger(MonitorViewPart.class);
 
 	//#region ATTRIBUTES
 

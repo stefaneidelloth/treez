@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,7 +36,7 @@ import org.treez.core.utils.Utils;
  */
 public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 
-	private static final Logger LOG = Logger.getLogger(ModelPath.class);
+	private static final Logger LOG = LogManager.getLogger(ModelPath.class);
 
 	//#region ATTRIBUTES
 
@@ -304,9 +305,9 @@ public class ModelPath extends AbstractStringAttributeAtom<ModelPath> {
 	}
 
 	@Override
-	public AbstractStringAttributeAtom<ModelPath> createAttributeAtomControl(
-			Composite parent,
-			FocusChangingRefreshable treeViewerRefreshable) {
+	public
+			AbstractStringAttributeAtom<ModelPath>
+			createAttributeAtomControl(Composite parent, FocusChangingRefreshable treeViewerRefreshable) {
 
 		//initialize value at the first call
 		if (!isInitialized()) {

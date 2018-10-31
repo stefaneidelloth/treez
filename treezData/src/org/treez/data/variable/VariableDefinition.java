@@ -3,7 +3,7 @@ package org.treez.data.variable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
@@ -28,7 +28,7 @@ import org.treez.data.table.VariableDefinitionTable;
  */
 public class VariableDefinition extends AbstractUiSynchronizingAtom<VariableDefinition> {
 
-	private static final Logger LOG = Logger.getLogger(VariableDefinition.class);
+	private static final Logger LOG = LogManager.getLogger(VariableDefinition.class);
 
 	//#region ATTRIBUTES
 

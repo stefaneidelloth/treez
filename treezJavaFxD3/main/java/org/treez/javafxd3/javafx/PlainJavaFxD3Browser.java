@@ -6,7 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.core.JsEngine;
 
@@ -30,7 +31,7 @@ import javafx.scene.web.WebView;
 @SuppressWarnings("checkstyle:magicnumber")
 public class PlainJavaFxD3Browser extends StackPane implements Browser {
 	
-	private static Logger LOG = Logger.getLogger(PlainJavaFxD3Browser.class);
+	private static Logger LOG = LogManager.getLogger(PlainJavaFxD3Browser.class);
 
 	//#region ATTRIBUTES
 

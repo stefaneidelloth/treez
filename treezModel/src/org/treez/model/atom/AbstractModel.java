@@ -2,7 +2,7 @@ package org.treez.model.atom;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.FocusChangingRefreshable;
 import org.treez.core.atom.adjustable.AdjustableAtom;
@@ -20,7 +20,7 @@ import org.treez.model.output.ModelOutput;
  */
 public abstract class AbstractModel extends AdjustableAtom implements Model {
 
-	private static final Logger LOG = Logger.getLogger(AbstractModel.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractModel.class);
 
 	//#region ATTRIBUTES
 

@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.graphics.Image;
 import org.treez.core.adaptable.CodeAdaption;
 import org.treez.core.adaptable.FocusChangingRefreshable;
@@ -48,7 +48,7 @@ import org.treez.model.atom.genericInput.GenericInputModel;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class InputFileGenerator extends AdjustableAtom implements InputPathProvider {
 
-	private static final Logger LOG = Logger.getLogger(InputFileGenerator.class);
+	private static final Logger LOG = LogManager.getLogger(InputFileGenerator.class);
 
 	//#region ATTRIBUTES
 

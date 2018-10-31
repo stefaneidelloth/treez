@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.treez.core.atom.attribute.attributeContainer.AttributeRoot;
 import org.treez.core.atom.attribute.attributeContainer.Page;
 import org.treez.core.atom.attribute.attributeContainer.section.Section;
@@ -30,7 +30,7 @@ import org.treez.results.atom.graph.Graph;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Fill implements GraphicsPropertiesPageFactory {
 
-	Logger LOG = Logger.getLogger(Fill.class);
+	Logger LOG = LogManager.getLogger(Fill.class);
 
 	//#region ATTRIBUTES
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
@@ -51,7 +51,7 @@ import org.treez.study.atom.ModelInputGenerator;
 @SuppressWarnings("checkstyle:visibilitymodifier")
 public class Picking extends AbstractParameterVariation implements NumberRangeProvider {
 
-	private static final Logger LOG = Logger.getLogger(Picking.class);
+	private static final Logger LOG = LogManager.getLogger(Picking.class);
 
 	//#region ATTRIBUTES
 

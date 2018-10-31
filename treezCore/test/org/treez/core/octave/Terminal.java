@@ -29,6 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -38,24 +39,22 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.html.HTML;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
 
 /**
  * Terminal example that uses the OctaveProcess class
  */
-public class Terminal extends JFrame
-		implements
-			ActionListener,
-			MouseListener,
-			KeyListener {
+public class Terminal extends JFrame implements ActionListener, MouseListener, KeyListener {
 
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOG = Logger.getLogger(Terminal.class);
+	private static final Logger LOG = LogManager.getLogger(Terminal.class);
 
 	//#region ATTRIBUTES
 
@@ -63,8 +62,7 @@ public class Terminal extends JFrame
 
 	private static final String OCTAVE_PATH = "C:\\Octave\\Octave-3.8.1\\bin\\octave.exe --persist --interactive --quiet";
 
-	private static final String FILE_SEPARATOR = System
-			.getProperty("file.separator");
+	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
 	private OctaveProcess octaveProcess;
 
@@ -92,9 +90,7 @@ public class Terminal extends JFrame
 	public Terminal(String[] args) {
 
 		PropertyConfigurator.configure("meta-inf/log4j.properties");
-		LOG.setLevel(Level.DEBUG);
-
-		createControl();
+		Configurator.setRootLevel(Level.DEBUG);
 
 		OctaveProcessHandler processHandler = new OctaveProcessHandler() {
 
@@ -138,11 +134,10 @@ public class Terminal extends JFrame
 	/**
 	 * Sets the look and feel of the graphical user interface
 	 */
-	@SuppressWarnings({"checkstyle:magicnumber", "checkstyle:illegalcatch"})
+	@SuppressWarnings({ "checkstyle:magicnumber", "checkstyle:illegalcatch" })
 	private static void setLookAndFeel() {
 		try {
-			UIManager.setLookAndFeel(
-					"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 			UIManager.put("control", new Color(164, 195, 235));
 			UIManager.put("info", new Color(255, 255, 206));
 			UIManager.put("nimbusAlertYellow", new Color(246, 174, 6));
@@ -157,12 +152,10 @@ public class Terminal extends JFrame
 			UIManager.put("nimbusSelectedText", new Color(255, 255, 255));
 			UIManager.put("nimbusSelectionBackground", new Color(54, 103, 165));
 			UIManager.put("text", new Color(0, 0, 0));
-			UIManager.setLookAndFeel(
-					"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception ex) {
 			try {
-				UIManager.setLookAndFeel(
-						UIManager.getCrossPlatformLookAndFeelClassName());
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 			} catch (Exception ex2) {
 				throw new IllegalStateException("Could not set look and feel.");
 			}
@@ -198,9 +191,7 @@ public class Terminal extends JFrame
 				try {
 					octaveProcess.runOctaveCommand(command);
 				} catch (Exception e) {
-					writeErrorToTerminal(
-							"Could not evaluate following command line argument: \n"
-									+ args[i]);
+					writeErrorToTerminal("Could not evaluate following command line argument: \n" + args[i]);
 					break;
 				}
 			}
@@ -219,8 +210,8 @@ public class Terminal extends JFrame
 		outputTextPane = new JTextPane();
 
 		//Set textarea's initial text and put it in a scroll pane
-		String welcomeText = "Welcome to Octave Terminal!\nConnecting to Octave with following path:\n"
-				+ OCTAVE_PATH + "\n...please wait...\n";
+		String welcomeText = "Welcome to Octave Terminal!\nConnecting to Octave with following path:\n" + OCTAVE_PATH
+				+ "\n...please wait...\n";
 		outputTextPane.setContentType("text/html charset=EUC-JP");
 		outputTextPane.addMouseListener(this);
 
@@ -244,14 +235,13 @@ public class Terminal extends JFrame
 		//Add the content to the frame and set frame properties
 		this.setContentPane(content);
 		this.setTitle("Octave Terminal");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.pack();
 		this.setLocation(100, 100);
 		this.setSize(600, 500);
 
 		//set frame icon
-		String imagepath = "." + FILE_SEPARATOR + "#1guiconfig" + FILE_SEPARATOR
-				+ "tlogo.png";
+		String imagepath = "." + FILE_SEPARATOR + "#1guiconfig" + FILE_SEPARATOR + "tlogo.png";
 		File ifile = new File(imagepath);
 		if (ifile.exists()) {
 			ImageIcon fimage = new ImageIcon(imagepath);
@@ -267,14 +257,12 @@ public class Terminal extends JFrame
 	@Override
 	public void mouseClicked(MouseEvent event) {
 		int pos = outputTextPane.viewToModel(event.getPoint());
-		Element elem = ((StyledDocument) outputTextPane.getDocument())
-				.getCharacterElement(pos);
+		Element elem = ((StyledDocument) outputTextPane.getDocument()).getCharacterElement(pos);
 		if (elem != null) {
 			AttributeSet atset = elem.getAttributes();
 
 			//open file
-			String pathInfo = atset.getAttribute(HTML.Attribute.HREF)
-					.toString();
+			String pathInfo = atset.getAttribute(HTML.Attribute.HREF).toString();
 
 			LOG.info(pathInfo);
 
@@ -282,11 +270,9 @@ public class Terminal extends JFrame
 
 			parts = pathInfo.split("<br>");
 
-			String command = "gedit('" + parts[0] + "'," + parts[1] + ","
-					+ parts[2] + ")";
+			String command = "gedit('" + parts[0] + "'," + parts[1] + "," + parts[2] + ")";
 
-			octaveProcess
-					.runOctaveCommand(command.replaceAll("\\\\", "\\\\\\\\"));
+			octaveProcess.runOctaveCommand(command.replaceAll("\\\\", "\\\\\\\\"));
 
 		}
 
@@ -324,8 +310,7 @@ public class Terminal extends JFrame
 			doc.insertString(doc.getLength(), textToWrite + "\n", null);
 
 			//move cursor to end of text
-			outputTextPane
-					.setCaretPosition(outputTextPane.getDocument().getLength());
+			outputTextPane.setCaretPosition(outputTextPane.getDocument().getLength());
 		} catch (BadLocationException e) {
 			LOG.error("Could not write text to terminal");
 		}
@@ -337,7 +322,7 @@ public class Terminal extends JFrame
 	 * @param textToWrite
 	 */
 
-	@SuppressWarnings({"checkstyle:illegalcatch", "checkstyle:magicnumber"})
+	@SuppressWarnings({ "checkstyle:illegalcatch", "checkstyle:magicnumber" })
 	public void writeErrorToTerminal(String textToWrite) {
 		try {
 			//define error value and style
@@ -363,15 +348,12 @@ public class Terminal extends JFrame
 
 					int idx2 = textLine.indexOf(", column");
 
-					String linkString = textLine.substring(9,
-							textLine.length());
+					String linkString = textLine.substring(9, textLine.length());
 					String urlString1 = textLine.substring(9, idx);
 					String urlString2 = textLine.substring(idx + 9, idx2);
-					String urlString3 = textLine.substring(idx2 + 9,
-							textLine.length());
+					String urlString3 = textLine.substring(idx2 + 9, textLine.length());
 
-					String urlString = urlString1 + "<br>" + urlString2 + "<br>"
-							+ urlString3;
+					String urlString = urlString1 + "<br>" + urlString2 + "<br>" + urlString3;
 
 					//write start
 					doc.insertString(doc.getLength(), "error: ", attributes);
@@ -384,14 +366,12 @@ public class Terminal extends JFrame
 
 				} else {
 					//write text to terminal
-					doc.insertString(doc.getLength(), textLine + "\n",
-							attributes);
+					doc.insertString(doc.getLength(), textLine + "\n", attributes);
 				}
 			}
 
 			//move cursor to end of text
-			outputTextPane
-					.setCaretPosition(outputTextPane.getDocument().getLength());
+			outputTextPane.setCaretPosition(outputTextPane.getDocument().getLength());
 		} catch (Exception e) {
 			LOG.error("Could not write error text to terminal", e);
 		}
@@ -439,12 +419,10 @@ public class Terminal extends JFrame
 
 			//write text to terminal
 			Document doc = outputTextPane.getDocument();
-			doc.insertString(doc.getLength(), terminalErrorText + "\n",
-					attributes);
+			doc.insertString(doc.getLength(), terminalErrorText + "\n", attributes);
 
 			//move cursor to end of text
-			outputTextPane
-					.setCaretPosition(outputTextPane.getDocument().getLength());
+			outputTextPane.setCaretPosition(outputTextPane.getDocument().getLength());
 		} catch (Exception e) {
 			LOG.error("Could not write info text to terminal", e);
 		}
@@ -459,8 +437,7 @@ public class Terminal extends JFrame
 
 			//write command to text panel and to buffer
 			//try {
-			writeTextToTerminal(
-					"#" + octaveProcess.getLineNumber() + ">" + commandString);
+			writeTextToTerminal("#" + octaveProcess.getLineNumber() + ">" + commandString);
 
 			if (history.size() == 0) {
 				history.add(commandString);
@@ -563,14 +540,13 @@ public class Terminal extends JFrame
 			this.client = client;
 		}
 
-		@SuppressWarnings({"synthetic-access", "checkstyle:illegalcatch"})
+		@SuppressWarnings({ "synthetic-access", "checkstyle:illegalcatch" })
 		@Override
 		public void run() {
 			String commandString = "OctaveClientError=1";
-			try (BufferedReader in = new BufferedReader(
-					new InputStreamReader(client.getInputStream()));
-					PrintWriter out = new PrintWriter(client.getOutputStream(),
-							true)) {
+			try (
+					BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+					PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
 
 				while (true) {
 					try {
@@ -594,18 +570,15 @@ public class Terminal extends JFrame
 				} //end of while(true) loop
 
 			} catch (IOException e) {
-				LOG.error(
-						"Octave Terminal Server: Connection to in or out stream failed");
-				writeErrorToTerminal(
-						"Octave Terminal Server: Connection to in or out stream failed!");
+				LOG.error("Octave Terminal Server: Connection to in or out stream failed");
+				writeErrorToTerminal("Octave Terminal Server: Connection to in or out stream failed!");
 			}
 
 			try {
 				client.close();
 			} catch (IOException e) {
 				LOG.error("Octave Terminal Server: Failed to close Client!");
-				writeErrorToTerminal(
-						"Octave Terminal Server: Failed to close Client!");
+				writeErrorToTerminal("Octave Terminal Server: Failed to close Client!");
 			}
 		}
 
@@ -615,11 +588,8 @@ public class Terminal extends JFrame
 				//execute Octave command
 				octaveProcess.runOctaveCommand(commandString);
 			} catch (Exception e) {
-				LOG.error("Octave could not execute " + commandString + " :\n",
-						e);
-				writeErrorToTerminal(
-						"Error: Octave could not run following command: \n"
-								+ commandString);
+				LOG.error("Octave could not execute " + commandString + " :\n", e);
+				writeErrorToTerminal("Error: Octave could not run following command: \n" + commandString);
 			}
 		}
 	}

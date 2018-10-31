@@ -2,7 +2,8 @@ package org.treez.core.atom.attribute.attributeContainer.section;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -26,7 +27,7 @@ import org.treez.core.treeview.action.TreeViewerAction;
  */
 public class SectionAction extends AbstractAttributeContainerAtom<SectionAction> {
 
-	private static final Logger LOG = Logger.getLogger(SectionAction.class);
+	private static final Logger LOG = LogManager.getLogger(SectionAction.class);
 
 	//#region ATTRIBUTES
 

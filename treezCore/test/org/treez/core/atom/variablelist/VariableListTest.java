@@ -3,7 +3,7 @@ package org.treez.core.atom.variablelist;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 import org.treez.core.atom.variablefield.BooleanVariableField;
@@ -20,7 +20,7 @@ public class VariableListTest extends AbstractAttributeAtomConstructionTest<List
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(VariableListTest.class);
+	private static final Logger LOG = LogManager.getLogger(VariableListTest.class);
 
 	//#region SETUP
 

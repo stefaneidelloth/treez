@@ -1,6 +1,6 @@
 package org.treez.results.atom;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAbstractAtomTest;
 import org.treez.results.atom.graph.Graph;
@@ -14,7 +14,7 @@ public class GraphTest extends AbstractAbstractAtomTest {
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(GraphTest.class);
+	private static final Logger LOG = LogManager.getLogger(GraphTest.class);
 
 	//#region SETUP
 

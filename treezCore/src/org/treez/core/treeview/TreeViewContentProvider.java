@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.treez.core.adaptable.Adaptable;
@@ -18,7 +18,7 @@ import org.treez.core.utils.Utils;
  */
 public class TreeViewContentProvider implements ITreeContentProvider {
 
-	private static final Logger LOG = Logger.getLogger(TreeViewContentProvider.class);
+	private static final Logger LOG = LogManager.getLogger(TreeViewContentProvider.class);
 
 	//#region ATTRIBUTES
 

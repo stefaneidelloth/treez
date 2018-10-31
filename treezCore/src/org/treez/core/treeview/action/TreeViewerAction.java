@@ -1,6 +1,6 @@
 package org.treez.core.treeview.action;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -12,7 +12,7 @@ import org.treez.core.treeview.TreeViewerRefreshable;
  */
 public class TreeViewerAction extends Action {
 
-	private static Logger LOG = Logger.getLogger(TreeViewerAction.class);
+	private static Logger LOG = LogManager.getLogger(TreeViewerAction.class);
 
 	//#region ATTRIBUTES
 

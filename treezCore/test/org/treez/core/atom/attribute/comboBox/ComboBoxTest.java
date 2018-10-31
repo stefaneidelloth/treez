@@ -1,6 +1,6 @@
 package org.treez.core.atom.attribute.comboBox;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.treez.core.atom.attribute.AbstractAttributeAtomConstructionTest;
 import org.treez.core.atom.attribute.comboBox.ComboBox;
@@ -14,7 +14,7 @@ public class ComboBoxTest extends AbstractAttributeAtomConstructionTest<String> 
 	 * Logger for this class
 	 */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(ComboBoxTest.class);
+	private static final Logger LOG = LogManager.getLogger(ComboBoxTest.class);
 
 	//#region SETUP
 

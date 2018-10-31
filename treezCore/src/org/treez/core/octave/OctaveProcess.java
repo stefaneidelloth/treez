@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.treez.core.quantity.Quantity;
 
 /**
@@ -15,7 +15,7 @@ import org.treez.core.quantity.Quantity;
  */
 public class OctaveProcess {
 
-	private static final Logger LOG = Logger.getLogger(OctaveProcess.class);
+	private static final Logger LOG = LogManager.getLogger(OctaveProcess.class);
 
 	//#region ATTRIBUTES
 

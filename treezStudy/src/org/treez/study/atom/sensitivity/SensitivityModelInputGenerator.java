@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.core.atom.variablefield.VariableField;
 import org.treez.core.atom.variablelist.AbstractVariableListField;
@@ -23,7 +24,7 @@ import org.treez.study.atom.picking.Sample;
  */
 public class SensitivityModelInputGenerator implements ModelInputGenerator {
 
-	private static final Logger LOG = Logger.getLogger(SensitivityModelInputGenerator.class);
+	private static final Logger LOG = LogManager.getLogger(SensitivityModelInputGenerator.class);
 
 	//#region ATTRIBUTES
 
@@ -51,12 +52,12 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 		if (!samples.isEmpty()) {
 
 			/*
-			
+
 			String studyName = sensitivity.getId();
 			String studyDescription = sensitivity.getDescription();
 			String sourceModelPath = sensitivity.getSourceModelPath();
 			boolean isTimeDependent = sensitivity.isTimeDependent.get();
-			
+
 			if (isTimeDependent) {
 				String timeVariablePath = sensitivity.timeVariableModelPath.get();
 				List<Number> timeRange = sensitivity.getTimeRange();
@@ -68,16 +69,16 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 						modelInputs.add(modelInput);
 					}
 				}
-			
+
 			} else {
-			
+
 				for (Sample sample : samples) {
 					ModelInput modelInput = createModelInputFromSample(sourceModelPath, studyName, studyDescription,
 							sample);
 					modelInputs.add(modelInput);
 				}
 			}
-
+			
 			*/
 		}
 
@@ -178,9 +179,11 @@ public class SensitivityModelInputGenerator implements ModelInputGenerator {
 
 	}
 
-	private
-			ModelInput
-			createModelInputFromSample(String sourceModelPath, String studyName, String studyDescription, Sample sample) {
+	private ModelInput createModelInputFromSample(
+			String sourceModelPath,
+			String studyName,
+			String studyDescription,
+			Sample sample) {
 
 		String pickingModelPath = sensitivity.createTreeNodeAdaption().getTreePath();
 		ModelInput modelInput = new HashMapModelInput(pickingModelPath, studyName, studyDescription);

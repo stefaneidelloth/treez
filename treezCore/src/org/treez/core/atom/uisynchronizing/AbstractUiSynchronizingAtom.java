@@ -2,7 +2,7 @@ package org.treez.core.atom.uisynchronizing;
 
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,7 +24,7 @@ public abstract class AbstractUiSynchronizingAtom<A extends AbstractUiSynchroniz
 		implements
 		FocusChangingRefreshable {
 
-	private static Logger LOG = Logger.getLogger(AbstractUiSynchronizingAtom.class);
+	private static Logger LOG = LogManager.getLogger(AbstractUiSynchronizingAtom.class);
 
 	//#region ATTRIBUTES
 

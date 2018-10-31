@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.treez.core.atom.base.AbstractAtom;
 import org.treez.data.database.mysql.MySqlDatabase;
 import org.treez.data.database.sqlite.SqLiteDatabase;
@@ -21,7 +21,7 @@ import org.treez.study.atom.range.AbstractVariableRange;
  */
 public class SweepModelInputGenerator implements ModelInputGenerator {
 
-	private static final Logger LOG = Logger.getLogger(SweepModelInputGenerator.class);
+	private static final Logger LOG = LogManager.getLogger(SweepModelInputGenerator.class);
 
 	//#region ATTRIBUTES
 
