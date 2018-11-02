@@ -27,4 +27,3 @@ Export-Package: org.treez.model,
  org.treez.model.output
 Bundle-Vendor: Stefan Eidelloth
 Automatic-Module-Name: org.treez.model
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"

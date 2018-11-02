@@ -28,4 +28,3 @@ Export-Package: org.treez.study,
 Import-Package: org.treez.results.atom.results
 Bundle-Vendor: Stefan Eidelloth
 Automatic-Module-Name: org.treez.study
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"

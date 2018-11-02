@@ -177,4 +177,3 @@ Bundle-ClassPath: main/resources/,
  lib/log4j/log4j-taglib-2.11.1.jar,
  lib/log4j/log4j-web-2.11.1.jar
 Automatic-Module-Name: org.treez.javafxd3
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.11))"
